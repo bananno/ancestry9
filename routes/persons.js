@@ -12,6 +12,7 @@ router.get('/:personId/editId', getPersonShowRoute('customId'));
 router.post('/:personId/editId', getPersonEditRoute('customId'));
 router.get('/:personId/addLink', getPersonShowRoute('links'));
 router.post('/:personId/addLink', getPersonEditRoute('links'));
+router.post('/:personId/deleteLink/:deleteId', getPersonDeleteRoute('links'));
 
 module.exports = router;
 
@@ -138,4 +139,31 @@ function createNewPerson(req, res, next) {
       });
     }
   });
+}
+
+function getPersonDeleteRoute(editField) {
+  return function(req, res, next) {
+    var person = req.person;
+    var updatedObj = {};
+    var deleteId = req.params.deleteId;
+
+    if (editField == 'links') {
+      var linkIndex = deleteId;
+      updatedObj[editField] = person[editField].filter((url, i) => {
+        return i != linkIndex;
+      });
+    }
+
+    person.update(updatedObj, function(err) {
+      if (err) {
+        res.send('There was a problem updating the information to the database: ' + err);
+      } else {
+        res.format({
+          html: function() {
+            res.redirect('/persons/' + (person.customId || person._id));
+          }
+        });
+       }
+    });
+  };
 }

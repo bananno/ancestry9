@@ -67,6 +67,7 @@
         <%
             var numberOfLinks = person.links.length;
             var addLinkPath = rootPath + "/addLink";
+            var deleteLinkPath = rootPath + "/deleteLink";
         %>
 
         <% for (var i = 0; i < numberOfLinks + 1; i++) { %>
@@ -77,7 +78,17 @@
                     <% } %>
                 </td>
                 <% if (i < numberOfLinks) { %>
-                    <%- include('../partials/formatLink', { url: person.links[i] }) %>
+                    <form action="<%= deleteLinkPath %>/<%= i %>" method="POST">
+                        <td>
+                            <%- include('../partials/formatLink', { url: person.links[i] }) %>
+                        </td>
+                        <td>
+                            <% if (editView == 'none') { %>
+                                <input type="hidden" value="PUT" name="_method">
+                                <button type="submit">delete</button>
+                            <% } %>
+                        </td>
+                    </form>
                 <% } else { %>
                     <form action="<%= addLinkPath %>" method="POST">
                         <td>
