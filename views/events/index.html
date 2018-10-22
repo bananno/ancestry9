@@ -37,25 +37,18 @@
             <th> People </th>
             <th> </th>
         </tr>
-        <% for (var i = 0; i < events.length; i++) {
-            var event = events[i];
-            var dateStr = [];
-            if (event.date.year > 0) {
-                dateStr.push(event.date.year);
-            }
-            if (event.date.month > 0) {
-                dateStr.push(event.date.month);
-            }
-            if (event.date.day > 0) {
-                dateStr.push(event.date.day);
-            }
-            dateStr = dateStr.join('-');
+        <% for (var i = 0; i < events.length; i++) { %>
+            <%
+                var event = events[i];
+                var eventPath = '/event/' + events[i]._id;
             %>
             <tr>
                 <td>
-                    <a href="/event/<%= event._id %>"><%= event.title %></a>
+                    <a href="<%= eventPath %>"><%= event.title %></a>
                 </td>
-                <td> <%= dateStr %> </td>
+                <td>
+                    <%- include('../format/date', {date: event.date}) %>
+                </td>
                 <td>
                     <ul>
                         <% for (var p = 0; p < event.people.length; p++) { %>
@@ -66,7 +59,7 @@
                     </ul>
                 </td>
                 <td>
-                    <form action="/events/<%= event._id %>/delete" method="POST" enctype="application/x-www-form-urlencoded">
+                    <form action="<%= eventPath %>/delete" method="POST" enctype="application/x-www-form-urlencoded">
                         <input type="hidden" value="DELETE" name="_method">
                         <button type="submit">delete</button>
                     </form>

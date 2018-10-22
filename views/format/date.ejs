@@ -1,0 +1,19 @@
+<%
+    var dateComponents = [];
+
+    if (date != null) {
+        if (date.year > 0) {
+            dateComponents.push(date.year);
+        }
+        if (date.month > 0) {
+            dateComponents.push(date.month);
+        }
+        if (date.day > 0) {
+            dateComponents.push(date.day);
+        }
+    }
+
+    var dateString = dateComponents.join('-');
+%>
+
+<%= dateString %>

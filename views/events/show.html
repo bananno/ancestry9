@@ -41,18 +41,6 @@
 
         <%
             var editDatePath = rootPath + '/editDate';
-
-            var dateStr = [];
-            if (event.date.year > 0) {
-                dateStr.push(event.date.year);
-            }
-            if (event.date.month > 0) {
-                dateStr.push(event.date.month);
-            }
-            if (event.date.day > 0) {
-                dateStr.push(event.date.day);
-            }
-            dateStr = dateStr.join('-');
         %>
 
         <tr>
@@ -64,7 +52,7 @@
                     <% if (editField == 'date') { %>
                         <%- include('../partials/dateForm', { date: event.date }) %>
                     <% } else { %>
-                        <%= dateStr %>
+                        <%- include('../format/date', {date: event.date}) %>
                     <% } %>
                 </td>
                 <td>
