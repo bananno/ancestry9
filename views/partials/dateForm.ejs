@@ -6,13 +6,15 @@
     ];
 
     var yearValue = '';
-    var monthValue = '';
-    var dayValue = '';
+    var monthValue = 0;
+    var dayValue = 0;
 
     if (date != null) {
         if (date.year) {
             yearValue = date.year;
         }
+        monthValue = date.month;
+        dayValue = date.day;
     }
 %>
 
@@ -21,15 +23,23 @@
 <br>
 
 <select name="date_month">
-    <option value="0" selected="selected">month</option>
+    <option value="0">month</option>
     <% for (var m = 0; m < 12; m++) { %>
-        <option value="<%= m + 1 %>"><%= monthNames[m] %></option>
+        <% if (m == monthValue) { %>
+            <option value="<%= m %>" selected="selected"><%= monthNames[m - 1] %></option>
+        <% } else { %>
+            <option value="<%= m %>"><%= monthNames[m - 1] %></option>
+        <% } %>
     <% } %>
 </select>
 
 <select name="date_day">
-    <option value="0" selected="selected">day</option>
+    <option value="0">day</option>
     <% for (var d = 1; d <= 31; d++) { %>
-        <option value="<%= d %>"><%= d %></option>
+        <% if (d == dayValue) { %>
+            <option value="<%= d %>" selected="selected"><%= d %></option>
+        <% } else { %>
+            <option value="<%= d %>"><%= d %></option>
+        <% } %>
     <% } %>
 </select>

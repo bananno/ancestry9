@@ -37,6 +37,48 @@
             </form>
         </tr>
 
+        <!-- DATE -->
+
+        <%
+            var editDatePath = rootPath + '/editDate';
+
+            var dateStr = [];
+            if (event.date.year > 0) {
+                dateStr.push(event.date.year);
+            }
+            if (event.date.month > 0) {
+                dateStr.push(event.date.month);
+            }
+            if (event.date.day > 0) {
+                dateStr.push(event.date.day);
+            }
+            dateStr = dateStr.join('-');
+        %>
+
+        <tr>
+            <td>
+                <b>Date</b>
+            </td>
+            <form action="<%= editDatePath %>" method="POST">
+                <td>
+                    <% if (editField == 'date') { %>
+                        <%- include('../partials/dateForm', { date: event.date }) %>
+                    <% } else { %>
+                        <%= dateStr %>
+                    <% } %>
+                </td>
+                <td>
+                    <% if (editField == 'date') { %>
+                        <input type="hidden" value="PUT" name="_method">
+                        <button type="submit">save</button>
+                        <a href="<%= rootPath %>">cancel</a>
+                    <% } else if (editField == 'none') { %>
+                        <a href="<%= editDatePath %>">edit</a>
+                    <% } %>
+                </td>
+            </form>
+        </tr>
+
         <!--  -->
     </table>
 </div>

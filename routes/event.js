@@ -5,6 +5,7 @@ var router = express.Router();
 router.get('/:eventId', makeEventShowRoute('none'));
 router.get('/:eventId/editTitle', makeEventShowRoute('title'));
 router.post('/:eventId/editTitle', makeEventPostRoute('title'));
+router.get('/:eventId/editDate', makeEventShowRoute('date'));
 
 module.exports = router;
 
