@@ -20,14 +20,21 @@
         </p>
     <% } %>
 
-    <table border="1">
+    <p>
+        Filter: <input id="quickFilterPeople" type="text">
+    </p>
+
+    <table border="1" id="listOfPeople">
         <tbody>
             <tr>
                 <th> name </th>
             </tr>
             <% for (var i = 0; i < people.length; i++) { %>
-                <% var person = people[i]; %>
-                <tr>
+                <%
+                    var person = people[i];
+                    var searchName = person.name.toLowerCase();
+                %>
+                <tr person_name="<%= searchName %>" class="person_row">
                     <td>
                         <%- include('../partials/linkToPerson', {person: person}) %>
                     </td>
@@ -36,3 +43,7 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    filterPersonList();
+</script>
