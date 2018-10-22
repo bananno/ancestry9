@@ -79,6 +79,55 @@
             </form>
         </tr>
 
+        <!-- PEOPLE -->
+
+        <%
+            var numberOfPeople = event.people.length;
+            var addPersonPath = rootPath + '/addPerson';
+            var deletePersonPath = rootPath + '/deletePerson/';
+        %>
+
+        <% for (var p = 0; p < numberOfPeople + 1; p++) { %>
+            <tr>
+                <td>
+                    <% if (p == 0) { %>
+                        <b>People</b>
+                    <% } %>
+                </td>
+                <% if (p < numberOfPeople) { %>
+                    <% let person = event.people[p]; %>
+                    <form action="<%= deletePersonPath %><%= person.id %>" method="POST">
+                        <td>
+                            <%- include('../partials/linkToPerson', {person: person}) %>
+                        </td>
+                        <td>
+                            <% if (editField == 'none') { %>
+                                <input type="hidden" value="PUT" name="_method">
+                                <button type="submit">delete</button>
+                            <% } %>
+                        </td>
+                    </form>
+                <% } else if (editField == 'none') { %>
+                    <td>
+                        <a href="<%= addPersonPath %>">add</a>
+                    </td>
+                    <td>
+                    </td>
+                <% } else if (editField == 'people') { %>
+                    <form action="<%= addPersonPath %>" method="POST">
+                        <td>
+                            <%- include('../partials/personDropdown', {name: 'people', selected: null}) %>
+                        </td>
+                        <td>
+                            <input type="hidden" value="PUT" name="_method">
+                            <button type="submit">save</button>
+                            <a href="<%= rootPath %>">cancel</a>
+                        </td>
+                    </form>
+                <% } %>
+            </tr>
+        <% } %>
+
         <!--  -->
     </table>
 </div>

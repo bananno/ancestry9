@@ -72,7 +72,10 @@ function createNewPerson(req, res, next) {
 
 function makeEventsIndexRoute(showNew) {
   return function(req, res, next) {
-    mongoose.model('Event').find({}, function (err, events) {
+    mongoose.model('Event')
+    .find({})
+    .populate('people')
+    .exec(function (err, events) {
       if (err) {
         return console.error(err);
       } else {

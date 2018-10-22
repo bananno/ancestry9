@@ -7,6 +7,8 @@ router.get('/:eventId/editTitle', makeEventShowRoute('title'));
 router.post('/:eventId/editTitle', makeEventPostRoute('title'));
 router.get('/:eventId/editDate', makeEventShowRoute('date'));
 router.post('/:eventId/editDate', makeEventPostRoute('date'));
+router.get('/:eventId/addPerson', makeEventShowRoute('people'));
+router.post('/:eventId/addPerson', makeEventPostRoute('people'));
 
 module.exports = router;
 
@@ -16,14 +18,17 @@ function makeEventShowRoute(editField) {
     mongoose.model('Event').findById(eventId)
     .populate('people')
     .exec(function(err, event) {
-      res.format({
-        html: function() {
-          res.render('events/show', {
-            eventId: req.eventId,
-            event: event,
-            editField: editField,
-          });
-        }
+      mongoose.model('Person').find({}, function(err, persons) {
+        res.format({
+          html: function() {
+            res.render('events/show', {
+              eventId: req.eventId,
+              event: event,
+              editField: editField,
+              persons: persons,
+            });
+          }
+        });
       });
     });
   };
@@ -41,6 +46,10 @@ function makeEventPostRoute(editField) {
           month: req.body.date_month,
           day: req.body.date_day,
         };
+      } else if (editField == 'people') {
+        var personId = req.body[editField];
+        updatedObj[editField] = event.people;
+        updatedObj[editField].push(personId);
       } else {
         updatedObj[editField] = req.body[editField];
       }
