@@ -1,0 +1,37 @@
+<table border="1">
+    <tr>
+        <th> Title </th>
+        <th> Date </th>
+        <th> People </th>
+        <th> </th>
+    </tr>
+    <% for (var i = 0; i < events.length; i++) { %>
+        <%
+            var event = events[i];
+            var eventPath = '/event/' + events[i]._id;
+        %>
+        <tr>
+            <td>
+                <a href="<%= eventPath %>"><%= event.title %></a>
+            </td>
+            <td>
+                <%- include('../format/date', {date: event.date}) %>
+            </td>
+            <td>
+                <ul>
+                    <% for (var p = 0; p < event.people.length; p++) { %>
+                        <li>
+                            <%- include('../partials/linkToPerson', {person: event.people[p]}) %>
+                        </li>
+                    <% } %>
+                </ul>
+            </td>
+            <td>
+                <form action="<%= eventPath %>/delete" method="POST">
+                    <input type="hidden" value="DELETE" name="_method">
+                    <button type="submit">delete</button>
+                </form>
+            </td>
+        </tr>
+    <% } %>
+</table>
