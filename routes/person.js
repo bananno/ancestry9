@@ -4,9 +4,6 @@ var router = express.Router();
 
 convertParamPersonId();
 
-router.get('/', getPersonsIndexRoute(false));
-router.get('/new', getPersonsIndexRoute(true));
-router.post('/new', createNewPerson);
 router.get('/:personId', getPersonShowRoute('none'));
 
 createPersonRoutes('Name', 'name', 'edit');
@@ -56,25 +53,6 @@ function convertParamPersonId() {
       }
     });
   });
-}
-
-function getPersonsIndexRoute(showNew) {
-  return function(req, res, next) {
-    mongoose.model('Person').find({}, function (err, persons) {
-      if (err) {
-        return console.error(err);
-      } else {
-        res.format({
-          html: function() {
-            res.render('persons/index', {
-              persons: persons,
-              showNew: showNew,
-            });
-          }
-        });
-      }
-    });
-  };
 }
 
 function getPersonShowRoute(editView) {
@@ -148,33 +126,6 @@ function getPersonEditRoute(editField, corresponding) {
        }
     });
   };
-}
-
-function createNewPerson(req, res, next) {
-  var newPerson = {
-    name: req.body.name,
-    customId: req.body.name,
-  };
-
-  if (newPerson.name.trim() == '') {
-    return;
-  }
-
-  while (newPerson.customId.match(' ')) {
-    newPerson.customId = newPerson.customId.replace(' ', '');
-  }
-
-  mongoose.model('Person').create(newPerson, function(err, person) {
-    if (err) {
-      res.send('There was a problem adding the information to the database.');
-    } else {
-      res.format({
-        html: function() {
-          res.redirect('/persons');
-        }
-      });
-    }
-  });
 }
 
 function getPersonDeleteRoute(editField, corresponding) {
