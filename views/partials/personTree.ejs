@@ -1,0 +1,25 @@
+<%
+    if (person.name == null) {
+        person = persons.filter((thisPerson) => {
+            return thisPerson.id == person;
+        })[0];
+    }
+%>
+
+<% if (person != null && safety < 50) { %>
+    <table border="1">
+        <tr>
+            <% for (var p = 0; p < person.parents.length; p++) { %>
+                <% var parent = person.parents[p]; %>
+                <td valign="bottom" align="center">
+                    <%- include('../partials/personTree', { person: parent, safety: safety + 1 }) %>
+                </td>
+            <% } %>
+        </tr>
+        <tr>
+            <td colspan="<%= person.parents.length || 1 %>" align="center">
+                <%- include('../partials/linkToPerson', {person: person}) %>
+            </td>
+        </tr>
+    </table>
+<% } %>
