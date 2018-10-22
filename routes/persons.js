@@ -79,17 +79,23 @@ function getPersonsIndexRoute(showNew) {
 
 function getPersonShowRoute(editView) {
   return function(req, res, next) {
-    mongoose.model('Person').find({}, function(err, allPersons) {
-      var persons = filterOutPerson(allPersons, req.person);
-      res.format({
-        html: function() {
-          res.render('persons/show', {
-            personId: req.personId,
-            person: req.person,
-            persons: persons,
-            editView: editView,
-          });
-        }
+    mongoose.model('Person').findById(req.personId)
+    .populate('parents')
+    .populate('spouses')
+    .populate('children')
+    .exec(function(err, person) {
+      mongoose.model('Person').find({}, function(err, allPersons) {
+        var persons = filterOutPerson(allPersons, person);
+        res.format({
+          html: function() {
+            res.render('persons/show', {
+              personId: req.personId,
+              person: person,
+              persons: persons,
+              editView: editView,
+            });
+          }
+        });
       });
     });
   };
