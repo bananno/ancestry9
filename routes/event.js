@@ -6,6 +6,7 @@ router.get('/:eventId', makeEventShowRoute('none'));
 router.get('/:eventId/editTitle', makeEventShowRoute('title'));
 router.post('/:eventId/editTitle', makeEventPostRoute('title'));
 router.get('/:eventId/editDate', makeEventShowRoute('date'));
+router.post('/:eventId/editDate', makeEventPostRoute('date'));
 
 module.exports = router;
 
@@ -31,10 +32,19 @@ function makeEventShowRoute(editField) {
 function makeEventPostRoute(editField) {
   return function(req, res) {
     var eventId = req.params.eventId;
-    var updatedObj = {};
-    var newValue = req.body[editField];
     mongoose.model('Event').findById(eventId, function(err, event) {
-      updatedObj[editField] = newValue;
+      var updatedObj = {};
+
+      if (editField == 'date') {
+        updatedObj[editField] = {
+          year: req.body.date_year,
+          month: req.body.date_month,
+          day: req.body.date_day,
+        };
+      } else {
+        updatedObj[editField] = req.body[editField];
+      }
+
       event.update(updatedObj, function(err) {
         res.format({
           html: function() {
