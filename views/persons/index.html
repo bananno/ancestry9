@@ -1,4 +1,4 @@
-<%- include ./partials/header %>
+<%- include ../partials/header %>
 
 <div id="content">
     <h1>Persons</h1>
@@ -29,7 +29,7 @@
                 <% var person = persons[i]; %>
                 <tr>
                     <td>
-                        <%- include('./partials/linkToPerson', {person: person}) %>
+                        <%- include('../partials/linkToPerson', {person: person}) %>
                     </td>
                 </tr>
             <% } %>
