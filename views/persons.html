@@ -1,0 +1,38 @@
+<%- include ./partials/header %>
+
+<div id="content">
+    <h1>Persons</h1>
+
+    <% if (showNew) { %>
+        <form action="/persons/new" method="POST">
+            <p>
+                <b>Name:</b>
+                <input type="text" name="name">
+            </p>
+            <p>
+                <button type="submit">submit</button>
+                <a href="/persons">Cancel</a>
+            </p>
+        </form>
+    <% } else { %>
+        <p>
+            <a href="/persons/new">+ Create Person</a>
+        </p>
+    <% } %>
+
+    <table border="1">
+        <tbody>
+            <tr>
+                <th> name </th>
+            </tr>
+            <% for (var i = 0; i < persons.length; i++) { %>
+                <% var person = persons[i]; %>
+                <tr>
+                    <td>
+                        <%- include('./partials/linkToPerson', {person: person}) %>
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
