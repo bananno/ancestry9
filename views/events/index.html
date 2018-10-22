@@ -36,7 +36,6 @@
             <th> Date </th>
             <th> People </th>
             <th> </th>
-            <th> </th>
         </tr>
         <% for (var i = 0; i < events.length; i++) {
             var event = events[i];
@@ -53,7 +52,9 @@
             dateStr = dateStr.join('-');
             %>
             <tr>
-                <td> <%= event.title %> </td>
+                <td>
+                    <a href="/event/<%= event._id %>"><%= event.title %></a>
+                </td>
                 <td> <%= dateStr %> </td>
                 <td>
                     <ul>
@@ -64,7 +65,6 @@
                         <% } %>
                     </ul>
                 </td>
-                <td> <a href="/event/<%= event._id %>">Show</a> </td>
                 <td>
                     <form action="/events/<%= event._id %>/delete" method="POST" enctype="application/x-www-form-urlencoded">
                         <input type="hidden" value="DELETE" name="_method">
