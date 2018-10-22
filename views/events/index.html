@@ -4,6 +4,21 @@
     <h1>All Events</h1>
 
     <% if (showNew) { %>
+        <form method="POST" action="/allEvents/new">
+            <table>
+                <tr>
+                    <td> <b>Title</b> </td>
+                    <td> <input type="text" name="title"> </td>
+                </tr>
+                <tr>
+                    <td> <b>Date</b> </td>
+                    <td> <input type="date" name="date"> </td>
+                </tr>
+            </table>
+            <p>
+                <button type="submit">Create</button>
+            </p>
+        </form>
         <p>
             <a href="/allEvents">cancel</a>
         </p>

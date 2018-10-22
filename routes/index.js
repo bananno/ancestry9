@@ -89,6 +89,22 @@ function makeEventsIndexRoute(showNew) {
   };
 }
 
-function createNewEvent() {
+function createNewEvent(req, res) {
+  var newEvent = {
+    title: req.body.title,
+    date: req.body.date,
+    person: [],
+  };
 
+  mongoose.model('Event').create(newEvent, function(err, event) {
+    if (err) {
+      res.send('There was a problem adding the information to the database.');
+    } else {
+      res.format({
+        html: function() {
+          res.redirect('/allEvents');
+        }
+      });
+    }
+  });
 }
