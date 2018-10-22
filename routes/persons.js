@@ -183,10 +183,24 @@ function getPersonDeleteRoute(editField, corresponding) {
     var updatedObj = {};
     var deleteId = req.params.deleteId;
 
-    if (editField == 'links') {
-      var linkIndex = deleteId;
+    if (corresponding) {
+      var relationship = editField;
+
+      updatedObj[relationship] = filterOutPerson(person[relationship], deleteId);
+
+      mongoose.model('Person').findById(deleteId, function(err, relative) {
+        if (err) {
+        } else {
+          var updatedRelative = {};
+
+          updatedRelative[corresponding] = filterOutPerson(relative[corresponding], person.id);
+
+          relative.update(updatedRelative, () => {});
+        }
+      });
+    } else if (editField == 'links') {
       updatedObj[editField] = person[editField].filter((url, i) => {
-        return i != linkIndex;
+        return i != deleteId;
       });
     }
 
@@ -205,7 +219,12 @@ function getPersonDeleteRoute(editField, corresponding) {
 }
 
 function filterOutPerson(persons, person) {
+  var removeId = person;
+  if (person._id) {
+    removeId = person._id;
+  }
+  removeId = '' + removeId;
   return persons.filter((thisPerson) => {
-    return ('' + thisPerson._id) != ('' + person._id);
+    return ('' + thisPerson._id) != removeId;
   });
 }
