@@ -66,6 +66,25 @@
 
         <%- include('relativeForm', { relationshipType: 'Parent', relationship: 'parents' }) %>
 
+        <!-- SIBLINGS -->
+
+        <% for (var p = 0; p < (siblings.length || 1); p++) { %>
+            <tr>
+                <td>
+                    <% if (p == 0) { %>
+                        <b>siblings</b>
+                    <% } %>
+                </td>
+                <td>
+                    <% if (p < siblings.length) { %>
+                        <%- include('../partials/linkToPerson', {person: siblings[p]}) %>
+                    <% } %>
+                </td>
+                <td>
+                </td>
+            </tr>
+        <% } %>
+
         <!-- SPOUSES -->
 
         <%- include('relativeForm', {relationshipType: 'Spouse', relationship: 'spouses' }) %>

@@ -64,12 +64,31 @@ function getPersonShowRoute(editView) {
     .exec(function(err, person) {
       mongoose.model('Person').find({}, function(err, allPersons) {
         var persons = filterOutPerson(allPersons, person);
+
+          var siblings = [];
+
+          if (person.parents.length > 0) {
+            siblings = persons.filter(function(thisPerson) {
+              for (var i = 0; i < thisPerson.parents.length; i++) {
+                var thisParent1 = thisPerson.parents[i];
+                for (var j = 0; j < person.parents.length; j++) {
+                  var thisParent2 = person.parents[j];
+                  if (thisParent1 == thisParent2.id) {
+                    return true;
+                  }
+                }
+              }
+              return false;
+            });
+          }
+
         res.format({
           html: function() {
             res.render('people/show', {
               personId: req.personId,
               person: person,
               persons: persons,
+              siblings: siblings,
               editView: editView,
             });
           }
