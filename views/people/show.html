@@ -111,7 +111,7 @@
                 <% if (i < numberOfLinks) { %>
                     <form action="<%= deleteLinkPath %>/<%= i %>" method="POST">
                         <td>
-                            <%- include('../partials/formatLink', { url: person.links[i] }) %>
+                            <%- include('../format/externalLink', { url: person.links[i] }) %>
                         </td>
                         <td>
                             <% if (editView == 'none') { %>
