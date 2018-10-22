@@ -86,7 +86,7 @@ function getPersonEditRoute(editField) {
       } else {
         res.format({
           html: function() {
-            res.redirect('/persons/' + req.personId);
+            res.redirect('/persons/' + (person.customId || person._id));
           }
         });
        }
