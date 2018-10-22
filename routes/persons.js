@@ -5,8 +5,34 @@ var router = express.Router();
 router.get('/', getPersonsIndexRoute(false));
 router.get('/new', getPersonsIndexRoute(true));
 router.post('/new', createNewPerson);
+router.get('/:personId', getPersonShowRoute());
 
 module.exports = router;
+
+router.param('personId', function(req, res, next, paramPersonId) {
+  mongoose.model('Person').findById(paramPersonId, function (err, person) {
+    if (err || person == null) {
+      mongoose.model('Person').find({}, function (err, persons) {
+        var personWithId = persons.filter(function(thisPerson) {
+          return thisPerson.customId == paramPersonId;
+        });
+        if (personWithId.length) {
+          req.personId = personWithId[0]._id;
+          req.person = personWithId[0];
+          next();
+        } else {
+          console.log('Person with ID "' + paramPersonId + '" was not found.');
+          res.status(404);
+          res.render('persons/notFound', { personId: paramPersonId });
+        }
+      });
+    } else {
+      req.personId = paramPersonId;
+      req.person = person;
+      next();
+    }
+  });
+});
 
 function getPersonsIndexRoute(showNew) {
   return function(req, res, next) {
@@ -23,6 +49,22 @@ function getPersonsIndexRoute(showNew) {
           }
         });
       }
+    });
+  };
+}
+
+function getPersonShowRoute() {
+  return function(req, res, next) {
+    mongoose.model('Person').find({}, function(err, persons) {
+      res.format({
+        html: function() {
+          res.render('persons/show', {
+            personId: req.personId,
+            person: req.person,
+            persons: persons,
+          });
+        }
+      });
     });
   };
 }
