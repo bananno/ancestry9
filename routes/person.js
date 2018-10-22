@@ -1,6 +1,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
+var sortEvents = require('../tools/sortEvents');
 
 convertParamPersonId();
 
@@ -87,6 +88,8 @@ function getPersonShowRoute(editView) {
               return false;
             });
           }
+
+          events = sortEvents(events);
 
           res.format({
             html: function() {
