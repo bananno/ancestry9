@@ -18,14 +18,14 @@ function makeEventShowRoute(editField) {
     mongoose.model('Event').findById(eventId)
     .populate('people')
     .exec(function(err, event) {
-      mongoose.model('Person').find({}, function(err, persons) {
+      mongoose.model('Person').find({}, function(err, people) {
         res.format({
           html: function() {
             res.render('events/show', {
               eventId: req.eventId,
               event: event,
               editField: editField,
-              persons: persons,
+              people: people,
             });
           }
         });

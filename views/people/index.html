@@ -1,7 +1,7 @@
 <%- include ../partials/header %>
 
 <div id="content">
-    <h1>Persons</h1>
+    <h1>People</h1>
 
     <% if (showNew) { %>
         <form action="/allPeople/new" method="POST">
@@ -25,8 +25,8 @@
             <tr>
                 <th> name </th>
             </tr>
-            <% for (var i = 0; i < persons.length; i++) { %>
-                <% var person = persons[i]; %>
+            <% for (var i = 0; i < people.length; i++) { %>
+                <% var person = people[i]; %>
                 <tr>
                     <td>
                         <%- include('../partials/linkToPerson', {person: person}) %>

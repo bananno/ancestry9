@@ -26,14 +26,14 @@ module.exports = router;
 
 function getPersonsIndexRoute(showNew) {
   return function(req, res, next) {
-    mongoose.model('Person').find({}, function (err, persons) {
+    mongoose.model('Person').find({}, function (err, people) {
       if (err) {
         return console.error(err);
       } else {
         res.format({
           html: function() {
             res.render('people/index', {
-              persons: persons,
+              people: people,
               showNew: showNew,
             });
           }

@@ -32,8 +32,8 @@ function convertParamPersonId() {
   router.param('personId', function(req, res, next, paramPersonId) {
     mongoose.model('Person').findById(paramPersonId, function (err, person) {
       if (err || person == null) {
-        mongoose.model('Person').find({}, function (err, persons) {
-          var personWithId = persons.filter(function(thisPerson) {
+        mongoose.model('Person').find({}, function (err, people) {
+          var personWithId = people.filter(function(thisPerson) {
             return thisPerson.customId == paramPersonId;
           });
           if (personWithId.length) {
@@ -64,17 +64,17 @@ function getPersonShowRoute(editView) {
     .exec(function(err, person) {
       mongoose.model('Person')
       .find({})
-      .exec(function(err, allPersons) {
+      .exec(function(err, allPeople) {
         mongoose.model('Event')
         .find({ people: person })
         .populate('people')
         .exec(function(err, events) {
-          var persons = filterOutPerson(allPersons, person);
+          var people = filterOutPerson(allPeople, person);
 
           var siblings = [];
 
           if (person.parents.length > 0) {
-            siblings = persons.filter(function(thisPerson) {
+            siblings = people.filter(function(thisPerson) {
               for (var i = 0; i < thisPerson.parents.length; i++) {
                 var thisParent1 = thisPerson.parents[i];
                 for (var j = 0; j < person.parents.length; j++) {
@@ -93,7 +93,7 @@ function getPersonShowRoute(editView) {
               res.render('people/show', {
                 personId: req.personId,
                 person: person,
-                persons: persons,
+                people: people,
                 siblings: siblings,
                 events: events,
                 editView: editView,
@@ -196,13 +196,13 @@ function getPersonDeleteRoute(editField, corresponding) {
   };
 }
 
-function filterOutPerson(persons, person) {
+function filterOutPerson(people, person) {
   var removeId = person;
   if (person._id) {
     removeId = person._id;
   }
   removeId = '' + removeId;
-  return persons.filter((thisPerson) => {
+  return people.filter((thisPerson) => {
     return ('' + thisPerson._id) != removeId;
   });
 }
