@@ -8,6 +8,8 @@ router.post('/new', createNewPerson);
 router.get('/:personId', getPersonShowRoute('none'));
 router.get('/:personId/editName', getPersonShowRoute('name'));
 router.post('/:personId/editName', getPersonEditRoute('name'));
+router.get('/:personId/editId', getPersonShowRoute('customId'));
+router.post('/:personId/editId', getPersonEditRoute('customId'));
 
 module.exports = router;
 
@@ -77,16 +79,25 @@ function getPersonEditRoute(editField) {
     var person = req.person;
     var inputValue = req.body[editField];
     var updatedObj = {};
+    var newValue = req.body[editField];
 
-    updatedObj[editField] = req.body[editField];
+    updatedObj[editField] = newValue;
 
     person.update(updatedObj, function(err) {
       if (err) {
         res.send('There was a problem updating the information to the database: ' + err);
       } else {
+        var redirectUrl;
+
+        if (editField == 'customId') {
+          redirectUrl = '/persons/' + newValue;
+        } else {
+          redirectUrl = '/persons/' + (person.customId || person._id);
+        }
+
         res.format({
           html: function() {
-            res.redirect('/persons/' + (person.customId || person._id));
+            res.redirect(redirectUrl);
           }
         });
        }
