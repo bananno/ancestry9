@@ -1,5 +1,5 @@
 <% if (person != null) { %>
-    <a href="/persons/<%= person.customId || person._id %>"><%= person.name %></a>
+    <a href="/person/<%= person.customId || person._id %>"><%= person.name %></a>
 <% } else { %>
     ________
 <% } %>

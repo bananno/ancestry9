@@ -10,9 +10,9 @@ router.get('/', function(req, res, next) {
 
 // PEOPLE INDEX + NEW PERSON
 
-router.get('/persons', getPersonsIndexRoute(false));
-router.get('/persons/new', getPersonsIndexRoute(true));
-router.post('/persons/new', createNewPerson);
+router.get('/allPeople', getPersonsIndexRoute(false));
+router.get('/allPeople/new', getPersonsIndexRoute(true));
+router.post('/allPeople/new', createNewPerson);
 
 module.exports = router;
 
@@ -55,7 +55,7 @@ function createNewPerson(req, res, next) {
     } else {
       res.format({
         html: function() {
-          res.redirect('/persons');
+          res.redirect('/allPeople');
         }
       });
     }
