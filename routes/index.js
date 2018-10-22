@@ -24,7 +24,7 @@ function getPersonsIndexRoute(showNew) {
       } else {
         res.format({
           html: function() {
-            res.render('persons/index', {
+            res.render('people/index', {
               persons: persons,
               showNew: showNew,
             });

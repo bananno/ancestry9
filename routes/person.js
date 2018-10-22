@@ -43,7 +43,7 @@ function convertParamPersonId() {
           } else {
             console.log('Person with ID "' + paramPersonId + '" was not found.');
             res.status(404);
-            res.render('persons/notFound', { personId: paramPersonId });
+            res.render('people/notFound', { personId: paramPersonId });
           }
         });
       } else {
@@ -66,7 +66,7 @@ function getPersonShowRoute(editView) {
         var persons = filterOutPerson(allPersons, person);
         res.format({
           html: function() {
-            res.render('persons/show', {
+            res.render('people/show', {
               personId: req.personId,
               person: person,
               persons: persons,
@@ -113,9 +113,9 @@ function getPersonEditRoute(editField, corresponding) {
         var redirectUrl;
 
         if (editField == 'customId') {
-          redirectUrl = '/persons/' + newValue;
+          redirectUrl = '/person/' + newValue;
         } else {
-          redirectUrl = '/persons/' + (person.customId || person._id);
+          redirectUrl = '/person/' + (person.customId || person._id);
         }
 
         res.format({
@@ -161,7 +161,7 @@ function getPersonDeleteRoute(editField, corresponding) {
       } else {
         res.format({
           html: function() {
-            res.redirect('/persons/' + (person.customId || person._id));
+            res.redirect('/person/' + (person.customId || person._id));
           }
         });
        }
