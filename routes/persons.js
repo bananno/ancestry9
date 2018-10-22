@@ -6,17 +6,15 @@ router.get('/', getPersonsIndexRoute(false));
 router.get('/new', getPersonsIndexRoute(true));
 router.post('/new', createNewPerson);
 router.get('/:personId', getPersonShowRoute('none'));
-router.get('/:personId/editName', getPersonShowRoute('name'));
-router.post('/:personId/editName', getPersonEditRoute('name'));
-router.get('/:personId/editId', getPersonShowRoute('customId'));
-router.post('/:personId/editId', getPersonEditRoute('customId'));
 
-createPersonRoutes('Link', 'links', true);
+createPersonRoutes('Name', 'name', 'edit');
+createPersonRoutes('Id', 'customId', 'edit');
+createPersonRoutes('Link', 'links', 'add', true);
 
 module.exports = router;
 
-function createPersonRoutes(urlName, fieldName, canDelete) {
-  var showOrEditRoute = '/:personId/add' + urlName;
+function createPersonRoutes(urlName, fieldName, actionName, canDelete) {
+  var showOrEditRoute = '/:personId/' + actionName + urlName;
   var deleteRoute = '/:personId/delete' + urlName + '/:deleteId';
 
   router.get(showOrEditRoute, getPersonShowRoute(fieldName));
