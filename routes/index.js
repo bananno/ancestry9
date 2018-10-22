@@ -102,7 +102,7 @@ function createNewEvent(req, res) {
     } else {
       res.format({
         html: function() {
-          res.redirect('/allEvents');
+          res.redirect('/event/' + event._id);
         }
       });
     }

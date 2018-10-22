@@ -48,14 +48,14 @@
                 <td> <%= dateStr %> </td>
                 <td>
                     <ul>
-                        <% for (var p = 0; p < event.persons.length; p++) { %>
+                        <% for (var p = 0; p < event.people.length; p++) { %>
                             <li>
-                                <%- include('../partials/linkToPerson', {person: event.persons[p]}) %>
+                                <%- include('../partials/linkToPerson', {person: event.people[p]}) %>
                             </li>
                         <% } %>
                     </ul>
                 </td>
-                <td> <a href="/events/<%= event._id %>">Show</a> </td>
+                <td> <a href="/event/<%= event._id %>">Show</a> </td>
                 <td>
                     <form action="/events/<%= event._id %>/delete" method="POST" enctype="application/x-www-form-urlencoded">
                         <input type="hidden" value="DELETE" name="_method">
