@@ -62,11 +62,13 @@ function getPersonShowRoute(editView) {
     .populate('spouses')
     .populate('children')
     .exec(function(err, person) {
-      mongoose.model('Person').find({})
+      mongoose.model('Person')
+      .find({})
       .exec(function(err, allPersons) {
-        mongoose.model('Event').find({})
+        mongoose.model('Event')
+        .find({ people: person })
         .populate('people')
-        .exec(function(err, allEvents) {
+        .exec(function(err, events) {
           var persons = filterOutPerson(allPersons, person);
 
           var siblings = [];
@@ -85,10 +87,6 @@ function getPersonShowRoute(editView) {
               return false;
             });
           }
-
-          var events = allEvents.filter((thisEvent) => {
-            return true;
-          });
 
           res.format({
             html: function() {
