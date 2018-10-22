@@ -92,7 +92,11 @@ function makeEventsIndexRoute(showNew) {
 function createNewEvent(req, res) {
   var newEvent = {
     title: req.body.title,
-    date: req.body.date,
+    date: {
+      year: req.body.date_year,
+      month: req.body.date_month,
+      day: req.body.date_day,
+    },
     person: [],
   };
 

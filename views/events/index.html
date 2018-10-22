@@ -1,5 +1,10 @@
 <%- include ../partials/header %>
 
+<%
+    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+        'September', 'October', 'November', 'December'];
+%>
+
 <div id="content">
     <h1>All Events</h1>
 
@@ -12,7 +17,18 @@
                 </tr>
                 <tr>
                     <td> <b>Date</b> </td>
-                    <td> <input type="date" name="date"> </td>
+                    <td>
+                        <input type="number" name="date_year" style="width: 50px;" placeholder="year">
+                        <select name="date_month">
+                            <option value="0" selected="selected">month</option>
+                            <% for (var m = 0; m < 12; m++) { %>
+                                <option value="<%= m + 1 %>">
+                                    <%= monthNames[m] %>
+                                </option>
+                            <% } %>
+                        </select>
+                        <input type="number" name="date_day" style="width: 40px;" placeholder="day">
+                    </td>
                 </tr>
             </table>
             <p>
@@ -38,11 +54,18 @@
         </tr>
         <% for (var i = 0; i < events.length; i++) {
             var event = events[i];
-            var dateStr = '';
-            if (event.date != null) {
-                dateStr = event.date.toISOString();
-                dateStr = dateStr.substring(0, dateStr.indexOf('T'));
-            } %>
+            var dateStr = [];
+            if (event.date.year > 0) {
+                dateStr.push(event.date.year);
+            }
+            if (event.date.month > 0) {
+                dateStr.push(event.date.month);
+            }
+            if (event.date.day > 0) {
+                dateStr.push(event.date.day);
+            }
+            dateStr = dateStr.join('-');
+            %>
             <tr>
                 <td> <%= event.title %> </td>
                 <td> <%= dateStr %> </td>
