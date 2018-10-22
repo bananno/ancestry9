@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 
 require('./model/db');
 require('./model/persons');
+require('./model/events');
 
 var app = express();
 

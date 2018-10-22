@@ -1,0 +1,53 @@
+<%- include ../partials/header %>
+
+<div id="content">
+    <h1>All Events</h1>
+
+    <% if (showNew) { %>
+        <p>
+            <a href="/allEvents">cancel</a>
+        </p>
+    <% } else { %>
+        <p>
+            <a href="/allEvents/new">+ Create Event</a>
+        </p>
+    <% } %>
+
+    <table border="1">
+        <tr>
+            <th> Title </th>
+            <th> Date </th>
+            <th> People </th>
+            <th> </th>
+            <th> </th>
+        </tr>
+        <% for (var i = 0; i < events.length; i++) {
+            var event = events[i];
+            var dateStr = '';
+            if (event.date != null) {
+                dateStr = event.date.toISOString();
+                dateStr = dateStr.substring(0, dateStr.indexOf('T'));
+            } %>
+            <tr>
+                <td> <%= event.title %> </td>
+                <td> <%= dateStr %> </td>
+                <td>
+                    <ul>
+                        <% for (var p = 0; p < event.persons.length; p++) { %>
+                            <li>
+                                <%- include('../partials/linkToPerson', {person: event.persons[p]}) %>
+                            </li>
+                        <% } %>
+                    </ul>
+                </td>
+                <td> <a href="/events/<%= event._id %>">Show</a> </td>
+                <td>
+                    <form action="/events/<%= event._id %>/delete" method="POST" enctype="application/x-www-form-urlencoded">
+                        <input type="hidden" value="DELETE" name="_method">
+                        <button type="submit">delete</button>
+                    </form>
+                </td>
+            </tr>
+        <% } %>
+    </table>
+</div>

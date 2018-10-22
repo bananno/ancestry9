@@ -14,6 +14,14 @@ router.get('/allPeople', getPersonsIndexRoute(false));
 router.get('/allPeople/new', getPersonsIndexRoute(true));
 router.post('/allPeople/new', createNewPerson);
 
+// EVENTS INDEX + NEW EVENT
+
+router.get('/allEvents', makeEventsIndexRoute(false));
+router.get('/allEvents/new', makeEventsIndexRoute(true));
+router.post('/allEvents/new', createNewEvent);
+
+//
+
 module.exports = router;
 
 function getPersonsIndexRoute(showNew) {
@@ -60,4 +68,27 @@ function createNewPerson(req, res, next) {
       });
     }
   });
+}
+
+function makeEventsIndexRoute(showNew) {
+  return function(req, res, next) {
+    mongoose.model('Event').find({}, function (err, events) {
+      if (err) {
+        return console.error(err);
+      } else {
+        res.format({
+          html: function() {
+            res.render('events/index', {
+              events: events,
+              showNew: showNew,
+            });
+          }
+        });
+      }
+    });
+  };
+}
+
+function createNewEvent() {
+
 }
