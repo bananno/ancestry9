@@ -24,7 +24,7 @@
 
 <select name="date_month">
     <option value="0">month</option>
-    <% for (var m = 0; m < 12; m++) { %>
+    <% for (var m = 1; m <= 12; m++) { %>
         <% if (m == monthValue) { %>
             <option value="<%= m %>" selected="selected"><%= monthNames[m - 1] %></option>
         <% } else { %>
