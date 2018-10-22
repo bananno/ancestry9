@@ -13,17 +13,21 @@ createPersonRoutes('Name', 'name', 'edit');
 createPersonRoutes('Id', 'customId', 'edit');
 createPersonRoutes('Link', 'links', 'add', true);
 
+createPersonRoutes('Parent', 'parents', 'add', true, 'children');
+createPersonRoutes('Spouse', 'spouses', 'add', true, 'spouses');
+createPersonRoutes('Child', 'children', 'add', true, 'parents');
+
 module.exports = router;
 
-function createPersonRoutes(urlName, fieldName, actionName, canDelete) {
+function createPersonRoutes(urlName, fieldName, actionName, canDelete, corresponding) {
   var showOrEditRoute = '/:personId/' + actionName + urlName;
   var deleteRoute = '/:personId/delete' + urlName + '/:deleteId';
 
   router.get(showOrEditRoute, getPersonShowRoute(fieldName));
-  router.post(showOrEditRoute, getPersonEditRoute(fieldName));
+  router.post(showOrEditRoute, getPersonEditRoute(fieldName, corresponding));
 
   if (canDelete) {
-    router.post(deleteRoute, getPersonDeleteRoute(fieldName));
+    router.post(deleteRoute, getPersonDeleteRoute(fieldName, corresponding));
   }
 }
 
@@ -75,7 +79,8 @@ function getPersonsIndexRoute(showNew) {
 
 function getPersonShowRoute(editView) {
   return function(req, res, next) {
-    mongoose.model('Person').find({}, function(err, persons) {
+    mongoose.model('Person').find({}, function(err, allPersons) {
+      var persons = filterOutPerson(allPersons, req.person);
       res.format({
         html: function() {
           res.render('persons/show', {
@@ -90,14 +95,26 @@ function getPersonShowRoute(editView) {
   };
 }
 
-function getPersonEditRoute(editField) {
+function getPersonEditRoute(editField, corresponding) {
   return function(req, res) {
     var person = req.person;
-    var inputValue = req.body[editField];
     var updatedObj = {};
     var newValue = req.body[editField];
 
-    if (editField == 'links') {
+    if (corresponding) {
+      var newPersonId = newValue;
+
+      if (newPersonId != '0') {
+        updatedObj[editField] = (person[editField] || []).concat(newPersonId);
+
+        mongoose.model('Person').findById(newPersonId, function(err, relative) {
+          var updatedRelative = {};
+          updatedRelative[corresponding] = relative[corresponding] || [];
+          updatedRelative[corresponding].push(person.id);
+          relative.update(updatedRelative, () => {});
+        });
+      }
+    } else if (editField == 'links') {
       if (newValue != '') {
         updatedObj[editField] = (person[editField] || []).concat(newValue);
       }
@@ -154,7 +171,7 @@ function createNewPerson(req, res, next) {
   });
 }
 
-function getPersonDeleteRoute(editField) {
+function getPersonDeleteRoute(editField, corresponding) {
   return function(req, res, next) {
     var person = req.person;
     var updatedObj = {};
@@ -179,4 +196,10 @@ function getPersonDeleteRoute(editField) {
        }
     });
   };
+}
+
+function filterOutPerson(persons, person) {
+  return persons.filter((thisPerson) => {
+    return ('' + thisPerson._id) != ('' + person._id);
+  });
 }

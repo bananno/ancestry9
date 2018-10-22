@@ -62,6 +62,18 @@
             </form>
         </tr>
 
+        <!-- PARENTS -->
+
+        <%- include('relativeForm', { relationshipType: 'Parent', relationship: 'parents' }) %>
+
+        <!-- SPOUSES -->
+
+        <%- include('relativeForm', {relationshipType: 'Spouse', relationship: 'spouses' }) %>
+
+        <!-- CHILDREN -->
+
+        <%- include('relativeForm', {relationshipType: 'Child', relationship: 'children' }) %>
+
         <!-- LINKS -->
 
         <%

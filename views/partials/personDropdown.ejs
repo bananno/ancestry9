@@ -1,0 +1,11 @@
+<select name="<%= name %>">
+    <option value="0" selected="selected">
+        -- Select --
+    </option>
+    <% for (var personIndex = 0; personIndex < persons.length; personIndex++) { %>
+        <% let thisPerson = persons[personIndex]; %>
+        <option value="<%= thisPerson.id %>">
+            <%= thisPerson.name %>
+        </option>
+    <% } %>
+</select>
