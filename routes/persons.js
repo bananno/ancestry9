@@ -10,6 +10,8 @@ router.get('/:personId/editName', getPersonShowRoute('name'));
 router.post('/:personId/editName', getPersonEditRoute('name'));
 router.get('/:personId/editId', getPersonShowRoute('customId'));
 router.post('/:personId/editId', getPersonEditRoute('customId'));
+router.get('/:personId/addLink', getPersonShowRoute('links'));
+router.post('/:personId/addLink', getPersonEditRoute('links'));
 
 module.exports = router;
 
@@ -81,7 +83,13 @@ function getPersonEditRoute(editField) {
     var updatedObj = {};
     var newValue = req.body[editField];
 
-    updatedObj[editField] = newValue;
+    if (editField == 'links') {
+      if (newValue != '') {
+        updatedObj[editField] = (person[editField] || []).concat(newValue);
+      }
+    } else {
+      updatedObj[editField] = newValue;
+    }
 
     person.update(updatedObj, function(err) {
       if (err) {

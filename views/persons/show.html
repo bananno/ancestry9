@@ -61,5 +61,42 @@
                 </td>
             </form>
         </tr>
+
+        <!-- LINKS -->
+
+        <%
+            var numberOfLinks = person.links.length;
+            var addLinkPath = rootPath + "/addLink";
+        %>
+
+        <% for (var i = 0; i < numberOfLinks + 1; i++) { %>
+            <tr>
+                <td>
+                    <% if (i == 0) { %>
+                        <b>links</b>
+                    <% } %>
+                </td>
+                <% if (i < numberOfLinks) { %>
+                    <%- include('../partials/formatLink', { url: person.links[i] }) %>
+                <% } else { %>
+                    <form action="<%= addLinkPath %>" method="POST">
+                        <td>
+                            <% if (editView == 'none') { %>
+                                <a href="<%= addLinkPath %>">add</a>
+                            <% } else if (editView == 'links') { %>
+                                <input type="text" value="" name="links">
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (editView == 'links') { %>
+                                <input type="hidden" value="PUT" name="_method">
+                                <button type="submit">save</button>
+                                <a href="<%= rootPath %>">cancel</a>
+                            <% } %>
+                        </td>
+                    </form>
+                <% } %>
+            </tr>
+        <% } %>
     </table>
 </div>
