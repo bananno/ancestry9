@@ -10,11 +10,22 @@ router.get('/:personId/editName', getPersonShowRoute('name'));
 router.post('/:personId/editName', getPersonEditRoute('name'));
 router.get('/:personId/editId', getPersonShowRoute('customId'));
 router.post('/:personId/editId', getPersonEditRoute('customId'));
-router.get('/:personId/addLink', getPersonShowRoute('links'));
-router.post('/:personId/addLink', getPersonEditRoute('links'));
-router.post('/:personId/deleteLink/:deleteId', getPersonDeleteRoute('links'));
+
+createPersonRoutes('Link', 'links', true);
 
 module.exports = router;
+
+function createPersonRoutes(urlName, fieldName, canDelete) {
+  var showOrEditRoute = '/:personId/add' + urlName;
+  var deleteRoute = '/:personId/delete' + urlName + '/:deleteId';
+
+  router.get(showOrEditRoute, getPersonShowRoute(fieldName));
+  router.post(showOrEditRoute, getPersonEditRoute(fieldName));
+
+  if (canDelete) {
+    router.post(deleteRoute, getPersonDeleteRoute(fieldName));
+  }
+}
 
 router.param('personId', function(req, res, next, paramPersonId) {
   mongoose.model('Person').findById(paramPersonId, function (err, person) {
