@@ -7,6 +7,7 @@ router.get('/new', getPersonsIndexRoute(true));
 router.post('/new', createNewPerson);
 router.get('/:personId', getPersonShowRoute('none'));
 router.get('/:personId/editName', getPersonShowRoute('name'));
+router.post('/:personId/editName', getPersonEditRoute('name'));
 
 module.exports = router;
 
@@ -67,6 +68,28 @@ function getPersonShowRoute(editView) {
           });
         }
       });
+    });
+  };
+}
+
+function getPersonEditRoute(editField) {
+  return function(req, res) {
+    var person = req.person;
+    var inputValue = req.body[editField];
+    var updatedObj = {};
+
+    updatedObj[editField] = req.body[editField];
+
+    person.update(updatedObj, function(err) {
+      if (err) {
+        res.send('There was a problem updating the information to the database: ' + err);
+      } else {
+        res.format({
+          html: function() {
+            res.redirect('/persons/' + req.personId);
+          }
+        });
+       }
     });
   };
 }
