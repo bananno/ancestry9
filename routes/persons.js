@@ -5,7 +5,8 @@ var router = express.Router();
 router.get('/', getPersonsIndexRoute(false));
 router.get('/new', getPersonsIndexRoute(true));
 router.post('/new', createNewPerson);
-router.get('/:personId', getPersonShowRoute());
+router.get('/:personId', getPersonShowRoute('none'));
+router.get('/:personId/editName', getPersonShowRoute('name'));
 
 module.exports = router;
 
@@ -53,7 +54,7 @@ function getPersonsIndexRoute(showNew) {
   };
 }
 
-function getPersonShowRoute() {
+function getPersonShowRoute(editView) {
   return function(req, res, next) {
     mongoose.model('Person').find({}, function(err, persons) {
       res.format({
@@ -62,6 +63,7 @@ function getPersonShowRoute() {
             personId: req.personId,
             person: req.person,
             persons: persons,
+            editView: editView,
           });
         }
       });
