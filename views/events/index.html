@@ -18,16 +18,7 @@
                 <tr>
                     <td> <b>Date</b> </td>
                     <td>
-                        <input type="number" name="date_year" style="width: 50px;" placeholder="year">
-                        <select name="date_month">
-                            <option value="0" selected="selected">month</option>
-                            <% for (var m = 0; m < 12; m++) { %>
-                                <option value="<%= m + 1 %>">
-                                    <%= monthNames[m] %>
-                                </option>
-                            <% } %>
-                        </select>
-                        <input type="number" name="date_day" style="width: 40px;" placeholder="day">
+                        <%- include('../partials/dateForm', { date: null }) %>
                     </td>
                 </tr>
             </table>

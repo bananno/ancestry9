@@ -1,0 +1,35 @@
+<%
+    var monthNames = [
+        'January', 'February', 'March', 'April',
+        'May', 'June', 'July', 'August',
+        'September', 'October', 'November', 'December'
+    ];
+
+    var yearValue = '';
+    var monthValue = '';
+    var dayValue = '';
+
+    if (date != null) {
+        if (date.year) {
+            yearValue = date.year;
+        }
+    }
+%>
+
+<input type="number" name="date_year" placeholder="year" value="<%= yearValue %>">
+
+<br>
+
+<select name="date_month">
+    <option value="0" selected="selected">month</option>
+    <% for (var m = 0; m < 12; m++) { %>
+        <option value="<%= m + 1 %>"><%= monthNames[m] %></option>
+    <% } %>
+</select>
+
+<select name="date_day">
+    <option value="0" selected="selected">day</option>
+    <% for (var d = 1; d <= 31; d++) { %>
+        <option value="<%= d %>"><%= d %></option>
+    <% } %>
+</select>
