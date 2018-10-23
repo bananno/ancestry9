@@ -1,9 +1,9 @@
-<table border="1">
+<table class="citation_list">
     <tr>
         <% if (showPerson) { %>
             <th> person </th>
         <% } %>
-        <th> item </th>
+        <th colspan="2"> item </th>
         <th> information </th>
         <% if (showSource) { %>
             <th> source </th>
@@ -13,27 +13,60 @@
         <% } %>
     </tr>
 
+    <%
+        var previousItem1 = '';
+        var previousItem2 = '';
+    %>
+
     <% for (var i = 0; i < citations.length; i++) { %>
-        <% var citation = citations[i]; %>
+        <%
+            var citation = citations[i];
+
+            var item1 = citation.item;
+            var item2 = '';
+
+            var itemCellClass1 = 'citation_item';
+            var itemCellClass2 = 'citation_item';
+
+            if (item1.match(' - ')) {
+                item2 = item1.slice(item1.indexOf(' - ') + 3);
+                item1 = item1.slice(0, item1.indexOf(' - '));
+            }
+
+            if (groupBy == 'item' && i < citations.length - 1) {
+                if (item1 == previousItem1) {
+                    itemCellClass1 += '_repeat';
+                    if (item2 == previousItem2) {
+                        itemCellClass2 += '_repeat';
+                    }
+                }
+
+                previousItem1 = item1;
+                previousItem2 = item2;
+            }
+        %>
         <tr>
             <% if (showPerson) { %>
                 <td>
                     <%- include('../partials/linkToPerson', { person: citation.person }) %>
                 </td>
             <% } %>
-            <td>
-                <%= citation.item %>
+            <td class="<%= itemCellClass1 %>">
+                <%= item1 %>
             </td>
-            <td>
+            <td class="<%= itemCellClass2 %>">
+                <%= item2 %>
+            </td>
+            <td class="citation_cell">
                 <%= citation.information %>
             </td>
             <% if (showSource) { %>
-                <td>
+                <td class="citation_cell">
                     <%- include('../partials/linkToSource', { source: citation.source }) %>
                 </td>
             <% } %>
             <% if (showDelete) { %>
-                <td>
+                <td class="citation_cell">
                     <form action="<%= rootPath %>/deleteCitation/<%= citation._id %>" method="POST"
                             onsubmit="return confirmDeletion('citation')">
                         <input type="hidden" value="DELETE" name="_method">
