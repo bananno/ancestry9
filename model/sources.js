@@ -10,6 +10,7 @@ var sourceSchema = new mongoose.Schema({
   people: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
   links: [String],
   images: [String],
+  content: String,
 });
 
 mongoose.model('Source', sourceSchema);

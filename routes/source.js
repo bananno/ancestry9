@@ -10,6 +10,7 @@ makeSourcesRoutes('Date', 'date');
 makeSourcesRoutes('Person', 'people', true);
 makeSourcesRoutes('Link', 'links', true);
 makeSourcesRoutes('Image', 'images', true);
+makeSourcesRoutes('Content', 'content');
 
 makeSourcesRoutes('Citation', 'citations', true);
 

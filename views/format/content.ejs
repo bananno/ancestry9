@@ -1,0 +1,10 @@
+<%
+    var arr = [];
+
+    if (content) {
+        arr = content.split('\n');
+    }
+%>
+<% for (var i = 0; i < arr.length; i++) { %>
+    <p> <%= arr[i] %> </p>
+<% } %>
