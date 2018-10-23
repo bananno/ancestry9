@@ -1,5 +1,5 @@
 <%
-    /*var usaStates = {
+    var usaStates = {
         AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California',
         CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia',
         HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa',
@@ -10,9 +10,11 @@
         OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
         SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont',
         VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming',
-    };*/
+    };
 
     var locationComponents = [];
+
+    var isUSA = location.country == 'United States';
 
     if (location.city) {
         locationComponents.push(location.city);
@@ -22,12 +24,18 @@
         locationComponents.push(location.region2);
     }
 
-    if (location.region1) {
-        locationComponents.push(location.region1);
-    }
-
-    if (location.country) {
-        locationComponents.push(location.country);
+    if (isUSA) {
+        if (location.region1) {
+            locationComponents.push(usaStates[location.region1] || location.region1);
+        }
+        locationComponents.push('USA');
+    } else {
+        if (location.region1) {
+            locationComponents.push(location.region1);
+        }
+        if (location.country) {
+            locationComponents.push(location.country);
+        }
     }
 
     var displayLocation = locationComponents.join(', ');
