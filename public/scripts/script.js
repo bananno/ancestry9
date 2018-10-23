@@ -19,3 +19,18 @@ function filterPersonList() {
     });
   }
 }
+
+function toggleRegionUsState() {
+  var $country = $('[name="location_country"]');
+  var $usaRegion = $('[name="location_region1_usa"]');
+  var $otherRegion = $('[name="location_region1"]');
+
+  function toggle() {
+    var isUSA = $country.val() == 'United States';
+    $usaRegion.toggle(isUSA);
+    $otherRegion.toggle(!isUSA);
+  }
+
+  toggle();
+  $country.change(toggle);
+}
