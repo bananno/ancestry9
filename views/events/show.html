@@ -50,7 +50,7 @@
             <form action="<%= editDatePath %>" method="POST">
                 <td>
                     <% if (editField == 'date') { %>
-                        <%- include('../partials/dateForm', { date: event.date }) %>
+                        <%- include('../forms/date', { date: event.date }) %>
                     <% } else { %>
                         <%- include('../format/date', {date: event.date}) %>
                     <% } %>
@@ -104,7 +104,7 @@
                 <% } else if (editField == 'people') { %>
                     <form action="<%= addPersonPath %>" method="POST">
                         <td>
-                            <%- include('../partials/personDropdown', {name: 'people', selected: null}) %>
+                            <%- include('../forms/personDropdown', {name: 'people', selected: null}) %>
                         </td>
                         <td>
                             <input type="hidden" value="PUT" name="_method">
