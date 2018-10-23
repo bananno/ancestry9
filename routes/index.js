@@ -24,7 +24,7 @@ router.post('/allEvents/new', createNewEvent);
 
 router.get('/sources', makeSourcesIndexRoute(false));
 router.get('/sources/new', makeSourcesIndexRoute(true));
-// router.post('/allSources/new', createNewSource);
+router.post('/sources/new', createNewSource);
 
 //
 
@@ -141,4 +141,28 @@ function makeSourcesIndexRoute(showNew) {
       }
     });
   };
+}
+
+function createNewSource(req, res) {
+  var newItem = {
+    title: req.body.title,
+    date: {
+      year: req.body.date_year,
+      month: req.body.date_month,
+      day: req.body.date_day,
+    },
+  };
+
+  mongoose.model('Source').create(newItem, function(err, source) {
+    if (err) {
+      res.send('There was a problem adding the information to the database.');
+    } else {
+      res.format({
+        html: function() {
+          // res.redirect('/source/' + source._id);
+          res.redirect('/sources');
+        }
+      });
+    }
+  });
 }

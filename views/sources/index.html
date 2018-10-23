@@ -1,5 +1,46 @@
 <%- include ../partials/header %>
 
+<%
+    var rootPath = '/sources';
+    var newSourcePath = rootPath + '/new';
+%>
+
 <div id="content">
     <h1>Sources</h1>
+
+    <% if (showNew) { %>
+        <%- include('../forms/newSource', { actionPath: newSourcePath, cancelPath: rootPath }) %>
+    <% } else { %>
+        <p>
+            <a href="/sources/new">+ New</a>
+        </p>
+    <% } %>
+
+    <table border="1">
+        <tr>
+            <th>title</th>
+            <th>date</th>
+            <th>people</th>
+            <th>links</th>
+            <th>images</th>
+        </tr>
+
+        <% for (var i = 0; i < sources.length; i++) { %>
+            <% var source = sources[i]; %>
+            <tr>
+                <td>
+                    <a href="source/<%= source._id %>"><%= source.title %></a>
+                </td>
+                <td>
+                    <%- include('../format/date', {date: source.date}) %>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+            </tr>
+        <% } %>
+    </table>
 </div>
