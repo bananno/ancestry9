@@ -9,6 +9,7 @@ require('./model/db');
 require('./model/people');
 require('./model/events');
 require('./model/sources');
+require('./model/citations');
 
 var app = express();
 
