@@ -3,18 +3,24 @@ var mongoose = require('mongoose');
 var router = express.Router();
 
 router.get('/:sourceId', makeSourceShowRoute('none'));
-router.get('/:sourceId/editTitle', makeSourceShowRoute('title'));
-router.post('/:sourceId/editTitle', makeSourcePostRoute('title'));
-router.get('/:sourceId/editDate', makeSourceShowRoute('date'));
-router.post('/:sourceId/editDate', makeSourcePostRoute('date'));
-router.get('/:sourceId/addPerson', makeSourceShowRoute('people'));
-router.post('/:sourceId/addPerson', makeSourcePostRoute('people'));
-router.get('/:sourceId/addLink', makeSourceShowRoute('links'));
-router.post('/:sourceId/addLink', makeSourcePostRoute('links'));
-router.get('/:sourceId/addImage', makeSourceShowRoute('image'));
-router.post('/:sourceId/addImage', makeSourcePostRoute('image'));
+
+makeSourcesRoutes('Title', 'title');
+makeSourcesRoutes('Date', 'date');
+makeSourcesRoutes('Person', 'people', true);
+makeSourcesRoutes('Link', 'links', true);
+makeSourcesRoutes('Image', 'images', true);
 
 module.exports = router;
+
+function makeSourcesRoutes(urlName, fieldName, canDelete) {
+  if (canDelete) {
+    router.get('/:sourceId/add' + urlName, makeSourceShowRoute(fieldName));
+    router.post('/:sourceId/add' + urlName, makeSourcePostRoute(fieldName));
+  } else {
+    router.get('/:sourceId/edit' + urlName, makeSourceShowRoute(fieldName));
+    router.post('/:sourceId/edit' + urlName, makeSourcePostRoute(fieldName));
+  }
+}
 
 function makeSourceShowRoute(editField) {
   return function(req, res, next) {
