@@ -52,3 +52,17 @@ button {
 .treecell a {
     text-decoration: none;
 }
+
+.list_of_items {
+    list-style: none;
+}
+
+.list_of_items li {
+    padding: 2px;
+}
+
+#create_person_box {
+    display: inline-block;
+    padding: 10px;
+    min-height: 80px;
+}

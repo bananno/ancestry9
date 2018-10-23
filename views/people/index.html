@@ -3,44 +3,40 @@
 <div id="content">
     <h1>People</h1>
 
-    <% if (showNew) { %>
-        <form action="/allPeople/new" method="POST">
+    <div id="create_person_box">
+        <% if (showNew) { %>
+            <form action="/allPeople/new" method="POST">
+                <p>
+                    <b>Name:</b>
+                    <input type="text" name="name">
+                </p>
+                <p>
+                    <button type="submit">submit</button>
+                    <a href="/allPeople">cancel</a>
+                </p>
+            </form>
+        <% } else { %>
             <p>
-                <b>Name:</b>
-                <input type="text" name="name">
+                <a href="/allPeople/new">+ Create Person</a>
             </p>
+            <br>
             <p>
-                <button type="submit">submit</button>
-                <a href="/allPeople">Cancel</a>
+                Filter: <input id="quickFilterPeople" type="text">
             </p>
-        </form>
-    <% } else { %>
-        <p>
-            <a href="/allPeople/new">+ Create Person</a>
-        </p>
-        <p>
-            Filter: <input id="quickFilterPeople" type="text">
-        </p>
-    <% } %>
+        <% } %>
+    </div>
 
-    <table border="1" id="listOfPeople">
-        <tbody>
-            <tr>
-                <th> name </th>
-            </tr>
-            <% for (var i = 0; i < people.length; i++) { %>
-                <%
-                    var person = people[i];
-                    var searchName = person.name.toLowerCase();
-                %>
-                <tr person_name="<%= searchName %>" class="person_row">
-                    <td>
-                        <%- include('../partials/linkToPerson', {person: person}) %>
-                    </td>
-                </tr>
-            <% } %>
-        </tbody>
-    </table>
+    <ul id="listOfPeople" class="list_of_items">
+        <% for (var i = 0; i < people.length; i++) { %>
+            <%
+                var person = people[i];
+                var searchName = person.name.toLowerCase();
+            %>
+            <li person_name="<%= searchName %>" class="person_row">
+                <%- include('../partials/linkToPerson', {person: person}) %>
+            </li>
+        <% } %>
+    </ul>
 </div>
 
 <script>
