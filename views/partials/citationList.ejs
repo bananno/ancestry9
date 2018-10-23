@@ -29,6 +29,7 @@
             </td>
             <% if (showSource) { %>
                 <td>
+                    <%- include('../partials/linkToSource', { source: citation.source }) %>
                 </td>
             <% } %>
             <% if (showDelete) { %>

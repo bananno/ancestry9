@@ -29,7 +29,7 @@
             <% var source = sources[i]; %>
             <tr>
                 <td>
-                    <a href="source/<%= source._id %>"><%= source.title %></a>
+                    <%- include('../partials/linkToSource', {source: source}) %>
                 </td>
                 <td>
                     <%- include('../format/date', {date: source.date}) %>
