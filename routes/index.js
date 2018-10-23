@@ -1,6 +1,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
+var getNewEventValues = require('../tools/getNewEventValues');
 
 // HOME
 
@@ -99,18 +100,11 @@ function makeEventsIndexRoute(showNew) {
 }
 
 function createNewEvent(req, res) {
-  var newEvent = {
-    title: req.body.title,
-    date: {
-      year: req.body.date_year,
-      month: req.body.date_month,
-      day: req.body.date_day,
-    },
-    location: {
-      country: req.body.location_country,
-    },
-    people: [],
-  };
+  var newEvent = getNewEventValues(req);
+
+  if (newEvent == null) {
+    return;
+  }
 
   mongoose.model('Event').create(newEvent, function(err, event) {
     if (err) {

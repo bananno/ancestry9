@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var router = express.Router();
 var sortEvents = require('../tools/sortEvents');
 var removePersonFromList = require('../tools/removePersonFromList');
+var getNewEventValues = require('../tools/getNewEventValues');
 
 convertParamPersonId();
 
@@ -139,18 +140,14 @@ function getPersonEditRoute(editField, corresponding) {
         });
       }
     } else if (editField == 'events') {
-      var newEvent = {
-        title: req.body.title,
-        date: {
-          year: req.body.date_year,
-          month: req.body.date_month,
-          day: req.body.date_day,
-        },
-        location: {
-          country: req.body.location_country,
-        },
-        people: [person],
-      };
+      var newEvent = getNewEventValues(req);
+
+      if (newEvent == null) {
+        return;
+      }
+
+      newEvent.people.push(person);
+
       mongoose.model('Event').create(newEvent, function() {});
     } else if (editField == 'links') {
       if (newValue != '') {
