@@ -37,6 +37,9 @@ var citationItemOrder = [
   'marriage',
   'immigration',
   'naturalization',
+  'death',
+  'funeral',
+  'obituary',
   'residence',
 ];
 
