@@ -100,7 +100,6 @@ function createNewEvent(req, res) {
       month: req.body.date_month,
       day: req.body.date_day,
     },
-    person: [],
   };
 
   mongoose.model('Event').create(newEvent, function(err, event) {

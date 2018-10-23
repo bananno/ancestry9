@@ -150,7 +150,17 @@
 
     <!-- TIMELINE -->
 
+    <% var addEventPath = rootPath + "/addEvent"; %>
+
     <h2> Timeline </h2>
+
+    <% if (editView == 'events') { %>
+        <%- include('../forms/newEvent', { actionPath: addEventPath, cancelPath: rootPath }) %>
+    <% } else if (editView == 'none') { %>
+        <p>
+            <a href="<%= addEventPath %>">+ Create Event</a>
+        </p>
+    <% } %>
 
     <%- include('../events/eventList', { events: events, people: people }) %>
 

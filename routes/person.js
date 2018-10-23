@@ -15,6 +15,8 @@ createPersonRoutes('Parent', 'parents', 'add', true, 'children');
 createPersonRoutes('Spouse', 'spouses', 'add', true, 'spouses');
 createPersonRoutes('Child', 'children', 'add', true, 'parents');
 
+createPersonRoutes('Event', 'events', 'add');
+
 module.exports = router;
 
 function createPersonRoutes(urlName, fieldName, actionName, canDelete, corresponding) {
@@ -128,6 +130,17 @@ function getPersonEditRoute(editField, corresponding) {
           relative.update(updatedRelative, () => {});
         });
       }
+    } else if (editField == 'events') {
+      var newEvent = {
+        title: req.body.title,
+        date: {
+          year: req.body.date_year,
+          month: req.body.date_month,
+          day: req.body.date_day,
+        },
+        people: [person],
+      };
+      mongoose.model('Event').create(newEvent, function() {});
     } else if (editField == 'links') {
       if (newValue != '') {
         updatedObj[editField] = (person[editField] || []).concat(newValue);
