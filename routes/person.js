@@ -1,7 +1,9 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
+
 var sortEvents = require('../tools/sortEvents');
+var sortCitations = require('../tools/sortCitations');
 var removePersonFromList = require('../tools/removePersonFromList');
 var getNewEventValues = require('../tools/getNewEventValues');
 
@@ -99,6 +101,7 @@ function getPersonShowRoute(editView) {
             }
 
             events = sortEvents(events);
+            citations = sortCitations(citations, 'item');
 
             res.format({
               html: function() {
