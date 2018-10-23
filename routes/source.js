@@ -1,6 +1,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
+var removePersonFromList = require('../tools/removePersonFromList');
 
 router.get('/:sourceId', makeSourceShowRoute('none'));
 
@@ -14,11 +15,15 @@ module.exports = router;
 
 function makeSourcesRoutes(urlName, fieldName, canDelete) {
   if (canDelete) {
-    router.get('/:sourceId/add' + urlName, makeSourceShowRoute(fieldName));
-    router.post('/:sourceId/add' + urlName, makeSourcePostRoute(fieldName));
+    var showOrEditPath = '/:sourceId/add' + urlName;
+    var deletePath = '/:sourceId/delete' + urlName + '/:deleteId';
+    router.get(showOrEditPath, makeSourceShowRoute(fieldName));
+    router.post(showOrEditPath, makeSourcePostRoute(fieldName));
+    router.post(deletePath, makeSourceDeleteRoute(fieldName));
   } else {
-    router.get('/:sourceId/edit' + urlName, makeSourceShowRoute(fieldName));
-    router.post('/:sourceId/edit' + urlName, makeSourcePostRoute(fieldName));
+    var showOrEditPath = '/:sourceId/edit' + urlName;
+    router.get(showOrEditPath, makeSourceShowRoute(fieldName));
+    router.post(showOrEditPath, makeSourcePostRoute(fieldName));
   }
 }
 
@@ -67,6 +72,32 @@ function makeSourcePostRoute(editField) {
         updatedObj[editField] = (source[editField] || []).concat(newValue);
       } else {
         updatedObj[editField] = req.body[editField];
+      }
+
+      source.update(updatedObj, function(err) {
+        res.format({
+          html: function() {
+            res.redirect('/source/' + sourceId);
+          }
+        });
+      });
+    });
+  };
+}
+
+function makeSourceDeleteRoute(editField) {
+  return function(req, res) {
+    var sourceId = req.params.sourceId;
+    mongoose.model('Source').findById(sourceId, function(err, source) {
+      var updatedObj = {};
+      var deleteId = req.params.deleteId;
+
+      if (editField == 'people') {
+        updatedObj[editField] = removePersonFromList(source[editField], deleteId);
+      } else if (editField == 'links' || editField == 'images') {
+        updatedObj[editField] = source[editField].filter((url, i) => {
+          return i != deleteId;
+        });
       }
 
       source.update(updatedObj, function(err) {
