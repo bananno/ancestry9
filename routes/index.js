@@ -145,13 +145,17 @@ function makeSourcesIndexRoute(showNew) {
 
 function createNewSource(req, res) {
   var newItem = {
-    title: req.body.title,
+    title: req.body.title.trim(),
     date: {
       year: req.body.date_year,
       month: req.body.date_month,
       day: req.body.date_day,
     },
   };
+
+  if (newItem.title == '') {
+    return;
+  }
 
   mongoose.model('Source').create(newItem, function(err, source) {
     if (err) {
