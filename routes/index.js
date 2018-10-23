@@ -8,17 +8,23 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-// PEOPLE INDEX + NEW PERSON
+// PEOPLE - INDEX + NEW
 
 router.get('/allPeople', getPersonsIndexRoute(false));
 router.get('/allPeople/new', getPersonsIndexRoute(true));
 router.post('/allPeople/new', createNewPerson);
 
-// EVENTS INDEX + NEW EVENT
+// EVENTS - INDEX + NEW
 
 router.get('/allEvents', makeEventsIndexRoute(false));
 router.get('/allEvents/new', makeEventsIndexRoute(true));
 router.post('/allEvents/new', createNewEvent);
+
+// SOURCES - INDEX + NEW
+
+router.get('/sources', makeSourcesIndexRoute(false));
+router.get('/sources/new', makeSourcesIndexRoute(true));
+// router.post('/allSources/new', createNewSource);
 
 //
 
@@ -113,4 +119,26 @@ function createNewEvent(req, res) {
       });
     }
   });
+}
+
+function makeSourcesIndexRoute(showNew) {
+  return function(req, res, next) {
+    mongoose.model('Source')
+    .find({})
+    .populate('people')
+    .exec(function (err, sources) {
+      if (err) {
+        return console.error(err);
+      } else {
+        res.format({
+          html: function() {
+            res.render('sources/index', {
+              sources: sources,
+              showNew: showNew,
+            });
+          }
+        });
+      }
+    });
+  };
 }
