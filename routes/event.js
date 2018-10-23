@@ -2,6 +2,8 @@ var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
 
+var getLocationValues = require('../tools/getLocationValues');
+
 router.get('/:eventId', makeEventShowRoute('none'));
 router.get('/:eventId/editTitle', makeEventShowRoute('title'));
 router.post('/:eventId/editTitle', makeEventPostRoute('title'));
@@ -49,9 +51,7 @@ function makeEventPostRoute(editField) {
           day: req.body.date_day,
         };
       } else if (editField == 'location') {
-        updatedObj[editField] = {
-          country: req.body.location_country,
-        };
+        updatedObj[editField] = getLocationValues(req);
       } else if (editField == 'people') {
         var personId = req.body[editField];
         updatedObj[editField] = event.people;

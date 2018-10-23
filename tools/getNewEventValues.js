@@ -1,4 +1,6 @@
 
+var getLocationValues = require('./getLocationValues');
+
 function getNewEventValues(req) {
   var newEvent = {
     title: req.body.title.trim(),
@@ -7,15 +9,14 @@ function getNewEventValues(req) {
       month: req.body.date_month,
       day: req.body.date_day,
     },
-    location: {
-      country: req.body.location_country,
-    },
     people: [],
   };
 
   if (newEvent.title == '') {
     return null;
   }
+
+  newEvent.location = getLocationValues(req);
 
   return newEvent;
 }
