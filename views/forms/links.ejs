@@ -1,0 +1,45 @@
+<%
+    var numberOfLinks = links.length;
+
+    // editType options: hidden, available, active
+%>
+
+<% for (var i = 0; i < numberOfLinks + 1; i++) { %>
+    <tr>
+        <td>
+            <% if (i == 0) { %>
+                <b>links</b>
+            <% } %>
+        </td>
+        <% if (i < numberOfLinks) { %>
+            <form action="<%= deleteLinkPath %>/<%= i %>" method="POST">
+                <td>
+                    <%- include('../format/externalLink', { url: links[i] }) %>
+                </td>
+                <td>
+                    <% if (editAvailable) { %>
+                        <input type="hidden" value="PUT" name="_method">
+                        <button type="submit">delete</button>
+                    <% } %>
+                </td>
+            </form>
+        <% } else { %>
+            <form action="<%= addLinkPath %>" method="POST">
+                <td>
+                    <% if (editAvailable) { %>
+                        <a href="<%= addLinkPath %>">add</a>
+                    <% } else if (editActive) { %>
+                        <input type="text" value="" name="links">
+                    <% } %>
+                </td>
+                <td>
+                    <% if (editActive) { %>
+                        <input type="hidden" value="PUT" name="_method">
+                        <button type="submit">save</button>
+                        <a href="<%= rootPath %>">cancel</a>
+                    <% } %>
+                </td>
+            </form>
+        <% } %>
+    </tr>
+<% } %>

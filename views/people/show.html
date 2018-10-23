@@ -95,51 +95,15 @@
 
         <!-- LINKS -->
 
-        <%
-            var numberOfLinks = person.links.length;
-            var addLinkPath = rootPath + "/addLink";
-            var deleteLinkPath = rootPath + "/deleteLink";
-        %>
+        <%- include('../forms/links', {
+            links: person.links,
+            rootPath: rootPath,
+            addLinkPath: rootPath + '/addLink',
+            deleteLinkPath: rootPath + '/deleteLink',
+            editActive: editView == 'links',
+            editAvailable: editView == 'none',
+        }) %>
 
-        <% for (var i = 0; i < numberOfLinks + 1; i++) { %>
-            <tr>
-                <td>
-                    <% if (i == 0) { %>
-                        <b>links</b>
-                    <% } %>
-                </td>
-                <% if (i < numberOfLinks) { %>
-                    <form action="<%= deleteLinkPath %>/<%= i %>" method="POST">
-                        <td>
-                            <%- include('../format/externalLink', { url: person.links[i] }) %>
-                        </td>
-                        <td>
-                            <% if (editView == 'none') { %>
-                                <input type="hidden" value="PUT" name="_method">
-                                <button type="submit">delete</button>
-                            <% } %>
-                        </td>
-                    </form>
-                <% } else { %>
-                    <form action="<%= addLinkPath %>" method="POST">
-                        <td>
-                            <% if (editView == 'none') { %>
-                                <a href="<%= addLinkPath %>">add</a>
-                            <% } else if (editView == 'links') { %>
-                                <input type="text" value="" name="links">
-                            <% } %>
-                        </td>
-                        <td>
-                            <% if (editView == 'links') { %>
-                                <input type="hidden" value="PUT" name="_method">
-                                <button type="submit">save</button>
-                                <a href="<%= rootPath %>">cancel</a>
-                            <% } %>
-                        </td>
-                    </form>
-                <% } %>
-            </tr>
-        <% } %>
     </table>
 
     <!-- TREE -->
