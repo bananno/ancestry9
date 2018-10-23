@@ -6,6 +6,7 @@
 
 body {
     background: url("/images/leaves.png");
+    background-position: right -5;
     background-attachment: fixed;
     background-repeat: no-repeat;
 }
