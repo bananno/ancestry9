@@ -1,0 +1,27 @@
+<form method="POST" action="<%= actionPath %>">
+    <table>
+        <tr>
+            <td>
+                <b>title</b>
+            </td>
+            <td>
+                <input type="text" name="title">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>date</b>
+            </td>
+            <td>
+                <%- include('../forms/date', { date: null }) %>
+            </td>
+        </tr>
+    </table>
+    <p>
+        <button type="submit">create</button>
+    </p>
+</form>
+
+<p>
+    <a href="<%= cancelPath %>">cancel</a>
+</p>
