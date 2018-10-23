@@ -9,6 +9,10 @@ router.get('/:sourceId/editDate', makeSourceShowRoute('date'));
 router.post('/:sourceId/editDate', makeSourcePostRoute('date'));
 router.get('/:sourceId/addPerson', makeSourceShowRoute('people'));
 router.post('/:sourceId/addPerson', makeSourcePostRoute('people'));
+router.get('/:sourceId/addLink', makeSourceShowRoute('links'));
+router.post('/:sourceId/addLink', makeSourcePostRoute('links'));
+router.get('/:sourceId/addImage', makeSourceShowRoute('image'));
+router.post('/:sourceId/addImage', makeSourcePostRoute('image'));
 
 module.exports = router;
 
@@ -49,6 +53,12 @@ function makeSourcePostRoute(editField) {
         var personId = req.body[editField];
         updatedObj[editField] = source.people;
         updatedObj[editField].push(personId);
+      } else if (editField == 'links' || editField == 'images') {
+        var newValue = req.body[editField].trim();
+        if (newValue == '') {
+          return;
+        }
+        updatedObj[editField] = (source[editField] || []).concat(newValue);
       } else {
         updatedObj[editField] = req.body[editField];
       }

@@ -116,6 +116,29 @@
             </tr>
         <% } %>
 
+        <!-- LINKS -->
+
+        <%- include('../forms/links', {
+            links: source.links,
+            rootPath: rootPath,
+            addLinkPath: rootPath + '/addLink',
+            deleteLinkPath: rootPath + '/deleteLink',
+            editActive: editField == 'links',
+            editAvailable: editField == 'none',
+        }) %>
+
+        <!-- IMAGES -->
+
+        <%
+            var addImagePath = rootPath + '/addImage';
+        %>
+
+        <tr>
+            <td>
+                <b>Images</b>
+            </td>
+        </tr>
+
         <!--  -->
     </table>
 </div>
