@@ -128,6 +128,17 @@
 
     <%- include('../events/eventList', { events: events, people: people }) %>
 
+    <!-- CITATIONS -->
+
+    <h2> Citations </h2>
+
+    <%- include('../partials/citationList', {
+        citations: citations,
+        showDelete: false,
+        showSource: true,
+        showPerson: false,
+    }) %>
+
     <!--  -->
 
 </div>
