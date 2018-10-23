@@ -1,0 +1,40 @@
+<table border="1">
+    <tr>
+        <% if (showPerson) { %>
+            <th> person </th>
+        <% } %>
+        <th> item </th>
+        <th> information </th>
+        <% if (showSource) { %>
+            <th> source </th>
+        <% } %>
+        <% if (showDelete) { %>
+            <th> delete </th>
+        <% } %>
+    </tr>
+
+    <% for (var i = 0; i < citations.length; i++) { %>
+        <% var citation = citations[i]; %>
+        <tr>
+            <% if (showPerson) { %>
+                <td>
+                    <%- include('../partials/linkToPerson', { person: citation.person }) %>
+                </td>
+            <% } %>
+            <td>
+                <%= citation.item %>
+            </td>
+            <td>
+                <%= citation.information %>
+            </td>
+            <% if (showSource) { %>
+                <td>
+                </td>
+            <% } %>
+            <% if (showDelete) { %>
+                <td>
+                </td>
+            <% } %>
+        </tr>
+    <% } %>
+</table>

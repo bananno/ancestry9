@@ -140,4 +140,60 @@
 
         <!--  -->
     </table>
+
+    <h1>Citations</h1>
+
+    <%
+        var addCitationPath = rootPath + "/addCitation";
+        var deleteCitationPath = rootPath + "/deleteCitation";
+        var editCitationPath = rootPath + "/editCitation";
+    %>
+
+    <% if (editField == 'citations') { %>
+        <form action="<%= addCitationPath %>" method="POST">
+            <table>
+                <tr>
+                    <td>
+                        <b>person</b>
+                    </td>
+                    <td>
+                        <%- include('../forms/personDropdown', {name: 'person', selected: null}) %>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>item</b>
+                    </td>
+                    <td>
+                        <input type="text" name="item" placeholder="e.g., birth - place">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>information</b>
+                    </td>
+                    <td>
+                        <input type="text" name="information" placeholder="e.g., 1880">
+                    </td>
+                </tr>
+            </table>
+            <p>
+                <button type="submit">create</button>
+            </p>
+        </form>
+        <p>
+            <a href="<%= rootPath %>">cancel</a>
+        </p>
+    <% } else if (editField == 'none') { %>
+        <p>
+            <a href="<%= addCitationPath %>">+ Add Citation</a>
+        </p>
+    <% } %>
+
+    <%- include('../partials/citationList', {
+        citations: citations,
+        showDelete: true,
+        showSource: false,
+        showPerson: true,
+    }) %>
 </div>

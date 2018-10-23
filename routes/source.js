@@ -11,6 +11,8 @@ makeSourcesRoutes('Person', 'people', true);
 makeSourcesRoutes('Link', 'links', true);
 makeSourcesRoutes('Image', 'images', true);
 
+makeSourcesRoutes('Citation', 'citations', true);
+
 module.exports = router;
 
 function makeSourcesRoutes(urlName, fieldName, canDelete) {
@@ -30,18 +32,27 @@ function makeSourcesRoutes(urlName, fieldName, canDelete) {
 function makeSourceShowRoute(editField) {
   return function(req, res, next) {
     var sourceId = req.params.sourceId;
-    mongoose.model('Source').findById(sourceId)
+    mongoose.model('Source')
+    .findById(sourceId)
     .populate('people')
     .exec(function(err, source) {
-      mongoose.model('Person').find({}, function(err, people) {
-        res.format({
-          html: function() {
-            res.render('sources/show', {
-              source: source,
-              editField: editField,
-              people: people,
-            });
-          }
+      mongoose.model('Person')
+      .find({})
+      .exec(function(err, people) {
+        mongoose.model('Citation')
+        .find({ source: source })
+        .populate('person')
+        .exec(function(err, citations) {
+          res.format({
+            html: function() {
+              res.render('sources/show', {
+                source: source,
+                editField: editField,
+                people: people,
+                citations: citations,
+              });
+            }
+          });
         });
       });
     });
@@ -70,6 +81,19 @@ function makeSourcePostRoute(editField) {
           return;
         }
         updatedObj[editField] = (source[editField] || []).concat(newValue);
+      } else if (editField == 'citations') {
+        var newItem = {
+          item: req.body.item.trim(),
+          information: req.body.information.trim(),
+          person: req.body.person,
+          source: source,
+        };
+
+        if (newItem.item == '' || newItem.information == '' || newItem.person == '0') {
+          return;
+        }
+
+        mongoose.model('Citation').create(newItem, function() { });
       } else {
         updatedObj[editField] = req.body[editField];
       }
