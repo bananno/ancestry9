@@ -1,0 +1,47 @@
+<%
+    var numberOfImages = images.length;
+
+    // editType options: hidden, available, active
+%>
+
+<% for (var i = 0; i < numberOfImages + 1; i++) { %>
+    <tr>
+        <td>
+            <% if (i == 0) { %>
+                <b>images</b>
+            <% } %>
+        </td>
+        <% if (i < numberOfImages) { %>
+            <form action="<%= deleteImagePath %>/<%= i %>" method="POST">
+                <td>
+                    <a href="<%= images[i] %>" target="_blank">
+                        <img src="<%= images[i] %>" height="100">
+                    </a>
+                </td>
+                <td>
+                    <% if (editAvailable) { %>
+                        <input type="hidden" value="PUT" name="_method">
+                        <button type="submit">delete</button>
+                    <% } %>
+                </td>
+            </form>
+        <% } else { %>
+            <form action="<%= addImagePath %>" method="POST">
+                <td>
+                    <% if (editAvailable) { %>
+                        <a href="<%= addImagePath %>">add</a>
+                    <% } else if (editActive) { %>
+                        <input type="text" value="" name="images">
+                    <% } %>
+                </td>
+                <td>
+                    <% if (editActive) { %>
+                        <input type="hidden" value="PUT" name="_method">
+                        <button type="submit">save</button>
+                        <a href="<%= rootPath %>">cancel</a>
+                    <% } %>
+                </td>
+            </form>
+        <% } %>
+    </tr>
+<% } %>

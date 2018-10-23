@@ -129,15 +129,14 @@
 
         <!-- IMAGES -->
 
-        <%
-            var addImagePath = rootPath + '/addImage';
-        %>
-
-        <tr>
-            <td>
-                <b>Images</b>
-            </td>
-        </tr>
+        <%- include('../forms/images', {
+            images: source.images,
+            rootPath: rootPath,
+            addImagePath: rootPath + '/addImage',
+            deleteImagePath: rootPath + '/deleteImage',
+            editActive: editField == 'images',
+            editAvailable: editField == 'none',
+        }) %>
 
         <!--  -->
     </table>
