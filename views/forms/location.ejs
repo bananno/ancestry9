@@ -5,10 +5,26 @@
         'United States',
     ];
 
-    var selectedCountry = '';
+    var usaStates = [
+        'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+        'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+        'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+        'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+        'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
+    ];
+
+    var selectedCountry = 'United States';
+    var selectedRegion1 = '';
+    var selectedRegion2 = '';
+    var selectedCity = '';
+    var notesValue = '';
 
     if (location != null) {
         selectedCountry = location.country;
+        selectedRegion1 = location.region1;
+        selectedRegion2 = location.region2;
+        selectedCity = location.city;
+        notesValue = location.notes;
     }
 %>
 
@@ -23,3 +39,35 @@
         <% } %>
     <% } %>
 </select>
+
+<br>
+
+<input type="text" name="location_region1" placeholder="region" value="<%= selectedRegion1 %>">
+
+<select name="location_region1_usa">
+    <option value="">state</option>
+    <% for (var i = 0; i < usaStates.length; i++) { %>
+        <% var str = usaStates[i]; %>
+        <% if (str == selectedRegion1) { %>
+            <option value="<%= str %>" selected="selected"><%= str %></option>
+        <% } else { %>
+            <option value="<%= str %>"><%= str %></option>
+        <% } %>
+    <% } %>
+</select>
+
+<br>
+
+<input type="text" name="location_region2" placeholder="county" value="<%= selectedRegion2 %>">
+
+<br>
+
+<input type="text" name="location_city" placeholder="city" value="<%= selectedCity %>">
+
+<br>
+
+<input type="text" name="location_notes" placeholder="notes" value="<%= notesValue %>">
+
+<script>
+    toggleRegionUsState();
+</script>
