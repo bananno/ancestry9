@@ -7,7 +7,7 @@
 %>
 
 <% if (person != null && safety < 50) { %>
-    <table border="1">
+    <table>
         <tr>
             <% for (var p = 0; p < person.parents.length; p++) { %>
                 <% var parent = person.parents[p]; %>
@@ -17,8 +17,10 @@
             <% } %>
         </tr>
         <tr>
-            <td colspan="<%= person.parents.length || 1 %>" align="center">
-                <%- include('../partials/linkToPerson', {person: person}) %>
+            <td colspan="<%= person.parents.length || 1 %>" class="treecell">
+                <div>
+                    <%- include('../partials/linkToPerson', {person: person}) %>
+                </div>
             </td>
         </tr>
     </table>
