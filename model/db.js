@@ -1,2 +1,2 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/ancestry');
+mongoose.connect('mongodb://localhost/ancestry', { useNewUrlParser: true });
