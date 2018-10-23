@@ -163,8 +163,7 @@ function createNewSource(req, res) {
     } else {
       res.format({
         html: function() {
-          // res.redirect('/source/' + source._id);
-          res.redirect('/sources');
+          res.redirect('/source/' + source._id);
         }
       });
     }
