@@ -10,6 +10,10 @@ var eventSchema = new mongoose.Schema({
   people: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
   location: {
     country: String,
+    region1: String, // province or state
+    region2: String, // county
+    city: String,
+    notes: String,
   },
 });
 
