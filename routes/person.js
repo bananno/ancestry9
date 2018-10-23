@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
 var sortEvents = require('../tools/sortEvents');
+var removePersonFromList = require('../tools/removePersonFromList');
 
 convertParamPersonId();
 
@@ -72,7 +73,7 @@ function getPersonShowRoute(editView) {
         .find({ people: person })
         .populate('people')
         .exec(function(err, events) {
-          var people = filterOutPerson(allPeople, person);
+          var people = removePersonFromList(allPeople, person);
 
           var siblings = [];
 
@@ -180,14 +181,14 @@ function getPersonDeleteRoute(editField, corresponding) {
     if (corresponding) {
       var relationship = editField;
 
-      updatedObj[relationship] = filterOutPerson(person[relationship], deleteId);
+      updatedObj[relationship] = removePersonFromList(person[relationship], deleteId);
 
       mongoose.model('Person').findById(deleteId, function(err, relative) {
         if (err) {
         } else {
           var updatedRelative = {};
 
-          updatedRelative[corresponding] = filterOutPerson(relative[corresponding], person.id);
+          updatedRelative[corresponding] = removePersonFromList(relative[corresponding], person.id);
 
           relative.update(updatedRelative, () => {});
         }
@@ -210,15 +211,4 @@ function getPersonDeleteRoute(editField, corresponding) {
        }
     });
   };
-}
-
-function filterOutPerson(people, person) {
-  var removeId = person;
-  if (person._id) {
-    removeId = person._id;
-  }
-  removeId = '' + removeId;
-  return people.filter((thisPerson) => {
-    return ('' + thisPerson._id) != removeId;
-  });
 }
