@@ -122,6 +122,11 @@ function makeSourceDeleteRoute(editField) {
         updatedObj[editField] = source[editField].filter((url, i) => {
           return i != deleteId;
         });
+      } else if (editField == 'citations') {
+        var citationId = req.params.deleteId;
+         mongoose.model('Citation').findById(citationId, function(err, citation) {
+          citation.remove(function() { });
+        });
       }
 
       source.update(updatedObj, function(err) {

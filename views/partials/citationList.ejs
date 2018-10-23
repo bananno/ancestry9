@@ -34,6 +34,10 @@
             <% } %>
             <% if (showDelete) { %>
                 <td>
+                    <form action="<%= rootPath %>/deleteCitation/<%= citation._id %>" method="POST">
+                        <input type="hidden" value="DELETE" name="_method">
+                        <button type="submit">delete</button>
+                    </form>
                 </td>
             <% } %>
         </tr>
