@@ -2,6 +2,7 @@
     <tr>
         <th> Title </th>
         <th> Date </th>
+        <th> Location </th>
         <th> People </th>
         <th> </th>
     </tr>
@@ -16,6 +17,9 @@
             </td>
             <td>
                 <%- include('../format/date', {date: event.date}) %>
+            </td>
+            <td>
+                <%- include('../format/location', { location: event.location }) %>
             </td>
             <td>
                 <ul>

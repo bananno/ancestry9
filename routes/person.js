@@ -146,6 +146,9 @@ function getPersonEditRoute(editField, corresponding) {
           month: req.body.date_month,
           day: req.body.date_day,
         },
+        location: {
+          country: req.body.location_country,
+        },
         people: [person],
       };
       mongoose.model('Event').create(newEvent, function() {});

@@ -1,0 +1,25 @@
+<%
+    var countryNames = [
+        'Denmark',
+        'Sweden',
+        'United States',
+    ];
+
+    var selectedCountry = '';
+
+    if (location != null) {
+        selectedCountry = location.country;
+    }
+%>
+
+<select name="location_country">
+    <option value="">country</option>
+    <% for (var i = 0; i < countryNames.length; i++) { %>
+        <% var str = countryNames[i]; %>
+        <% if (str == selectedCountry) { %>
+            <option value="<%= str %>" selected="selected"><%= str %></option>
+        <% } else { %>
+            <option value="<%= str %>"><%= str %></option>
+        <% } %>
+    <% } %>
+</select>
