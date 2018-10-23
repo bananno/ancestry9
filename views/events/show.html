@@ -15,7 +15,7 @@
 
         <tr>
             <td>
-                <b>Title</b>
+                <b>title</b>
             </td>
             <form action="<%= editTitlePath %>" method="POST">
                 <td>
@@ -45,7 +45,7 @@
 
         <tr>
             <td>
-                <b>Date</b>
+                <b>date</b>
             </td>
             <form action="<%= editDatePath %>" method="POST">
                 <td>
@@ -109,7 +109,7 @@
             <tr>
                 <td>
                     <% if (p == 0) { %>
-                        <b>People</b>
+                        <b>people</b>
                     <% } %>
                 </td>
                 <% if (p < numberOfPeople) { %>
@@ -148,4 +148,13 @@
 
         <!--  -->
     </table>
+
+    <% if (editField == 'none') { %>
+        <form action="<%= rootPath %>/delete" method="POST" onsubmit="return confirmDeletion('event')">
+            <p>
+                <input type="hidden" value="PUT" name="_method">
+                <button type="submit">delete event</button>
+            </p>
+        </form>
+    <% } %>
 </div>

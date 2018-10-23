@@ -34,3 +34,7 @@ function toggleRegionUsState() {
   toggle();
   $country.change(toggle);
 }
+
+function confirmDeletion(itemType) {
+  return confirm('Delete this ' + itemType + '?');
+}

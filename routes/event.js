@@ -5,6 +5,7 @@ var router = express.Router();
 var getLocationValues = require('../tools/getLocationValues');
 
 router.get('/:eventId', makeEventShowRoute('none'));
+router.post('/:eventId/delete', deleteEvent);
 router.get('/:eventId/editTitle', makeEventShowRoute('title'));
 router.post('/:eventId/editTitle', makeEventPostRoute('title'));
 router.get('/:eventId/editDate', makeEventShowRoute('date'));
@@ -69,4 +70,17 @@ function makeEventPostRoute(editField) {
       });
     });
   };
+}
+
+function deleteEvent(req, res) {
+  var eventId = req.params.eventId;
+  mongoose.model('Event').findById(eventId, function(err, event) {
+    event.remove(function(err) {
+      res.format({
+        html: function() {
+          res.redirect('/allEvents');
+        }
+      });
+    });
+  });
 }
