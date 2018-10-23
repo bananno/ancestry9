@@ -9,6 +9,8 @@ router.get('/:eventId/editDate', makeEventShowRoute('date'));
 router.post('/:eventId/editDate', makeEventPostRoute('date'));
 router.get('/:eventId/addPerson', makeEventShowRoute('people'));
 router.post('/:eventId/addPerson', makeEventPostRoute('people'));
+router.get('/:eventId/editLocation', makeEventShowRoute('location'));
+router.post('/:eventId/editLocation', makeEventPostRoute('location'));
 
 module.exports = router;
 
@@ -45,6 +47,10 @@ function makeEventPostRoute(editField) {
           year: req.body.date_year,
           month: req.body.date_month,
           day: req.body.date_day,
+        };
+      } else if (editField == 'location') {
+        updatedObj[editField] = {
+          country: req.body.location_country,
         };
       } else if (editField == 'people') {
         var personId = req.body[editField];
