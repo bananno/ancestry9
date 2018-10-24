@@ -10,6 +10,9 @@ var getNewEventValues = require('../tools/getNewEventValues');
 convertParamPersonId();
 
 router.get('/:personId', makeRouteGet('none'));
+router.get('/:personId/addEvent', makeRouteGet('events'));
+router.post('/:personId/addEvent', makeRouteEditPost('events'));
+
 router.get('/:personId/edit', makeRouteEditGet('none'));
 
 createPersonRoutes('name');
@@ -19,8 +22,6 @@ createPersonRoutes('links', true);
 createPersonRoutes('parents', true, 'children');
 createPersonRoutes('spouses', true, 'spouses');
 createPersonRoutes('children', true, 'parents');
-
-createPersonRoutes('event');
 
 module.exports = router;
 
@@ -114,7 +115,7 @@ function makeRouteGet(editView) {
                   people: people,
                   siblings: siblings,
                   events: events,
-                  editView: 'none',
+                  editView: editView,
                   citations: citations,
                 });
               }
