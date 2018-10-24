@@ -1,9 +1,9 @@
 
 function sortSources(sourceList, sortBy, endPoint) {
   var madeChange = false;
-  endPoint = endPoint != null ? endPoint : sourceList.length - 1;
+  var endPoint = endPoint || sourceList.length;
 
-  for (var i = 0; i < endPoint; i++) {
+  for (var i = 0; i < endPoint - 1; i++) {
     var source1 = sourceList[i];
     var source2 = sourceList[i + 1];
 
