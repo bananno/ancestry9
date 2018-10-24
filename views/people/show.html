@@ -8,115 +8,40 @@
         <a href="<%= rootPath %>/edit" class="main-link">edit person</a>
     </p>
 
-    <table border="1">
+    <% if (person.parents.length) { %>
+        <h3>parents</h3>
+        <%- include('../partials/peopleList', { people: person.parents }) %>
+    <% } %>
 
-        <!-- NAME -->
+    <% if (siblings.length) { %>
+        <h3>siblings</h3>
+        <%- include('../partials/peopleList', { people: siblings }) %>
+    <% } %>
 
-        <% var editNamePath = rootPath + "/editName"; %>
+    <% if (person.spouses.length) { %>
+        <h3>spouses</h3>
+        <%- include('../partials/peopleList', { people: person.spouses }) %>
+    <% } %>
 
-        <tr>
-            <td>
-                <b>name</b>
-            </td>
-            <form action="<%= editNamePath %>" method="POST">
-                <td>
-                    <% if (editView == 'name') { %>
-                        <input type="text" value="<%= person.name %>" name="name">
-                    <% } else { %>
-                        <%= person.name %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editView == 'name') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editView == 'none') { %>
-                        <a href="<%= editNamePath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
+    <% if (person.children.length) { %>
+        <h3>children</h3>
+        <%- include('../partials/peopleList', { people: person.children }) %>
+    <% } %>
 
-        <!-- ID -->
-
-        <% var editIdPath = rootPath + "/editId"; %>
-
-        <tr>
-            <td>
-                <b>id</b>
-            </td>
-            <form action="<%= editIdPath %>" method="POST">
-                <td>
-                    <% if (editView == 'customId') { %>
-                        <input type="text" value="<%= person.customId %>" name="customId">
-                    <% } else { %>
-                        <%= person.customId %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editView == 'customId') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editView == 'none') { %>
-                        <a href="<%= editIdPath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
-
-        <!-- PARENTS -->
-
-        <%- include('../forms/personRelatives', { relationshipType: 'Parent', relationship: 'parents' }) %>
-
-        <!-- SIBLINGS -->
-
-        <% for (var p = 0; p < (siblings.length || 1); p++) { %>
-            <tr>
-                <td>
-                    <% if (p == 0) { %>
-                        <b>siblings</b>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (p < siblings.length) { %>
-                        <%- include('../partials/linkToPerson', {person: siblings[p]}) %>
-                    <% } %>
-                </td>
-                <td>
-                </td>
-            </tr>
-        <% } %>
-
-        <!-- SPOUSES -->
-
-        <%- include('../forms/personRelatives', {relationshipType: 'Spouse', relationship: 'spouses' }) %>
-
-        <!-- CHILDREN -->
-
-        <%- include('../forms/personRelatives', {relationshipType: 'Child', relationship: 'children' }) %>
-
-        <!-- LINKS -->
-
-        <%- include('../forms/links', {
-            links: person.links,
-            rootPath: rootPath,
-            addLinkPath: rootPath + '/addLink',
-            deleteLinkPath: rootPath + '/deleteLink',
-            editActive: editView == 'links',
-            editAvailable: editView == 'none',
-        }) %>
-
-    </table>
-
-    <!-- TREE -->
+    <% if (person.links.length) { %>
+        <h3>links</h3>
+        <ul>
+            <% for (var i = 0; i < person.links.length; i++) { %>
+                <li>
+                    <%- include('../format/externalLink', { url: person.links[i] }) %>
+                </li>
+            <% } %>
+        </ul>
+    <% } %>
 
     <h2> Tree </h2>
 
     <%- include('../partials/personTree', { person: person, people: people, safety: 0 }) %>
-
-    <!-- TIMELINE -->
 
     <% var addEventPath = rootPath + "/addEvent"; %>
 
@@ -132,8 +57,6 @@
 
     <%- include('../events/eventList', { events: events, people: people }) %>
 
-    <!-- CITATIONS -->
-
     <h2> Citations </h2>
 
     <%- include('../partials/citationList', {
@@ -143,7 +66,5 @@
         showPerson: false,
         groupBy: 'item',
     }) %>
-
-    <!--  -->
 
 </div>
