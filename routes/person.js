@@ -10,33 +10,35 @@ var getNewEventValues = require('../tools/getNewEventValues');
 convertParamPersonId();
 
 router.get('/:personId', makeRouteGet('none'));
+
 router.get('/:personId/addEvent', makeRouteGet('events'));
 router.post('/:personId/addEvent', makeRouteEditPost('events'));
 
 router.get('/:personId/edit', makeRouteEditGet('none'));
 
-createPersonRoutes('name');
-createPersonRoutes('customId');
-createPersonRoutes('links', true);
+router.get('/:personId/edit/name', makeRouteEditGet('name'));
+router.post('/:personId/edit/name', makeRouteEditPost('name'));
 
-createPersonRoutes('parents', true, 'children');
-createPersonRoutes('spouses', true, 'spouses');
-createPersonRoutes('children', true, 'parents');
+router.get('/:personId/edit/id', makeRouteEditGet('customId'));
+router.post('/:personId/edit/id', makeRouteEditPost('customId'));
+
+router.get('/:personId/edit/links', makeRouteEditGet('links'));
+router.post('/:personId/edit/links', makeRouteEditPost('links'));
+router.post('/:personId/delete/links/:deleteId', makeRouteDelete('links'));
+
+createRelationshipRoutes('parents', 'children');
+createRelationshipRoutes('spouses', 'spouses');
+createRelationshipRoutes('children', 'parents');
 
 module.exports = router;
 
-function createPersonRoutes(fieldName, urlName, canDelete, corresponding) {
-  var urlName = fieldName == 'customId' ? 'id' : fieldName;
+function createRelationshipRoutes(relationship, corresponding) {
+  var showEditPath = '/:personId/edit/' + relationship;
+  var deletePath = '/:personId/delete/' + relationship + '/:deleteId';
 
-  var showOrEditRoute = '/:personId/edit/' + urlName;
-  var deleteRoute = '/:personId/delete/' + urlName + '/:deleteId';
-
-  router.get(showOrEditRoute, makeRouteEditGet(fieldName));
-  router.post(showOrEditRoute, makeRouteEditPost(fieldName, corresponding));
-
-  if (canDelete) {
-    router.post(deleteRoute, makeRouteDelete(fieldName, corresponding));
-  }
+  router.get(showEditPath, makeRouteEditGet(relationship));
+  router.post(showEditPath, makeRouteEditPost(relationship, corresponding));
+  router.post(deletePath, makeRouteDelete(relationship, corresponding));
 }
 
 function convertParamPersonId() {
