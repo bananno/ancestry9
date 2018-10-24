@@ -122,3 +122,14 @@ h1, h2, h3 {
     max-width: 700px;
     margin: 10px;
 }
+
+.source-item-box {
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 10px;
+}
+
+.source-item-box p {
+    padding: 5px;
+}

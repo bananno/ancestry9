@@ -4,6 +4,7 @@ var router = express.Router();
 
 var sortEvents = require('../tools/sortEvents');
 var sortCitations = require('../tools/sortCitations');
+var sortSources = require('../tools/sortSources');
 var removePersonFromList = require('../tools/removePersonFromList');
 var getNewEventValues = require('../tools/getNewEventValues');
 
@@ -259,59 +260,21 @@ function makeRouteDelete(editField, corresponding) {
 }
 
 function personSources(req, res, ntext) {
-  mongoose.model('Person').findById(req.personId)
-  .populate('parents')
-  .populate('spouses')
-  .populate('children')
+  mongoose.model('Person')
+  .findById(req.personId)
   .exec(function(err, person) {
-    mongoose.model('Person')
-    .find({})
-    .exec(function(err, allPeople) {
-      mongoose.model('Event')
-      .find({ people: person })
-      .populate('people')
-      .exec(function(err, events) {
-        mongoose.model('Citation')
-        .find({ person: person })
-        .populate('source')
-        .exec(function(err, citations) {
-
-          var people = removePersonFromList(allPeople, person);
-
-          var siblings = [];
-
-          if (person.parents.length > 0) {
-            siblings = people.filter(function(thisPerson) {
-              for (var i = 0; i < thisPerson.parents.length; i++) {
-                var thisParent1 = thisPerson.parents[i];
-                for (var j = 0; j < person.parents.length; j++) {
-                  var thisParent2 = person.parents[j];
-                  if (thisParent1 == thisParent2.id) {
-                    return true;
-                  }
-                }
-              }
-              return false;
-            });
-          }
-
-          events = sortEvents(events);
-          citations = sortCitations(citations, 'item');
-
-          res.format({
-            html: function() {
-              res.render('people/sources', {
-                personId: req.personId,
-                person: person,
-                people: people,
-                siblings: siblings,
-                events: events,
-                editView: 'none',
-                citations: citations,
-              });
-            }
+    mongoose.model('Source')
+    .find({ people: person })
+    .exec(function(err, sources) {
+      res.format({
+        html: function() {
+          sources = sortSources(sources, 'group');
+          res.render('people/sources', {
+            personId: req.personId,
+            person: person,
+            sources: sources,
           });
-        });
+        }
       });
     });
   });
