@@ -23,20 +23,15 @@ function sortSources(sourceList, sortBy, endPoint) {
 
 function sourcesShouldSwap(source1, source2, sortBy) {
   if (sortBy == 'group') {
-    return compareGroup(source1.group, source2.group);
+    return compareGroup(source1.type, source1.group, source2.type, source2.group);
   }
 }
 
-function compareGroup(group1, group2) {
-  if (group1 == null || group1 == '') {
-    return false;
-  }
+function compareGroup(type1, group1, type2, group2) {
+  var sort1 = ((type1 || '') + ' ' + (group1 || '')).toLowerCase();
+  var sort2 = ((type2 || '') + ' ' + (type2 || '')).toLowerCase();
 
-  if (group2 == null || group2 == '') {
-    return true;
-  }
-
-  return group1.toLowerCase() > group2.toLowerCase();
+  return sort1 > sort2;
 }
 
 module.exports = sortSources;
