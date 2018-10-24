@@ -12,19 +12,21 @@ convertParamPersonId();
 router.get('/:personId', showPerson);
 router.get('/:personId/edit', getPersonShowRoute('none'));
 
-createPersonRoutes('name', 'name');
-createPersonRoutes('id', 'customId');
-createPersonRoutes('links', 'links', true);
+createPersonRoutes('name');
+createPersonRoutes('customId');
+createPersonRoutes('links', true);
 
-createPersonRoutes('parents', 'parents', true, 'children');
-createPersonRoutes('spouses', 'spouses', true, 'spouses');
-createPersonRoutes('children', 'children', true, 'parents');
+createPersonRoutes('parents', true, 'children');
+createPersonRoutes('spouses', true, 'spouses');
+createPersonRoutes('children', true, 'parents');
 
-createPersonRoutes('event', 'events');
+createPersonRoutes('event');
 
 module.exports = router;
 
-function createPersonRoutes(urlName, fieldName, canDelete, corresponding) {
+function createPersonRoutes(fieldName, urlName, canDelete, corresponding) {
+  var urlName = fieldName == 'customId' ? 'id' : fieldName;
+
   var showOrEditRoute = '/:personId/edit/' + urlName;
   var deleteRoute = '/:personId/delete/' + urlName + '/:deleteId';
 
