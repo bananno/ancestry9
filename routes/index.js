@@ -146,6 +146,8 @@ function makeSourcesIndexRoute(showNew) {
 
 function createNewSource(req, res) {
   var newItem = {
+    type: req.body.type.trim(),
+    group: req.body.group.trim(),
     title: req.body.title.trim(),
     date: {
       year: req.body.date_year,

@@ -7,65 +7,39 @@
 
     <table border="1">
 
-        <!-- GROUP -->
+        <!-- TYPE, GROUP, TITLE -->
 
-        <%
-            var editGroupPath = rootPath + '/edit/group';
-        %>
+        <% var stringAttributes = ['type', 'group', 'title']; %>
 
-        <tr>
-            <td>
-                <b>group</b>
-            </td>
-            <form action="<%= editGroupPath %>" method="POST">
+        <% stringAttributes.forEach((attr) => { %>
+            <%
+                var editAttrPath = rootPath + '/edit/' + attr;
+                var currentValue = source[attr];
+            %>
+            <tr>
                 <td>
-                    <% if (editField == 'group') { %>
-                        <input type="text" value="<%= source.group %>" name="group">
-                    <% } else { %>
-                        <%= source.group %>
-                    <% } %>
+                    <b><%= attr %></b>
                 </td>
-                <td>
-                    <% if (editField == 'group') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editField == 'none') { %>
-                        <a href="<%= editGroupPath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
-
-        <!-- TITLE -->
-
-        <%
-            var editTitlePath = rootPath + '/editTitle';
-        %>
-
-        <tr>
-            <td>
-                <b>title</b>
-            </td>
-            <form action="<%= editTitlePath %>" method="POST">
-                <td>
-                    <% if (editField == 'title') { %>
-                        <input type="text" value="<%= source.title %>" name="title">
-                    <% } else { %>
-                        <%= source.title %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editField == 'title') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editField == 'none') { %>
-                        <a href="<%= editTitlePath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
+                <form action="<%= editAttrPath %>" method="POST">
+                    <td>
+                        <% if (editField == attr) { %>
+                            <input type="text" value="<%= currentValue %>" name="<%= attr %>">
+                        <% } else { %>
+                            <%= currentValue %>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (editField == attr) { %>
+                            <input type="hidden" value="PUT" name="_method">
+                            <button type="submit">save</button>
+                            <a href="<%= rootPath %>">cancel</a>
+                        <% } else if (editField == 'none') { %>
+                            <a href="<%= editAttrPath %>">edit</a>
+                        <% } %>
+                    </td>
+                </form>
+            </tr>
+        <% }); %>
 
         <!-- DATE -->
 
