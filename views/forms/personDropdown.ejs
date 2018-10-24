@@ -1,11 +1,25 @@
+<%
+    var selectedId = null;
+
+    if (selected != null) {
+        selectedId = '' + (selected._id || selected);
+    }
+%>
+
 <select name="<%= name %>">
-    <option value="0" selected="selected">
+    <option value="0">
         -- Select --
     </option>
     <% for (var personIndex = 0; personIndex < people.length; personIndex++) { %>
         <% let thisPerson = people[personIndex]; %>
-        <option value="<%= thisPerson.id %>">
-            <%= thisPerson.name %>
-        </option>
+        <% if (selectedId == '' + thisPerson._id) { %>
+            <option value="<%= thisPerson.id %>" selected="selected">
+                <%= thisPerson.name %>
+            </option>
+        <% } else { %>
+            <option value="<%= thisPerson.id %>">
+                <%= thisPerson.name %>
+            </option>
+        <% } %>
     <% } %>
 </select>

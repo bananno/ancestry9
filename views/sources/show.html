@@ -177,6 +177,12 @@
         var addCitationPath = rootPath + "/addCitation";
         var deleteCitationPath = rootPath + "/deleteCitation";
         var editCitationPath = rootPath + "/editCitation";
+
+        var defaultPerson = null;
+
+        if (source.people.length == 1) {
+            defaultPerson = source.people[0];
+        }
     %>
 
     <% if (editField == 'citations') { %>
@@ -187,7 +193,10 @@
                         <b>person</b>
                     </td>
                     <td>
-                        <%- include('../forms/personDropdown', {name: 'person', selected: null}) %>
+                        <%- include('../forms/personDropdown', {
+                            name: 'person',
+                            selected: defaultPerson
+                        }) %>
                     </td>
                 </tr>
                 <tr>
