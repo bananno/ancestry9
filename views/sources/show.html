@@ -7,6 +7,36 @@
 
     <table border="1">
 
+        <!-- GROUP -->
+
+        <%
+            var editGroupPath = rootPath + '/edit/group';
+        %>
+
+        <tr>
+            <td>
+                <b>group</b>
+            </td>
+            <form action="<%= editGroupPath %>" method="POST">
+                <td>
+                    <% if (editField == 'group') { %>
+                        <input type="text" value="<%= source.group %>" name="group">
+                    <% } else { %>
+                        <%= source.group %>
+                    <% } %>
+                </td>
+                <td>
+                    <% if (editField == 'group') { %>
+                        <input type="hidden" value="PUT" name="_method">
+                        <button type="submit">save</button>
+                        <a href="<%= rootPath %>">cancel</a>
+                    <% } else if (editField == 'none') { %>
+                        <a href="<%= editGroupPath %>">edit</a>
+                    <% } %>
+                </td>
+            </form>
+        </tr>
+
         <!-- TITLE -->
 
         <%
@@ -15,7 +45,7 @@
 
         <tr>
             <td>
-                <b>Title</b>
+                <b>title</b>
             </td>
             <form action="<%= editTitlePath %>" method="POST">
                 <td>

@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 var sourceSchema = new mongoose.Schema({
+  group: String,
   title: String,
   date: {
     year: { type: Number, default: 0},

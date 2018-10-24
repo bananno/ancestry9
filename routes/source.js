@@ -5,6 +5,7 @@ var removePersonFromList = require('../tools/removePersonFromList');
 
 router.get('/:sourceId', makeSourceShowRoute('none'));
 
+makeSourcesRoutes('/group', 'group');
 makeSourcesRoutes('Title', 'title');
 makeSourcesRoutes('Date', 'date');
 makeSourcesRoutes('Person', 'people', true);

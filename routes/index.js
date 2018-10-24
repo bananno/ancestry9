@@ -1,7 +1,9 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
+
 var getNewEventValues = require('../tools/getNewEventValues');
+var sortSources = require('../tools/sortSources');
 
 // HOME
 
@@ -128,6 +130,7 @@ function makeSourcesIndexRoute(showNew) {
       if (err) {
         return console.error(err);
       } else {
+        sources = sortSources(sources, 'group');
         res.format({
           html: function() {
             res.render('sources/index', {

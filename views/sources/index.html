@@ -18,6 +18,7 @@
 
     <table border="1">
         <tr>
+            <th>group</th>
             <th>title</th>
             <th>date</th>
             <th>people</th>
@@ -29,7 +30,13 @@
             <% var source = sources[i]; %>
             <tr>
                 <td>
-                    <%- include('../partials/linkToSource', {source: source}) %>
+                    <%= source.group %>
+                </td>
+                <td>
+                    <%- include('../partials/linkToSource', {
+                        source: source,
+                        showGroup: false,
+                    }) %>
                 </td>
                 <td>
                     <%- include('../format/date', {date: source.date}) %>

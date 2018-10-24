@@ -62,7 +62,10 @@
             </td>
             <% if (showSource) { %>
                 <td class="citation_cell">
-                    <%- include('../partials/linkToSource', { source: citation.source }) %>
+                    <%- include('../partials/linkToSource', {
+                        source: citation.source,
+                        showGroup: true,
+                    }) %>
                 </td>
             <% } %>
             <% if (showDelete) { %>

@@ -117,3 +117,8 @@ h1, h2, h3 {
 .event_list ul {
     list-style: none;
 }
+
+.text-content {
+    max-width: 700px;
+    margin: 10px;
+}
