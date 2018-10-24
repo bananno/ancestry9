@@ -71,25 +71,6 @@
 
         <%- include('../forms/personRelatives', { relationshipType: 'Parent', relationship: 'parents' }) %>
 
-        <!-- SIBLINGS -->
-
-        <% for (var p = 0; p < (siblings.length || 1); p++) { %>
-            <tr>
-                <td>
-                    <% if (p == 0) { %>
-                        <b>siblings</b>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (p < siblings.length) { %>
-                        <%- include('../partials/linkToPerson', {person: siblings[p]}) %>
-                    <% } %>
-                </td>
-                <td>
-                </td>
-            </tr>
-        <% } %>
-
         <!-- SPOUSES -->
 
         <%- include('../forms/personRelatives', {relationshipType: 'Spouse', relationship: 'spouses' }) %>
@@ -110,41 +91,5 @@
         }) %>
 
     </table>
-
-    <!-- TREE -->
-
-    <h2> Tree </h2>
-
-    <%- include('../partials/personTree', { person: person, people: people, safety: 0 }) %>
-
-    <!-- TIMELINE -->
-
-    <% var addEventPath = rootPath + "/addEvent"; %>
-
-    <h2> Timeline </h2>
-
-    <% if (editView == 'events') { %>
-        <%- include('../forms/newEvent', { actionPath: addEventPath, cancelPath: rootPath }) %>
-    <% } else if (editView == 'none') { %>
-        <p>
-            <a href="<%= addEventPath %>">+ Create Event</a>
-        </p>
-    <% } %>
-
-    <%- include('../events/eventList', { events: events, people: people }) %>
-
-    <!-- CITATIONS -->
-
-    <h2> Citations </h2>
-
-    <%- include('../partials/citationList', {
-        citations: citations,
-        showDelete: false,
-        showSource: true,
-        showPerson: false,
-        groupBy: 'item',
-    }) %>
-
-    <!--  -->
 
 </div>
