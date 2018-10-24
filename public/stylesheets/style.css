@@ -108,3 +108,12 @@ h1, h2, h3 {
     color: transparent;
     border-color: red;
 }
+
+.event_list th, .event_list td {
+    padding: 5px 10px;
+    border: 1px solid black;
+}
+
+.event_list ul {
+    list-style: none;
+}
