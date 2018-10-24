@@ -44,6 +44,12 @@ function makeSourceShowRoute(editField) {
         .find({ source: source })
         .populate('person')
         .exec(function(err, citations) {
+          source.people.forEach((thisPerson) => {
+            people = removePersonFromList(people, thisPerson);
+          });
+
+          people = [].concat(source.people).concat(people);
+
           res.format({
             html: function() {
               res.render('sources/show', {
