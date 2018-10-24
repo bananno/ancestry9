@@ -227,14 +227,14 @@ function getPersonEditRoute(editField, corresponding) {
         var redirectUrl;
 
         if (editField == 'customId') {
-          redirectUrl = '/person/' + newValue;
+          redirectUrl = newValue;
         } else {
-          redirectUrl = '/person/' + (person.customId || person._id);
+          redirectUrl = (person.customId || person._id);
         }
 
         res.format({
           html: function() {
-            res.redirect(redirectUrl);
+            res.redirect('/person/' + redirectUrl + '/edit');
           }
         });
        }

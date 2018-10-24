@@ -1,5 +1,6 @@
 <%- include ../partials/header %>
 <% var rootPath = "/person/" + (person.customId || person._id); %>
+<% var rootEditPath = rootPath + "/edit" %>
 
 <div id="content">
     <h1><%= person.name %>: Edit</h1>
@@ -30,7 +31,7 @@
                     <% if (editView == 'name') { %>
                         <input type="hidden" value="PUT" name="_method">
                         <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
+                        <a href="<%= rootEditPath %>">cancel</a>
                     <% } else if (editView == 'none') { %>
                         <a href="<%= editNamePath %>">edit</a>
                     <% } %>
@@ -58,7 +59,7 @@
                     <% if (editView == 'customId') { %>
                         <input type="hidden" value="PUT" name="_method">
                         <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
+                        <a href="<%= rootEditPath %>">cancel</a>
                     <% } else if (editView == 'none') { %>
                         <a href="<%= editIdPath %>">edit</a>
                     <% } %>
@@ -101,7 +102,7 @@
 
         <%- include('../forms/links', {
             links: person.links,
-            rootPath: rootPath,
+            rootPath: rootEditPath,
             addLinkPath: rootPath + '/addLink',
             deleteLinkPath: rootPath + '/deleteLink',
             editActive: editView == 'links',
