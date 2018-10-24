@@ -13,7 +13,7 @@
 
         <!-- NAME -->
 
-        <% var editNamePath = rootPath + "/editName"; %>
+        <% var editNamePath = rootEditPath + "/name"; %>
 
         <tr>
             <td>
@@ -41,7 +41,7 @@
 
         <!-- ID -->
 
-        <% var editIdPath = rootPath + "/editId"; %>
+        <% var editIdPath = rootEditPath + "/id"; %>
 
         <tr>
             <td>
@@ -84,8 +84,8 @@
         <%- include('../forms/links', {
             links: person.links,
             rootPath: rootEditPath,
-            addLinkPath: rootPath + '/addLink',
-            deleteLinkPath: rootPath + '/deleteLink',
+            addLinkPath: rootPath + '/edit/links',
+            deleteLinkPath: rootPath + '/delete/links',
             editActive: editView == 'links',
             editAvailable: editView == 'none',
         }) %>

@@ -12,21 +12,21 @@ convertParamPersonId();
 router.get('/:personId', showPerson);
 router.get('/:personId/edit', getPersonShowRoute('none'));
 
-createPersonRoutes('Name', 'name', 'edit');
-createPersonRoutes('Id', 'customId', 'edit');
-createPersonRoutes('Link', 'links', 'add', true);
+createPersonRoutes('name', 'name');
+createPersonRoutes('id', 'customId');
+createPersonRoutes('links', 'links', true);
 
-createPersonRoutes('Parent', 'parents', 'add', true, 'children');
-createPersonRoutes('Spouse', 'spouses', 'add', true, 'spouses');
-createPersonRoutes('Child', 'children', 'add', true, 'parents');
+createPersonRoutes('parents', 'parents', true, 'children');
+createPersonRoutes('spouses', 'spouses', true, 'spouses');
+createPersonRoutes('children', 'children', true, 'parents');
 
-createPersonRoutes('Event', 'events', 'add');
+createPersonRoutes('event', 'events');
 
 module.exports = router;
 
-function createPersonRoutes(urlName, fieldName, actionName, canDelete, corresponding) {
-  var showOrEditRoute = '/:personId/' + actionName + urlName;
-  var deleteRoute = '/:personId/delete' + urlName + '/:deleteId';
+function createPersonRoutes(urlName, fieldName, canDelete, corresponding) {
+  var showOrEditRoute = '/:personId/edit/' + urlName;
+  var deleteRoute = '/:personId/delete/' + urlName + '/:deleteId';
 
   router.get(showOrEditRoute, getPersonShowRoute(fieldName));
   router.post(showOrEditRoute, getPersonEditRoute(fieldName, corresponding));
@@ -275,7 +275,7 @@ function getPersonDeleteRoute(editField, corresponding) {
       } else {
         res.format({
           html: function() {
-            res.redirect('/person/' + (person.customId || person._id));
+            res.redirect('/person/' + (person.customId || person._id) + '/edit');
           }
         });
        }

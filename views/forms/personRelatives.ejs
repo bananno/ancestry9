@@ -12,8 +12,8 @@
         extraRows = 1;
     }
 
-    var addRelativePath = rootPath + '/add' + relationshipType;
-    var deleteRelativePath = rootPath + '/delete' + relationshipType;
+    var addRelativePath = rootPath + '/edit/' + relationship;
+    var deleteRelativePath = rootPath + '/delete/' + relationship;
 %>
 
 <% for (var p = 0; p < numberOfRelatives + extraRows; p++) { %>
