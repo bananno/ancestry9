@@ -10,6 +10,7 @@ var getNewEventValues = require('../tools/getNewEventValues');
 convertParamPersonId();
 
 router.get('/:personId', getPersonShowRoute('none'));
+router.get('/:personId/edit', getPersonShowRoute('none'));
 
 createPersonRoutes('Name', 'name', 'edit');
 createPersonRoutes('Id', 'customId', 'edit');
@@ -105,7 +106,7 @@ function getPersonShowRoute(editView) {
 
             res.format({
               html: function() {
-                res.render('people/show', {
+                res.render('people/edit', {
                   personId: req.personId,
                   person: person,
                   people: people,
