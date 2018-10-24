@@ -192,17 +192,21 @@ function makeRouteEditPost(editField, corresponding) {
       if (err) {
         res.send('There was a problem updating the information to the database: ' + err);
       } else {
-        var redirectUrl;
+        var redirectUrl = '/person/';
 
         if (editField == 'customId') {
-          redirectUrl = newValue;
+          redirectUrl += newValue;
         } else {
-          redirectUrl = (person.customId || person._id);
+          redirectUrl += (person.customId || person._id);
+        }
+
+        if (editField != 'events') {
+          redirectUrl += '/edit';
         }
 
         res.format({
           html: function() {
-            res.redirect('/person/' + redirectUrl + '/edit');
+            res.redirect(redirectUrl);
           }
         });
        }
