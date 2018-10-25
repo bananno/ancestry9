@@ -55,39 +55,6 @@ h1, h2, h3 {
     padding: 15px;
 }
 
-.treecell div {
-    border: 1px solid black;
-    padding: 5px;
-    margin: 2px;
-    text-align: center;
-}
-
-.treecell.unknown div {
-    background-color: #efefef;
-}
-
-.treecell.first-generation div {
-    background-color: #bce6ff;
-    border-width: 2px;
-}
-
-.treecell.old-country div {
-    background-color: #dbf1ff;
-}
-
-.treecell.dead-end div {
-    background-color: #ffc9c9;
-    border-width: 2px;
-}
-
-.treecell.usa {
-    background-color: white;
-}
-
-.treecell a {
-    text-decoration: none;
-}
-
 .list_of_items {
     list-style: none;
 }
