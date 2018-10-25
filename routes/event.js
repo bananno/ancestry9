@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
 
+var getDateValues = require('../tools/getDateValues');
 var getLocationValues = require('../tools/getLocationValues');
 
 router.get('/:eventId', makeEventShowRoute('none'));
@@ -48,11 +49,7 @@ function makeEventPostRoute(editField) {
       var updatedObj = {};
 
       if (editField == 'date') {
-        updatedObj[editField] = {
-          year: req.body.date_year,
-          month: req.body.date_month,
-          day: req.body.date_day,
-        };
+        updatedObj[editField] = getDateValues(req);
       } else if (editField == 'location') {
         updatedObj[editField] = getLocationValues(req);
       } else if (editField == 'people') {

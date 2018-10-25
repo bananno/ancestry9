@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
 
+var getDateValues = require('../tools/getDateValues');
 var getNewEventValues = require('../tools/getNewEventValues');
 var sortSources = require('../tools/sortSources');
 
@@ -149,12 +150,9 @@ function createNewSource(req, res) {
     type: req.body.type.trim(),
     group: req.body.group.trim(),
     title: req.body.title.trim(),
-    date: {
-      year: req.body.date_year,
-      month: req.body.date_month,
-      day: req.body.date_day,
-    },
   };
+
+  newItem.date = getDateValues(req);
 
   if (newItem.title == '') {
     return;

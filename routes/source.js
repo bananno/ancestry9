@@ -1,6 +1,8 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
+
+var getDateValues = require('../tools/getDateValues');
 var removePersonFromList = require('../tools/removePersonFromList');
 
 router.get('/:sourceId', makeSourceShowRoute('none'));
@@ -75,11 +77,7 @@ function makeSourcePostRoute(editField) {
       var updatedObj = {};
 
       if (editField == 'date') {
-        updatedObj[editField] = {
-          year: req.body.date_year,
-          month: req.body.date_month,
-          day: req.body.date_day,
-        };
+        updatedObj[editField] = getDateValues(req);
       } else if (editField == 'people') {
         var personId = req.body[editField];
         updatedObj[editField] = source.people;
