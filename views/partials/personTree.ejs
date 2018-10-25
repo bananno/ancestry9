@@ -43,7 +43,13 @@
             <% for (var p = 0; p < person.parents.length; p++) { %>
                 <% var parent = person.parents[p]; %>
                 <td valign="bottom" align="center">
-                    <%- include('../partials/personTree', { person: parent, safety: safety + 1 }) %>
+                    <%- include('../partials/personTree', {
+                        person: parent,
+                        people: people,
+                        safety: safety + 1,
+                        showCountry: showCountry,
+                        foundNationality: null,
+                    }) %>
                 </td>
             <% } %>
         </tr>
@@ -51,7 +57,7 @@
             <td colspan="<%= person.parents.length || 1 %>" class="<%= cellClass %>">
                 <div>
                     <%- include('../partials/linkToPerson', {person: person}) %>
-                    <% if(person.birthCountry != 'United States') { %>
+                    <% if (showCountry && person.birthCountry != 'United States') { %>
                         <%= person.birthCountry %>
                     <% } %>
                 </div>
