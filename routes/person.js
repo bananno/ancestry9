@@ -285,32 +285,33 @@ function personSources(req, res, ntext) {
 
 function personNationality(req, res) {
   mongoose.model('Person')
-  .findById(req.personId)
-  .exec(function(err, person) {
-    mongoose.model('Person')
-    .find({})
-    .exec(function(err, people) {
-      mongoose.model('Event')
-      .find({ title: 'birth' })
-      .exec(function(err, birthEvents) {
-        var birthCountries = mapPersonCountries(birthEvents);
+  .find({})
+  .populate('parents')
+  .populate('spouses')
+  .populate('children')
+  .exec(function(err, people) {
+    mongoose.model('Event')
+    .find({ title: 'birth' })
+    .exec(function(err, birthEvents) {
+      var birthCountries = mapPersonCountries(birthEvents);
 
-        person.birthCountry = birthCountries[person._id] || 'unknown';
+      people = people.map((thisPerson) => {
+        thisPerson.birthCountry = birthCountries[thisPerson._id] || 'unknown';
+        return thisPerson;
+      });
 
-        people = people.map((thisPerson) => {
-          thisPerson.birthCountry = birthCountries[thisPerson._id] || 'unknown';
-          return thisPerson;
-        });
+      var person = people.filter((thisPerson) => {
+        return isSamePerson(thisPerson, req.personId);
+      })[0];
 
-        res.format({
-          html: function() {
-            res.render('people/nationality', {
-              personId: req.personId,
-              person: person,
-              people: people,
-            });
-          }
-        });
+      res.format({
+        html: function() {
+          res.render('people/nationality', {
+            personId: req.personId,
+            person: person,
+            people: people,
+          });
+        }
       });
     });
   });
