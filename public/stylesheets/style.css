@@ -20,6 +20,10 @@ a:hover {
     text-decoration: none;
 }
 
+.clickable-link {
+    cursor: pointer;
+}
+
 a.main-link {
     margin: 10px;
 }

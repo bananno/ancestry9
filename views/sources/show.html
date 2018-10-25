@@ -157,7 +157,10 @@
                     <% if (editField == 'content') { %>
                         <textarea name="content"><%= source.content %></textarea>
                     <% } else { %>
-                        <%- include('../format/content', { content: source.content }) %>
+                        <%- include('../format/content', {
+                            content: source.content,
+                            limit: false,
+                        }) %>
                     <% } %>
                 </td>
                 <td>

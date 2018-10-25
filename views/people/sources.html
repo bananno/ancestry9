@@ -16,11 +16,6 @@
     <% for (var i = 0; i < sources.length; i++) { %>
         <%
             var source = sources[i];
-
-            var content = source.content;
-            if (content && content.length > 1000) {
-                content = content.slice(0, 1000) + '...';
-            }
         %>
 
         <% if (source.type != previousSourceType) { %>
@@ -47,7 +42,10 @@
                 </p>
             <% } %>
 
-            <%- include('../format/content', { content: content }) %>
+            <%- include('../format/content', {
+                content: source.content,
+                limit: true,
+            }) %>
         </div>
     <% } %>
 

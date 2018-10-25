@@ -1,12 +1,56 @@
+<style>
+    .text-content .full-view {
+        display: none;
+    }
+</style>
+
+<script>
+    function showMore(clickedItem) {
+        var $link = $(clickedItem);
+        var $div = $link.closest('div');
+        $div.find('.cropped-view').remove();
+        $div.find('.full-view').removeClass('full-view');
+    }
+</script>
+
 <%
-    var arr = [];
+    var characterLimit = 500;
+    var fullArr = [];
+    var croppedArr = [];
+    var isCropped = false;
 
     if (content) {
-        arr = content.split('\n');
+        if (limit) {
+            if (content.length > characterLimit) {
+                isCropped = true;
+                var content2 = content.slice(0, characterLimit) + '...';
+                croppedArr = content2.split('\n');
+            }
+        }
+        fullArr = content.split('\n');
     }
 %>
-<% for (var i = 0; i < arr.length; i++) { %>
-    <p class="text-content">
-        <%= arr[i] %>
-    </p>
-<% } %>
+
+<div class="text-content">
+    <% if (isCropped) { %>
+        <% croppedArr.forEach((str, i) => { %>
+            <p class="cropped-view">
+                <%= str %>
+                <% if (isCropped && i == croppedArr.length - 1) { %>
+                    <a class="clickable-link" onClick="showMore(this)">show more</a>
+                <% }%>
+            </p>
+        <% }); %>
+        <% fullArr.forEach((str, i) => { %>
+            <p class="full-view">
+                <%= str %>
+            </p>
+        <% }); %>
+    <% } else { %>
+        <% fullArr.forEach((str, i) => { %>
+            <p>
+                <%= str %>
+            </p>
+        <% }); %>
+    <% } %>
+</div>
