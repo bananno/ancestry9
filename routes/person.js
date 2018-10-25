@@ -81,7 +81,8 @@ function makeRouteGet(editView) {
       .find({})
       .exec(function(err, allPeople) {
         mongoose.model('Event')
-        .find({ people: person })
+        .find({})
+        // .find({ people: person })
         .populate('people')
         .exec(function(err, events) {
           mongoose.model('Citation')
@@ -107,6 +108,29 @@ function makeRouteGet(editView) {
                 return false;
               });
             }
+
+            events = events.map((thisEvent) => {
+              thisEvent.type = null;
+              for (var i = 0; i < thisEvent.people.length; i++) {
+                if (isSamePerson(thisEvent.people[i], person)) {
+                  thisEvent.type = 'personal';
+                  return thisEvent;
+                }
+              }
+              for (var i = 0; i < thisEvent.people.length; i++) {
+                for (var j = 0; j < person.children.length; j++) {
+                  if (isSamePerson(thisEvent.people[i], person.children[j])) {
+                    thisEvent.type = 'child';
+                    return thisEvent;
+                  }
+                }
+              }
+              return thisEvent;
+            });
+
+            events = events.filter((thisEvent) => {
+              return thisEvent.type != null;
+            });
 
             events = sortEvents(events);
             citations = sortCitations(citations, 'item');
@@ -278,4 +302,14 @@ function personSources(req, res, ntext) {
       });
     });
   });
+}
+
+// HELPER
+
+function isSamePerson(person1, person2) {
+  var id1 = person1._id ? person1._id : person1;
+  var id2 = person2._id ? person2._id : person2;
+  id1 = '' + id1;
+  id2 = '' + id2;
+  return id1 == id2;
 }
