@@ -1,0 +1,39 @@
+<table class="content-table">
+    <% for (var i = 0; i < content.length; i++) { %>
+        <tr>
+            <%
+                var thisRow = content[i];
+            %>
+
+            <% while (thisRow.length) { %>
+                <%
+                    var isHeader = false;
+                    thisRow = thisRow.slice(1);
+
+                    if (thisRow.length && thisRow.slice(0, 1) == '\|') {
+                        isHeader = true;
+                        thisRow = thisRow.slice(1);
+                    }
+
+                    thisRow = thisRow.trim();
+                    var thisCell;
+                    var nextCellIndex = thisRow.indexOf('\|');
+
+                    if (nextCellIndex >= 0) {
+                        thisCell = thisRow.slice(0, nextCellIndex);
+                        thisRow = thisRow.slice(nextCellIndex);
+                    } else {
+                        thisCell = thisRow;
+                        thisRow = '';
+                    }
+                %>
+
+                <% if (isHeader) { %>
+                    <th><%= thisCell %></th>
+                <% } else { %>
+                    <td><%= thisCell %></td>
+                <% } %>
+            <% } %>
+        </tr>
+    <% } %>
+</table>

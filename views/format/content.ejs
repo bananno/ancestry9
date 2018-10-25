@@ -18,6 +18,7 @@
     var fullArr = [];
     var croppedArr = [];
     var isCropped = false;
+    var tableArr = [];
 
     if (content) {
         if (limit) {
@@ -50,53 +51,18 @@
         <% for (var i = 0; i < fullArr.length; i++) { %>
             <%
                 var str = fullArr[i];
-                var isTable = str.length > 0 && str.slice(0, 1) == '\|';
+                var tableArr = [];
+
+                while (str.length > 0 && str.slice(0, 1) == '\|' && i < fullArr.length - 1) {
+                    tableArr.push(str);
+                    i += 1;
+                    str = fullArr[i];
+                }
             %>
-            <% if (isTable) { %>
-                <table border="1">
-                    <tr>
-                        <% while (true) { %>
-                            <%
-                                var isHeader = false;
-                                var cellContent = '';
-
-                                if (str.length > 1 && str.slice(0, 2) == '\|\|') {
-                                    isHeader = true;
-                                    str = str.slice(2).trim();
-                                } else {
-                                    str = str.slice(1).trim();
-                                }
-
-                                if (str.match('\|')) {
-                                    var index = str.indexOf('\|');
-                                    cellContent = str.slice(0, index);
-                                    str = str.slice(index);
-                                } else {
-                                    cellContent = str;
-                                    str = '';
-                                }
-                            %>
-                            <% if (isHeader) { %>
-                                <th>
-                                    <%= cellContent %>&#160;
-                                </th>
-                            <% } else { %>
-                                <td>
-                                    <%= cellContent %>&#160;
-                                </td>
-                            <% } %>
-                            <%
-                                if (str == '') {
-                                    break;
-                                }
-                            %>
-                        <% } %>
-                    </tr>
-                </table>
+            <% if (tableArr.length) { %>
+                <%- include('../format/contentTable', { content: tableArr }) %>
             <% } else { %>
-                <p>
-                    <%= str %>
-                </p>
+                <p> <%= str %> </p>
             <% } %>
         <% } %>
     <% } %>

@@ -138,3 +138,8 @@ h1, h2, h3 {
 .source-item-box p {
     padding: 5px;
 }
+
+.content-table th, .content-table td {
+    border: 1px solid black;
+    padding: 3px;
+}
