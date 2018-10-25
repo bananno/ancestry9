@@ -1,8 +1,39 @@
+<style>
+    .treecell.unknown div {
+        background-color: #ddd;
+    }
+    .treecell.foreign-born div {
+        background-color: #bfe7ff;
+    }
+    .treecell.dead-end div {
+        background-color: #ffc9c9;
+    }
+</style>
+
 <%
     if (person.name == null) {
         person = people.filter((thisPerson) => {
             return thisPerson.id == person;
         })[0];
+    }
+
+    var cellClass = 'treecell';
+
+    if (showCountry && person.birthCountry != null) {
+        if (person.birthCountry == 'United States') {
+            if (person.parents.length < 2) {
+                cellClass += ' dead-end';
+            }
+        } else if (person.birthCountry == 'unknown') {
+            cellClass += ' unknown';
+            if (person.parents.length < 2) {
+                cellClass += ' dead-end';
+            } else {
+                cellClass += ' unknown';
+            }
+        } else {
+            cellClass += ' foreign-born';
+        }
     }
 %>
 
@@ -17,7 +48,7 @@
             <% } %>
         </tr>
         <tr>
-            <td colspan="<%= person.parents.length || 1 %>" class="treecell">
+            <td colspan="<%= person.parents.length || 1 %>" class="<%= cellClass %>">
                 <div>
                     <%- include('../partials/linkToPerson', {person: person}) %>
                     <% if(person.birthCountry != 'United States') { %>
