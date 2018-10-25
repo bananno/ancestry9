@@ -12,6 +12,7 @@ convertParamPersonId();
 
 router.get('/:personId', makeRouteGet('none'));
 router.get('/:personId/sources', personSources);
+router.get('/:personId/nationality', personNationality);
 
 router.get('/:personId/addEvent', makeRouteGet('events'));
 router.post('/:personId/addEvent', makeRouteEditPost('events'));
@@ -275,6 +276,26 @@ function personSources(req, res, ntext) {
             personId: req.personId,
             person: person,
             sources: sources,
+          });
+        }
+      });
+    });
+  });
+}
+
+function personNationality(req, res) {
+  mongoose.model('Person')
+  .findById(req.personId)
+  .exec(function(err, person) {
+    mongoose.model('Source')
+    .find({ people: person })
+    .exec(function(err, sources) {
+      res.format({
+        html: function() {
+          sources = sortSources(sources, 'group');
+          res.render('people/nationality', {
+            personId: req.personId,
+            person: person,
           });
         }
       });
