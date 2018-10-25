@@ -5,13 +5,26 @@
     text-align: center;
 }
 
+.treecell a {
+    text-decoration: none;
+}
+
+/* NATIONALITY */
+
+.treecell.first-generation div,
+.treecell.dead-end div {
+    border-width: 2px;
+    font-weight: bold;
+}
+
+/* COLORS BY NATIONALITY */
+
 .treecell.unknown div {
     background-color: #efefef;
 }
 
 .treecell.first-generation div {
     background-color: #bce6ff;
-    border-width: 2px;
 }
 
 .treecell.old-country div {
@@ -20,13 +33,8 @@
 
 .treecell.dead-end div {
     background-color: #ffc9c9;
-    border-width: 2px;
 }
 
 .treecell.usa {
     background-color: white;
-}
-
-.treecell a {
-    text-decoration: none;
 }
