@@ -109,30 +109,8 @@ function makeRouteGet(editView) {
               });
             }
 
-            events = events.map((thisEvent) => {
-              thisEvent.type = null;
-              for (var i = 0; i < thisEvent.people.length; i++) {
-                if (isSamePerson(thisEvent.people[i], person)) {
-                  thisEvent.type = 'personal';
-                  return thisEvent;
-                }
-              }
-              for (var i = 0; i < thisEvent.people.length; i++) {
-                for (var j = 0; j < person.children.length; j++) {
-                  if (isSamePerson(thisEvent.people[i], person.children[j])) {
-                    thisEvent.type = 'child';
-                    return thisEvent;
-                  }
-                }
-              }
-              return thisEvent;
-            });
-
-            events = events.filter((thisEvent) => {
-              return thisEvent.type != null;
-            });
-
             events = sortEvents(events);
+            events = filterEvents(events, person, person.children);
             citations = sortCitations(citations, 'item');
 
             res.format({
@@ -312,4 +290,31 @@ function isSamePerson(person1, person2) {
   id1 = '' + id1;
   id2 = '' + id2;
   return id1 == id2;
+}
+
+function filterEvents(events, person, children) {
+  events = events.map((thisEvent) => {
+    thisEvent.type = null;
+    for (var i = 0; i < thisEvent.people.length; i++) {
+      if (isSamePerson(thisEvent.people[i], person)) {
+        thisEvent.type = 'personal';
+        return thisEvent;
+      }
+    }
+    for (var i = 0; i < thisEvent.people.length; i++) {
+      for (var j = 0; j < children.length; j++) {
+        if (isSamePerson(thisEvent.people[i], children[j])) {
+          thisEvent.type = 'child';
+          return thisEvent;
+        }
+      }
+    }
+    return thisEvent;
+  });
+
+  events = events.filter((thisEvent) => {
+    return thisEvent.type != null;
+  });
+
+  return events;
 }
