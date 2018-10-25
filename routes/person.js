@@ -287,15 +287,15 @@ function personNationality(req, res) {
   mongoose.model('Person')
   .findById(req.personId)
   .exec(function(err, person) {
-    mongoose.model('Source')
-    .find({ people: person })
-    .exec(function(err, sources) {
+    mongoose.model('Person')
+    .find({})
+    .exec(function(err, people) {
       res.format({
         html: function() {
-          sources = sortSources(sources, 'group');
           res.render('people/nationality', {
             personId: req.personId,
             person: person,
+            people: people,
           });
         }
       });

@@ -10,4 +10,10 @@
         <li><a href="<%= rootPath %>/sources">sources</a></li>
         <li><a href="<%= rootPath %>/nationality">nationality</a></li>
     </ul>
+
+    <h2> Tree </h2>
+
+    <div class="scrollbox">
+        <%- include('../partials/personTree', { person: person, people: people, safety: 0 }) %>
+    </div>
 </div>
