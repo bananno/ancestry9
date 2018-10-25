@@ -30,6 +30,10 @@
         }
         fullArr = content.split('\n');
     }
+
+    function lineIsPartOfTable(str) {
+        return str != null && str.length > 0 && str.slice(0, 1) == '\|';
+    }
 %>
 
 <div class="text-content">
@@ -53,10 +57,12 @@
                 var str = fullArr[i];
                 var tableArr = [];
 
-                while (str.length > 0 && str.slice(0, 1) == '\|' && i < fullArr.length - 1) {
+                if (lineIsPartOfTable(str)) {
                     tableArr.push(str);
-                    i += 1;
-                    str = fullArr[i];
+                    while (lineIsPartOfTable(fullArr[i + 1])) {
+                        tableArr.push(fullArr[i + 1]);
+                        i += 1;
+                    }
                 }
             %>
             <% if (tableArr.length) { %>
