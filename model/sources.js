@@ -1,14 +1,13 @@
 var mongoose = require('mongoose');
+var dateStructure = require('./date.js');
+var locationStructure = require('./location.js');
 
 var sourceSchema = new mongoose.Schema({
   type: String,
   group: String,
   title: String,
-  date: {
-    year: { type: Number, default: 0},
-    month: { type: Number, default: 0},
-    day: { type: Number, default: 0},
-  },
+  date: dateStructure,
+  location: locationStructure,
   people: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
   links: [String],
   images: [String],

@@ -1,20 +1,12 @@
 var mongoose = require('mongoose');
+var dateStructure = require('./date.js');
+var locationStructure = require('./location.js');
 
 var eventSchema = new mongoose.Schema({
   title: String,
-  date: {
-    year: { type: Number, default: 0},
-    month: { type: Number, default: 0},
-    day: { type: Number, default: 0},
-  },
+  date: dateStructure,
+  location: locationStructure,
   people: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
-  location: {
-    country: String,
-    region1: String, // province or state
-    region2: String, // county
-    city: String,
-    notes: String,
-  },
   notes: String,
 });
 
