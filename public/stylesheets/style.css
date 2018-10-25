@@ -62,6 +62,18 @@ h1, h2, h3 {
     text-align: center;
 }
 
+.treecell.unknown div {
+    background-color: #ddd;
+}
+
+.treecell.foreign-born div {
+    background-color: #bfe7ff;
+}
+
+.treecell.dead-end div {
+    background-color: #ffc9c9;
+}
+
 .treecell a {
     text-decoration: none;
 }

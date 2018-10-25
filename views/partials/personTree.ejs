@@ -1,15 +1,3 @@
-<style>
-    .treecell.unknown div {
-        background-color: #ddd;
-    }
-    .treecell.foreign-born div {
-        background-color: #bfe7ff;
-    }
-    .treecell.dead-end div {
-        background-color: #ffc9c9;
-    }
-</style>
-
 <%
     if (person.name == null) {
         person = people.filter((thisPerson) => {
