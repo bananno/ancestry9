@@ -20,6 +20,9 @@
             <td colspan="<%= person.parents.length || 1 %>" class="treecell">
                 <div>
                     <%- include('../partials/linkToPerson', {person: person}) %>
+                    <% if(person.birthCountry != 'United States') { %>
+                        <%= person.birthCountry %>
+                    <% } %>
                 </div>
             </td>
         </tr>

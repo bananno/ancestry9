@@ -291,7 +291,7 @@ function personNationality(req, res) {
     .find({})
     .exec(function(err, people) {
       mongoose.model('Event')
-      .find({ title: 'birth '})
+      .find({ title: 'birth' })
       .exec(function(err, birthEvents) {
         people = getBirthCountries(people, birthEvents);
         res.format({
@@ -375,8 +375,24 @@ function filterEvents(events, person) {
 }
 
 function getBirthCountries(people, events) {
+  var personBirthCountries = {};
+
+  events.forEach((thisEvent) => {
+    if (thisEvent.location && thisEvent.location.country) {
+      thisEvent.people.forEach((thisPerson) => {
+        personBirthCountries[thisPerson] = thisEvent.location.country;
+      });
+    }
+  });
+
+  console.log(personBirthCountries)
+
   people = people.map((thisPerson) => {
+    var personId = thisPerson._id;
     thisPerson.birthCountry = 'unknown';
+
+    thisPerson.birthCountry = personBirthCountries[personId] || 'unknown';
+
     return thisPerson;
   });
 
