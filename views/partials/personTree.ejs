@@ -1,4 +1,10 @@
 <%
+    var person = params.person;
+    var people = params.people;
+    var safety = params.safety || 0;
+    var showCountry = params.showCountry == true;
+    var foundNationality = params.foundNationality || false;
+
     if (person.name == null) {
         person = people.filter((thisPerson) => {
             return thisPerson.id == person;
@@ -38,13 +44,13 @@
             <% for (var p = 0; p < person.parents.length; p++) { %>
                 <% var parent = person.parents[p]; %>
                 <td valign="bottom" align="center">
-                    <%- include('../partials/personTree', {
+                    <%- include('../partials/personTree', { params: {
                         person: parent,
                         people: people,
                         safety: safety + 1,
                         showCountry: showCountry,
                         foundNationality: foundNationality,
-                    }) %>
+                    }}) %>
                 </td>
             <% } %>
         </tr>

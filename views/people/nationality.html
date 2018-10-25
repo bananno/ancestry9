@@ -14,12 +14,10 @@
     <h2> Tree </h2>
 
     <div class="scrollbox">
-        <%- include('../partials/personTree', {
+        <%- include('../partials/personTree', { params: {
             person: person,
             people: people,
-            safety: 0,
             showCountry: true,
-            foundNationality: false,
-        }) %>
+        }}) %>
     </div>
 </div>
