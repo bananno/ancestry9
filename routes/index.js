@@ -20,9 +20,9 @@ router.post('/allPeople/new', createNewPerson);
 
 // EVENTS - INDEX + NEW
 
-router.get('/allEvents', makeEventsIndexRoute(false));
-router.get('/allEvents/new', makeEventsIndexRoute(true));
-router.post('/allEvents/new', createNewEvent);
+router.get('/events', makeEventsIndexRoute(false));
+router.get('/events/new', makeEventsIndexRoute(true));
+router.post('/events/new', createNewEvent);
 
 // SOURCES - INDEX + NEW
 

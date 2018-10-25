@@ -77,7 +77,7 @@ function deleteEvent(req, res) {
     event.remove(function(err) {
       res.format({
         html: function() {
-          res.redirect('/allEvents');
+          res.redirect('/events');
         }
       });
     });

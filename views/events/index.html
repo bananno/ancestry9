@@ -5,12 +5,12 @@
 
     <% if (showNew) { %>
         <%- include('../forms/newEvent', {
-            actionPath: '/allEvents/new',
-            cancelPath: '/allEvents',
+            actionPath: '/events/new',
+            cancelPath: '/events',
         }) %>
     <% } else { %>
         <p>
-            <a href="/allEvents/new">+ Create Event</a>
+            <a href="/events/new">+ Create Event</a>
         </p>
     <% } %>
 
