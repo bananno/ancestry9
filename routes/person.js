@@ -291,9 +291,9 @@ function personNationality(req, res) {
     .find({})
     .exec(function(err, people) {
       mongoose.model('Event')
-      .find({})
-      .exec(function(err, events) {
-        people = getBirthCountries(people, events);
+      .find({ title: 'birth '})
+      .exec(function(err, birthEvents) {
+        people = getBirthCountries(people, birthEvents);
         res.format({
           html: function() {
             res.render('people/nationality', {
