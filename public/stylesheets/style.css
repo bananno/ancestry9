@@ -149,3 +149,19 @@ h1, h2, h3 {
     height: 300px;
     width: 500px;
 }
+
+#event-list-filters {
+    padding: 5px;
+}
+
+#event-list-filters div {
+    display: inline-block;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+#event-list-filters div.active {
+    background-color: #ddd;
+}
