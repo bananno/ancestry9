@@ -182,3 +182,12 @@ ul.bullet-list,
 .family-list-block ul {
     margin-left: 25px;
 }
+
+.person-navigation {
+    list-style: none;
+}
+
+.person-navigation li {
+    display: inline-block;
+    margin: 10px;
+}
