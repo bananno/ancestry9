@@ -5,6 +5,7 @@ var router = express.Router();
 var getDateValues = require('../tools/getDateValues');
 var getNewEventValues = require('../tools/getNewEventValues');
 var sortSources = require('../tools/sortSources');
+var sortEvents = require('../tools/sortEvents');
 
 // HOME
 
@@ -86,6 +87,7 @@ function makeEventsIndexRoute(showNew) {
     .find({})
     .populate('people')
     .exec(function (err, events) {
+      events = sortEvents(events);
       if (err) {
         return console.error(err);
       } else {
