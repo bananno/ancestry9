@@ -385,8 +385,6 @@ function getBirthCountries(people, events) {
     }
   });
 
-  console.log(personBirthCountries)
-
   people = people.map((thisPerson) => {
     var personId = thisPerson._id;
     thisPerson.birthCountry = 'unknown';

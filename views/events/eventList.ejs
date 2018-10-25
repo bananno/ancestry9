@@ -62,7 +62,6 @@
             var $button = $(element);
             var eventType = $button.attr('event-type');
             var $rows = $('.event_list').find('tr.event-row-' + eventType);
-            console.log($rows);
             $button.click(function() {
                 current = !current;
                 if (current) {
