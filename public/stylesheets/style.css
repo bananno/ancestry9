@@ -63,15 +63,25 @@ h1, h2, h3 {
 }
 
 .treecell.unknown div {
-    background-color: #ddd;
+    background-color: #efefef;
 }
 
-.treecell.foreign-born div {
-    background-color: #bfe7ff;
+.treecell.first-generation div {
+    background-color: #bce6ff;
+    border-width: 2px;
+}
+
+.treecell.old-country div {
+    background-color: #dbf1ff;
 }
 
 .treecell.dead-end div {
     background-color: #ffc9c9;
+    border-width: 2px;
+}
+
+.treecell.usa {
+    background-color: white;
 }
 
 .treecell a {

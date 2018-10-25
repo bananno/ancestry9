@@ -11,6 +11,8 @@
         if (person.birthCountry == 'United States') {
             if (person.parents.length < 2) {
                 cellClass += ' dead-end';
+            } else {
+                cellClass += ' usa';
             }
         } else if (person.birthCountry == 'unknown') {
             if (!foundNationality) {
@@ -20,8 +22,12 @@
                 cellClass += ' unknown';
             }
         } else {
-            cellClass += ' foreign-born';
-            foundNationality = true;
+            if (foundNationality) {
+                cellClass += ' old-country';
+            } else {
+                cellClass += ' first-generation';
+                foundNationality = true;
+            }
         }
     }
 %>
