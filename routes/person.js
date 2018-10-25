@@ -110,7 +110,7 @@ function makeRouteGet(editView) {
             }
 
             events = sortEvents(events);
-            events = filterEvents(events, person, person.children);
+            events = filterEvents(events, person);
             citations = sortCitations(citations, 'item');
 
             res.format({
@@ -292,7 +292,9 @@ function isSamePerson(person1, person2) {
   return id1 == id2;
 }
 
-function filterEvents(events, person, children) {
+function filterEvents(events, person) {
+  var children = person.children;
+  var spouses = person.spouses;
   var birthYear = null;
   var deathYear = null;
 
@@ -307,6 +309,15 @@ function filterEvents(events, person, children) {
           deathYear = thisEvent.date ? thisEvent.date.year : null;
         }
         return thisEvent;
+      }
+    }
+
+    for (var i = 0; i < thisEvent.people.length; i++) {
+      for (var j = 0; j < spouses.length; j++) {
+        if (isSamePerson(thisEvent.people[i], spouses[j])) {
+          thisEvent.type = 'spouse';
+          return thisEvent;
+        }
       }
     }
 
@@ -326,6 +337,7 @@ function filterEvents(events, person, children) {
         }
       }
     }
+
     return thisEvent;
   });
 
