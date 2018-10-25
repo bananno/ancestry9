@@ -170,3 +170,15 @@ h1, h2, h3 {
 .event_list tr.event-row-personal td {
     background-color: #d1ecfc;
 }
+
+.family-list-block {
+    padding: 10px;
+    vertical-align: text-top;
+    width: 300px;
+    display: inline-block;
+}
+
+ul.bullet-list,
+.family-list-block ul {
+    margin-left: 25px;
+}

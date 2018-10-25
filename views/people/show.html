@@ -10,29 +10,43 @@
         <li><a href="<%= rootPath %>/edit">edit person</a></li>
     </ul>
 
-    <% if (person.parents.length) { %>
-        <h3>parents</h3>
-        <%- include('../partials/peopleList', { people: person.parents }) %>
-    <% } %>
+    <h2>Family</h2>
 
-    <% if (siblings.length) { %>
-        <h3>siblings</h3>
-        <%- include('../partials/peopleList', { people: siblings }) %>
-    <% } %>
+    <div>
+        <% if (person.parents.length) { %>
+            <div class="family-list-block">
+                <h3>parents</h3>
+                <%- include('../partials/peopleList', { people: person.parents }) %>
+            </div>
+        <% } %>
 
-    <% if (person.spouses.length) { %>
-        <h3>spouses</h3>
-        <%- include('../partials/peopleList', { people: person.spouses }) %>
-    <% } %>
+        <% if (siblings.length) { %>
+            <div class="family-list-block">
+                <h3>siblings</h3>
+                <%- include('../partials/peopleList', { people: siblings }) %>
+            </div>
+        <% } %>
+    </div>
 
-    <% if (person.children.length) { %>
-        <h3>children</h3>
-        <%- include('../partials/peopleList', { people: person.children }) %>
-    <% } %>
+    <div>
+        <% if (person.spouses.length) { %>
+            <div class="family-list-block">
+                <h3>spouses</h3>
+                <%- include('../partials/peopleList', { people: person.spouses }) %>
+            </div>
+        <% } %>
+
+        <% if (person.children.length) { %>
+            <div class="family-list-block">
+                <h3>children</h3>
+                <%- include('../partials/peopleList', { people: person.children }) %>
+            </div>
+        <% } %>
+    </div>
 
     <% if (person.links.length) { %>
-        <h3>links</h3>
-        <ul>
+        <h2>Links</h2>
+        <ul class="bullet-list">
             <% for (var i = 0; i < person.links.length; i++) { %>
                 <li>
                     <%- include('../format/externalLink', { url: person.links[i] }) %>
