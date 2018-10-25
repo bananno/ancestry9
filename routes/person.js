@@ -293,14 +293,31 @@ function isSamePerson(person1, person2) {
 }
 
 function filterEvents(events, person, children) {
+  var birthYear = null;
+  var deathYear = null;
+
   events = events.map((thisEvent) => {
     thisEvent.type = null;
     for (var i = 0; i < thisEvent.people.length; i++) {
       if (isSamePerson(thisEvent.people[i], person)) {
         thisEvent.type = 'personal';
+        if (thisEvent.title == 'birth') {
+          birthYear = thisEvent.date ? thisEvent.date.year : null;
+        } else if (thisEvent.title == 'death') {
+          deathYear = thisEvent.date ? thisEvent.date.year : null;
+        }
         return thisEvent;
       }
     }
+
+    if (birthYear && thisEvent.date && thisEvent.date.year < birthYear) {
+      return thisEvent;
+    }
+
+    if (deathYear && thisEvent.date && thisEvent.date.year > deathYear) {
+      return thisEvent;
+    }
+
     for (var i = 0; i < thisEvent.people.length; i++) {
       for (var j = 0; j < children.length; j++) {
         if (isSamePerson(thisEvent.people[i], children[j])) {
