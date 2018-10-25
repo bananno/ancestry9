@@ -8,6 +8,7 @@
     var yearValue = '';
     var monthValue = 0;
     var dayValue = 0;
+    var displayValue = 0;
 
     if (date != null) {
         if (date.year) {
@@ -15,6 +16,7 @@
         }
         monthValue = date.month;
         dayValue = date.day;
+        displayValue = date.display;
     }
 %>
 
@@ -43,3 +45,7 @@
         <% } %>
     <% } %>
 </select>
+
+<br>
+
+<input type="text" name="date_display" placeholder="alternate display" value="<%= displayValue %>">
