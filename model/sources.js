@@ -12,6 +12,7 @@ var sourceSchema = new mongoose.Schema({
   links: [String],
   images: [String],
   content: String,
+  notes: String,
 });
 
 mongoose.model('Source', sourceSchema);

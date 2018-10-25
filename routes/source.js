@@ -15,6 +15,7 @@ makeSourcesRoutes('Person', 'people', true);
 makeSourcesRoutes('Link', 'links', true);
 makeSourcesRoutes('Image', 'images', true);
 makeSourcesRoutes('Content', 'content');
+makeSourcesRoutes('/notes', 'notes');
 
 makeSourcesRoutes('Citation', 'citations', true);
 

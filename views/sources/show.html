@@ -142,6 +142,44 @@
             editAvailable: editField == 'none',
         }) %>
 
+        <!-- NOTES -->
+
+        <%
+            var editNotesPath = rootPath + '/edit/notes';
+            var notesList = [];
+            if (source.notes) {
+                notesList = source.notes.split('\n');
+            }
+        %>
+
+        <tr>
+            <td>
+                <b>notes</b>
+            </td>
+            <form action="<%= editNotesPath %>" method="POST">
+                <td>
+                    <% if (editField == 'notes') { %>
+                        <textarea name="notes" class="content-textarea"><%= source.notes %></textarea>
+                    <% } else { %>
+                        <% notesList.forEach((str) => { %>
+                            <p>
+                                <%= str %>
+                            </p>
+                        <% }); %>
+                    <% } %>
+                </td>
+                <td>
+                    <% if (editField == 'notes') { %>
+                        <input type="hidden" value="PUT" name="_method">
+                        <button type="submit">save</button>
+                        <a href="<%= rootPath %>">cancel</a>
+                    <% } else if (editField == 'none') { %>
+                        <a href="<%= editNotesPath %>">edit</a>
+                    <% } %>
+                </td>
+            </form>
+        </tr>
+
     </table>
 
     <!-- CONTENT -->
