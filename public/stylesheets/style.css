@@ -191,3 +191,8 @@ ul.bullet-list,
     display: inline-block;
     margin: 10px;
 }
+
+.scrollbox {
+    width: 100%;
+    overflow: scroll;
+}

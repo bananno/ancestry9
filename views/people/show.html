@@ -57,7 +57,9 @@
 
     <h2> Tree </h2>
 
-    <%- include('../partials/personTree', { person: person, people: people, safety: 0 }) %>
+    <div class="scrollbox">
+        <%- include('../partials/personTree', { person: person, people: people, safety: 0 }) %>
+    </div>
 
     <% var addEventPath = rootPath + "/addEvent"; %>
 
