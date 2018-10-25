@@ -304,12 +304,15 @@ function personNationality(req, res) {
         return isSamePerson(thisPerson, req.personId);
       })[0];
 
+      var nationality = calculateNationality(person, people);
+
       res.format({
         html: function() {
           res.render('people/nationality', {
             personId: req.personId,
             person: person,
             people: people,
+            nationality: nationality,
           });
         }
       });
@@ -395,4 +398,27 @@ function mapPersonCountries(events) {
   });
 
   return personBirthCountries;
+}
+
+function calculateNationality(person, people, nationality, percentage, safety) {
+  nationality = nationality || {};
+  percentage = percentage || 100;
+  safety = safety || 0;
+  var country = person.birthCountry;
+
+  if (safety > 3) {
+    console.log('SAFETY');
+    return nationality;
+  }
+
+  if (country) {
+    nationality[country] = nationality[country] || 0;
+    nationality[country] += percentage;
+
+    person.parents.forEach((thisPerson) => {
+      nationality = calculateNationality(thisPerson, people, nationality, percentage/2, safety+1);
+    });
+  }
+
+  return nationality;
 }
