@@ -165,3 +165,8 @@ h1, h2, h3 {
 #event-list-filters div.active {
     background-color: #ddd;
 }
+
+.event_list th,
+.event_list tr.event-row-personal td {
+    background-color: #d1ecfc;
+}
