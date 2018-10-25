@@ -13,14 +13,15 @@
                 cellClass += ' dead-end';
             }
         } else if (person.birthCountry == 'unknown') {
-            cellClass += ' unknown';
-            if (person.parents.length < 2) {
+            if (!foundNationality) {
                 cellClass += ' dead-end';
+                foundNationality = true;
             } else {
                 cellClass += ' unknown';
             }
         } else {
             cellClass += ' foreign-born';
+            foundNationality = true;
         }
     }
 %>
@@ -36,7 +37,7 @@
                         people: people,
                         safety: safety + 1,
                         showCountry: showCountry,
-                        foundNationality: null,
+                        foundNationality: foundNationality,
                     }) %>
                 </td>
             <% } %>
