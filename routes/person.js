@@ -290,14 +290,19 @@ function personNationality(req, res) {
     mongoose.model('Person')
     .find({})
     .exec(function(err, people) {
-      res.format({
-        html: function() {
-          res.render('people/nationality', {
-            personId: req.personId,
-            person: person,
-            people: people,
-          });
-        }
+      mongoose.model('Event')
+      .find({})
+      .exec(function(err, events) {
+        people = getBirthCountries(people, events);
+        res.format({
+          html: function() {
+            res.render('people/nationality', {
+              personId: req.personId,
+              person: person,
+              people: people,
+            });
+          }
+        });
       });
     });
   });
@@ -367,4 +372,13 @@ function filterEvents(events, person) {
   });
 
   return events;
+}
+
+function getBirthCountries(people, events) {
+  people = people.map((thisPerson) => {
+    thisPerson.birthCountry = 'unknown';
+    return thisPerson;
+  });
+
+  return people;
 }
