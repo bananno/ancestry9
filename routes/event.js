@@ -14,6 +14,8 @@ router.get('/:eventId/addPerson', makeEventShowRoute('people'));
 router.post('/:eventId/addPerson', makeEventPostRoute('people'));
 router.get('/:eventId/editLocation', makeEventShowRoute('location'));
 router.post('/:eventId/editLocation', makeEventPostRoute('location'));
+router.get('/:eventId/edit/notes', makeEventShowRoute('notes'));
+router.post('/:eventId/edit/notes', makeEventPostRoute('notes'));
 
 module.exports = router;
 

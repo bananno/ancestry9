@@ -1,9 +1,10 @@
 <table class="event_list">
     <tr>
-        <th> Title </th>
-        <th> Date </th>
-        <th> Location </th>
-        <th> People </th>
+        <th> title </th>
+        <th> date </th>
+        <th> location </th>
+        <th> people </th>
+        <th> notes </th>
     </tr>
     <% for (var i = 0; i < events.length; i++) { %>
         <%
@@ -28,6 +29,9 @@
                         </li>
                     <% } %>
                 </ul>
+            </td>
+            <td>
+                <%= event.notes %>
             </td>
         </tr>
     <% } %>

@@ -15,6 +15,7 @@ var eventSchema = new mongoose.Schema({
     city: String,
     notes: String,
   },
+  notes: String,
 });
 
 mongoose.model('Event', eventSchema);
