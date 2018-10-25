@@ -16,4 +16,8 @@
     var dateString = dateComponents.join('-');
 %>
 
-<%= dateString %>
+<% if (date && date.display) { %>
+    <i><%= date.display %></i>
+<% } else { %>
+    <%= dateString %>
+<% } %>
