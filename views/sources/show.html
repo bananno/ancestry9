@@ -142,43 +142,37 @@
             editAvailable: editField == 'none',
         }) %>
 
-        <!-- CONTENT -->
-
-        <%
-            var editContentPath = rootPath + '/editContent';
-        %>
-
-        <tr>
-            <td>
-                <b>content</b>
-            </td>
-            <form action="<%= editContentPath %>" method="POST">
-                <td>
-                    <% if (editField == 'content') { %>
-                        <textarea name="content"><%= source.content %></textarea>
-                    <% } else { %>
-                        <%- include('../format/content', {
-                            content: source.content,
-                            limit: false,
-                        }) %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editField == 'content') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editField == 'none') { %>
-                        <a href="<%= editContentPath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
-
-        <!--  -->
     </table>
 
-    <h1>Citations</h1>
+    <!-- CONTENT -->
+
+    <%
+        var editContentPath = rootPath + '/editContent';
+    %>
+
+    <h2>Content</h2>
+
+    <% if (editField == 'none') { %>
+        <p>
+            <a href="<%= editContentPath %>">edit</a>
+        </p>
+    <% } %>
+
+    <form action="<%= editContentPath %>" method="POST">
+        <% if (editField == 'content') { %>
+            <textarea name="content" class="content-textarea"><%= source.content %></textarea>
+            <input type="hidden" value="PUT" name="_method">
+            <button type="submit">save</button>
+            <a href="<%= rootPath %>">cancel</a>
+        <% } else { %>
+            <%- include('../format/content', {
+                content: source.content,
+                limit: false,
+            }) %>
+        <% } %>
+    </form>
+
+    <h2>Citations</h2>
 
     <%
         var addCitationPath = rootPath + "/addCitation";

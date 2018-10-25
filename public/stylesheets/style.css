@@ -141,5 +141,11 @@ h1, h2, h3 {
 
 .content-table th, .content-table td {
     border: 1px solid black;
-    padding: 3px;
+    padding: 4px;
+    font-size: 12px;
+}
+
+.content-textarea {
+    height: 300px;
+    width: 500px;
 }
