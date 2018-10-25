@@ -73,7 +73,7 @@ function createNewPerson(req, res, next) {
     } else {
       res.format({
         html: function() {
-          res.redirect('/allPeople');
+          res.redirect('/person/' + person.customId + '/edit');
         }
       });
     }
