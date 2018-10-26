@@ -44,11 +44,9 @@
             <% croppedArr.forEach((str, i) => { %>
                 <p>
                     <%= str %>
-                    <% if (isCropped && i == croppedArr.length - 1) { %>
-                        <a class="clickable-link" onClick="showMore(this)">show more</a>
-                    <% }%>
                 </p>
             <% }); %>
+            <a class="clickable-link" onClick="showMore(this)">show more</a>
         </div>
     <% } %>
 
