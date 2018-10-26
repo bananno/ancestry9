@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var router = express.Router();
 
 var getDateValues = require('../tools/getDateValues');
+var getLocationValues = require('../tools/getLocationValues');
 var removePersonFromList = require('../tools/removePersonFromList');
 
 router.get('/:sourceId', makeSourceShowRoute('none'));
@@ -11,6 +12,7 @@ makeSourcesRoutes('/type', 'type');
 makeSourcesRoutes('/group', 'group');
 makeSourcesRoutes('/title', 'title');
 makeSourcesRoutes('Date', 'date');
+makeSourcesRoutes('/location', 'location');
 makeSourcesRoutes('Person', 'people', true);
 makeSourcesRoutes('Link', 'links', true);
 makeSourcesRoutes('Image', 'images', true);
@@ -79,6 +81,8 @@ function makeSourcePostRoute(editField) {
 
       if (editField == 'date') {
         updatedObj[editField] = getDateValues(req);
+      } else if (editField == 'location') {
+        updatedObj[editField] = getLocationValues(req);
       } else if (editField == 'people') {
         var personId = req.body[editField];
         updatedObj[editField] = source.people;

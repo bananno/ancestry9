@@ -49,7 +49,7 @@
 
         <tr>
             <td>
-                <b>Date</b>
+                <b>date</b>
             </td>
             <form action="<%= editDatePath %>" method="POST">
                 <td>
@@ -71,6 +71,36 @@
             </form>
         </tr>
 
+        <!-- LOCATION -->
+
+        <%
+            var editLocationPath = rootPath + '/edit/location';
+        %>
+
+        <tr>
+            <td>
+                <b>location</b>
+            </td>
+            <form action="<%= editLocationPath %>" method="POST">
+                <td>
+                    <% if (editField == 'location') { %>
+                        <%- include('../forms/location', { location: source.location }) %>
+                    <% } else { %>
+                        <%- include('../format/location', { location: source.location }) %>
+                    <% } %>
+                </td>
+                <td>
+                    <% if (editField == 'location') { %>
+                        <input type="hidden" value="PUT" name="_method">
+                        <button type="submit">save</button>
+                        <a href="<%= rootPath %>">cancel</a>
+                    <% } else if (editField == 'none') { %>
+                        <a href="<%= editLocationPath %>">edit</a>
+                    <% } %>
+                </td>
+            </form>
+        </tr>
+
         <!-- PEOPLE -->
 
         <%
@@ -83,7 +113,7 @@
             <tr>
                 <td>
                     <% if (p == 0) { %>
-                        <b>People</b>
+                        <b>people</b>
                     <% } %>
                 </td>
                 <% if (p < numberOfPeople) { %>
