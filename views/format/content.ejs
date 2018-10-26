@@ -21,14 +21,20 @@
     var tableArr = [];
 
     if (content) {
+        fullArr = content.split('\n');
         if (limit) {
             if (content.length > characterLimit) {
                 isCropped = true;
                 var content2 = content.slice(0, characterLimit) + '...';
                 croppedArr = content2.split('\n');
+                if (croppedArr.length > 5) {
+                    croppedArr = croppedArr.slice(0, 5);
+                }
+            } else if (fullArr.length > 5) {
+                croppedArr = fullArr.slice(0, 5);
+                isCropped = true;
             }
         }
-        fullArr = content.split('\n');
     }
 
     var fullViewClass = isCropped ? 'full-view' : '';
