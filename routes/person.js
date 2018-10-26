@@ -353,7 +353,7 @@ function personResearch(req, res) {
 
       res.format({
         html: function() {
-          res.render('people/research', {
+          res.render('people/checklist', {
             person: person,
             checklistLinks: checklistLinks,
           });
