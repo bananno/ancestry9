@@ -1,0 +1,11 @@
+<%- include ../partials/header %>
+<%
+    var rootPath = "/person/" + (person.customId || person._id);
+%>
+
+<div id="content">
+    <h1><%= person.name %></h1>
+
+    <%- include('../people/miniNavigation', { rootPath: rootPath }) %>
+
+</div>
