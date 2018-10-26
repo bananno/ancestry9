@@ -8,4 +8,21 @@
 
     <%- include('../people/miniNavigation', { rootPath: rootPath }) %>
 
+    <h2>Links</h2>
+
+    <div>
+        <% for (var linkType in checklistLinks) { %>
+            <p>
+                <% if (checklistLinks[linkType] == null) { %>
+                    <img height="100" src="/images/check-false.png">
+                    <%= linkType %>
+                <% } else { %>
+                    <img height="100" src="/images/check-true.png">
+                    <%= linkType %>
+                    <%- include('../format/externalLink', { url: checklistLinks[linkType] }) %>
+                <% } %>
+            </p>
+        <% } %>
+    </div>
+
 </div>

@@ -326,10 +326,30 @@ function personResearch(req, res) {
     mongoose.model('Event')
     .find({ people: person })
     .exec(function(err, events) {
+      var checklistLinks = {
+        Ancestry: null,
+        FamilySearch: null,
+        FindAGrave: null,
+        Lundberg: null,
+      };
+
+      person.links.forEach((url) => {
+        if (url.match('lundbergancestry')) {
+          checklistLinks.Lundberg = url;
+        } else if (url.match('ancestry.com')) {
+          checklistLinks.Ancestry = url;
+        } else if (url.match('familysearch.org')) {
+          checklistLinks.FamilySearch = url;
+        } else if (url.match('findagrave')) {
+          checklistLinks.FindAGrave = url;
+        }
+      });
+
       res.format({
         html: function() {
           res.render('people/research', {
             person: person,
+            checklistLinks: checklistLinks,
           });
         }
       });
