@@ -428,18 +428,26 @@ function calculateNationality(person, people, nationality, percentage, safety) {
   safety = safety || 0;
   var country = person.birthCountry;
 
-  if (safety > 3) {
-    console.log('SAFETY');
+  if (safety > 20) {
     return nationality;
   }
 
-  if (country) {
+  if (country == 'United States') {
+    var parentPercentage = percentage / 2;
+    for (var i = 0; i < 2; i++) {
+      if (i < person.parents.length) {
+        var thisPerson = person.parents[i];
+        nationality = calculateNationality(thisPerson, people, nationality, parentPercentage,
+          safety + 1);
+      } else {
+        nationality['unknown'] = nationality['unknown'] || 0;
+        nationality['unknown'] += parentPercentage;
+        return nationality;
+      }
+    }
+  } else {
     nationality[country] = nationality[country] || 0;
     nationality[country] += percentage;
-
-    person.parents.forEach((thisPerson) => {
-      nationality = calculateNationality(thisPerson, people, nationality, percentage/2, safety+1);
-    });
   }
 
   return nationality;
