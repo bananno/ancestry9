@@ -20,6 +20,44 @@
     }
 %>
 
+<script>
+    var monthNames = '<%= monthNames.join(' ') %>'.split(' ');
+
+    function parseQuickDate() {
+        var str = $('#quick-date').val();
+        var arr = str.replace(', ', '')
+            .replace('  ', ' ')
+            .replace('  ', ' ')
+            .split(' ');
+
+        arr.forEach((datePart) => {
+            var intValue = parseInt(datePart);
+
+            if (isNaN(intValue)) {
+                datePart = datePart.toLowerCase();
+                for (var i = 0; i < monthNames.length; i++) {
+                    if (monthNames[i].toLowerCase().match(datePart)) {
+                        $('[name="date_month"]').val(i + 1);
+                        return;
+                    }
+                }
+                return;
+            }
+
+            if (intValue >= 1 && intValue <= 31) {
+                $('[name="date_day"]').val(datePart);
+                return;
+            }
+
+            $('[name="date_year"]').val(datePart);
+        });
+    }
+</script>
+
+<input type="text" id="quick-date" placeholder="quick date" onChange="parseQuickDate()">
+
+<br>
+
 <input type="number" name="date_year" placeholder="year" value="<%= yearValue %>">
 
 <br>
