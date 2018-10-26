@@ -118,17 +118,17 @@
                 </td>
                 <% if (p < numberOfPeople) { %>
                     <% let person = source.people[p]; %>
-                    <form action="<%= deletePersonPath %><%= person.id %>" method="POST">
-                        <td>
-                            <%- include('../partials/linkToPerson', {person: person}) %>
-                        </td>
-                        <td>
-                            <% if (editField == 'none') { %>
+                    <td>
+                        <%- include('../partials/linkToPerson', {person: person}) %>
+                    </td>
+                    <td>
+                        <% if (editField == 'none') { %>
+                            <form action="<%= deletePersonPath %><%= person.id %>" method="POST">
                                 <input type="hidden" value="PUT" name="_method">
                                 <button type="submit">delete</button>
-                            <% } %>
-                        </td>
-                    </form>
+                            </form>
+                        <% } %>
+                    </td>
                 <% } else if (editField == 'none') { %>
                     <td>
                         <a href="<%= addPersonPath %>">add</a>
