@@ -10,18 +10,22 @@
 
     <h2>Links</h2>
 
-    <div>
+    <div class="checklist">
         <% for (var linkType in checklistLinks) { %>
-            <p>
-                <% if (checklistLinks[linkType] == null) { %>
-                    <img height="100" src="/images/check-false.png">
-                    <%= linkType %>
-                <% } else { %>
-                    <img height="100" src="/images/check-true.png">
-                    <%= linkType %>
-                    <%- include('../format/externalLink', { url: checklistLinks[linkType] }) %>
-                <% } %>
-            </p>
+            <%
+                var url = checklistLinks[linkType];
+                var checked = url != null;
+            %>
+            <div class="checklist-item checklist-<%= checked %>">
+                <div class="checkmark">
+                    <img src="/images/check-<%= checked %>.png">
+                </div>
+                <div class="info">
+                    <p>
+                        <b><%= linkType %></b>
+                    </p>
+                </div>
+            </div>
         <% } %>
     </div>
 

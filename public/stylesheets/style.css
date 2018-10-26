@@ -185,3 +185,21 @@ ul.bullet-list,
     width: 100%;
     overflow: scroll;
 }
+
+.checklist .checkmark {
+    width: 30px;
+}
+
+.checklist .checkmark img {
+    height: 20px;
+}
+
+.checklist-item div {
+    display: inline-block;
+    vertical-align: text-top;
+}
+
+.checklist-item {
+    margin-left: 20px;
+    margin-top: 5px;
+}
