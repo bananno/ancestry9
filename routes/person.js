@@ -300,9 +300,7 @@ function personNationality(req, res) {
         return thisPerson;
       });
 
-      var person = people.filter((thisPerson) => {
-        return isSamePerson(thisPerson, req.personId);
-      })[0];
+      var person = populateParents(req.personId, people);
 
       var nationality = calculateNationality(person, people);
 
@@ -322,12 +320,36 @@ function personNationality(req, res) {
 
 // HELPER
 
+function findPersonInList(people, person) {
+  return people.filter((thisPerson) => {
+    return isSamePerson(thisPerson, person);
+  })[0];
+}
+
 function isSamePerson(person1, person2) {
   var id1 = person1._id ? person1._id : person1;
   var id2 = person2._id ? person2._id : person2;
   id1 = '' + id1;
   id2 = '' + id2;
   return id1 == id2;
+}
+
+function populateParents(person, people, safety) {
+  safety = safety || 0;
+
+  if (safety > 30) {
+    return person;
+  }
+
+  person = findPersonInList(people, person);
+
+  person.testMe = 'hello';
+
+  person.parents = person.parents.map((thisPerson) => {
+    return populateParents(thisPerson, people, safety + 1);
+  });
+
+  return person;
 }
 
 function filterEvents(events, person) {
