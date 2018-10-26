@@ -7,12 +7,7 @@
 <div id="content">
     <h1><%= person.name %></h1>
 
-    <ul class="person-navigation">
-        <li><a href="<%= rootPath %>">summary</a></li>
-        <li><a href="<%= rootPath %>/edit">edit person</a></li>
-        <li><a href="<%= rootPath %>/sources">sources</a></li>
-        <li><a href="<%= rootPath %>/nationality">nationality</a></li>
-    </ul>
+    <%- include('../people/miniNavigation', { rootPath: rootPath }) %>
 
     <% for (var i = 0; i < sources.length; i++) { %>
         <%
