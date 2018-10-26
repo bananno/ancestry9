@@ -37,44 +37,51 @@
         }
     }
 
-    var fullViewClass = isCropped ? 'full-view' : '';
-
     function lineIsPartOfTable(str) {
         return str != null && str.length > 0 && str.slice(0, 1) == '\|';
     }
 %>
 
 <div class="text-content">
-    <% if (isCropped) { %>
-        <div class="cropped-view">
-            <% croppedArr.forEach((str, i) => { %>
+    <% for (var r = 0; r < (isCropped ? 2 : 1); r++) { %>
+        <%
+            var divClass = '';
+            var showLink = isCropped && r == 0;
+            var contentList = r == 0 ? croppedArr : fullArr;
+
+            if (r == 0) {
+                divClass = 'cropped-view';
+            } else if (isCropped) {
+                divClass = 'full-view';
+            }
+        %>
+        <div class="<%= divClass %>">
+            <% for (var i = 0; i < contentList.length; i++) { %>
+                <%
+                    var str = contentList[i];
+                    var tableArr = [];
+
+                    if (lineIsPartOfTable(str)) {
+                        tableArr.push(str);
+                        while (lineIsPartOfTable(contentList[i + 1])) {
+                            tableArr.push(contentList[i + 1]);
+                            i += 1;
+                        }
+                    }
+                %>
+
+                <% if (tableArr.length) { %>
+                    <%- include('../format/contentTable', { content: tableArr }) %>
+                <% } else { %>
+                    <p> <%= str %> </p>
+                <% } %>
+            <% } %>
+
+            <% if (showLink) { %>
                 <p>
-                    <%= str %>
+                    <a class="clickable-link" onClick="showMore(this)">show more</a>
                 </p>
-            <% }); %>
-            <a class="clickable-link" onClick="showMore(this)">show more</a>
+            <% } %>
         </div>
     <% } %>
-
-    <div class="<%= fullViewClass %>">
-        <% for (var i = 0; i < fullArr.length; i++) { %>
-            <%
-                var str = fullArr[i];
-                var tableArr = [];
-
-                if (lineIsPartOfTable(str)) {
-                    tableArr.push(str);
-                    while (lineIsPartOfTable(fullArr[i + 1])) {
-                        tableArr.push(fullArr[i + 1]);
-                        i += 1;
-                    }
-                }
-            %>
-            <% if (tableArr.length) { %>
-                <%- include('../format/contentTable', { content: tableArr }) %>
-            <% } else { %>
-                <p> <%= str %> </p>
-            <% } %>
-        <% } %>
-    </div>
 </div>
