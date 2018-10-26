@@ -46,13 +46,10 @@
     <% for (var r = 0; r < (isCropped ? 2 : 1); r++) { %>
         <%
             var divClass = '';
-            var showLink = isCropped && r == 0;
-            var contentList = r == 0 ? croppedArr : fullArr;
-
-            if (r == 0) {
-                divClass = 'cropped-view';
-            } else if (isCropped) {
-                divClass = 'full-view';
+            var showLink = isCropped && r == 1;
+            var contentList = r == 0 ? fullArr : croppedArr;
+            if (isCropped) {
+                divClass = r == 0 ? 'full-view' : 'cropped-view';
             }
         %>
         <div class="<%= divClass %>">
