@@ -12,6 +12,10 @@
     <% for (var i = 0; i < sources.length; i++) { %>
         <%
             var source = sources[i];
+
+            var sourceCitations = citations.filter((thisCitation) => {
+                return ('' + thisCitation.source) == ('' + source._id);
+            });
         %>
 
         <% if (source.type != previousSourceType) { %>
@@ -42,7 +46,17 @@
                 content: source.content,
                 limit: true,
             }) %>
+
+            <% if (sourceCitations.length) { %>
+                <%- include('../partials/citationList', {
+                    citations: sourceCitations,
+                    showDelete: false,
+                    showSource: false,
+                    showPerson: false,
+                    rootPath: rootPath,
+                    groupBy: 'item',
+                }) %>
+            <% } %>
         </div>
     <% } %>
-
 </div>

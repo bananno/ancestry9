@@ -270,15 +270,21 @@ function personSources(req, res, ntext) {
     mongoose.model('Source')
     .find({ people: person })
     .exec(function(err, sources) {
-      res.format({
-        html: function() {
-          sources = sortSources(sources, 'group');
-          res.render('people/sources', {
-            personId: req.personId,
-            person: person,
-            sources: sources,
-          });
-        }
+      mongoose.model('Citation')
+      .find({ person: person })
+      .exec(function(err, citations) {
+        citations = sortCitations(citations, 'item');
+        res.format({
+          html: function() {
+            sources = sortSources(sources, 'group');
+            res.render('people/sources', {
+              personId: req.personId,
+              person: person,
+              sources: sources,
+              citations: citations,
+            });
+          }
+        });
       });
     });
   });
