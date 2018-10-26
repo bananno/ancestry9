@@ -442,7 +442,6 @@ function calculateNationality(person, people, nationality, percentage, safety) {
       } else {
         nationality['unknown'] = nationality['unknown'] || 0;
         nationality['unknown'] += parentPercentage;
-        return nationality;
       }
     }
   } else {
