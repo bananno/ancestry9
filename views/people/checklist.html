@@ -29,4 +29,33 @@
         <% } %>
     </div>
 
+    <h2>Relatives</h2>
+
+    <div class="checklist">
+        <%
+            var parent1 = person.parents.length >= 1;
+            var parent2 = person.parents.length >= 2;
+        %>
+        <div class="checklist-item checklist-<%= parent1 %>">
+            <div class="checkmark">
+                <img src="/images/check-<%= parent1 %>.png">
+            </div>
+            <div class="info">
+                <p>
+                    <b>Parent 1</b>
+                </p>
+            </div>
+        </div>
+        <div class="checklist-item checklist-<%= parent2 %>">
+            <div class="checkmark">
+                <img src="/images/check-<%= parent2 %>.png">
+            </div>
+            <div class="info">
+                <p>
+                    <b>Parent 2</b>
+                </p>
+            </div>
+        </div>
+    </div>
+
 </div>
