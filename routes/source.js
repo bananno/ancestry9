@@ -23,13 +23,15 @@ makeSourcesRoutes('Citation', 'citations', true);
 
 module.exports = router;
 
-function makeSourcesRoutes(urlName, fieldName, canDelete) {
+function makeSourcesRoutes(urlName, fieldName, canDelete, canReorder) {
   if (canDelete) {
     var showOrEditPath = '/:sourceId/add' + urlName;
     var deletePath = '/:sourceId/delete' + urlName + '/:deleteId';
+    var reorderPath = '/:sourceId/reorder' + urlName + '/:orderId';
     router.get(showOrEditPath, makeSourceShowRoute(fieldName));
     router.post(showOrEditPath, makeSourcePostRoute(fieldName));
     router.post(deletePath, makeSourceDeleteRoute(fieldName));
+    router.post(reorderPath, makeSourceReorderRoute(fieldName));
   } else {
     var showOrEditPath = '/:sourceId/edit' + urlName;
     router.get(showOrEditPath, makeSourceShowRoute(fieldName));
@@ -150,4 +152,48 @@ function makeSourceDeleteRoute(editField) {
       });
     });
   };
+}
+
+function makeSourceReorderRoute(editField) {
+  return function(req, res) {
+    var sourceId = req.params.sourceId;
+    mongoose.model('Source')
+    .findById(sourceId)
+    .exec(function(err, source) {
+      var updatedObj = {};
+      updatedObj[editField] = source[editField];
+      var orderId = req.params.orderId;
+
+      if (editField == 'people') {
+        for (var i = 1; i < updatedObj.people.length; i++) {
+          var thisPerson = updatedObj.people[i];
+          if (isSamePerson(thisPerson, orderId)) {
+            updatedObj.people[i] = updatedObj.people[i - 1];
+            updatedObj.people[i - 1] = thisPerson;
+            break;
+          }
+        }
+      } else if (editField == 'links' || editField == 'images') {
+
+      }
+
+      source.update(updatedObj, function(err) {
+        res.format({
+          html: function() {
+            res.redirect('/source/' + sourceId);
+          }
+        });
+      });
+    });
+  };
+}
+
+// HELPER
+
+function isSamePerson(person1, person2) {
+  var id1 = person1._id ? person1._id : person1;
+  var id2 = person2._id ? person2._id : person2;
+  id1 = '' + id1;
+  id2 = '' + id2;
+  return id1 == id2;
 }

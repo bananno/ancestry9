@@ -107,6 +107,7 @@
             var numberOfPeople = source.people.length;
             var addPersonPath = rootPath + '/addPerson';
             var deletePersonPath = rootPath + '/deletePerson/';
+            var reorderPersonPath = rootPath + '/reorderPerson/';
         %>
 
         <% for (var p = 0; p < numberOfPeople + 1; p++) { %>
@@ -129,6 +130,14 @@
                             </form>
                         <% } %>
                     </td>
+                    <% if (editField == 'none' && p > 0) { %>
+                        <td>
+                            <form action="<%= reorderPersonPath %><%= person.id %>" method="POST">
+                                <input type="hidden" value="PUT" name="_method">
+                                <button type="submit">reorder up</button>
+                            </form>
+                        </td>
+                    <% } %>
                 <% } else if (editField == 'none') { %>
                     <td>
                         <a href="<%= addPersonPath %>">add</a>
