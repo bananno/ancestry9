@@ -1,3 +1,8 @@
+<%
+    var person = params.person;
+    var rootPath = '/person/' + (person.customId || person._id);
+%>
+
 <ul class="person-navigation">
     <li><a href="<%= rootPath %>">summary</a></li>
     <li><a href="<%= rootPath %>/edit">edit person</a></li>

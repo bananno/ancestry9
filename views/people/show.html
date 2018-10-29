@@ -4,7 +4,9 @@
 <div id="content">
     <h1><%= person.name %></h1>
 
-    <%- include('../people/personHeader', { rootPath: rootPath }) %>
+    <%- include('../people/personHeader', { params: {
+        person: person,
+    }}) %>
 
     <h2>Family</h2>
 

@@ -7,7 +7,9 @@
 <div id="content">
     <h1><%= person.name %></h1>
 
-    <%- include('../people/personHeader', { rootPath: rootPath }) %>
+    <%- include('../people/personHeader', { params: {
+        person: person,
+    }}) %>
 
     <% for (var i = 0; i < sources.length; i++) { %>
         <%
