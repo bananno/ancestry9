@@ -12,7 +12,7 @@
                     <%= obj.relationship %>
                 </td>
                 <td>
-                    <%= obj.person.name %>
+                    <%- include('../partials/linkToPerson', {person: obj.person}) %>
                 </td>
             </tr>
         <% }); %>
