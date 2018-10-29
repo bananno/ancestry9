@@ -439,10 +439,12 @@ function getRelativesList(people, person) {
 
     peoplePlaced[person._id] = true;
     person = findPersonInList(people, person);
+    var relationship = getGenerationName(direction, generation);
 
     relativeList.push({
       person: person,
-      relationship: direction || '',
+      relationship: relationship,
+      generation: generation,
     });
 
     person.parents.forEach((nextPerson) => {
@@ -457,18 +459,21 @@ function getRelativesList(people, person) {
 
 function getGenerationName(direction, generation) {
   if (generation == 0) {
-    return direction;
+    return '';
   }
   if (generation == 1) {
-    return 'grand' + direction;
+    return 'parent';
   }
   if (generation == 2) {
-    return 'great-grand' + direction;
+    return 'grand' + direction;
   }
   if (generation == 3) {
+    return 'great-grand' + direction;
+  }
+  if (generation == 4) {
     return 'great-great-grand' + direction;
   }
-  return '' + (generation - 1) + '-great-grand' + direction;
+  return '' + (generation - 5) + '-great-grand' + direction;
 }
 
 function filterEvents(events, person) {
