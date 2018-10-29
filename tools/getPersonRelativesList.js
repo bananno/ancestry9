@@ -16,7 +16,7 @@ function getRelativesList(allPeople, person) {
 }
 
 function addRelatives(person, direction, generation, safety) {
-  if (safety > 2) {
+  if (safety > 20) {
     return;
   }
 
@@ -39,6 +39,7 @@ function addRelatives(person, direction, generation, safety) {
   });
 
   person.children.forEach((nextPerson) => {
+    return;
     addRelatives(nextPerson, 'child', generation + 1, safety + 1);
   });
 }
@@ -59,7 +60,7 @@ function getGenerationName(direction, generation) {
   if (generation == 4) {
     return 'great-great-grand' + direction;
   }
-  return '' + (generation - 5) + '-great-grand' + direction;
+  return '' + (generation - 2) + '-great-grand' + direction;
 }
 
 function findPersonInList(people, person) {
