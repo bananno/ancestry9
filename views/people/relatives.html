@@ -7,7 +7,7 @@
 
     <% relationships.forEach((relationship) => { %>
         <div>
-            <h3><%= relationship %></h3>
+            <h3><%= relationship %> (<%= (peopleGroups[relationship] || []).length %>)</h3>
             <% if (peopleGroups[relationship] != null) { %>
                 <ul>
                     <% peopleGroups[relationship].forEach((thisPerson) => { %>

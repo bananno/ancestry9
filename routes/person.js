@@ -338,18 +338,46 @@ function personRelatives(req, res) {
     var peopleGroups = {};
     var peoplePlaced = {};
 
-    peoplePlaced[person._id] = true;
-    peopleGroups['person'] = [person];
-
     relationships.push('person');
+    peopleGroups['person'] = [person];
+    peoplePlaced[person._id] = true;
+
     relationships.push('parents');
-    relationships.push('siblings');
+    peopleGroups['parents'] = [];
+    person.parents.forEach((thisPerson) => {
+      if (peoplePlaced[thisPerson._id] == null) {
+        peopleGroups['parents'].push(thisPerson);
+      }
+    });
+
     relationships.push('spouses');
+    peopleGroups['spouses'] = [];
+    person.spouses.forEach((thisPerson) => {
+      if (peoplePlaced[thisPerson._id] == null) {
+        peopleGroups['spouses'].push(thisPerson);
+      }
+    });
+
     relationships.push('children');
+    relationships.push('grandchildren');
+    peopleGroups['children'] = [];
+    peopleGroups['grandchildren'] = [];
+    person.children.forEach((thisPerson) => {
+      if (peoplePlaced[thisPerson._id] == null) {
+        peoplePlaced[thisPerson._id] = true;
+        peopleGroups['children'].push(thisPerson);
+        thisPerson.children.forEach((thisPerson2) => {
+          thisPerson2 = findPersonInList(people, thisPerson2);
+          if (peoplePlaced[thisPerson2._id] == null) {
+            peoplePlaced[thisPerson2._id] = true;
+            peopleGroups['grandchildren'].push(thisPerson2);
+          }
+        });
+      }
+    });
+
     relationships.push('not found');
-
     peopleGroups['not found'] = [];
-
     people.forEach((thisPerson) => {
       if (peoplePlaced[thisPerson._id] == null) {
         peopleGroups['not found'].push(thisPerson);
