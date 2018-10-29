@@ -334,60 +334,14 @@ function personRelatives(req, res) {
   .populate('children')
   .exec(function(err, people) {
     var person = findPersonInList(people, req.personId);
-    var relationships = [];
-    var peopleGroups = {};
-    var peoplePlaced = {};
-
-    relationships.push('person');
-    peopleGroups['person'] = [person];
-    peoplePlaced[person._id] = true;
-
-    peopleGroups = getRelatives(people, person, relationships, peopleGroups, 0, peoplePlaced, 'children');
-    peopleGroups = getRelatives(people, person, relationships, peopleGroups, 0, peoplePlaced, 'parents');
-
-    relationships.push('spouses');
-    peopleGroups['spouses'] = [];
-    relationships.push('parents-in-law');
-    peopleGroups['parents-in-law'] = [];
-    person.spouses.forEach((thisPerson) => {
-      if (peoplePlaced[thisPerson._id] == null) {
-        peopleGroups['spouses'].push(thisPerson);
-      }
-    });
-
-    relationships.push('children');
-    relationships.push('grandchildren');
-    peopleGroups['children'] = [];
-    peopleGroups['grandchildren'] = [];
-    person.children.forEach((thisPerson) => {
-      if (peoplePlaced[thisPerson._id] == null) {
-        peoplePlaced[thisPerson._id] = true;
-        peopleGroups['children'].push(thisPerson);
-        thisPerson.children.forEach((thisPerson2) => {
-          thisPerson2 = findPersonInList(people, thisPerson2);
-          if (peoplePlaced[thisPerson2._id] == null) {
-            peoplePlaced[thisPerson2._id] = true;
-            peopleGroups['grandchildren'].push(thisPerson2);
-          }
-        });
-      }
-    });
-
-    relationships.push('not found');
-    peopleGroups['not found'] = [];
-    people.forEach((thisPerson) => {
-      if (peoplePlaced[thisPerson._id] == null) {
-        peopleGroups['not found'].push(thisPerson);
-      }
-    });
+    var relativeList = getRelativesList(people, person);
 
     res.format({
       html: function() {
         res.render('people/relatives', {
           person: person,
           people: people,
-          relationships: relationships,
-          peopleGroups: peopleGroups,
+          relativeList: relativeList,
         });
       }
     });
@@ -466,33 +420,39 @@ function populateParents(person, people, safety) {
   return person;
 }
 
-function getRelatives(people, person, relationships, peopleGroups, generation, peoplePlaced, direction, safety) {
-  safety = safety || 0;
+function getRelativesList(people, person) {
+  var relativeList = [];
+  var peoplePlaced = {};
 
-  if (safety > 20) {
-    return peopleGroups;
-  }
+  addRelatives(person, null, 0, 0);
 
-  if (direction == 'parents') {
-    var relationship = getGenerationName(direction, generation);
+  return relativeList;
 
-    if (peopleGroups[relationship] == null) {
-      relationships.push(relationship);
-      peopleGroups[relationship] = [];
+  function addRelatives(person, direction, generation, safety) {
+    if (safety > 2) {
+      return;
     }
 
-    person.parents.forEach((thisPerson) => {
-      thisPerson = findPersonInList(people, thisPerson);
-      if (peoplePlaced[thisPerson._id] == null) {
-        peoplePlaced[thisPerson._id] = true;
-        peopleGroups[relationship].push(thisPerson);
-        peopleGroups = getRelatives(people, thisPerson, relationships, peopleGroups,
-          generation + 1, peoplePlaced, direction, safety + 1);
-      }
+    if (peoplePlaced[person._id] != null) {
+      return;
+    }
+
+    peoplePlaced[person._id] = true;
+    person = findPersonInList(people, person);
+
+    relativeList.push({
+      person: person,
+      relationship: direction || '',
+    });
+
+    person.parents.forEach((nextPerson) => {
+      addRelatives(nextPerson, 'parent', generation + 1, safety + 1);
+    });
+
+    person.children.forEach((nextPerson) => {
+      addRelatives(nextPerson, 'child', generation + 1, safety + 1);
     });
   }
-
-  return peopleGroups;
 }
 
 function getGenerationName(direction, generation) {

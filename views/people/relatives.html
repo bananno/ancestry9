@@ -5,16 +5,16 @@
         person: person,
     }}) %>
 
-    <% relationships.forEach((relationship) => { %>
-        <div>
-            <h3><%= relationship %> (<%= (peopleGroups[relationship] || []).length %>)</h3>
-            <% if (peopleGroups[relationship] != null) { %>
-                <ul>
-                    <% peopleGroups[relationship].forEach((thisPerson) => { %>
-                        <li> <%= thisPerson.name %> </li>
-                    <% }); %>
-                </ul>
-            <% } %>
-        </div>
-    <% }); %>
+    <table border="1">
+        <% relativeList.forEach((obj) => { %>
+            <tr>
+                <td>
+                    <%= obj.relationship %>
+                </td>
+                <td>
+                    <%= obj.person.name %>
+                </td>
+            </tr>
+        <% }); %>
+    </table>
 </div>
