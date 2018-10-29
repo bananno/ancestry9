@@ -12,7 +12,7 @@ function getRelativesList(allPeople, person) {
 
   addRelatives(person, null, 0, 0);
 
-  return relativeList;
+  return sortList(relativeList, relativeList.length);
 }
 
 function addRelatives(person, direction, generation, safety) {
@@ -46,7 +46,7 @@ function addRelatives(person, direction, generation, safety) {
 
 function getGenerationName(direction, generation) {
   if (generation == 0) {
-    return '';
+    return 'person';
   }
   if (generation == 1) {
     return 'parent';
@@ -61,6 +61,25 @@ function getGenerationName(direction, generation) {
     return 'great-great-grand' + direction;
   }
   return '' + (generation - 2) + '-great-grand' + direction;
+}
+
+function sortList(relativeList, endPoint) {
+  var madeChange = false;
+
+  for (var i = 0; i < endPoint - 1; i++) {
+    if (relativeList[i].generation > relativeList[i + 1].generation) {
+      var temp = relativeList[i];
+      relativeList[i] = relativeList[i + 1];
+      relativeList[i + 1] = temp;
+      madeChange = true;
+    }
+  }
+
+  if (madeChange) {
+    return sortList(relativeList, endPoint - 1);
+  }
+
+  return relativeList;
 }
 
 function findPersonInList(people, person) {
