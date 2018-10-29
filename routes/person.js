@@ -338,6 +338,9 @@ function personRelatives(req, res) {
     var peopleGroups = {};
     var peoplePlaced = {};
 
+    peopleGroups = getRelatives(peopleGroups, people, person, 0, peoplePlaced, 'child');
+    peopleGroups = getRelatives(peopleGroups, people, person, 0, peoplePlaced, 'parent');
+
     relationships.push('person');
     peopleGroups['person'] = [person];
     peoplePlaced[person._id] = true;
@@ -352,6 +355,8 @@ function personRelatives(req, res) {
 
     relationships.push('spouses');
     peopleGroups['spouses'] = [];
+    relationships.push('parents-in-law');
+    peopleGroups['parents-in-law'] = [];
     person.spouses.forEach((thisPerson) => {
       if (peoplePlaced[thisPerson._id] == null) {
         peopleGroups['spouses'].push(thisPerson);
@@ -467,6 +472,10 @@ function populateParents(person, people, safety) {
   });
 
   return person;
+}
+
+function getRelatives(peopleGroups, people, person, generation, peoplePlaced, direction) {
+  return peopleGroups;
 }
 
 function filterEvents(events, person) {
