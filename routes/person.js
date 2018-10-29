@@ -333,20 +333,23 @@ function personRelatives(req, res) {
   .populate('spouses')
   .populate('children')
   .exec(function(err, people) {
-    mongoose.model('Person')
-    .findById(req.personId)
-    .populate('parents')
-    .populate('spouses')
-    .populate('children')
-    .exec(function(err, person) {
-      res.format({
-        html: function() {
-          res.render('people/relatives', {
-            person: person,
-            people: people,
-          });
-        }
-      });
+    var person = findPersonInList(people, req.personId);
+    var relationships = [];
+
+    relationships.push('person');
+    relationships.push('parents');
+    relationships.push('siblings');
+    relationships.push('spouses');
+    relationships.push('children');
+
+    res.format({
+      html: function() {
+        res.render('people/relatives', {
+          person: person,
+          people: people,
+          relationships: relationships,
+        });
+      }
     });
   });
 }

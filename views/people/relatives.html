@@ -4,4 +4,10 @@
     <%- include('../people/personHeader', { params: {
         person: person,
     }}) %>
+
+    <% relationships.forEach((relationship) => { %>
+        <div>
+            <h3><%= relationship %></h3>
+        </div>
+    <% }); %>
 </div>
