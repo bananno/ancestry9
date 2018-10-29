@@ -335,12 +335,26 @@ function personRelatives(req, res) {
   .exec(function(err, people) {
     var person = findPersonInList(people, req.personId);
     var relationships = [];
+    var peopleGroups = {};
+    var peoplePlaced = {};
+
+    peoplePlaced[person._id] = true;
+    peopleGroups['person'] = [person];
 
     relationships.push('person');
     relationships.push('parents');
     relationships.push('siblings');
     relationships.push('spouses');
     relationships.push('children');
+    relationships.push('not found');
+
+    peopleGroups['not found'] = [];
+
+    people.forEach((thisPerson) => {
+      if (peoplePlaced[thisPerson._id] == null) {
+        peopleGroups['not found'].push(thisPerson);
+      }
+    });
 
     res.format({
       html: function() {
@@ -348,6 +362,7 @@ function personRelatives(req, res) {
           person: person,
           people: people,
           relationships: relationships,
+          peopleGroups: peopleGroups,
         });
       }
     });

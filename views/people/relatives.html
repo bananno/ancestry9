@@ -8,6 +8,13 @@
     <% relationships.forEach((relationship) => { %>
         <div>
             <h3><%= relationship %></h3>
+            <% if (peopleGroups[relationship] != null) { %>
+                <ul>
+                    <% peopleGroups[relationship].forEach((thisPerson) => { %>
+                        <li> <%= thisPerson.name %> </li>
+                    <% }); %>
+                </ul>
+            <% } %>
         </div>
     <% }); %>
 </div>
