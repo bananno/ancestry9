@@ -338,20 +338,12 @@ function personRelatives(req, res) {
     var peopleGroups = {};
     var peoplePlaced = {};
 
-    peopleGroups = getRelatives(peopleGroups, people, person, 0, peoplePlaced, 'child');
-    peopleGroups = getRelatives(peopleGroups, people, person, 0, peoplePlaced, 'parent');
-
     relationships.push('person');
     peopleGroups['person'] = [person];
     peoplePlaced[person._id] = true;
 
-    relationships.push('parents');
-    peopleGroups['parents'] = [];
-    person.parents.forEach((thisPerson) => {
-      if (peoplePlaced[thisPerson._id] == null) {
-        peopleGroups['parents'].push(thisPerson);
-      }
-    });
+    peopleGroups = getRelatives(people, person, relationships, peopleGroups, 0, peoplePlaced, 'children');
+    peopleGroups = getRelatives(people, person, relationships, peopleGroups, 0, peoplePlaced, 'parents');
 
     relationships.push('spouses');
     peopleGroups['spouses'] = [];
@@ -474,8 +466,49 @@ function populateParents(person, people, safety) {
   return person;
 }
 
-function getRelatives(peopleGroups, people, person, generation, peoplePlaced, direction) {
+function getRelatives(people, person, relationships, peopleGroups, generation, peoplePlaced, direction, safety) {
+  safety = safety || 0;
+
+  if (safety > 20) {
+    return peopleGroups;
+  }
+
+  if (direction == 'parents') {
+    var relationship = getGenerationName(direction, generation);
+
+    if (peopleGroups[relationship] == null) {
+      relationships.push(relationship);
+      peopleGroups[relationship] = [];
+    }
+
+    person.parents.forEach((thisPerson) => {
+      thisPerson = findPersonInList(people, thisPerson);
+      if (peoplePlaced[thisPerson._id] == null) {
+        peoplePlaced[thisPerson._id] = true;
+        peopleGroups[relationship].push(thisPerson);
+        peopleGroups = getRelatives(people, thisPerson, relationships, peopleGroups,
+          generation + 1, peoplePlaced, direction, safety + 1);
+      }
+    });
+  }
+
   return peopleGroups;
+}
+
+function getGenerationName(direction, generation) {
+  if (generation == 0) {
+    return direction;
+  }
+  if (generation == 1) {
+    return 'grand' + direction;
+  }
+  if (generation == 2) {
+    return 'great-grand' + direction;
+  }
+  if (generation == 3) {
+    return 'great-great-grand' + direction;
+  }
+  return '' + (generation - 1) + '-great-grand' + direction;
 }
 
 function filterEvents(events, person) {
