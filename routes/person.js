@@ -7,6 +7,7 @@ var sortCitations = require('../tools/sortCitations');
 var sortSources = require('../tools/sortSources');
 var removePersonFromList = require('../tools/removePersonFromList');
 var getNewEventValues = require('../tools/getNewEventValues');
+var getPersonRelativesList = require('../tools/getPersonRelativesList');
 
 convertParamPersonId();
 
