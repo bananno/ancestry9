@@ -3,14 +3,17 @@
     var rootPath = '/person/' + (person.customId || person._id);
 %>
 
-<h1><%= person.name %></h1>
+<div class="column">
+    <img src="/images/generic-profile-picture.png" class="profile-picture">
+</div>
 
-<img src="/images/generic-profile-picture.png">
-
-<ul class="person-navigation">
-    <li><a href="<%= rootPath %>">summary</a></li>
-    <li><a href="<%= rootPath %>/edit">edit person</a></li>
-    <li><a href="<%= rootPath %>/sources">sources</a></li>
-    <li><a href="<%= rootPath %>/nationality">nationality</a></li>
-    <li><a href="<%= rootPath %>/checklist">checklist</a></li>
-</ul>
+<div class="column">
+    <h1><%= person.name %></h1>
+    <ul class="person-navigation">
+        <li><a href="<%= rootPath %>">summary</a></li>
+        <li><a href="<%= rootPath %>/edit">edit person</a></li>
+        <li><a href="<%= rootPath %>/sources">sources</a></li>
+        <li><a href="<%= rootPath %>/nationality">nationality</a></li>
+        <li><a href="<%= rootPath %>/checklist">checklist</a></li>
+    </ul>
+</div>

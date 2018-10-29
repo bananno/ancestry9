@@ -203,3 +203,12 @@ ul.bullet-list,
     margin-left: 20px;
     margin-top: 5px;
 }
+
+.column {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.profile-picture {
+    max-height: 100px;
+}
