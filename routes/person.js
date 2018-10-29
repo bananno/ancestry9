@@ -13,6 +13,7 @@ convertParamPersonId();
 router.get('/:personId', makeRouteGet('none'));
 router.get('/:personId/sources', personSources);
 router.get('/:personId/nationality', personNationality);
+router.get('/:personId/relatives', personRelatives);
 router.get('/:personId/checklist', personChecklist);
 
 router.get('/:personId/addEvent', makeRouteGet('events'));
@@ -318,6 +319,31 @@ function personNationality(req, res) {
             person: person,
             people: people,
             nationality: nationality,
+          });
+        }
+      });
+    });
+  });
+}
+
+function personRelatives(req, res) {
+  mongoose.model('Person')
+  .find({})
+  .populate('parents')
+  .populate('spouses')
+  .populate('children')
+  .exec(function(err, people) {
+    mongoose.model('Person')
+    .findById(req.personId)
+    .populate('parents')
+    .populate('spouses')
+    .populate('children')
+    .exec(function(err, person) {
+      res.format({
+        html: function() {
+          res.render('people/relatives', {
+            person: person,
+            people: people,
           });
         }
       });
