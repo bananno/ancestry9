@@ -4,6 +4,7 @@ var router = express.Router();
 
 var getDateValues = require('../tools/getDateValues');
 var getLocationValues = require('../tools/getLocationValues');
+var removePersonFromList = require('../tools/removePersonFromList');
 
 router.get('/:eventId', makeEventShowRoute('none'));
 router.post('/:eventId/delete', deleteEvent);
@@ -13,6 +14,7 @@ router.get('/:eventId/editDate', makeEventShowRoute('date'));
 router.post('/:eventId/editDate', makeEventPostRoute('date'));
 router.get('/:eventId/addPerson', makeEventShowRoute('people'));
 router.post('/:eventId/addPerson', makeEventPostRoute('people'));
+router.post('/:eventId/deletePerson/:deleteId', makeEventDeleteRoute('people'));
 router.get('/:eventId/editLocation', makeEventShowRoute('location'));
 router.post('/:eventId/editLocation', makeEventPostRoute('location'));
 router.get('/:eventId/edit/notes', makeEventShowRoute('notes'));
@@ -58,6 +60,28 @@ function makeEventPostRoute(editField) {
         updatedObj[editField].push(personId);
       } else {
         updatedObj[editField] = req.body[editField];
+      }
+
+      event.update(updatedObj, function(err) {
+        res.format({
+          html: function() {
+            res.redirect('/event/' + eventId);
+          }
+        });
+      });
+    });
+  };
+}
+
+function makeEventDeleteRoute(editField) {
+  return function(req, res) {
+    var eventId = req.params.eventId;
+    mongoose.model('Event').findById(eventId, function(err, event) {
+      var updatedObj = {};
+      var deleteId = req.params.deleteId;
+
+      if (editField == 'people') {
+        updatedObj[editField] = removePersonFromList(event.people, deleteId);
       }
 
       event.update(updatedObj, function(err) {
