@@ -29,7 +29,7 @@ function sourcesShouldSwap(source1, source2, sortBy) {
 
 function compareGroup(type1, group1, type2, group2) {
   var sort1 = ((type1 || '') + ' ' + (group1 || '')).toLowerCase();
-  var sort2 = ((type2 || '') + ' ' + (type2 || '')).toLowerCase();
+  var sort2 = ((type2 || '') + ' ' + (group2 || '')).toLowerCase();
 
   return sort1 > sort2;
 }
