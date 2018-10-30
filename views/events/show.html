@@ -114,7 +114,8 @@
                 </td>
                 <% if (p < numberOfPeople) { %>
                     <% let person = event.people[p]; %>
-                    <form action="<%= deletePersonPath %><%= person.id %>" method="POST">
+                    <form action="<%= deletePersonPath %><%= person.id %>" method="POST"
+                            onsubmit="return confirmDeletion('person from event')">
                         <td>
                             <%- include('../partials/linkToPerson', {person: person}) %>
                         </td>
