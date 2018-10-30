@@ -357,7 +357,7 @@ function personChecklist(req, res) {
     .find({ people: person })
     .exec(function(err, events) {
       mongoose.model('Source')
-      .find({ people: person })
+      .find({ people: person, type: 'document' })
       .exec(function(err, sources) {
         var checklistLinks = {
           Ancestry: null,
@@ -413,7 +413,13 @@ function personChecklist(req, res) {
           } else if (deathYear < year) {
             continue;
           }
-          sourceChecklist['Census USA ' + year] = false;
+          var sourceName = 'Census USA ' + year;
+          sourceChecklist[sourceName] = false;
+          sources.forEach((thisSource) => {
+            if (thisSource.group == sourceName) {
+              sourceChecklist[sourceName] = true;
+            }
+          });
         }
 
         res.format({
