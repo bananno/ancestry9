@@ -357,7 +357,7 @@ function personChecklist(req, res) {
     .find({ people: person })
     .exec(function(err, events) {
       mongoose.model('Source')
-      .find({ people: person, type: 'document' })
+      .find({ people: person })
       .exec(function(err, sources) {
         var checklistLinks = {
           Ancestry: null,
@@ -401,6 +401,10 @@ function personChecklist(req, res) {
         });
 
         var sourceChecklist = {};
+
+        sourceChecklist['grave'] = sources.filter((thisSource) => {
+          return thisSource.type == 'grave';
+        }).length > 0;
 
         for (var year = 1840; year <= 1940; year += 10) {
           if (birthYear != null && birthYear > year) {
