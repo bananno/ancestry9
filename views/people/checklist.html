@@ -58,4 +58,24 @@
         </div>
     </div>
 
+    <h2>Life</h2>
+
+    <div class="checklist">
+        <% for (var lifeItem in checklistLife) { %>
+            <%
+                var isChecked = checklistLife[lifeItem];
+            %>
+            <div class="checklist-item checklist-<%= isChecked %>">
+                <div class="checkmark">
+                    <img src="/images/check-<%= isChecked %>.png">
+                </div>
+                <div class="info">
+                    <p>
+                        <b><%= lifeItem %></b>
+                    </p>
+                </div>
+            </div>
+        <% } %>
+    </div>
+
 </div>

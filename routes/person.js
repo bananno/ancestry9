@@ -375,11 +375,29 @@ function personChecklist(req, res) {
         }
       });
 
+      var checklistLife = {
+        'Birth date': false,
+        'Death date': false,
+      };
+
+      events.forEach((thisEvent) => {
+        if (thisEvent.title == 'birth') {
+          if (thisEvent.date != null && thisEvent.date.year != null) {
+            checklistLife['Birth date'] = true;
+          }
+        } else if (thisEvent.title == 'death') {
+          if (thisEvent.date != null && thisEvent.date.year != null) {
+            checklistLife['Death date'] = true;
+          }
+        }
+      });
+
       res.format({
         html: function() {
           res.render('people/checklist', {
             person: person,
             checklistLinks: checklistLinks,
+            checklistLife: checklistLife,
           });
         }
       });
