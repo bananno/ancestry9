@@ -356,72 +356,76 @@ function personChecklist(req, res) {
     mongoose.model('Event')
     .find({ people: person })
     .exec(function(err, events) {
-      var checklistLinks = {
-        Ancestry: null,
-        FamilySearch: null,
-        FindAGrave: null,
-        Lundberg: null,
-      };
+      mongoose.model('Source')
+      .find({ people: person })
+      .exec(function(err, sources) {
+        var checklistLinks = {
+          Ancestry: null,
+          FamilySearch: null,
+          FindAGrave: null,
+          Lundberg: null,
+        };
 
-      person.links.forEach((url) => {
-        if (url.match('lundbergancestry')) {
-          checklistLinks.Lundberg = url;
-        } else if (url.match('ancestry.com')) {
-          checklistLinks.Ancestry = url;
-        } else if (url.match('familysearch.org')) {
-          checklistLinks.FamilySearch = url;
-        } else if (url.match('findagrave')) {
-          checklistLinks.FindAGrave = url;
-        }
-      });
-
-      var checklistLife = {
-        'Birth date': false,
-        'Death date': false,
-      };
-
-      var birthYear = null;
-      var deathYear = null;
-
-      events.forEach((thisEvent) => {
-        if (thisEvent.title == 'birth') {
-          if (thisEvent.date != null && thisEvent.date.year != null) {
-            checklistLife['Birth date'] = true;
-            birthYear = thisEvent.date.year;
+        person.links.forEach((url) => {
+          if (url.match('lundbergancestry')) {
+            checklistLinks.Lundberg = url;
+          } else if (url.match('ancestry.com')) {
+            checklistLinks.Ancestry = url;
+          } else if (url.match('familysearch.org')) {
+            checklistLinks.FamilySearch = url;
+          } else if (url.match('findagrave')) {
+            checklistLinks.FindAGrave = url;
           }
-        } else if (thisEvent.title == 'death') {
-          if (thisEvent.date != null && thisEvent.date.year != null) {
-            checklistLife['Death date'] = true;
-            deathYear = thisEvent.date.year;
+        });
+
+        var checklistLife = {
+          'Birth date': false,
+          'Death date': false,
+        };
+
+        var birthYear = null;
+        var deathYear = null;
+
+        events.forEach((thisEvent) => {
+          if (thisEvent.title == 'birth') {
+            if (thisEvent.date != null && thisEvent.date.year != null) {
+              checklistLife['Birth date'] = true;
+              birthYear = thisEvent.date.year;
+            }
+          } else if (thisEvent.title == 'death') {
+            if (thisEvent.date != null && thisEvent.date.year != null) {
+              checklistLife['Death date'] = true;
+              deathYear = thisEvent.date.year;
+            }
           }
-        }
-      });
+        });
 
-      var sourceChecklist = {};
+        var sourceChecklist = {};
 
-      for (var year = 1840; year <= 1940; year += 10) {
-        if (birthYear != null && birthYear > year) {
-          continue;
-        }
-        if (deathYear == null) {
-          if (birthYear != null && year - birthYear > 90) {
+        for (var year = 1840; year <= 1940; year += 10) {
+          if (birthYear != null && birthYear > year) {
             continue;
           }
-        } else if (deathYear < year) {
-          continue;
+          if (deathYear == null) {
+            if (birthYear != null && year - birthYear > 90) {
+              continue;
+            }
+          } else if (deathYear < year) {
+            continue;
+          }
+          sourceChecklist['Census USA ' + year] = false;
         }
-        sourceChecklist['Census USA ' + year] = false;
-      }
 
-      res.format({
-        html: function() {
-          res.render('people/checklist', {
-            person: person,
-            checklistLinks: checklistLinks,
-            checklistLife: checklistLife,
-            sourceChecklist: sourceChecklist,
-          });
-        }
+        res.format({
+          html: function() {
+            res.render('people/checklist', {
+              person: person,
+              checklistLinks: checklistLinks,
+              checklistLife: checklistLife,
+              sourceChecklist: sourceChecklist,
+            });
+          }
+        });
       });
     });
   });
