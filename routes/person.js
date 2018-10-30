@@ -392,14 +392,26 @@ function personChecklist(req, res) {
         } else if (thisEvent.title == 'death') {
           if (thisEvent.date != null && thisEvent.date.year != null) {
             checklistLife['Death date'] = true;
-            birthYear = thisEvent.date.year;
+            deathYear = thisEvent.date.year;
           }
         }
       });
 
-      var sourceChecklist = {
-        'USFC 1940': false,
-      };
+      var sourceChecklist = {};
+
+      for (var year = 1840; year <= 1940; year += 10) {
+        if (birthYear != null && birthYear > year) {
+          continue;
+        }
+        if (deathYear == null) {
+          if (birthYear != null && year - birthYear > 90) {
+            continue;
+          }
+        } else if (deathYear < year) {
+          continue;
+        }
+        sourceChecklist['Census USA ' + year] = false;
+      }
 
       res.format({
         html: function() {
