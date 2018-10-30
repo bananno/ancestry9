@@ -380,17 +380,26 @@ function personChecklist(req, res) {
         'Death date': false,
       };
 
+      var birthYear = null;
+      var deathYear = null;
+
       events.forEach((thisEvent) => {
         if (thisEvent.title == 'birth') {
           if (thisEvent.date != null && thisEvent.date.year != null) {
             checklistLife['Birth date'] = true;
+            birthYear = thisEvent.date.year;
           }
         } else if (thisEvent.title == 'death') {
           if (thisEvent.date != null && thisEvent.date.year != null) {
             checklistLife['Death date'] = true;
+            birthYear = thisEvent.date.year;
           }
         }
       });
+
+      var sourceChecklist = {
+        'USFC 1940': false,
+      };
 
       res.format({
         html: function() {
@@ -398,6 +407,7 @@ function personChecklist(req, res) {
             person: person,
             checklistLinks: checklistLinks,
             checklistLife: checklistLife,
+            sourceChecklist: sourceChecklist,
           });
         }
       });
