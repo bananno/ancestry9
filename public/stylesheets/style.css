@@ -17,7 +17,7 @@ table {
 }
 
 #page-content {
-    margin: 15px 100px 15px 100px;
+    margin: 15px 100px;
 }
 
 /* LINKS */
@@ -135,7 +135,7 @@ ul.bullet-list li {
 
 .text-content {
     max-width: 700px;
-    margin: 10px;
+    margin: 10px 0px;
 }
 
 .source-item-box {
