@@ -193,7 +193,7 @@ function createNewSource(req, res) {
     } else {
       res.format({
         html: function() {
-          res.redirect('/source/' + source._id);
+          res.redirect('/source/' + source._id + '/edit');
         }
       });
     }
