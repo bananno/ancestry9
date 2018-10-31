@@ -25,7 +25,10 @@
 
     function parseQuickDate() {
         var str = $('#quick-date').val();
-        var arr = str.replace(', ', '')
+        var arr = str
+            .replace(',', ' ')
+            .replace('.', ' ')
+            .replace('  ', ' ')
             .replace('  ', ' ')
             .replace('  ', ' ')
             .split(' ');
