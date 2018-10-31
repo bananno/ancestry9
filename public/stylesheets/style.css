@@ -12,6 +12,16 @@ body {
     background-color: #eaf7ff;
 }
 
+table {
+    border-collapse: collapse;
+}
+
+#page-content {
+    margin: 15px 100px 15px 100px;
+}
+
+/* LINKS */
+
 a {
     color: #00B7FF;
 }
@@ -29,9 +39,7 @@ a.main-link {
     margin: 10px;
 }
 
-table {
-    border-collapse: collapse;
-}
+/* PRIMARY ELEMENTS */
 
 button {
     padding: 5px;
@@ -42,6 +50,18 @@ button {
 h1, h2, h3 {
     margin: 10px 0px;
 }
+
+/* REUSABLE */
+
+ul.bullet-list {
+    margin-left: 25px;
+}
+
+ul.bullet-list li {
+    padding: 3px;
+}
+
+/* OTHER */
 
 #main_navigation {
     list-style: none;
@@ -168,7 +188,6 @@ h1, h2, h3 {
     display: inline-block;
 }
 
-ul.bullet-list,
 .family-list-block ul {
     margin-left: 25px;
 }
