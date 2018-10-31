@@ -1,6 +1,9 @@
 <%- include ../partials/header %>
 
-<% var rootPath = '/source/' + source._id; %>
+<%
+    var rootPath = '/source/' + source._id;
+    var rootEditPath = '/source/' + source._id + '/edit';
+%>
 
 <div id="page-content">
     <%- include('./sourceHeader', { params: {
@@ -16,7 +19,7 @@
 
         <% stringAttributes.forEach((attr) => { %>
             <%
-                var editAttrPath = rootPath + '/edit/' + attr;
+                var editAttrPath = rootEditPath + '/' + attr;
                 var currentValue = source[attr];
             %>
             <tr>
@@ -35,7 +38,7 @@
                         <% if (editField == attr) { %>
                             <input type="hidden" value="PUT" name="_method">
                             <button type="submit">save</button>
-                            <a href="<%= rootPath %>">cancel</a>
+                            <a href="<%= rootEditPath %>">cancel</a>
                         <% } else if (editField == 'none') { %>
                             <a href="<%= editAttrPath %>">edit</a>
                         <% } %>
@@ -50,7 +53,7 @@
         <!-- DATE -->
 
         <%
-            var editDatePath = rootPath + '/edit/date';
+            var editDatePath = rootEditPath + '/date';
         %>
 
         <tr>
@@ -69,7 +72,7 @@
                     <% if (editField == 'date') { %>
                         <input type="hidden" value="PUT" name="_method">
                         <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
+                        <a href="<%= rootEditPath %>">cancel</a>
                     <% } else if (editField == 'none') { %>
                         <a href="<%= editDatePath %>">edit</a>
                     <% } %>
@@ -83,7 +86,7 @@
         <!-- LOCATION -->
 
         <%
-            var editLocationPath = rootPath + '/edit/location';
+            var editLocationPath = rootEditPath + '/location';
         %>
 
         <tr>
@@ -102,7 +105,7 @@
                     <% if (editField == 'location') { %>
                         <input type="hidden" value="PUT" name="_method">
                         <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
+                        <a href="<%= rootEditPath %>">cancel</a>
                     <% } else if (editField == 'none') { %>
                         <a href="<%= editLocationPath %>">edit</a>
                     <% } %>
@@ -168,7 +171,7 @@
                         <td>
                             <input type="hidden" value="PUT" name="_method">
                             <button type="submit">save</button>
-                            <a href="<%= rootPath %>">cancel</a>
+                            <a href="<%= rootEditPath %>">cancel</a>
                         </td>
                     </form>
                 <% } %>
@@ -179,7 +182,7 @@
 
         <%- include('../forms/links', {
             links: source.links,
-            rootPath: rootPath,
+            rootPath: rootEditPath,
             addLinkPath: rootPath + '/addLink',
             deleteLinkPath: rootPath + '/deleteLink',
             editActive: editField == 'links',
@@ -190,7 +193,7 @@
 
         <%- include('../forms/images', {
             images: source.images,
-            rootPath: rootPath,
+            rootPath: rootEditPath,
             addImagePath: rootPath + '/addImage',
             deleteImagePath: rootPath + '/deleteImage',
             editActive: editField == 'images',
@@ -200,7 +203,7 @@
         <!-- NOTES -->
 
         <%
-            var editNotesPath = rootPath + '/edit/notes';
+            var editNotesPath = rootEditPath + '/notes';
             var notesList = [];
             if (source.notes) {
                 notesList = source.notes.split('\n');
@@ -227,7 +230,7 @@
                     <% if (editField == 'notes') { %>
                         <input type="hidden" value="PUT" name="_method">
                         <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
+                        <a href="<%= rootEditPath %>">cancel</a>
                     <% } else if (editField == 'none') { %>
                         <a href="<%= editNotesPath %>">edit</a>
                     <% } %>
@@ -243,7 +246,7 @@
     <!-- CONTENT -->
 
     <%
-        var editContentPath = rootPath + '/edit/content';
+        var editContentPath = rootEditPath + '/content';
     %>
 
     <h2>Content</h2>
@@ -259,7 +262,7 @@
             <textarea name="content" class="content-textarea"><%= source.content %></textarea>
             <input type="hidden" value="PUT" name="_method">
             <button type="submit">save</button>
-            <a href="<%= rootPath %>">cancel</a>
+            <a href="<%= rootEditPath %>">cancel</a>
         <% } else { %>
             <%- include('../format/content', {
                 content: source.content,
@@ -318,7 +321,7 @@
             </p>
         </form>
         <p>
-            <a href="<%= rootPath %>">cancel</a>
+            <a href="<%= rootEditPath %>">cancel</a>
         </p>
     <% } else if (editField == 'none') { %>
         <p>
