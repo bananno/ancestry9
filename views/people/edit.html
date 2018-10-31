@@ -84,8 +84,8 @@
         <%- include('../forms/links', { params: {
             links: person.links,
             rootPath: rootPath,
-            editActive: editView == 'links',
-            editAvailable: editView == 'none',
+            editIsActive: editView == 'links',
+            editIsAvailable: editView == 'none',
         }}) %>
 
     </table>

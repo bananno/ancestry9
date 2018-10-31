@@ -1,8 +1,8 @@
 <%
     var links = params.links;
     var rootPath = params.rootPath;
-    var editActive = params.editActive;
-    var editAvailable = params.editAvailable;
+    var editIsActive = params.editIsActive;
+    var editIsAvailable = params.editIsAvailable;
 
     var addLinkPath = rootPath + '/add/links';
     var deleteLinkPath = rootPath + '/delete/links';
@@ -11,7 +11,7 @@
     var numberOfLinks = links.length;
     var extraRows = 0;
 
-    if (editAvailable || editActive) {
+    if (editIsAvailable || editIsActive) {
         extraRows += 1;
     }
 
@@ -29,7 +29,7 @@
             <td>
                 <%- include('../format/externalLink', { url: links[i] }) %>
             </td>
-            <% if (editAvailable) { %>
+            <% if (editIsAvailable) { %>
                 <td>
                     <form action="<%= deleteLinkPath %>/<%= i %>" method="POST"
                             onsubmit="return confirmDeletion('link')">
@@ -51,20 +51,20 @@
         <% } else { %>
             <form action="<%= addLinkPath %>" method="POST">
                 <td>
-                    <% if (editAvailable) { %>
+                    <% if (editIsAvailable) { %>
                         <a href="<%= addLinkPath %>">add</a>
-                    <% } else if (editActive) { %>
+                    <% } else if (editIsActive) { %>
                         <input type="text" value="" name="links">
                     <% } %>
                 </td>
                 <td>
-                    <% if (editActive) { %>
+                    <% if (editIsActive) { %>
                         <input type="hidden" value="PUT" name="_method">
                         <button type="submit">save</button>
                         <a href="<%= rootPath %>/edit">cancel</a>
                     <% } %>
                 </td>
-                <% if (editAvailable) { %>
+                <% if (editIsAvailable) { %>
                     <td></td>
                 <% } %>
             </form>
