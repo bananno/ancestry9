@@ -239,31 +239,26 @@
             </td>
             <form action="<%= editNotesPath %>" method="POST">
                 <td>
-                    <% if (editField == 'notes') { %>
-                        <textarea name="notes" class="content-textarea"><%= source.notes %></textarea>
-                    <% } else { %>
-                        <% notesList.forEach((str) => { %>
+                    <div item="notes" class="value-show">
+                        <% notesList.forEach(str => { %>
                             <p>
                                 <%= str %>
                             </p>
                         <% }); %>
-                    <% } %>
+                    </div>
+                    <input item="notes" class="value-original" type="hidden" value="<%= source.notes %>">
+                    <textarea item="notes" class="value-edit" name="notes"><%= source.notes %></textarea>
                 </td>
                 <td>
-                    <% if (editField == 'notes') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootEditPath %>">cancel</a>
-                    <% } else if (editField == 'none') { %>
-                        <a href="<%= editNotesPath %>">edit</a>
-                    <% } %>
+                    <input type="hidden" value="PUT" name="_method">
+                    <button item="notes" class="button-submit" type="submit">save</button>
+                    <a item="notes" class="link-start" onclick="startEdit('notes')">edit</a>
+                    <a item="notes" class="link-cancel" onclick="cancelEdit()">cancel</a>
                 </td>
-                <% if (editField == 'none') { %>
-                    <td></td>
-                <% } %>
+                <td>
+                </td>
             </form>
         </tr>
-
     </table>
 
     <!-- CONTENT -->
