@@ -83,10 +83,7 @@
 
         <%- include('../forms/links', { params: {
             links: person.links,
-            rootPath: rootEditPath,
-            addLinkPath: rootPath + '/edit/links',
-            deleteLinkPath: rootPath + '/delete/links',
-            reorderLinkPath: rootPath + '/reorder/links',
+            rootPath: rootPath,
             editActive: editView == 'links',
             editAvailable: editView == 'none',
         }}) %>
