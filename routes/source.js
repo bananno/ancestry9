@@ -9,22 +9,22 @@ var removePersonFromList = require('../tools/removePersonFromList');
 router.get('/:sourceId', makeRouteGet('none'));
 router.get('/:sourceId/edit', makeRouteEditGet('none'));
 
-makeSourcesRoutes('/type', 'type');
-makeSourcesRoutes('/group', 'group');
-makeSourcesRoutes('/title', 'title');
-makeSourcesRoutes('/date', 'date');
-makeSourcesRoutes('/location', 'location');
-makeSourcesRoutes('Person', 'people', true);
-makeSourcesRoutes('/links', 'links', true);
-makeSourcesRoutes('Image', 'images', true);
-makeSourcesRoutes('/content', 'content');
-makeSourcesRoutes('/notes', 'notes');
+makeSourcesRoutes('type', '/type');
+makeSourcesRoutes('group', '/group');
+makeSourcesRoutes('title', '/title');
+makeSourcesRoutes('date', '/date');
+makeSourcesRoutes('location', '/location');
+makeSourcesRoutes('people', 'Person', true);
+makeSourcesRoutes('links', '/links', true);
+makeSourcesRoutes('images', 'Image', true);
+makeSourcesRoutes('content', '/content');
+makeSourcesRoutes('notes', '/notes');
 
 makeSourcesRoutes('Citation', 'citations', true);
 
 module.exports = router;
 
-function makeSourcesRoutes(urlName, fieldName, canDelete, canReorder) {
+function makeSourcesRoutes(fieldName, urlName, canDelete) {
   if (canDelete) {
     var showOrEditPath = '/:sourceId/add' + urlName;
     var deletePath = '/:sourceId/delete' + urlName + '/:deleteId';
