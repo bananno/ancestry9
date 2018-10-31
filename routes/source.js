@@ -152,7 +152,7 @@ function makeRouteEditPost(editField) {
       source.update(updatedObj, function(err) {
         res.format({
           html: function() {
-            res.redirect('/source/' + sourceId);
+            res.redirect('/source/' + sourceId + '/edit');
           }
         });
       });
@@ -183,7 +183,7 @@ function makeRouteDelete(editField) {
       source.update(updatedObj, function(err) {
         res.format({
           html: function() {
-            res.redirect('/source/' + sourceId);
+            res.redirect('/source/' + sourceId + '/edit');
           }
         });
       });
@@ -217,7 +217,7 @@ function makeRouteReorder(editField) {
       source.update(updatedObj, function(err) {
         res.format({
           html: function() {
-            res.redirect('/source/' + sourceId);
+            res.redirect('/source/' + sourceId + '/edit');
           }
         });
       });
