@@ -31,6 +31,7 @@ router.post('/:personId/edit/id', makeRouteEditPost('customId'));
 router.get('/:personId/edit/links', makeRouteEditGet('links'));
 router.post('/:personId/edit/links', makeRouteEditPost('links'));
 router.post('/:personId/delete/links/:deleteId', makeRouteDelete('links'));
+router.post('/:personId/reorder/links/:orderId', makeRouteReorder('links'));
 
 createRelationshipRoutes('parents', 'children');
 createRelationshipRoutes('spouses', 'spouses');
@@ -249,6 +250,35 @@ function makeRouteDelete(editField, corresponding) {
       updatedObj[editField] = person[editField].filter((url, i) => {
         return i != deleteId;
       });
+    }
+
+    person.update(updatedObj, function(err) {
+      if (err) {
+        res.send('There was a problem updating the information to the database: ' + err);
+      } else {
+        res.format({
+          html: function() {
+            res.redirect('/person/' + (person.customId || person._id) + '/edit');
+          }
+        });
+       }
+    });
+  };
+}
+
+function makeRouteReorder(editField) {
+  return function(req, res) {
+    var person = req.person;
+    var updatedObj = {};
+    var orderId = req.params.orderId;
+    updatedObj[editField] = person[editField];
+
+    if (editField == 'links' || editField == 'images') {
+      if (orderId > 0 && updatedObj[editField].length > orderId) {
+        var temp = updatedObj[editField][orderId - 1];
+        updatedObj[editField][orderId - 1] = updatedObj[editField][orderId];
+        updatedObj[editField][orderId] = temp;
+      }
     }
 
     person.update(updatedObj, function(err) {
