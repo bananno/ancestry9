@@ -9,22 +9,25 @@ var removePersonFromList = require('../tools/removePersonFromList');
 router.get('/:sourceId', makeRouteGet('none'));
 router.get('/:sourceId/edit', makeRouteEditGet('none'));
 
-makeSourcesRoutes('type', '/type');
-makeSourcesRoutes('group', '/group');
-makeSourcesRoutes('title', '/title');
-makeSourcesRoutes('date', '/date');
-makeSourcesRoutes('location', '/location');
+makeSourcesRoutes('type');
+makeSourcesRoutes('group');
+makeSourcesRoutes('title');
+makeSourcesRoutes('date');
+makeSourcesRoutes('location');
 makeSourcesRoutes('people', 'Person', true);
-makeSourcesRoutes('links', '/links', true);
+makeSourcesRoutes('links', null, true);
 makeSourcesRoutes('images', 'Image', true);
-makeSourcesRoutes('content', '/content');
-makeSourcesRoutes('notes', '/notes');
+makeSourcesRoutes('content');
+makeSourcesRoutes('notes');
 
 makeSourcesRoutes('Citation', 'citations', true);
 
 module.exports = router;
 
 function makeSourcesRoutes(fieldName, urlName, canDelete) {
+  if (urlName == null) {
+    urlName = '/' + fieldName;
+  }
   if (canDelete) {
     var showOrEditPath = '/:sourceId/add' + urlName;
     var deletePath = '/:sourceId/delete' + urlName + '/:deleteId';
