@@ -6,7 +6,7 @@ var getDateValues = require('../tools/getDateValues');
 var getLocationValues = require('../tools/getLocationValues');
 var removePersonFromList = require('../tools/removePersonFromList');
 
-router.get('/:sourceId', makeRouteEditGet('none'));
+router.get('/:sourceId', makeRouteGet('none'));
 router.get('/:sourceId/edit', makeRouteEditGet('none'));
 
 makeSourcesRoutes('/type', 'type');
@@ -40,7 +40,7 @@ function makeSourcesRoutes(urlName, fieldName, canDelete, canReorder) {
   }
 }
 
-function makeRouteEditGet(editField) {
+function makeRouteGet(editField) {
   return function(req, res, next) {
     var sourceId = req.params.sourceId;
     mongoose.model('Source')
@@ -63,6 +63,42 @@ function makeRouteEditGet(editField) {
           res.format({
             html: function() {
               res.render('sources/show', {
+                source: source,
+                editField: editField,
+                people: people,
+                citations: citations,
+              });
+            }
+          });
+        });
+      });
+    });
+  };
+}
+
+function makeRouteEditGet(editField) {
+  return function(req, res, next) {
+    var sourceId = req.params.sourceId;
+    mongoose.model('Source')
+    .findById(sourceId)
+    .populate('people')
+    .exec(function(err, source) {
+      mongoose.model('Person')
+      .find({})
+      .exec(function(err, people) {
+        mongoose.model('Citation')
+        .find({ source: source })
+        .populate('person')
+        .exec(function(err, citations) {
+          source.people.forEach((thisPerson) => {
+            people = removePersonFromList(people, thisPerson);
+          });
+
+          people = [].concat(source.people).concat(people);
+
+          res.format({
+            html: function() {
+              res.render('sources/edit', {
                 source: source,
                 editField: editField,
                 people: people,
