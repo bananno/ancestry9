@@ -14,17 +14,16 @@ makeSourcesRoutes('group');
 makeSourcesRoutes('title');
 makeSourcesRoutes('date');
 makeSourcesRoutes('location');
-makeSourcesRoutes('people', 'Person', true);
-makeSourcesRoutes('links', null, true);
-makeSourcesRoutes('images', 'Image', true);
+makeSourcesRoutes('people', true, 'Person');
+makeSourcesRoutes('links', true);
+makeSourcesRoutes('images', true, 'Image');
 makeSourcesRoutes('content');
 makeSourcesRoutes('notes');
-
-makeSourcesRoutes('citations', 'Citation', true);
+makeSourcesRoutes('citations', true, 'Citation');
 
 module.exports = router;
 
-function makeSourcesRoutes(fieldName, urlName, canDelete) {
+function makeSourcesRoutes(fieldName, canDelete, urlName) {
   if (urlName == null) {
     urlName = '/' + fieldName;
   }
