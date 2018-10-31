@@ -3,11 +3,10 @@
 <% var rootPath = '/source/' + source._id; %>
 
 <div id="page-content">
-    <h1><%= source.group %><br><%= source.title %></h1>
-
-    <p>
-        <a href="<%= rootPath %>/edit" class="main-link">edit source</a>
-    </p>
+    <%- include('./sourceHeader', { params: {
+        source: source,
+        view: 'show',
+    }}) %>
 
     <h2>date</h2>
 

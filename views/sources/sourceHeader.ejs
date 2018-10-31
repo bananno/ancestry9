@@ -1,0 +1,25 @@
+<%
+    var source = params.source;
+    var rootPath = '/source/' + source._id;
+%>
+
+<div class="column">
+    <img src="/images/source-document.ico" class="profile-picture">
+</div>
+
+<div class="column">
+    <h1>
+        <%= source.group %><br>
+        <%= source.title %>
+    </h1>
+
+    <% if (params.view == 'show') { %>
+        <p>
+            <a href="<%= rootPath %>/edit" class="main-link">edit source</a>
+        </p>
+    <% } else { %>
+        <p>
+            <a href="<%= rootPath %>" class="main-link">done</a>
+        </p>
+    <% } %>
+</div>
