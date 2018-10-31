@@ -180,14 +180,14 @@
 
         <!-- LINKS -->
 
-        <%- include('../forms/links', {
+        <%- include('../forms/links', { params: {
             links: source.links,
             rootPath: rootEditPath,
             addLinkPath: rootPath + '/addLink',
             deleteLinkPath: rootPath + '/deleteLink',
             editActive: editField == 'links',
             editAvailable: editField == 'none',
-        }) %>
+        }}) %>
 
         <!-- IMAGES -->
 

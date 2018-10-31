@@ -81,14 +81,14 @@
 
         <!-- LINKS -->
 
-        <%- include('../forms/links', {
+        <%- include('../forms/links', { params: {
             links: person.links,
             rootPath: rootEditPath,
             addLinkPath: rootPath + '/edit/links',
             deleteLinkPath: rootPath + '/delete/links',
             editActive: editView == 'links',
             editAvailable: editView == 'none',
-        }) %>
+        }}) %>
 
     </table>
 
