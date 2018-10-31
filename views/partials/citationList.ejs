@@ -70,7 +70,7 @@
             <% } %>
             <% if (showDelete) { %>
                 <td class="citation_cell">
-                    <form action="<%= rootPath %>/deleteCitation/<%= citation._id %>" method="POST"
+                    <form action="<%= rootPath %>/delete/citations/<%= citation._id %>" method="POST"
                             onsubmit="return confirmDeletion('citation')">
                         <input type="hidden" value="DELETE" name="_method">
                         <button type="submit">delete</button>
