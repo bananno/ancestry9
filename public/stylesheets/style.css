@@ -242,3 +242,13 @@ ul.bullet-list li {
 .profile-picture {
     max-height: 100px;
 }
+
+.info-table {
+    margin-top: 10px;
+}
+
+.info-table th,
+.info-table td {
+    border: 1px solid black;
+    padding: 3px;
+}

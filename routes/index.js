@@ -27,9 +27,15 @@ router.post('/events/new', createNewEvent);
 
 // SOURCES - INDEX + NEW
 
-router.get('/sources', makeSourcesIndexRoute(false));
-router.get('/sources/new', makeSourcesIndexRoute(true));
+var mainSourceTypes = ['articles', 'documents', 'graves', 'photos', 'other'];
+
+router.get('/sources', makeSourcesIndexRoute('none'));
+router.get('/sources/new', makeSourcesIndexRoute('new'));
 router.post('/sources/new', createNewSource);
+
+mainSourceTypes.forEach(sourceType => {
+  router.get('/sources/' + sourceType, makeSourcesIndexRoute(sourceType));
+});
 
 //
 
@@ -124,7 +130,7 @@ function createNewEvent(req, res) {
   });
 }
 
-function makeSourcesIndexRoute(showNew) {
+function makeSourcesIndexRoute(subView) {
   return function(req, res, next) {
     mongoose.model('Source')
     .find({})
@@ -133,18 +139,39 @@ function makeSourcesIndexRoute(showNew) {
       if (err) {
         return console.error(err);
       } else {
+        sources = filterSourcesByType(sources, subView);
         sources = sortSources(sources, 'group');
         res.format({
           html: function() {
             res.render('sources/index', {
               sources: sources,
-              showNew: showNew,
+              subView: subView,
+              showNew: subView == 'new',
+              mainSourceTypes: mainSourceTypes,
             });
           }
         });
       }
     });
   };
+}
+
+function filterSourcesByType(sources, type) {
+  if (type == 'none' || type == 'new') {
+    return sources;
+  }
+
+  if (type == 'other') {
+    return sources.filter(thisSource => {
+      var thisSourceType = thisSource.type.toLowerCase() + 's';
+      return thisSourceType == 'others' || mainSourceTypes.indexOf(thisSourceType) == -1;
+    });
+  }
+
+  return sources.filter(thisSource => {
+    var thisSourceType = thisSource.type.toLowerCase() + 's';
+    return thisSourceType == type;
+  });
 }
 
 function createNewSource(req, res) {

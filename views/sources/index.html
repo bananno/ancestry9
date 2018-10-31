@@ -12,11 +12,22 @@
         <%- include('../forms/newSource', { actionPath: newSourcePath, cancelPath: rootPath }) %>
     <% } else { %>
         <p>
-            <a href="/sources/new">+ New</a>
+            <a href="/sources/new" class="main-link">+ New Source</a>
         </p>
     <% } %>
 
-    <table border="1">
+    <ul class="bullet-list">
+        <li>
+            <a href="/sources">all</a>
+        </li>
+        <% mainSourceTypes.forEach(sourceType => { %>
+            <li>
+                <a href="/sources/<%= sourceType %>"><%= sourceType %></a>
+            </li>
+        <% }); %>
+    </ul>
+
+    <table class="info-table">
         <tr>
             <th>type</th>
             <th>group</th>
