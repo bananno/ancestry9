@@ -23,20 +23,17 @@ makeSourcesRoutes('citations', true);
 
 module.exports = router;
 
-function makeSourcesRoutes(fieldName, canDelete, urlName) {
-  if (urlName == null) {
-    urlName = '/' + fieldName;
-  }
-  if (canDelete) {
-    var showOrEditPath = '/:sourceId/add' + urlName;
-    var deletePath = '/:sourceId/delete' + urlName + '/:deleteId';
-    var reorderPath = '/:sourceId/reorder' + urlName + '/:orderId';
+function makeSourcesRoutes(fieldName, canAddDeleteReorder) {
+  if (canAddDeleteReorder) {
+    var showOrEditPath = '/:sourceId/add/' + fieldName;
+    var deletePath = '/:sourceId/delete/' + fieldName + '/:deleteId';
+    var reorderPath = '/:sourceId/reorder/' + fieldName + '/:orderId';
     router.get(showOrEditPath, makeRouteEditGet(fieldName));
     router.post(showOrEditPath, makeRouteEditPost(fieldName));
     router.post(deletePath, makeRouteDelete(fieldName));
     router.post(reorderPath, makeRouteReorder(fieldName));
   } else {
-    var showOrEditPath = '/:sourceId/edit' + urlName;
+    var showOrEditPath = '/:sourceId/edit/' + fieldName;
     router.get(showOrEditPath, makeRouteEditGet(fieldName));
     router.post(showOrEditPath, makeRouteEditPost(fieldName));
   }
