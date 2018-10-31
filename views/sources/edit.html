@@ -5,6 +5,37 @@
     var rootEditPath = '/source/' + source._id + '/edit';
 %>
 
+<script>
+  function initializeEditForm() {
+    $('.value-edit').hide();
+    $('.value-original').hide();
+    $('.link-cancel').hide();
+    $('.button-submit').hide();
+  }
+
+  function startEdit(item) {
+    $('.link-start').hide();
+    $('.link-cancel').hide();
+    $('.button-submit').hide();
+
+    $('.value-show').filter('[item="' + item + '"]').hide();
+    $('.value-edit').filter('[item="' + item + '"]').show();
+    $('.link-cancel').filter('[item="' + item + '"]').show();
+    $('.button-submit').filter('[item="' + item + '"]').show();
+
+    var originalValue = $('.value-original').filter('[item="' + item + '"]').val();
+    $('.value-edit').filter('[item="' + item + '"]').val(originalValue);
+  }
+
+  function cancelEdit(item) {
+    $('.value-show').show();
+    $('.value-edit').hide();
+    $('.link-cancel').hide();
+    $('.link-start').show();
+    $('.button-submit').hide();
+  }
+</script>
+
 <div id="page-content">
     <%- include('./sourceHeader', { params: {
         source: source,
@@ -17,7 +48,7 @@
 
         <% var stringAttributes = ['type', 'group', 'title']; %>
 
-        <% stringAttributes.forEach((attr) => { %>
+        <% stringAttributes.forEach(attr => { %>
             <%
                 var editAttrPath = rootEditPath + '/' + attr;
                 var currentValue = source[attr];
@@ -28,24 +59,18 @@
                 </td>
                 <form action="<%= editAttrPath %>" method="POST">
                     <td>
-                        <% if (editField == attr) { %>
-                            <input type="text" value="<%= currentValue %>" name="<%= attr %>">
-                        <% } else { %>
-                            <%= currentValue %>
-                        <% } %>
+                        <span item="<%= attr %>" class="value-show"><%= currentValue %></span>
+                        <input item="<%= attr %>" class="value-original" type="hidden" value="<%= currentValue %>">
+                        <input item="<%= attr %>" class="value-edit" type="text" value="<%= currentValue %>" name="<%= attr %>">
                     </td>
                     <td>
-                        <% if (editField == attr) { %>
-                            <input type="hidden" value="PUT" name="_method">
-                            <button type="submit">save</button>
-                            <a href="<%= rootEditPath %>">cancel</a>
-                        <% } else if (editField == 'none') { %>
-                            <a href="<%= editAttrPath %>">edit</a>
-                        <% } %>
+                        <input type="hidden" value="PUT" name="_method">
+                        <button item="<%= attr %>" class="button-submit" type="submit">save</button>
+                        <a item="<%= attr %>" class="link-start" onclick="startEdit('<%= attr %>')">edit</a>
+                        <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
                     </td>
-                    <% if (editField == 'none') { %>
-                        <td></td>
-                    <% } %>
+                    <td>
+                    </td>
                 </form>
             </tr>
         <% }); %>
@@ -335,3 +360,7 @@
         groupBy: 'person',
     }) %>
 </div>
+
+<script>
+  initializeEditForm();
+</script>
