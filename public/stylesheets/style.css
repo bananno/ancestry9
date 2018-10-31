@@ -72,6 +72,16 @@ ul.bullet-list li {
     margin: 2px 5px;
 }
 
+.edit-form-frame td {
+    border: 1px solid black;
+    padding: 3px;
+    max-width: 400px;
+}
+
+.edit-form-frame img {
+    max-width: 300px;
+}
+
 #content {
     padding: 15px;
 }

@@ -2,13 +2,13 @@
 
 <% var rootPath = '/source/' + source._id; %>
 
-<div id="content">
+<div id="page-content">
     <%- include('./sourceHeader', { params: {
         source: source,
         view: 'edit',
     }}) %>
 
-    <table border="1">
+    <table class="edit-form-frame">
 
         <!-- TYPE, GROUP, TITLE -->
 
@@ -40,6 +40,9 @@
                             <a href="<%= editAttrPath %>">edit</a>
                         <% } %>
                     </td>
+                    <% if (editField == 'none') { %>
+                        <td></td>
+                    <% } %>
                 </form>
             </tr>
         <% }); %>
@@ -71,6 +74,9 @@
                         <a href="<%= editDatePath %>">edit</a>
                     <% } %>
                 </td>
+                <% if (editField == 'none') { %>
+                    <td></td>
+                <% } %>
             </form>
         </tr>
 
@@ -101,6 +107,9 @@
                         <a href="<%= editLocationPath %>">edit</a>
                     <% } %>
                 </td>
+                <% if (editField == 'none') { %>
+                    <td></td>
+                <% } %>
             </form>
         </tr>
 
@@ -133,17 +142,21 @@
                             </form>
                         <% } %>
                     </td>
-                    <% if (editField == 'none' && p > 0) { %>
+                    <% if (editField == 'none') { %>
                         <td>
-                            <form action="<%= reorderPersonPath %><%= person.id %>" method="POST">
-                                <input type="hidden" value="PUT" name="_method">
-                                <button type="submit">reorder up</button>
-                            </form>
+                            <% if (p > 0) { %>
+                                <form action="<%= reorderPersonPath %><%= person.id %>" method="POST">
+                                    <input type="hidden" value="PUT" name="_method">
+                                    <button type="submit">reorder up</button>
+                                </form>
+                            <% } %>
                         </td>
                     <% } %>
                 <% } else if (editField == 'none') { %>
                     <td>
                         <a href="<%= addPersonPath %>">add</a>
+                    </td>
+                    <td>
                     </td>
                     <td>
                     </td>
@@ -219,6 +232,9 @@
                         <a href="<%= editNotesPath %>">edit</a>
                     <% } %>
                 </td>
+                <% if (editField == 'none') { %>
+                    <td></td>
+                <% } %>
             </form>
         </tr>
 
