@@ -3,6 +3,7 @@
 <%
     var rootPath = '/sources';
     var newSourcePath = rootPath + '/new';
+    var showAllTypes = subView == 'none' || subView == 'new';
 %>
 
 <div id="content">
@@ -27,26 +28,41 @@
         <% }); %>
     </ul>
 
+    <% if (!showAllTypes) { %>
+        <h2><%= subView %></h2>
+    <% } %>
+
+    <%
+        var showTableType = showAllTypes;
+        var showTableGroup = subView != 'graves' && subView != 'photos';
+    %>
+
     <table class="info-table">
         <tr>
-            <th>type</th>
-            <th>group</th>
+            <% if (showTableType) { %>
+                <th>type</th>
+            <% } %>
+            <% if (showTableGroup) { %>
+                <th>group</th>
+            <% } %>
             <th>title</th>
             <th>date</th>
-            <th>people</th>
-            <th>links</th>
-            <th>images</th>
+            <th>location</th>
         </tr>
 
         <% for (var i = 0; i < sources.length; i++) { %>
             <% var source = sources[i]; %>
             <tr>
-                <td>
-                    <%= source.type %>
-                </td>
-                <td>
-                    <%= source.group %>
-                </td>
+                <% if (showTableType) { %>
+                    <td>
+                        <%= source.type %>
+                    </td>
+                <% } %>
+                <% if (showTableGroup) { %>
+                    <td>
+                        <%= source.group %>
+                    </td>
+                <% } %>
                 <td>
                     <%- include('../partials/linkToSource', {
                         source: source,
@@ -57,10 +73,7 @@
                     <%- include('../format/date', {date: source.date}) %>
                 </td>
                 <td>
-                </td>
-                <td>
-                </td>
-                <td>
+                    <%- include('../format/location', {location: source.location}) %>
                 </td>
             </tr>
         <% } %>
