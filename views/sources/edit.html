@@ -18,30 +18,11 @@
         <% var stringAttributes = ['type', 'group', 'title']; %>
 
         <% stringAttributes.forEach(attr => { %>
-            <%
-                var editAttrPath = rootEditPath + '/' + attr;
-                var currentValue = source[attr];
-            %>
-            <tr>
-                <td>
-                    <b><%= attr %></b>
-                </td>
-                <form action="<%= editAttrPath %>" method="POST">
-                    <td>
-                        <span item="<%= attr %>" class="value-show"><%= currentValue %></span>
-                        <input item="<%= attr %>" class="value-original" type="hidden" value="<%= currentValue %>">
-                        <input item="<%= attr %>" class="value-edit" type="text" value="<%= currentValue %>" name="<%= attr %>">
-                    </td>
-                    <td>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button item="<%= attr %>" class="button-submit" type="submit">save</button>
-                        <a item="<%= attr %>" class="link-start" onclick="startEdit('<%= attr %>')">edit</a>
-                        <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
-                    </td>
-                    <td>
-                    </td>
-                </form>
-            </tr>
+            <%- include('../forms/form', { params: {
+                attr: attr,
+                editPath: rootEditPath + '/' + attr,
+                originalValue: source[attr],
+            }}) %>
         <% }); %>
 
         <!-- DATE -->
