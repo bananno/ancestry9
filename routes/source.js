@@ -6,8 +6,8 @@ var getDateValues = require('../tools/getDateValues');
 var getLocationValues = require('../tools/getLocationValues');
 var removePersonFromList = require('../tools/removePersonFromList');
 
-router.get('/:sourceId', makeSourceShowRoute('none'));
-router.get('/:sourceId/edit', makeSourceShowRoute('none'));
+router.get('/:sourceId', makeRouteEditGet('none'));
+router.get('/:sourceId/edit', makeRouteEditGet('none'));
 
 makeSourcesRoutes('/type', 'type');
 makeSourcesRoutes('/group', 'group');
@@ -29,18 +29,18 @@ function makeSourcesRoutes(urlName, fieldName, canDelete, canReorder) {
     var showOrEditPath = '/:sourceId/add' + urlName;
     var deletePath = '/:sourceId/delete' + urlName + '/:deleteId';
     var reorderPath = '/:sourceId/reorder' + urlName + '/:orderId';
-    router.get(showOrEditPath, makeSourceShowRoute(fieldName));
-    router.post(showOrEditPath, makeSourcePostRoute(fieldName));
-    router.post(deletePath, makeSourceDeleteRoute(fieldName));
-    router.post(reorderPath, makeSourceReorderRoute(fieldName));
+    router.get(showOrEditPath, makeRouteEditGet(fieldName));
+    router.post(showOrEditPath, makeRouteEditPost(fieldName));
+    router.post(deletePath, makeRouteDelete(fieldName));
+    router.post(reorderPath, makeRouteReorder(fieldName));
   } else {
     var showOrEditPath = '/:sourceId/edit' + urlName;
-    router.get(showOrEditPath, makeSourceShowRoute(fieldName));
-    router.post(showOrEditPath, makeSourcePostRoute(fieldName));
+    router.get(showOrEditPath, makeRouteEditGet(fieldName));
+    router.post(showOrEditPath, makeRouteEditPost(fieldName));
   }
 }
 
-function makeSourceShowRoute(editField) {
+function makeRouteEditGet(editField) {
   return function(req, res, next) {
     var sourceId = req.params.sourceId;
     mongoose.model('Source')
@@ -76,7 +76,7 @@ function makeSourceShowRoute(editField) {
   };
 }
 
-function makeSourcePostRoute(editField) {
+function makeRouteEditPost(editField) {
   return function(req, res) {
     var sourceId = req.params.sourceId;
     mongoose.model('Source').findById(sourceId, function(err, source) {
@@ -124,7 +124,7 @@ function makeSourcePostRoute(editField) {
   };
 }
 
-function makeSourceDeleteRoute(editField) {
+function makeRouteDelete(editField) {
   return function(req, res) {
     var sourceId = req.params.sourceId;
     mongoose.model('Source').findById(sourceId, function(err, source) {
@@ -155,7 +155,7 @@ function makeSourceDeleteRoute(editField) {
   };
 }
 
-function makeSourceReorderRoute(editField) {
+function makeRouteReorder(editField) {
   return function(req, res) {
     var sourceId = req.params.sourceId;
     mongoose.model('Source')
