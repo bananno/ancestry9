@@ -175,40 +175,12 @@
 
         <!-- NOTES -->
 
-        <%
-            var editNotesPath = rootEditPath + '/notes';
-            var notesList = [];
-            if (source.notes) {
-                notesList = source.notes.split('\n');
-            }
-        %>
-
-        <tr>
-            <td>
-                <b>notes</b>
-            </td>
-            <form action="<%= editNotesPath %>" method="POST">
-                <td>
-                    <div item="notes" class="value-show">
-                        <% notesList.forEach(str => { %>
-                            <p>
-                                <%= str %>
-                            </p>
-                        <% }); %>
-                    </div>
-                    <input item="notes" class="value-original" type="hidden" value="<%= source.notes %>">
-                    <textarea item="notes" class="value-edit" name="notes"><%= source.notes %></textarea>
-                </td>
-                <td>
-                    <input type="hidden" value="PUT" name="_method">
-                    <button item="notes" class="button-submit" type="submit">save</button>
-                    <a item="notes" class="link-start" onclick="startEdit('notes')">edit</a>
-                    <a item="notes" class="link-cancel" onclick="cancelEdit()">cancel</a>
-                </td>
-                <td>
-                </td>
-            </form>
-        </tr>
+        <%- include('../forms/form', { params: {
+            attr: 'notes',
+            editPath: rootEditPath + '/notes',
+            originalValue: source.notes,
+            fieldType: 'textarea',
+        }}) %>
     </table>
 
     <!-- CONTENT -->

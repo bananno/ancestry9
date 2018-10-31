@@ -3,6 +3,7 @@
     var attr = params.attr;
     var editPath = params.editPath;
     var originalValue = params.originalValue;
+    var fieldType = params.fieldType || 'text';
 %>
 
 <tr>
@@ -12,13 +13,39 @@
 
     <form action="<%= editPath %>" method="POST">
         <td>
-            <span item="<%= attr %>" class="value-show"><%= originalValue %></span>
+            <!-- DISPLAY VALUE -->
+
+            <% if (attr == 'notes') { %>
+                <% var valueList = originalValue.split('\n'); %>
+                <ul item="<%= attr %>" class="value-show bullet-list">
+                    <% valueList.forEach(str => { %>
+                        <li><%= str %></li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <span item="<%= attr %>" class="value-show"><%= originalValue %></span>
+            <% } %>
+
+            <!-- EDITABLE FIELD -->
+
+            <% if (fieldType == 'textarea') { %>
+                <textarea item="<%= attr %>" class="value-edit" name="<%= attr %>"><%= originalValue %></textarea>
+            <% } else { %>
+                <input item="<%= attr %>" class="value-edit" type="text" value="<%= originalValue %>" name="<%= attr %>">
+            <% } %>
+
+            <!-- HIDDEN ORIGINAL VALUE -->
+
             <input item="<%= attr %>" class="value-original" type="hidden" value="<%= originalValue %>">
-            <input item="<%= attr %>" class="value-edit" type="text" value="<%= originalValue %>" name="<%= attr %>">
         </td>
         <td>
+            <!-- SUBMIT EDIT -->
+
             <input type="hidden" value="PUT" name="_method">
             <button item="<%= attr %>" class="button-submit" type="submit">save</button>
+
+            <!-- TOGGLE SHOW/EDIT -->
+
             <a item="<%= attr %>" class="link-start" onclick="startEdit('<%= attr %>')">edit</a>
             <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
         </td>
