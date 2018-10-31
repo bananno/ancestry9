@@ -20,7 +20,7 @@ makeSourcesRoutes('images', 'Image', true);
 makeSourcesRoutes('content');
 makeSourcesRoutes('notes');
 
-makeSourcesRoutes('Citation', 'citations', true);
+makeSourcesRoutes('citations', 'Citation', true);
 
 module.exports = router;
 
