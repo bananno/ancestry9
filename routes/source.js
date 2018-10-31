@@ -7,16 +7,17 @@ var getLocationValues = require('../tools/getLocationValues');
 var removePersonFromList = require('../tools/removePersonFromList');
 
 router.get('/:sourceId', makeSourceShowRoute('none'));
+router.get('/:sourceId/edit', makeSourceShowRoute('none'));
 
 makeSourcesRoutes('/type', 'type');
 makeSourcesRoutes('/group', 'group');
 makeSourcesRoutes('/title', 'title');
-makeSourcesRoutes('Date', 'date');
+makeSourcesRoutes('/date', 'date');
 makeSourcesRoutes('/location', 'location');
 makeSourcesRoutes('Person', 'people', true);
 makeSourcesRoutes('Link', 'links', true);
 makeSourcesRoutes('Image', 'images', true);
-makeSourcesRoutes('Content', 'content');
+makeSourcesRoutes('/content', 'content');
 makeSourcesRoutes('/notes', 'notes');
 
 makeSourcesRoutes('Citation', 'citations', true);
