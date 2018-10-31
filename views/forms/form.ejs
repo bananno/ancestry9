@@ -16,7 +16,12 @@
             <!-- DISPLAY VALUE -->
 
             <% if (attr == 'notes') { %>
-                <% var valueList = originalValue.split('\n'); %>
+                <%
+                    var valueList = [];
+                    if (originalValue != '') {
+                        valueList = originalValue.split('\n');
+                    }
+                %>
                 <ul item="<%= attr %>" class="value-show bullet-list">
                     <% valueList.forEach(str => { %>
                         <li><%= str %></li>
