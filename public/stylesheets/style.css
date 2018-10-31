@@ -25,6 +25,7 @@ a:hover {
 }
 
 a.main-link {
+    display: inline-block;
     margin: 10px;
 }
 
