@@ -120,9 +120,9 @@
 
         <%
             var numberOfPeople = source.people.length;
-            var addPersonPath = rootPath + '/addPerson';
-            var deletePersonPath = rootPath + '/deletePerson/';
-            var reorderPersonPath = rootPath + '/reorderPerson/';
+            var addPersonPath = rootPath + '/add/people';
+            var deletePersonPath = rootPath + '/delete/people';
+            var reorderPersonPath = rootPath + '/reorder/people';
         %>
 
         <% for (var p = 0; p < numberOfPeople + 1; p++) { %>
@@ -139,7 +139,7 @@
                     </td>
                     <td>
                         <% if (editField == 'none') { %>
-                            <form action="<%= deletePersonPath %><%= person.id %>" method="POST">
+                            <form action="<%= deletePersonPath %>/<%= person.id %>" method="POST">
                                 <input type="hidden" value="PUT" name="_method">
                                 <button type="submit">delete</button>
                             </form>
@@ -148,7 +148,7 @@
                     <% if (editField == 'none') { %>
                         <td>
                             <% if (p > 0) { %>
-                                <form action="<%= reorderPersonPath %><%= person.id %>" method="POST">
+                                <form action="<%= reorderPersonPath %>/<%= person.id %>" method="POST">
                                     <input type="hidden" value="PUT" name="_method">
                                     <button type="submit">reorder up</button>
                                 </form>
@@ -192,8 +192,8 @@
         <%- include('../forms/images', {
             images: source.images,
             rootPath: rootEditPath,
-            addImagePath: rootPath + '/addImage',
-            deleteImagePath: rootPath + '/deleteImage',
+            addImagePath: rootPath + '/add/images',
+            deleteImagePath: rootPath + '/delete/images',
             editActive: editField == 'images',
             editAvailable: editField == 'none',
         }) %>
@@ -272,9 +272,8 @@
     <h2>Citations</h2>
 
     <%
-        var addCitationPath = rootPath + "/addCitation";
-        var deleteCitationPath = rootPath + "/deleteCitation";
-        var editCitationPath = rootPath + "/editCitation";
+        var addCitationPath = rootPath + '/add/citations';
+        var deleteCitationPath = rootPath + '/delete/citations';
 
         var defaultPerson = null;
 

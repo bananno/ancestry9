@@ -14,12 +14,12 @@ makeSourcesRoutes('group');
 makeSourcesRoutes('title');
 makeSourcesRoutes('date');
 makeSourcesRoutes('location');
-makeSourcesRoutes('people', true, 'Person');
+makeSourcesRoutes('people', true);
 makeSourcesRoutes('links', true);
-makeSourcesRoutes('images', true, 'Image');
+makeSourcesRoutes('images', true);
 makeSourcesRoutes('content');
 makeSourcesRoutes('notes');
-makeSourcesRoutes('citations', true, 'Citation');
+makeSourcesRoutes('citations', true);
 
 module.exports = router;
 
