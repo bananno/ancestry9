@@ -15,21 +15,23 @@
         <td>
             <!-- DISPLAY VALUE -->
 
-            <% if (attr == 'notes') { %>
-                <%
-                    var valueList = [];
-                    if (originalValue != '') {
-                        valueList = originalValue.split('\n');
-                    }
-                %>
-                <ul item="<%= attr %>" class="value-show bullet-list">
-                    <% valueList.forEach(str => { %>
-                        <li><%= str %></li>
-                    <% }); %>
-                </ul>
-            <% } else { %>
-                <span item="<%= attr %>" class="value-show"><%= originalValue %></span>
-            <% } %>
+            <div item="<%= attr %>" class="value-show">
+                <% if (attr == 'notes') { %>
+                    <%
+                        var valueList = [];
+                        if (originalValue != '') {
+                            valueList = originalValue.split('\n');
+                        }
+                    %>
+                    <ul class="bullet-list">
+                        <% valueList.forEach(str => { %>
+                            <li><%= str %></li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <%= originalValue %>
+                <% } %>
+            </div>
 
             <!-- EDITABLE FIELD -->
 
