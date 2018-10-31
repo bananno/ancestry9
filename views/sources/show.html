@@ -3,313 +3,72 @@
 <% var rootPath = '/source/' + source._id; %>
 
 <div id="content">
-    <h1><%= source.title %></h1>
+    <h1><%= source.group %><br><%= source.title %></h1>
 
     <p>
         <a href="<%= rootPath %>/edit" class="main-link">edit source</a>
     </p>
 
-    <table border="1">
+    <h2>date</h2>
 
-        <!-- TYPE, GROUP, TITLE -->
+    <p>
+        <%- include('../format/date', {date: source.date}) %>
+    </p>
 
-        <% var stringAttributes = ['type', 'group', 'title']; %>
+    <h2>location</h2>
 
-        <% stringAttributes.forEach((attr) => { %>
-            <%
-                var editAttrPath = rootPath + '/edit/' + attr;
-                var currentValue = source[attr];
-            %>
-            <tr>
-                <td>
-                    <b><%= attr %></b>
-                </td>
-                <form action="<%= editAttrPath %>" method="POST">
-                    <td>
-                        <% if (editField == attr) { %>
-                            <input type="text" value="<%= currentValue %>" name="<%= attr %>">
-                        <% } else { %>
-                            <%= currentValue %>
-                        <% } %>
-                    </td>
-                    <td>
-                        <% if (editField == attr) { %>
-                            <input type="hidden" value="PUT" name="_method">
-                            <button type="submit">save</button>
-                            <a href="<%= rootPath %>">cancel</a>
-                        <% } else if (editField == 'none') { %>
-                            <a href="<%= editAttrPath %>">edit</a>
-                        <% } %>
-                    </td>
-                </form>
-            </tr>
-        <% }); %>
+    <p>
+        <%- include('../format/location', { location: source.location }) %>
+    </p>
 
-        <!-- DATE -->
+    <h2>people</h2>
 
-        <%
-            var editDatePath = rootPath + '/edit/date';
-        %>
+    <%- include('../partials/peopleList', { people: source.people }) %>
 
-        <tr>
-            <td>
-                <b>date</b>
-            </td>
-            <form action="<%= editDatePath %>" method="POST">
-                <td>
-                    <% if (editField == 'date') { %>
-                        <%- include('../forms/date', { date: source.date }) %>
-                    <% } else { %>
-                        <%- include('../format/date', {date: source.date}) %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editField == 'date') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editField == 'none') { %>
-                        <a href="<%= editDatePath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
+    <h2>links</h2>
 
-        <!-- LOCATION -->
-
-        <%
-            var editLocationPath = rootPath + '/edit/location';
-        %>
-
-        <tr>
-            <td>
-                <b>location</b>
-            </td>
-            <form action="<%= editLocationPath %>" method="POST">
-                <td>
-                    <% if (editField == 'location') { %>
-                        <%- include('../forms/location', { location: source.location }) %>
-                    <% } else { %>
-                        <%- include('../format/location', { location: source.location }) %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editField == 'location') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editField == 'none') { %>
-                        <a href="<%= editLocationPath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
-
-        <!-- PEOPLE -->
-
-        <%
-            var numberOfPeople = source.people.length;
-            var addPersonPath = rootPath + '/addPerson';
-            var deletePersonPath = rootPath + '/deletePerson/';
-            var reorderPersonPath = rootPath + '/reorderPerson/';
-        %>
-
-        <% for (var p = 0; p < numberOfPeople + 1; p++) { %>
-            <tr>
-                <td>
-                    <% if (p == 0) { %>
-                        <b>people</b>
-                    <% } %>
-                </td>
-                <% if (p < numberOfPeople) { %>
-                    <% let person = source.people[p]; %>
-                    <td>
-                        <%- include('../partials/linkToPerson', {person: person}) %>
-                    </td>
-                    <td>
-                        <% if (editField == 'none') { %>
-                            <form action="<%= deletePersonPath %><%= person.id %>" method="POST">
-                                <input type="hidden" value="PUT" name="_method">
-                                <button type="submit">delete</button>
-                            </form>
-                        <% } %>
-                    </td>
-                    <% if (editField == 'none' && p > 0) { %>
-                        <td>
-                            <form action="<%= reorderPersonPath %><%= person.id %>" method="POST">
-                                <input type="hidden" value="PUT" name="_method">
-                                <button type="submit">reorder up</button>
-                            </form>
-                        </td>
-                    <% } %>
-                <% } else if (editField == 'none') { %>
-                    <td>
-                        <a href="<%= addPersonPath %>">add</a>
-                    </td>
-                    <td>
-                    </td>
-                <% } else if (editField == 'people') { %>
-                    <form action="<%= addPersonPath %>" method="POST">
-                        <td>
-                            <%- include('../forms/personDropdown', {name: 'people', selected: null}) %>
-                        </td>
-                        <td>
-                            <input type="hidden" value="PUT" name="_method">
-                            <button type="submit">save</button>
-                            <a href="<%= rootPath %>">cancel</a>
-                        </td>
-                    </form>
-                <% } %>
-            </tr>
+    <ul class="bullet-list">
+        <% for (var i = 0; i < source.links.length; i++) { %>
+            <li>
+                <%- include('../format/externalLink', { url: source.links[i] }) %>
+            </li>
         <% } %>
+    </ul>
 
-        <!-- LINKS -->
+    <% if (source.images.length) { %>
+        <h2>images</h2>
 
-        <%- include('../forms/links', {
-            links: source.links,
-            rootPath: rootPath,
-            addLinkPath: rootPath + '/addLink',
-            deleteLinkPath: rootPath + '/deleteLink',
-            editActive: editField == 'links',
-            editAvailable: editField == 'none',
-        }) %>
-
-        <!-- IMAGES -->
-
-        <%- include('../forms/images', {
-            images: source.images,
-            rootPath: rootPath,
-            addImagePath: rootPath + '/addImage',
-            deleteImagePath: rootPath + '/deleteImage',
-            editActive: editField == 'images',
-            editAvailable: editField == 'none',
-        }) %>
-
-        <!-- NOTES -->
-
-        <%
-            var editNotesPath = rootPath + '/edit/notes';
-            var notesList = [];
-            if (source.notes) {
-                notesList = source.notes.split('\n');
-            }
-        %>
-
-        <tr>
-            <td>
-                <b>notes</b>
-            </td>
-            <form action="<%= editNotesPath %>" method="POST">
-                <td>
-                    <% if (editField == 'notes') { %>
-                        <textarea name="notes" class="content-textarea"><%= source.notes %></textarea>
-                    <% } else { %>
-                        <% notesList.forEach((str) => { %>
-                            <p>
-                                <%= str %>
-                            </p>
-                        <% }); %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editField == 'notes') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editField == 'none') { %>
-                        <a href="<%= editNotesPath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
-
-    </table>
-
-    <!-- CONTENT -->
-
-    <%
-        var editContentPath = rootPath + '/edit/content';
-    %>
-
-    <h2>Content</h2>
-
-    <% if (editField == 'none') { %>
         <p>
-            <a href="<%= editContentPath %>">edit</a>
+            <% for (var j = 0; j < source.images.length; j++) { %>
+                <a href="<%= source.images[j] %>" target="_blank"><img
+                    src="<%= source.images[j] %>" height="100"></a>
+            <% } %>
         </p>
     <% } %>
 
-    <form action="<%= editContentPath %>" method="POST">
-        <% if (editField == 'content') { %>
-            <textarea name="content" class="content-textarea"><%= source.content %></textarea>
-            <input type="hidden" value="PUT" name="_method">
-            <button type="submit">save</button>
-            <a href="<%= rootPath %>">cancel</a>
-        <% } else { %>
-            <%- include('../format/content', {
-                content: source.content,
-                limit: false,
-            }) %>
-        <% } %>
-    </form>
+    <% if (source.notes) { %>
+        <%
+            var notesList = source.notes.split('\n');
+        %>
+        <h2>notes</h2>
 
-    <h2>Citations</h2>
-
-    <%
-        var addCitationPath = rootPath + "/addCitation";
-        var deleteCitationPath = rootPath + "/deleteCitation";
-        var editCitationPath = rootPath + "/editCitation";
-
-        var defaultPerson = null;
-
-        if (source.people.length == 1) {
-            defaultPerson = source.people[0];
-        }
-    %>
-
-    <% if (editField == 'citations') { %>
-        <form action="<%= addCitationPath %>" method="POST">
-            <table>
-                <tr>
-                    <td>
-                        <b>person</b>
-                    </td>
-                    <td>
-                        <%- include('../forms/personDropdown', {
-                            name: 'person',
-                            selected: defaultPerson
-                        }) %>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>item</b>
-                    </td>
-                    <td>
-                        <input type="text" name="item" placeholder="e.g., birth - place">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>information</b>
-                    </td>
-                    <td>
-                        <input type="text" name="information" placeholder="e.g., 1880">
-                    </td>
-                </tr>
-            </table>
-            <p>
-                <button type="submit">create</button>
-            </p>
-        </form>
-        <p>
-            <a href="<%= rootPath %>">cancel</a>
-        </p>
-    <% } else if (editField == 'none') { %>
-        <p>
-            <a href="<%= addCitationPath %>" class="main-link">+ Add Citation</a>
-        </p>
+        <ul class="bullet-list">
+            <% for (var i = 0; i < notesList.length; i++) { %>
+                <li style="max-width: 600px;">
+                    <%= notesList[i] %>
+                </li>
+            <% } %>
+        </ul>
     <% } %>
+
+    <h2>content</h2>
+
+    <%- include('../format/content', {
+        content: source.content,
+        limit: false,
+    }) %>
+
+    <h2>citations</h2>
 
     <%- include('../partials/citationList', {
         citations: citations,
