@@ -183,9 +183,9 @@
         <%- include('../forms/links', { params: {
             links: source.links,
             rootPath: rootEditPath,
-            addLinkPath: rootPath + '/addLink',
-            deleteLinkPath: rootPath + '/deleteLink',
-            reorderLinkPath: rootPath + '/reorderLink',
+            addLinkPath: rootPath + '/add/links',
+            deleteLinkPath: rootPath + '/delete/links',
+            reorderLinkPath: rootPath + '/reorder/links',
             editActive: editField == 'links',
             editAvailable: editField == 'none',
         }}) %>

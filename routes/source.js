@@ -15,7 +15,7 @@ makeSourcesRoutes('/title', 'title');
 makeSourcesRoutes('/date', 'date');
 makeSourcesRoutes('/location', 'location');
 makeSourcesRoutes('Person', 'people', true);
-makeSourcesRoutes('Link', 'links', true);
+makeSourcesRoutes('/links', 'links', true);
 makeSourcesRoutes('Image', 'images', true);
 makeSourcesRoutes('/content', 'content');
 makeSourcesRoutes('/notes', 'notes');
