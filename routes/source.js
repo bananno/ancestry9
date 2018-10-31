@@ -211,7 +211,11 @@ function makeRouteReorder(editField) {
           }
         }
       } else if (editField == 'links' || editField == 'images') {
-
+        if (orderId > 0 && updatedObj[editField].length > orderId) {
+          var temp = updatedObj[editField][orderId - 1];
+          updatedObj[editField][orderId - 1] = updatedObj[editField][orderId];
+          updatedObj[editField][orderId] = temp;
+        }
       }
 
       source.update(updatedObj, function(err) {
