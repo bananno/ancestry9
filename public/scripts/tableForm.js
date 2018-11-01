@@ -1,9 +1,12 @@
 
-function initializeEditForm() {
+function initializeEditForm(currentlyEditingByRoute) {
   $('.value-edit').hide();
   $('.value-original').hide();
   $('.link-cancel').hide();
   $('.button-submit').hide();
+  if (currentlyEditingByRoute) {
+    $('.link-start').hide();
+  }
 }
 
 function startEdit(item) {
