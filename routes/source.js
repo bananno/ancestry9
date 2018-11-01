@@ -5,6 +5,7 @@ var router = express.Router();
 var getDateValues = require('../tools/getDateValues');
 var getLocationValues = require('../tools/getLocationValues');
 var removePersonFromList = require('../tools/removePersonFromList');
+var reorderList = require('../tools/reorderList');
 
 router.get('/:sourceId', sourceShow);
 router.get('/:sourceId/edit', makeRouteEditGet('none'));
@@ -183,26 +184,8 @@ function makeRouteReorder(editField) {
     .findById(sourceId)
     .exec(function(err, source) {
       var updatedObj = {};
-      updatedObj[editField] = source[editField];
       var orderId = req.params.orderId;
-
-      if (editField == 'people') {
-        for (var i = 1; i < updatedObj.people.length; i++) {
-          var thisPerson = updatedObj.people[i];
-          if (isSamePerson(thisPerson, orderId)) {
-            updatedObj.people[i] = updatedObj.people[i - 1];
-            updatedObj.people[i - 1] = thisPerson;
-            break;
-          }
-        }
-      } else if (editField == 'links' || editField == 'images') {
-        if (orderId > 0 && updatedObj[editField].length > orderId) {
-          var temp = updatedObj[editField][orderId - 1];
-          updatedObj[editField][orderId - 1] = updatedObj[editField][orderId];
-          updatedObj[editField][orderId] = temp;
-        }
-      }
-
+      updatedObj[editField] = reorderList(source[editField], orderId, editField);
       source.update(updatedObj, function(err) {
         res.format({
           html: function() {
@@ -212,14 +195,4 @@ function makeRouteReorder(editField) {
       });
     });
   };
-}
-
-// HELPER
-
-function isSamePerson(person1, person2) {
-  var id1 = person1._id ? person1._id : person1;
-  var id2 = person2._id ? person2._id : person2;
-  id1 = '' + id1;
-  id2 = '' + id2;
-  return id1 == id2;
 }
