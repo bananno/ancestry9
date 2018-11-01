@@ -19,7 +19,7 @@
                 <% if (fieldType == 'textarea') { %>
                     <%
                         var valueList = [];
-                        if (originalValue != '') {
+                        if (originalValue && originalValue != '') {
                             valueList = originalValue.split('\n');
                         }
                     %>
