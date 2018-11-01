@@ -6,6 +6,12 @@ var personIsPlaced = {};
 var people;
 var nextGroupList = [];
 
+var basicRelationshipNames = {
+  p: 'parent',
+  c: 'child',
+  s: 'spouse',
+  x: 'sibling',
+};
 var relationshipNames = getRelationshipNameList();
 
 function getRelativesList(allPeople, person) {
@@ -22,6 +28,7 @@ function getRelativesList(allPeople, person) {
     relativeList.push({
       person: thisPerson,
       relationship: 'no connection (' + remainingPeople.length + ')',
+      description: null,
       generation: null,
     });
   });
@@ -35,26 +42,12 @@ function processNextGenList(safety) {
   }
 
   nextGroupList.forEach(obj => {
-    var relationship = relationshipNames[obj.track];
-
-    if (relationship == null) {
-      var lastChar = obj.track.slice(obj.track.length - 1);
-      var tempTrack = obj.track.slice(0, obj.track.length - 1);
-      var newRel = relationshipNames[tempTrack];
-      if (lastChar == 's' && newRel) {
-        relationship = newRel + '\'s spouse';
-      }
-    }
-
-    if (relationship == null) {
-      relationship = 'other: ' + obj.track;
-    }
-
     relativeList.push({
       person: obj.person,
-      relationship: relationship,
+      relationship: getRelationshipName(obj.track),
       generation: obj.generation,
       distance: obj.track.length,
+      description: getRelationshipDescription(obj.track),
     });
   });
 
@@ -101,6 +94,30 @@ function addPersonToGroup(person, generation, track) {
 
   personIsPlaced[person._id] = true;
   nextGroupList.push({ person: person, generation: generation, track: track });
+}
+
+function getRelationshipName(track) {
+  var relationship = relationshipNames[track];
+
+  if (relationship != null) {
+    return relationship;
+  }
+
+  var lastChar = track.slice(track.length - 1);
+  var tempTrack = track.slice(0, track.length - 1);
+  var newRel = relationshipNames[tempTrack];
+
+  if (lastChar == 's' && newRel) {
+    return newRel + '\'s spouse';
+  }
+
+  return 'other: ' + track;
+}
+
+function getRelationshipDescription(track) {
+  return track.split('').map(nextChar => {
+    return basicRelationshipNames[nextChar];
+  }).join('\'s ');
 }
 
 function sortList(relativeList, endPoint) {
@@ -185,6 +202,7 @@ function getRelationshipNameList() {
     'x' : 'sibling',
     'pp' : 'grandparent',
     'ppp' : 'great-grandparent',
+    'pppx' : 'great-grandparent\'s sibling',
     'pppp' : 'great-great-grandparent',
     'px': 'aunt/uncle',
     'ppx': 'great-aunt/uncle',

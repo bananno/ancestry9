@@ -29,6 +29,7 @@
             <th> person </th>
             <th> generation </th>
             <th> distance </th>
+            <th> description </th>
         </tr>
 
         <% relativeList.forEach(obj => { %>
@@ -52,6 +53,9 @@
                 </td>
                 <td>
                     <%= obj.distance %>
+                </td>
+                <td>
+                    <%= obj.description %>
                 </td>
             </tr>
         <% }); %>
