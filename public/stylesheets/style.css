@@ -252,3 +252,11 @@ ul.bullet-list li {
     border: 1px solid black;
     padding: 3px;
 }
+
+.value-edit,
+.value-original,
+.link-cancel,
+.button-submit,
+.link-start {
+    display: none;
+}
