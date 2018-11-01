@@ -9,7 +9,8 @@ var people;
 function getRelativesList(allPeople, person) {
   people = allPeople;
 
-  addRelatives(person, 0, '', 0);
+  addPersonToList(person, 0, '');
+  addPersonRelatives(person, 0, '', 0);
 
   var remainingPeople = allPeople.filter(thisPerson => {
     return personPlaced[thisPerson._id] == null;
@@ -26,11 +27,7 @@ function getRelativesList(allPeople, person) {
   return sortList(relativeList, relativeList.length);
 }
 
-function addRelatives(person, generation, track, safety) {
-  if (safety > 20) {
-    return;
-  }
-
+function addPersonToList(person, generation, track) {
   person = findPersonInList(people, person);
 
   if (personPlaced[person._id] != null) {
@@ -46,17 +43,34 @@ function addRelatives(person, generation, track, safety) {
     relationship: relationship,
     generation: generation,
   });
+}
+
+function addPersonRelatives(person, generation, track, safety) {
+  if (safety > 20) {
+    return;
+  }
+
+  person = findPersonInList(people, person);
+
+  if (personRelativesChecked[person._id] != null) {
+    return;
+  }
+
+  personRelativesChecked[person._id] = true;
 
   person.spouses.forEach(thisPerson => {
-    addRelatives(thisPerson, generation, track + 's', safety + 1);
+    addPersonToList(thisPerson, generation, track + 's');
+    // addPersonRelatives(thisPerson, generation, track + 's', safety + 1);
   });
 
   person.parents.forEach(thisPerson => {
-    addRelatives(thisPerson, generation + 1, track + 'p', safety + 1);
+    addPersonToList(thisPerson, generation + 1, track + 'p');
+    // addPersonRelatives(thisPerson, generation + 1, track + 'p', safety + 1);
   });
 
   person.children.forEach(thisPerson => {
-    addRelatives(thisPerson, generation - 1, track + 'c', safety + 1);
+    addPersonToList(thisPerson, generation - 1, track + 'c');
+    // addPersonRelatives(thisPerson, generation - 1, track + 'c', safety + 1);
   });
 
   return person;
@@ -73,6 +87,10 @@ function getGenerationName(track) {
 
   if (track == 's') {
     return 'spouse';
+  }
+
+  if (track == 'c') {
+    return 'child';
   }
 
   return 'z other';
