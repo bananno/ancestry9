@@ -28,7 +28,6 @@ function getRelativesList(allPeople, person) {
     relativeList.push({
       person: thisPerson,
       relationship: 'no connection (' + remainingPeople.length + ')',
-      description: null,
       generation: null,
     });
   });
@@ -47,7 +46,6 @@ function processNextGenList(safety) {
       relationship: getRelationshipName(obj.track),
       generation: obj.generation,
       distance: obj.track.length,
-      description: getRelationshipDescription(obj.track),
     });
   });
 
@@ -112,12 +110,6 @@ function getRelationshipName(track) {
   }
 
   return 'other: ' + track;
-}
-
-function getRelationshipDescription(track) {
-  return track.split('').map(nextChar => {
-    return basicRelationshipNames[nextChar];
-  }).join('\'s ');
 }
 
 function sortList(relativeList, endPoint) {
