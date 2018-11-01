@@ -10,6 +10,8 @@ function startEdit(item) {
   $('.link-start').hide();
   $('.link-cancel').hide();
   $('.button-submit').hide();
+  $('.button-delete').hide();
+  $('.button-reorder').hide();
 
   $('.value-show').filter('[item="' + item + '"]').hide();
   $('.value-edit').filter('[item="' + item + '"]').show();
@@ -26,4 +28,6 @@ function cancelEdit(item) {
   $('.link-cancel').hide();
   $('.link-start').show();
   $('.button-submit').hide();
+  $('.button-delete').show();
+  $('.button-reorder').show();
 }
