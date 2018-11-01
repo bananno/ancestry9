@@ -141,7 +141,10 @@
                 <% } else if (editField == 'people') { %>
                     <form action="<%= addPersonPath %>" method="POST">
                         <td>
-                            <%- include('../forms/personDropdown', {name: 'people', selected: null}) %>
+                            <%- include('../forms/personDropdown', { params: {
+                                name: 'people',
+                                selected: null,
+                            }}) %>
                         </td>
                         <td>
                             <input type="hidden" value="PUT" name="_method">
@@ -228,10 +231,10 @@
                         <b>person</b>
                     </td>
                     <td>
-                        <%- include('../forms/personDropdown', {
+                        <%- include('../forms/personDropdown', { params: {
                             name: 'person',
-                            selected: defaultPerson
-                        }) %>
+                            selected: defaultPerson,
+                        }}) %>
                     </td>
                 </tr>
                 <tr>
