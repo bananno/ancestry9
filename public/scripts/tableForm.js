@@ -24,8 +24,7 @@ function startEdit(item) {
 function cancelEdit(item) {
   $('.value-show').show();
   $('.value-edit').hide();
-  $('input.value-new').hide();
-  $('input.value-new').val('');
+  $('.value-new').hide();
   $('.link-cancel').hide();
   $('.link-start').show();
   $('.button-submit').hide();

@@ -93,68 +93,11 @@
 
         <!-- PEOPLE -->
 
-        <%
-            var numberOfPeople = source.people.length;
-            var addPersonPath = rootPath + '/add/people';
-            var deletePersonPath = rootPath + '/delete/people';
-            var reorderPersonPath = rootPath + '/reorder/people';
-        %>
-
-        <% for (var p = 0; p < numberOfPeople + 1; p++) { %>
-            <tr>
-                <td>
-                    <% if (p == 0) { %>
-                        <b>people</b>
-                    <% } %>
-                </td>
-                <% if (p < numberOfPeople) { %>
-                    <% let person = source.people[p]; %>
-                    <td>
-                        <%- include('../partials/linkToPerson', {person: person}) %>
-                    </td>
-                    <td>
-                        <% if (editField == 'none') { %>
-                            <form action="<%= deletePersonPath %>/<%= person.id %>" method="POST">
-                                <input type="hidden" value="PUT" name="_method">
-                                <button type="submit">delete</button>
-                            </form>
-                        <% } %>
-                    </td>
-                    <% if (editField == 'none') { %>
-                        <td>
-                            <% if (p > 0) { %>
-                                <form action="<%= reorderPersonPath %>/<%= person.id %>" method="POST">
-                                    <input type="hidden" value="PUT" name="_method">
-                                    <button type="submit">reorder up</button>
-                                </form>
-                            <% } %>
-                        </td>
-                    <% } %>
-                <% } else if (editField == 'none') { %>
-                    <td>
-                        <a href="<%= addPersonPath %>">add</a>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                <% } else if (editField == 'people') { %>
-                    <form action="<%= addPersonPath %>" method="POST">
-                        <td>
-                            <%- include('../forms/personDropdown', { params: {
-                                name: 'people',
-                                selected: null,
-                            }}) %>
-                        </td>
-                        <td>
-                            <input type="hidden" value="PUT" name="_method">
-                            <button type="submit">save</button>
-                            <a href="<%= rootEditPath %>">cancel</a>
-                        </td>
-                    </form>
-                <% } %>
-            </tr>
-        <% } %>
+        <%- include('../forms/tableRowMulti', { params: {
+            attr: 'people',
+            rootPath: rootPath,
+            values: source.people,
+        }}) %>
 
         <!-- LINKS -->
 
