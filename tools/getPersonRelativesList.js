@@ -11,6 +11,12 @@ var relationshipNames = {
   'p' : 'parent',
   's' : 'spouse',
   'c' : 'child',
+  'pc' : 'sibling',
+  'ps' : 'stepparent',
+  'pp' : 'grandparent',
+  'ppp' : 'great-grandparent',
+  'pppp' : 'great-great-grandparent',
+  'cs' : 'child-in-law',
 };
 
 function getRelativesList(allPeople, person) {
@@ -45,8 +51,9 @@ function addPersonToList(person, generation, track) {
 
   relativeList.push({
     person: person,
-    relationship: relationshipNames[track] || 'z other',
+    relationship: relationshipNames[track] || ('other: ' + track),
     generation: generation,
+    distance: track.length,
   });
 }
 
@@ -65,17 +72,26 @@ function addPersonRelatives(person, generation, track, safety) {
 
   person.spouses.forEach(thisPerson => {
     addPersonToList(thisPerson, generation, track + 's');
-    // addPersonRelatives(thisPerson, generation, track + 's', safety + 1);
   });
 
   person.parents.forEach(thisPerson => {
     addPersonToList(thisPerson, generation + 1, track + 'p');
-    // addPersonRelatives(thisPerson, generation + 1, track + 'p', safety + 1);
   });
 
   person.children.forEach(thisPerson => {
     addPersonToList(thisPerson, generation - 1, track + 'c');
-    // addPersonRelatives(thisPerson, generation - 1, track + 'c', safety + 1);
+  });
+
+  person.spouses.forEach(thisPerson => {
+    addPersonRelatives(thisPerson, generation, track + 's', safety + 1);
+  });
+
+  person.parents.forEach(thisPerson => {
+    addPersonRelatives(thisPerson, generation + 1, track + 'p', safety + 1);
+  });
+
+  person.children.forEach(thisPerson => {
+    addPersonRelatives(thisPerson, generation - 1, track + 'c', safety + 1);
   });
 
   return person;
@@ -85,17 +101,7 @@ function sortList(relativeList, endPoint) {
   var madeChange = false;
 
   for (var i = 0; i < endPoint - 1; i++) {
-    var gen1 = relativeList[i].generation;
-    var gen2 = relativeList[i + 1].generation;
-    var shouldSwap;
-
-    if (gen1 == gen2) {
-      shouldSwap = relativeList[i].relationship > relativeList[i + 1].relationship;
-    } else {
-      shouldSwap = gen2 != null && (gen1 == null || Math.abs(gen1) > Math.abs(gen2));
-    }
-
-    if (shouldSwap) {
+    if (shouldSwap(relativeList[i], relativeList[i + 1])) {
       var temp = relativeList[i];
       relativeList[i] = relativeList[i + 1];
       relativeList[i + 1] = temp;
@@ -108,6 +114,41 @@ function sortList(relativeList, endPoint) {
   }
 
   return relativeList;
+}
+
+function shouldSwap(relative1, relative2) {
+  var dist1 = relative1.distance;
+  var dist2 = relative2.distance;
+  var rel1 = relative1.relationship;
+  var rel2 = relative2.relationship;
+
+  var isOther1 = rel1.match('other') != null;
+  var isOther2 = rel2.match('other') != null;
+
+  var isNone1 = rel1.match('no connection') != null;
+  var isNone2 = rel2.match('no connection') != null;
+
+  if (isNone1) {
+    if (!isNone2) {
+      return true;
+    }
+  } else if (isNone2) {
+    return false;
+  }
+
+  if (isOther1) {
+    if (!isOther2) {
+      return true;
+    }
+  } else if (isOther2) {
+    return false;
+  }
+
+  if (dist1 == dist2) {
+    return rel1 > rel2;
+  }
+
+  return dist1 > dist2;
 }
 
 function findPersonInList(people, person) {

@@ -16,6 +16,13 @@
     }}) %>
 
     <table border="1">
+        <tr>
+            <th> relationship </th>
+            <th> person </th>
+            <th> generation </th>
+            <th> distance </th>
+        </tr>
+
         <% relativeList.forEach(obj => { %>
             <%
                 var thisRelationship = '';
@@ -31,6 +38,12 @@
                 </td>
                 <td>
                     <%- include('../partials/linkToPerson', {person: obj.person}) %>
+                </td>
+                <td>
+                    <%= obj.generation %>
+                </td>
+                <td>
+                    <%= obj.distance %>
                 </td>
             </tr>
         <% }); %>
