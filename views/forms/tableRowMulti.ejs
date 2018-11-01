@@ -7,6 +7,7 @@
     var rootPath = params.rootPath;
     var editIsActive = false;
     var editIsAvailable = true;
+    var dataType = params.dataType || attr;
 
     var addItemPath = rootPath + '/add/' + attr;
 %>
@@ -29,11 +30,11 @@
         <!-- DISPLAY VALUE -->
 
         <td>
-            <% if (attr == 'links') { %>
+            <% if (dataType == 'links') { %>
                 <%- include('../format/externalLink', { url: thisItem }) %>
-            <% } else if (attr == 'images') { %>
+            <% } else if (dataType == 'images') { %>
                 <a href="<%= thisItem %>" target="_blank"><img src="<%= thisItem %>" height="100"></a>
-            <% } else if (attr == 'people') { %>
+            <% } else if (dataType == 'people') { %>
                 <%- include('../partials/linkToPerson', { person: thisItem }) %>
             <% } else { %>
                 <%= thisItem %>
@@ -81,7 +82,7 @@
 
             <!-- NEW VALUE -->
 
-            <% if (attr == 'people') { %>
+            <% if (dataType == 'people') { %>
                 <div item="<%= attr %>" class="value-new">
                     <%- include('../forms/personDropdown', { params: {
                         name: attr,
@@ -93,19 +94,17 @@
             <% } %>
         </td>
 
+        <!-- SUBMIT NEW ITEM -->
         <td>
-            <!-- SUBMIT NEW ITEM -->
-
             <input type="hidden" value="PUT" name="_method">
             <button item="<%= attr %>" class="button-submit" type="submit">save</button>
-
-            <!-- CANCEL NEW ITEM -->
-
-            <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
             &#160;
         </td>
     </form>
 
+    <!-- CANCEL NEW ITEM -->
     <td>
+        <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
+        &#160;
     </td>
 </tr>

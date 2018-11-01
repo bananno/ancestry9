@@ -32,6 +32,13 @@
 
         <!-- PARENTS -->
 
+        <%- include('../forms/tableRowMulti', { params: {
+            attr: 'parents',
+            rootPath: rootPath,
+            values: person.parents,
+            dataType: 'people',
+        }}) %>
+
         <%- include('../forms/personRelatives', { relationshipType: 'Parent', relationship: 'parents' }) %>
 
         <!-- SPOUSES -->
