@@ -32,51 +32,39 @@ function addRelatives(person, direction, removed, generation, safety) {
     return;
   }
 
+  person = findPersonInList(people, person);
+
   if (peoplePlaced[person._id] != null) {
     return;
   }
 
   peoplePlaced[person._id] = true;
-  person = findPersonInList(people, person);
-  var relationship = getGenerationName(direction, generation);
+
+  var relationship = 'relative';
+
+  if (removed == 0 && generation == 0) {
+    relationship = 'person';
+  }
 
   relativeList.push({
     person: person,
-    relationship: relationship,
+    relationship: relationship + ' ' + generation,
     generation: generation,
   });
 
-  if (removed == 0) {
-    var possibleStepParents = [];
-    var possibleSiblings = [];
+  person.spouses.forEach(thisPerson => {
+    addRelatives(thisPerson, null, removed + 1, generation, safety + 1);
+  });
 
-    person.parents.forEach(thisPerson => {
-      addRelatives(thisPerson, 'parent', 0, generation + 1, safety + 1);
-      possibleStepParents = possibleStepParents.concat(thisPerson.spouses);
-      possibleSiblings = possibleStepParents.concat(thisPerson.children);
-    });
+  person.parents.forEach(thisPerson => {
+    addRelatives(thisPerson, null, removed, generation + 1, safety + 1);
+  });
 
-    if (generation == 0) {
-      possibleStepParents.forEach(thisPerson => {
-        addRelatives(thisPerson, 'step-parent', 1, generation + 1, safety + 1);
-      });
-      possibleSiblings.forEach(thisPerson => {
-        addRelatives(thisPerson, 'sibling', 1, generation, safety + 1);
-      });
-    }
-  } else {
-    person.parents.forEach(thisPerson => {
-      addRelatives(thisPerson, 'other', 0, 100, safety + 1);
-    });
+  person.children.forEach(thisPerson => {
+    addRelatives(thisPerson, null, removed, generation - 1, safety + 1);
+  });
 
-    person.spouses.forEach(thisPerson => {
-      addRelatives(thisPerson, 'other', 0, 100, safety + 1);
-    });
-
-    person.children.forEach(thisPerson => {
-      addRelatives(thisPerson, 'other', 0, 100, safety + 1);
-    });
-  }
+  return person;
 }
 
 function getGenerationName(direction, generation) {
@@ -87,7 +75,7 @@ function getGenerationName(direction, generation) {
     return 'person';
   }
   if (generation == 1) {
-    return 'parent';
+    return direction;
   }
   if (generation == 2) {
     return 'grand' + direction;
@@ -112,7 +100,7 @@ function sortList(relativeList, endPoint) {
     if (gen1 == gen2) {
       shouldSwap = relativeList[i].relationship > relativeList[i + 1].relationship;
     } else {
-      shouldSwap = gen2 != null && (gen1 == null || gen1 > gen2);
+      shouldSwap = gen2 != null && (gen1 == null || Math.abs(gen1) > Math.abs(gen2));
     }
 
     if (shouldSwap) {
