@@ -10,7 +10,7 @@ function getRelativesList(allPeople, person) {
   peoplePlaced = {};
   people = allPeople;
 
-  addRelatives(person, null, 0, 0, 0);
+  addRelatives(person, 0, '', 0);
 
   var remainingPeople = allPeople.filter(thisPerson => {
     return peoplePlaced[thisPerson._id] == null;
@@ -27,7 +27,7 @@ function getRelativesList(allPeople, person) {
   return sortList(relativeList, relativeList.length);
 }
 
-function addRelatives(person, direction, removed, generation, safety) {
+function addRelatives(person, generation, track, safety) {
   if (safety > 20) {
     return;
   }
@@ -40,7 +40,7 @@ function addRelatives(person, direction, removed, generation, safety) {
 
   peoplePlaced[person._id] = true;
 
-  var relationship = getGenerationName(direction, removed, generation);
+  var relationship = getGenerationName(track);
 
   relativeList.push({
     person: person,
@@ -49,26 +49,34 @@ function addRelatives(person, direction, removed, generation, safety) {
   });
 
   person.spouses.forEach(thisPerson => {
-    addRelatives(thisPerson, 'spouse', removed + 1, generation, safety + 1);
+    addRelatives(thisPerson, generation, track + 's', safety + 1);
   });
 
   person.parents.forEach(thisPerson => {
-    addRelatives(thisPerson, null, removed, generation + 1, safety + 1);
+    addRelatives(thisPerson, generation + 1, track + 'p', safety + 1);
   });
 
   person.children.forEach(thisPerson => {
-    addRelatives(thisPerson, null, removed, generation - 1, safety + 1);
+    addRelatives(thisPerson, generation - 1, track + 'c', safety + 1);
   });
 
   return person;
 }
 
-function getGenerationName(direction, removed, generation) {
-  if (removed == 0 && generation == 0) {
+function getGenerationName(track) {
+  if (track == '') {
     return 'person';
   }
 
-  return 'relative' + ' ' + generation;
+  if (track == 'p') {
+    return 'parent';
+  }
+
+  if (track == 's') {
+    return 'spouse';
+  }
+
+  return 'z other';
 }
 
 function sortList(relativeList, endPoint) {
