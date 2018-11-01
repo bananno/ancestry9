@@ -13,7 +13,7 @@ function startEdit(item) {
   $('.button-reorder').hide();
 
   $('.value-show').filter('[item="' + item + '"]').hide();
-  $('.value-edit').filter('[item="' + item + '"]').show();
+  $('.value-edit, .value-new').filter('[item="' + item + '"]').show();
   $('.link-cancel').filter('[item="' + item + '"]').show();
   $('.button-submit').filter('[item="' + item + '"]').show();
 
@@ -24,6 +24,8 @@ function startEdit(item) {
 function cancelEdit(item) {
   $('.value-show').show();
   $('.value-edit').hide();
+  $('input.value-new').hide();
+  $('input.value-new').val('');
   $('.link-cancel').hide();
   $('.link-start').show();
   $('.button-submit').hide();

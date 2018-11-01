@@ -155,23 +155,19 @@
 
         <!-- LINKS -->
 
-        <%- include('../forms/links', { params: {
-            links: source.links,
+        <%- include('../forms/tableRowMulti', { params: {
+            attr: 'links',
             rootPath: rootPath,
-            editIsActive: editField == 'links',
-            editIsAvailable: editField == 'none',
+            values: source.links,
         }}) %>
 
         <!-- IMAGES -->
 
-        <%- include('../forms/images', {
-            images: source.images,
-            rootPath: rootEditPath,
-            addImagePath: rootPath + '/add/images',
-            deleteImagePath: rootPath + '/delete/images',
-            editActive: editField == 'images',
-            editAvailable: editField == 'none',
-        }) %>
+        <%- include('../forms/tableRowMulti', { params: {
+            attr: 'images',
+            rootPath: rootPath,
+            values: source.images,
+        }}) %>
 
         <!-- NOTES -->
 
