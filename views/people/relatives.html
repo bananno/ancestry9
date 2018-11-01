@@ -15,6 +15,14 @@
         person: person,
     }}) %>
 
+    <% if (relativeList[0].person.name != person.name) { %>
+        <p style="color: red;">
+            List is cached.
+            <br> - <%= relativeList[0].person.name %>
+            <br> - <%= person.name %>
+        </p>
+    <% } %>
+
     <table border="1">
         <tr>
             <th> relationship </th>
