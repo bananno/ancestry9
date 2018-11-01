@@ -35,9 +35,24 @@ function processNextGenList(safety) {
   }
 
   nextGroupList.forEach(obj => {
+    var relationship = relationshipNames[obj.track];
+
+    if (relationship == null) {
+      var lastChar = obj.track.slice(obj.track.length - 1);
+      var tempTrack = obj.track.slice(0, obj.track.length - 1);
+      var newRel = relationshipNames[tempTrack];
+      if (lastChar == 's' && newRel) {
+        relationship = newRel + '\'s spouse';
+      }
+    }
+
+    if (relationship == null) {
+      relationship = 'other: ' + obj.track;
+    }
+
     relativeList.push({
       person: obj.person,
-      relationship: relationshipNames[obj.track] || ('other: ' + obj.track),
+      relationship: relationship,
       generation: obj.generation,
       distance: obj.track.length,
     });
@@ -168,12 +183,15 @@ function getRelationshipNameList() {
     's' : 'spouse',
     'c' : 'child',
     'x' : 'sibling',
-    'ps' : 'stepparent',
     'pp' : 'grandparent',
     'ppp' : 'great-grandparent',
     'pppp' : 'great-great-grandparent',
-    'cs' : 'child-in-law',
     'px': 'aunt/uncle',
+    'ppx': 'great-aunt/uncle',
+    'pxc' : 'cousin',
+    'ps' : 'stepparent',
+    'xs' : 'sibling-in-law',
+    'cs' : 'child-in-law',
   };
 
   for (var i = 3; i <= 10; i++) {
