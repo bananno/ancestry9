@@ -47,20 +47,40 @@ function addRelatives(person, direction, removed, generation, safety) {
   });
 
   if (removed == 0) {
+    var possibleStepParents = [];
+    var possibleSiblings = [];
+
     person.parents.forEach(thisPerson => {
       addRelatives(thisPerson, 'parent', 0, generation + 1, safety + 1);
+      possibleStepParents = possibleStepParents.concat(thisPerson.spouses);
+      possibleSiblings = possibleStepParents.concat(thisPerson.children);
     });
-  }
 
-  if (direction == 'parent' && generation == 1 && removed == 0) {
+    if (generation == 0) {
+      possibleStepParents.forEach(thisPerson => {
+        addRelatives(thisPerson, 'step-parent', 1, generation + 1, safety + 1);
+      });
+      possibleSiblings.forEach(thisPerson => {
+        addRelatives(thisPerson, 'sibling', 1, generation, safety + 1);
+      });
+    }
+  } else {
+    person.parents.forEach(thisPerson => {
+      addRelatives(thisPerson, 'other', 0, 100, safety + 1);
+    });
+
+    person.spouses.forEach(thisPerson => {
+      addRelatives(thisPerson, 'other', 0, 100, safety + 1);
+    });
+
     person.children.forEach(thisPerson => {
-      addRelatives(thisPerson, 'sibling', removed + 1, generation, safety + 1);
+      addRelatives(thisPerson, 'other', 0, 100, safety + 1);
     });
   }
 }
 
 function getGenerationName(direction, generation) {
-  if (direction == 'sibling') {
+  if (direction != null && direction != 'parent' && direction != 'child') {
     return direction;
   }
   if (generation == 0) {
