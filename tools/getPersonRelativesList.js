@@ -30,7 +30,7 @@ function getRelativesList(allPeople, person) {
 }
 
 function processNextGenList(safety) {
-  if (safety > 1) {
+  if (safety > 20) {
     return;
   }
 
@@ -54,6 +54,8 @@ function processNextGenList(safety) {
 }
 
 function collectRelatives(person, generation, track) {
+  person = findPersonInList(people, person);
+
   person.spouses.forEach(thisPerson => {
     addPersonToGroup(thisPerson, generation, track + 's');
   });
@@ -73,10 +75,10 @@ function addPersonToGroup(person, generation, track) {
       return;
     }
   } else {
-    thisPerson = findPersonInList(people, thisPerson);
-    if (personIsPlaced[person._id]) {
+    if (personIsPlaced[person]) {
       return;
     }
+    person = findPersonInList(people, person);
   }
 
   // change "parent, child" to "sibling" to count 1 degree of removal instead of 2
@@ -110,6 +112,8 @@ function shouldSwap(relative1, relative2) {
   var dist2 = relative2.distance;
   var rel1 = relative1.relationship;
   var rel2 = relative2.relationship;
+  var gen1 = Math.abs(relative1.generation);
+  var gen2 = Math.abs(relative2.generation);
 
   var isOther1 = rel1.match('other') != null;
   var isOther2 = rel2.match('other') != null;
@@ -134,7 +138,10 @@ function shouldSwap(relative1, relative2) {
   }
 
   if (dist1 == dist2) {
-    return rel1 > rel2;
+    if (gen1 == gen2) {
+      return rel1 > rel2;
+    }
+    return gen1 > gen2;
   }
 
   return dist1 > dist2;
