@@ -6,6 +6,13 @@ var personPlaced = {};
 var personRelativesChecked = {};
 var people;
 
+var relationshipNames = {
+  '' : 'person',
+  'p' : 'parent',
+  's' : 'spouse',
+  'c' : 'child',
+};
+
 function getRelativesList(allPeople, person) {
   people = allPeople;
 
@@ -36,11 +43,9 @@ function addPersonToList(person, generation, track) {
 
   personPlaced[person._id] = true;
 
-  var relationship = getGenerationName(track);
-
   relativeList.push({
     person: person,
-    relationship: relationship,
+    relationship: relationshipNames[track] || 'z other',
     generation: generation,
   });
 }
@@ -74,26 +79,6 @@ function addPersonRelatives(person, generation, track, safety) {
   });
 
   return person;
-}
-
-function getGenerationName(track) {
-  if (track == '') {
-    return 'person';
-  }
-
-  if (track == 'p') {
-    return 'parent';
-  }
-
-  if (track == 's') {
-    return 'spouse';
-  }
-
-  if (track == 'c') {
-    return 'child';
-  }
-
-  return 'z other';
 }
 
 function sortList(relativeList, endPoint) {
