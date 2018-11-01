@@ -10,7 +10,7 @@ function getRelativesList(allPeople, person) {
   peoplePlaced = {};
   people = allPeople;
 
-  addRelatives(person, null, 0, 0);
+  addRelatives(person, null, 0, 0, 0);
 
   var remainingPeople = allPeople.filter(thisPerson => {
     return peoplePlaced[thisPerson._id] == null;
@@ -27,7 +27,7 @@ function getRelativesList(allPeople, person) {
   return sortList(relativeList, relativeList.length);
 }
 
-function addRelatives(person, direction, generation, safety) {
+function addRelatives(person, direction, removed, generation, safety) {
   if (safety > 20) {
     return;
   }
@@ -46,17 +46,23 @@ function addRelatives(person, direction, generation, safety) {
     generation: generation,
   });
 
-  person.parents.forEach((nextPerson) => {
-    addRelatives(nextPerson, 'parent', generation + 1, safety + 1);
-  });
+  if (removed == 0) {
+    person.parents.forEach(thisPerson => {
+      addRelatives(thisPerson, 'parent', 0, generation + 1, safety + 1);
+    });
+  }
 
-  person.children.forEach((nextPerson) => {
-    return;
-    addRelatives(nextPerson, 'child', generation + 1, safety + 1);
-  });
+  if (direction == 'parent' && generation == 1 && removed == 0) {
+    person.children.forEach(thisPerson => {
+      addRelatives(thisPerson, 'sibling', removed + 1, generation, safety + 1);
+    });
+  }
 }
 
 function getGenerationName(direction, generation) {
+  if (direction == 'sibling') {
+    return direction;
+  }
   if (generation == 0) {
     return 'person';
   }
