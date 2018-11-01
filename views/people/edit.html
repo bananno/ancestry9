@@ -1,43 +1,25 @@
 <%- include ../partials/header %>
-<% var rootPath = "/person/" + (person.customId || person._id); %>
-<% var rootEditPath = rootPath + "/edit" %>
 
-<div id="content">
-    <h1><%= person.name %>: Edit</h1>
+<%
+    var rootPath = "/person/" + (person.customId || person._id);
+    var rootEditPath = rootPath + "/edit"
+%>
 
-    <p>
-        <a href="<%= rootPath %>" class="main-link">done</a>
-    </p>
+<div id="page-content">
+    <%- include('../people/personHeader', { params: {
+        person: person,
+        edit: true,
+    }}) %>
 
-    <table border="1">
+    <table class="edit-form-frame">
 
         <!-- NAME -->
 
-        <% var editNamePath = rootEditPath + "/name"; %>
-
-        <tr>
-            <td>
-                <b>name</b>
-            </td>
-            <form action="<%= editNamePath %>" method="POST">
-                <td>
-                    <% if (editView == 'name') { %>
-                        <input type="text" value="<%= person.name %>" name="name">
-                    <% } else { %>
-                        <%= person.name %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editView == 'name') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootEditPath %>">cancel</a>
-                    <% } else if (editView == 'none') { %>
-                        <a href="<%= editNamePath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
+        <%- include('../forms/tableRowSingle', { params: {
+            attr: 'name',
+            editPath: rootEditPath + '/name',
+            originalValue: person.name,
+        }}) %>
 
         <!-- ID -->
 
@@ -91,3 +73,7 @@
     </table>
 
 </div>
+
+<script>
+  initializeEditForm('<%= editView %>' != 'none');
+</script>
