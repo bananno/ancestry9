@@ -2,9 +2,9 @@
 var removePersonFromList = require('./removePersonFromList');
 
 var relativeList = [];
-var personPlaced = {};
-var personRelativesChecked = {};
+var personIsPlaced = {};
 var people;
+var nextGroupList = [];
 
 var relationshipNames = {
   '' : 'person',
@@ -30,11 +30,11 @@ for (var i = 3; i <= 10; i++) {
 function getRelativesList(allPeople, person) {
   people = allPeople;
 
-  addPersonToList(person, 0, '');
-  addPersonRelatives(person, 0, '', 0);
+  addPersonToGroup(person, 0, '');
+  processNextGenList(0);
 
   var remainingPeople = allPeople.filter(thisPerson => {
-    return personPlaced[thisPerson._id] == null;
+    return personIsPlaced[thisPerson._id] == null;
   });
 
   remainingPeople.forEach(thisPerson => {
@@ -48,66 +48,61 @@ function getRelativesList(allPeople, person) {
   return sortList(relativeList, relativeList.length);
 }
 
-function addPersonToList(person, generation, track) {
-  person = findPersonInList(people, person);
-
-  if (personPlaced[person._id] != null) {
+function processNextGenList(safety) {
+  if (safety > 1) {
     return;
   }
 
-  personPlaced[person._id] = true;
+  nextGroupList.forEach(obj => {
+    relativeList.push({
+      person: obj.person,
+      relationship: relationshipNames[obj.track] || ('other: ' + obj.track),
+      generation: obj.generation,
+      distance: obj.track.length,
+    });
+  });
 
-  while (track.match('pc')) {
-    // change "parent, child" to "sibling" to count 1 degree of removal instead of 2
-    track = track.replace('pc', 'x');
-  }
+  var tempList = nextGroupList.concat();
+  nextGroupList = [];
 
-  relativeList.push({
-    person: person,
-    relationship: relationshipNames[track] || ('other: ' + track),
-    generation: generation,
-    distance: track.length,
+  tempList.forEach(obj => {
+    collectRelatives(obj.person, obj.generation, obj.track);
+  });
+
+  processNextGenList(safety + 1);
+}
+
+function collectRelatives(person, generation, track) {
+  person.spouses.forEach(thisPerson => {
+    addPersonToGroup(thisPerson, generation, track + 's');
+  });
+
+  person.parents.forEach(thisPerson => {
+    addPersonToGroup(thisPerson, generation + 1, track + 'p');
+  });
+
+  person.children.forEach(thisPerson => {
+    addPersonToGroup(thisPerson, generation - 1, track + 'c');
   });
 }
 
-function addPersonRelatives(person, generation, track, safety) {
-  if (safety > 20) {
-    return;
+function addPersonToGroup(person, generation, track) {
+  if (person._id) {
+    if (personIsPlaced[person._id]) {
+      return;
+    }
+  } else {
+    thisPerson = findPersonInList(people, thisPerson);
+    if (personIsPlaced[person._id]) {
+      return;
+    }
   }
 
-  person = findPersonInList(people, person);
+  // change "parent, child" to "sibling" to count 1 degree of removal instead of 2
+  track = track.replace('pc', 'x');
 
-  if (personRelativesChecked[person._id] != null) {
-    return;
-  }
-
-  personRelativesChecked[person._id] = true;
-
-  person.spouses.forEach(thisPerson => {
-    addPersonToList(thisPerson, generation, track + 's');
-  });
-
-  person.parents.forEach(thisPerson => {
-    addPersonToList(thisPerson, generation + 1, track + 'p');
-  });
-
-  person.children.forEach(thisPerson => {
-    addPersonToList(thisPerson, generation - 1, track + 'c');
-  });
-
-  person.spouses.forEach(thisPerson => {
-    addPersonRelatives(thisPerson, generation, track + 's', safety + 1);
-  });
-
-  person.parents.forEach(thisPerson => {
-    addPersonRelatives(thisPerson, generation + 1, track + 'p', safety + 1);
-  });
-
-  person.children.forEach(thisPerson => {
-    addPersonRelatives(thisPerson, generation - 1, track + 'c', safety + 1);
-  });
-
-  return person;
+  personIsPlaced[person._id] = true;
+  nextGroupList.push({ person: person, generation: generation, track: track });
 }
 
 function sortList(relativeList, endPoint) {
