@@ -6,26 +6,7 @@ var personIsPlaced = {};
 var people;
 var nextGroupList = [];
 
-var relationshipNames = {
-  '' : 'person',
-  'p' : 'parent',
-  's' : 'spouse',
-  'c' : 'child',
-  'x' : 'sibling',
-  'ps' : 'stepparent',
-  'pp' : 'grandparent',
-  'ppp' : 'great-grandparent',
-  'pppp' : 'great-great-grandparent',
-  'cs' : 'child-in-law',
-  'px': 'aunt/uncle',
-};
-
-for (var i = 3; i <= 10; i++) {
-  var key1 = new Array(i + 2).fill('p').join('');
-  var key2 = new Array(i + 2).fill('c').join('');
-  relationshipNames[key1] = '' + i + '-great-grandparent';
-  relationshipNames[key2] = '' + i + '-great-grandchild';
-}
+var relationshipNames = getRelationshipNameList();
 
 function getRelativesList(allPeople, person) {
   people = allPeople;
@@ -171,6 +152,31 @@ function isSamePerson(person1, person2) {
   id1 = '' + id1;
   id2 = '' + id2;
   return id1 == id2;
+}
+
+function getRelationshipNameList() {
+  var obj = {
+    '' : 'person',
+    'p' : 'parent',
+    's' : 'spouse',
+    'c' : 'child',
+    'x' : 'sibling',
+    'ps' : 'stepparent',
+    'pp' : 'grandparent',
+    'ppp' : 'great-grandparent',
+    'pppp' : 'great-great-grandparent',
+    'cs' : 'child-in-law',
+    'px': 'aunt/uncle',
+  };
+
+  for (var i = 3; i <= 10; i++) {
+    var key1 = new Array(i + 2).fill('p').join('');
+    var key2 = new Array(i + 2).fill('c').join('');
+    obj[key1] = '' + i + '-great-grandparent';
+    obj[key2] = '' + i + '-great-grandchild';
+  }
+
+  return obj;
 }
 
 module.exports = getRelativesList;
