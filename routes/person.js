@@ -40,11 +40,10 @@ createRelationshipRoutes('children', 'parents');
 module.exports = router;
 
 function createRelationshipRoutes(relationship, corresponding) {
-  var showEditPath = '/:personId/edit/' + relationship;
+  var addPath = '/:personId/add/' + relationship;
   var deletePath = '/:personId/delete/' + relationship + '/:deleteId';
 
-  router.get(showEditPath, makeRouteEditGet(relationship));
-  router.post(showEditPath, makeRouteEditPost(relationship, corresponding));
+  router.post(addPath, makeRouteEditPost(relationship, corresponding));
   router.post(deletePath, makeRouteDelete(relationship, corresponding));
 }
 

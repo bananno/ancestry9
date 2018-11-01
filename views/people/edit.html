@@ -39,15 +39,23 @@
             dataType: 'people',
         }}) %>
 
-        <%- include('../forms/personRelatives', { relationshipType: 'Parent', relationship: 'parents' }) %>
-
         <!-- SPOUSES -->
 
-        <%- include('../forms/personRelatives', {relationshipType: 'Spouse', relationship: 'spouses' }) %>
+        <%- include('../forms/tableRowMulti', { params: {
+            attr: 'spouses',
+            rootPath: rootPath,
+            values: person.spouses,
+            dataType: 'people',
+        }}) %>
 
         <!-- CHILDREN -->
 
-        <%- include('../forms/personRelatives', {relationshipType: 'Child', relationship: 'children' }) %>
+        <%- include('../forms/tableRowMulti', { params: {
+            attr: 'children',
+            rootPath: rootPath,
+            values: person.children,
+            dataType: 'people',
+        }}) %>
 
         <!-- LINKS -->
 
