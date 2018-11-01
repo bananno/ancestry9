@@ -2,40 +2,18 @@
 
 <% var rootPath = '/event/' + event._id; %>
 
-<div id="content">
+<div id="page-content">
     <h1><%= event.title %></h1>
 
-    <table border="1">
+    <table class="edit-form-frame">
 
         <!-- TITLE -->
 
-        <%
-            var editTitlePath = rootPath + '/editTitle';
-        %>
-
-        <tr>
-            <td>
-                <b>title</b>
-            </td>
-            <form action="<%= editTitlePath %>" method="POST">
-                <td>
-                    <% if (editField == 'title') { %>
-                        <input type="text" value="<%= event.title %>" name="title">
-                    <% } else { %>
-                        <%= event.title %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editField == 'title') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editField == 'none') { %>
-                        <a href="<%= editTitlePath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
+        <%- include('../forms/tableRowSingle', { params: {
+            attr: 'title',
+            editPath: rootPath + '/editTitle',
+            originalValue: event.title,
+        }}) %>
 
         <!-- DATE -->
 
@@ -65,6 +43,8 @@
                     <% } %>
                 </td>
             </form>
+            <td>
+            </td>
         </tr>
 
         <!-- LOCATION -->
@@ -95,6 +75,8 @@
                     <% } %>
                 </td>
             </form>
+            <td>
+            </td>
         </tr>
 
         <!-- PEOPLE -->
@@ -152,43 +134,25 @@
 
         <!-- NOTES -->
 
-        <%
-            var editNotesPath = rootPath + '/edit/notes';
-        %>
-
-        <tr>
-            <td>
-                <b>notes</b>
-            </td>
-            <form action="<%= editNotesPath %>" method="POST">
-                <td>
-                    <% if (editField == 'notes') { %>
-                        <input type="text" value="<%= event.notes %>" name="notes">
-                    <% } else { %>
-                        <%= event.notes %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editField == 'notes') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editField == 'none') { %>
-                        <a href="<%= editNotesPath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
-
-        <!--  -->
+        <%- include('../forms/tableRowSingle', { params: {
+            attr: 'notes',
+            editPath: rootPath + '/edit/notes',
+            originalValue: event.notes,
+        }}) %>
     </table>
+
+    <!-- DELETE EVENT -->
 
     <% if (editField == 'none') { %>
         <form action="<%= rootPath %>/delete" method="POST" onsubmit="return confirmDeletion('event')">
-            <p>
+            <p style="padding-top: 20px;">
                 <input type="hidden" value="PUT" name="_method">
-                <button type="submit">delete event</button>
+                <button type="submit" class="button-delete">delete event</button>
             </p>
         </form>
     <% } %>
 </div>
+
+<script>
+  initializeEditForm('<%= editField %>' != 'none');
+</script>

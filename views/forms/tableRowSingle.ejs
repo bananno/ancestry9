@@ -16,7 +16,7 @@
             <!-- DISPLAY VALUE -->
 
             <div item="<%= attr %>" class="value-show">
-                <% if (attr == 'notes') { %>
+                <% if (fieldType == 'textarea') { %>
                     <%
                         var valueList = [];
                         if (originalValue != '') {
