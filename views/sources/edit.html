@@ -18,7 +18,7 @@
         <% var stringAttributes = ['type', 'group', 'title']; %>
 
         <% stringAttributes.forEach(attr => { %>
-            <%- include('../forms/form', { params: {
+            <%- include('../forms/tableRowSingle', { params: {
                 attr: attr,
                 editPath: rootEditPath + '/' + attr,
                 originalValue: source[attr],
@@ -175,7 +175,7 @@
 
         <!-- NOTES -->
 
-        <%- include('../forms/form', { params: {
+        <%- include('../forms/tableRowSingle', { params: {
             attr: 'notes',
             editPath: rootEditPath + '/notes',
             originalValue: source.notes,
