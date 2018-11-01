@@ -13,17 +13,29 @@
 
     <table class="edit-form-frame">
 
-        <!-- TYPE, GROUP, TITLE -->
+        <!-- TYPE -->
 
-        <% var stringAttributes = ['type', 'group', 'title']; %>
+        <%- include('../forms/tableRowSingle', { params: {
+            attr: 'type',
+            editPath: rootEditPath + '/type',
+            originalValue: source.type,
+        }}) %>
 
-        <% stringAttributes.forEach(attr => { %>
-            <%- include('../forms/tableRowSingle', { params: {
-                attr: attr,
-                editPath: rootEditPath + '/' + attr,
-                originalValue: source[attr],
-            }}) %>
-        <% }); %>
+        <!-- GROUP -->
+
+        <%- include('../forms/tableRowSingle', { params: {
+            attr: 'group',
+            editPath: rootEditPath + '/group',
+            originalValue: source.group,
+        }}) %>
+
+        <!-- TITLE -->
+
+        <%- include('../forms/tableRowSingle', { params: {
+            attr: 'title',
+            editPath: rootEditPath + '/title',
+            originalValue: source.title,
+        }}) %>
 
         <!-- DATE -->
 
