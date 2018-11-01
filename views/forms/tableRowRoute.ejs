@@ -1,7 +1,7 @@
 <%
     var attr = params.attr;
     var rootEditPath = params.rootEditPath;
-    var editPath = rootEditPath + '/' + attr;
+    var editPath = params.editPath || (rootEditPath + '/' + attr);
     var originalValue = params.originalValue;
 %>
 

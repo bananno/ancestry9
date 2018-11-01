@@ -1,6 +1,8 @@
 <%- include ../partials/header %>
 
-<% var rootPath = '/event/' + event._id; %>
+<%
+    var rootPath = '/event/' + event._id;
+%>
 
 <div id="page-content">
     <h1><%= event.title %></h1>
@@ -17,67 +19,19 @@
 
         <!-- DATE -->
 
-        <%
-            var editDatePath = rootPath + '/editDate';
-        %>
-
-        <tr>
-            <td>
-                <b>date</b>
-            </td>
-            <form action="<%= editDatePath %>" method="POST">
-                <td>
-                    <% if (editField == 'date') { %>
-                        <%- include('../forms/date', { date: event.date }) %>
-                    <% } else { %>
-                        <%- include('../format/date', {date: event.date}) %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editField == 'date') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editField == 'none') { %>
-                        <a href="<%= editDatePath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-            <td>
-            </td>
-        </tr>
+        <%- include('../forms/tableRowRoute', { params: {
+            attr: 'date',
+            editPath: rootPath + '/editDate',
+            originalValue: event.date,
+        }}) %>
 
         <!-- LOCATION -->
 
-        <%
-            var editLocationPath = rootPath + '/editLocation';
-        %>
-
-        <tr>
-            <td>
-                <b>location</b>
-            </td>
-            <form action="<%= editLocationPath %>" method="POST">
-                <td>
-                    <% if (editField == 'location') { %>
-                        <%- include('../forms/location', { location: event.location }) %>
-                    <% } else { %>
-                        <%- include('../format/location', { location: event.location }) %>
-                    <% } %>
-                </td>
-                <td>
-                    <% if (editField == 'location') { %>
-                        <input type="hidden" value="PUT" name="_method">
-                        <button type="submit">save</button>
-                        <a href="<%= rootPath %>">cancel</a>
-                    <% } else if (editField == 'none') { %>
-                        <a href="<%= editLocationPath %>">edit</a>
-                    <% } %>
-                </td>
-            </form>
-            <td>
-            </td>
-        </tr>
+        <%- include('../forms/tableRowRoute', { params: {
+            attr: 'location',
+            editPath: rootPath + '/editLocation',
+            originalValue: event.location,
+        }}) %>
 
         <!-- PEOPLE -->
 
