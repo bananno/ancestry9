@@ -8,15 +8,15 @@ var removePersonFromList = require('../tools/removePersonFromList');
 
 router.get('/:eventId', makeEventShowRoute('none'));
 router.post('/:eventId/delete', deleteEvent);
-router.get('/:eventId/editTitle', makeEventShowRoute('title'));
-router.post('/:eventId/editTitle', makeEventPostRoute('title'));
-router.get('/:eventId/editDate', makeEventShowRoute('date'));
-router.post('/:eventId/editDate', makeEventPostRoute('date'));
+router.get('/:eventId/edit/title', makeEventShowRoute('title'));
+router.post('/:eventId/edit/title', makeEventPostRoute('title'));
+router.get('/:eventId/edit/date', makeEventShowRoute('date'));
+router.post('/:eventId/edit/date', makeEventPostRoute('date'));
 router.get('/:eventId/add/people', makeEventShowRoute('people'));
 router.post('/:eventId/add/people', makeEventPostRoute('people'));
 router.post('/:eventId/delete/people/:deleteId', makeEventDeleteRoute('people'));
-router.get('/:eventId/editLocation', makeEventShowRoute('location'));
-router.post('/:eventId/editLocation', makeEventPostRoute('location'));
+router.get('/:eventId/edit/location', makeEventShowRoute('location'));
+router.post('/:eventId/edit/location', makeEventPostRoute('location'));
 router.get('/:eventId/edit/notes', makeEventShowRoute('notes'));
 router.post('/:eventId/edit/notes', makeEventPostRoute('notes'));
 

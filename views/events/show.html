@@ -13,7 +13,7 @@
 
         <%- include('../forms/tableRowSingle', { params: {
             attr: 'title',
-            editPath: rootPath + '/editTitle',
+            editPath: rootPath + '/edit/title',
             originalValue: event.title,
         }}) %>
 
@@ -21,7 +21,7 @@
 
         <%- include('../forms/tableRowRoute', { params: {
             attr: 'date',
-            editPath: rootPath + '/editDate',
+            editPath: rootPath + '/edit/date',
             originalValue: event.date,
         }}) %>
 
@@ -29,7 +29,7 @@
 
         <%- include('../forms/tableRowRoute', { params: {
             attr: 'location',
-            editPath: rootPath + '/editLocation',
+            editPath: rootPath + '/edit/location',
             originalValue: event.location,
         }}) %>
 
