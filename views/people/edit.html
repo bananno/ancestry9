@@ -59,11 +59,10 @@
 
         <!-- LINKS -->
 
-        <%- include('../forms/links', { params: {
-            links: person.links,
+        <%- include('../forms/tableRowMulti', { params: {
+            attr: 'links',
             rootPath: rootPath,
-            editIsActive: editView == 'links',
-            editIsAvailable: editView == 'none',
+            values: person.links,
         }}) %>
 
     </table>
