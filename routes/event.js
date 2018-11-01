@@ -6,23 +6,23 @@ var getDateValues = require('../tools/getDateValues');
 var getLocationValues = require('../tools/getLocationValues');
 var removePersonFromList = require('../tools/removePersonFromList');
 
-router.get('/:eventId', makeEventShowRoute('none'));
+router.get('/:eventId', makeRouteEditGet('none'));
 router.post('/:eventId/delete', deleteEvent);
-router.get('/:eventId/edit/title', makeEventShowRoute('title'));
-router.post('/:eventId/edit/title', makeEventPostRoute('title'));
-router.get('/:eventId/edit/date', makeEventShowRoute('date'));
-router.post('/:eventId/edit/date', makeEventPostRoute('date'));
-router.get('/:eventId/add/people', makeEventShowRoute('people'));
-router.post('/:eventId/add/people', makeEventPostRoute('people'));
-router.post('/:eventId/delete/people/:deleteId', makeEventDeleteRoute('people'));
-router.get('/:eventId/edit/location', makeEventShowRoute('location'));
-router.post('/:eventId/edit/location', makeEventPostRoute('location'));
-router.get('/:eventId/edit/notes', makeEventShowRoute('notes'));
-router.post('/:eventId/edit/notes', makeEventPostRoute('notes'));
+router.get('/:eventId/edit/title', makeRouteEditGet('title'));
+router.post('/:eventId/edit/title', makeRouteEditPost('title'));
+router.get('/:eventId/edit/date', makeRouteEditGet('date'));
+router.post('/:eventId/edit/date', makeRouteEditPost('date'));
+router.get('/:eventId/add/people', makeRouteEditGet('people'));
+router.post('/:eventId/add/people', makeRouteEditPost('people'));
+router.post('/:eventId/delete/people/:deleteId', makeRouteDelete('people'));
+router.get('/:eventId/edit/location', makeRouteEditGet('location'));
+router.post('/:eventId/edit/location', makeRouteEditPost('location'));
+router.get('/:eventId/edit/notes', makeRouteEditGet('notes'));
+router.post('/:eventId/edit/notes', makeRouteEditPost('notes'));
 
 module.exports = router;
 
-function makeEventShowRoute(editField) {
+function makeRouteEditGet(editField) {
   return function(req, res, next) {
     var eventId = req.params.eventId;
     mongoose.model('Event').findById(eventId)
@@ -44,7 +44,7 @@ function makeEventShowRoute(editField) {
   };
 }
 
-function makeEventPostRoute(editField) {
+function makeRouteEditPost(editField) {
   return function(req, res) {
     var eventId = req.params.eventId;
     mongoose.model('Event').findById(eventId, function(err, event) {
@@ -73,7 +73,7 @@ function makeEventPostRoute(editField) {
   };
 }
 
-function makeEventDeleteRoute(editField) {
+function makeRouteDelete(editField) {
   return function(req, res) {
     var eventId = req.params.eventId;
     mongoose.model('Event').findById(eventId, function(err, event) {
