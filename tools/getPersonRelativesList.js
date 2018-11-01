@@ -1,19 +1,18 @@
 
 var removePersonFromList = require('./removePersonFromList');
 
-var relativeList;
-var peoplePlaced;
+var relativeList = [];
+var personPlaced = {};
+var personRelativesChecked = {};
 var people;
 
 function getRelativesList(allPeople, person) {
-  relativeList = [];
-  peoplePlaced = {};
   people = allPeople;
 
   addRelatives(person, 0, '', 0);
 
   var remainingPeople = allPeople.filter(thisPerson => {
-    return peoplePlaced[thisPerson._id] == null;
+    return personPlaced[thisPerson._id] == null;
   });
 
   remainingPeople.forEach(thisPerson => {
@@ -34,11 +33,11 @@ function addRelatives(person, generation, track, safety) {
 
   person = findPersonInList(people, person);
 
-  if (peoplePlaced[person._id] != null) {
+  if (personPlaced[person._id] != null) {
     return;
   }
 
-  peoplePlaced[person._id] = true;
+  personPlaced[person._id] = true;
 
   var relationship = getGenerationName(track);
 
