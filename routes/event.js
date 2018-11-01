@@ -8,18 +8,18 @@ var removePersonFromList = require('../tools/removePersonFromList');
 
 router.get('/:eventId', makeRouteEditGet('none'));
 router.post('/:eventId/delete', deleteEvent);
-router.get('/:eventId/edit/title', makeRouteEditGet('title'));
+
 router.post('/:eventId/edit/title', makeRouteEditPost('title'));
+router.post('/:eventId/edit/notes', makeRouteEditPost('notes'));
+
 router.get('/:eventId/edit/date', makeRouteEditGet('date'));
 router.post('/:eventId/edit/date', makeRouteEditPost('date'));
-router.get('/:eventId/add/people', makeRouteEditGet('people'));
+router.get('/:eventId/edit/location', makeRouteEditGet('location'));
+router.post('/:eventId/edit/location', makeRouteEditPost('location'));
+
 router.post('/:eventId/add/people', makeRouteEditPost('people'));
 router.post('/:eventId/delete/people/:deleteId', makeRouteDelete('people'));
 router.post('/:eventId/reorder/people/:orderId', makeRouteReorder('people'));
-router.get('/:eventId/edit/location', makeRouteEditGet('location'));
-router.post('/:eventId/edit/location', makeRouteEditPost('location'));
-router.get('/:eventId/edit/notes', makeRouteEditGet('notes'));
-router.post('/:eventId/edit/notes', makeRouteEditPost('notes'));
 
 module.exports = router;
 
