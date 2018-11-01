@@ -35,56 +35,11 @@
 
         <!-- PEOPLE -->
 
-        <%
-            var numberOfPeople = event.people.length;
-            var addPersonPath = rootPath + '/addPerson';
-            var deletePersonPath = rootPath + '/deletePerson/';
-        %>
-
-        <% for (var p = 0; p < numberOfPeople + 1; p++) { %>
-            <tr>
-                <td>
-                    <% if (p == 0) { %>
-                        <b>people</b>
-                    <% } %>
-                </td>
-                <% if (p < numberOfPeople) { %>
-                    <% let person = event.people[p]; %>
-                    <form action="<%= deletePersonPath %><%= person.id %>" method="POST"
-                            onsubmit="return confirmDeletion('person from event')">
-                        <td>
-                            <%- include('../partials/linkToPerson', {person: person}) %>
-                        </td>
-                        <td>
-                            <% if (editField == 'none') { %>
-                                <input type="hidden" value="PUT" name="_method">
-                                <button type="submit">delete</button>
-                            <% } %>
-                        </td>
-                    </form>
-                <% } else if (editField == 'none') { %>
-                    <td>
-                        <a href="<%= addPersonPath %>">add</a>
-                    </td>
-                    <td>
-                    </td>
-                <% } else if (editField == 'people') { %>
-                    <form action="<%= addPersonPath %>" method="POST">
-                        <td>
-                            <%- include('../forms/personDropdown', { params: {
-                                name: 'people',
-                                selected: null,
-                            }}) %>
-                        </td>
-                        <td>
-                            <input type="hidden" value="PUT" name="_method">
-                            <button type="submit">save</button>
-                            <a href="<%= rootPath %>">cancel</a>
-                        </td>
-                    </form>
-                <% } %>
-            </tr>
-        <% } %>
+        <%- include('../forms/tableRowMulti', { params: {
+            attr: 'people',
+            rootPath: rootPath,
+            values: event.people,
+        }}) %>
 
         <!-- NOTES -->
 
