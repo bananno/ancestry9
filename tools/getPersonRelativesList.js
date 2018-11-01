@@ -40,20 +40,16 @@ function addRelatives(person, direction, removed, generation, safety) {
 
   peoplePlaced[person._id] = true;
 
-  var relationship = 'relative';
-
-  if (removed == 0 && generation == 0) {
-    relationship = 'person';
-  }
+  var relationship = getGenerationName(direction, removed, generation);
 
   relativeList.push({
     person: person,
-    relationship: relationship + ' ' + generation,
+    relationship: relationship,
     generation: generation,
   });
 
   person.spouses.forEach(thisPerson => {
-    addRelatives(thisPerson, null, removed + 1, generation, safety + 1);
+    addRelatives(thisPerson, 'spouse', removed + 1, generation, safety + 1);
   });
 
   person.parents.forEach(thisPerson => {
@@ -67,26 +63,12 @@ function addRelatives(person, direction, removed, generation, safety) {
   return person;
 }
 
-function getGenerationName(direction, generation) {
-  if (direction != null && direction != 'parent' && direction != 'child') {
-    return direction;
-  }
-  if (generation == 0) {
+function getGenerationName(direction, removed, generation) {
+  if (removed == 0 && generation == 0) {
     return 'person';
   }
-  if (generation == 1) {
-    return direction;
-  }
-  if (generation == 2) {
-    return 'grand' + direction;
-  }
-  if (generation == 3) {
-    return 'great-grand' + direction;
-  }
-  if (generation == 4) {
-    return 'great-great-grand' + direction;
-  }
-  return '' + (generation - 2) + '-great-grand' + direction;
+
+  return 'relative' + ' ' + generation;
 }
 
 function sortList(relativeList, endPoint) {
