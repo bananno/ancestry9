@@ -8,6 +8,7 @@ var sortSources = require('../tools/sortSources');
 var removePersonFromList = require('../tools/removePersonFromList');
 var getNewEventValues = require('../tools/getNewEventValues');
 var getPersonRelativesList = require('../tools/getPersonRelativesList');
+var reorderList = require('../tools/reorderList');
 
 convertParamPersonId();
 
@@ -272,24 +273,13 @@ function makeRouteReorder(editField) {
     var person = req.person;
     var updatedObj = {};
     var orderId = req.params.orderId;
-    updatedObj[editField] = person[editField];
+    var dataType = editField;
 
     if (editField == 'parents' || editField == 'spouses' || editField == 'children') {
-      for (var i = 1; i < updatedObj[editField].length; i++) {
-        var thisPerson = updatedObj[editField][i];
-        if (isSamePerson(thisPerson, orderId)) {
-          updatedObj[editField][i] = updatedObj[editField][i - 1];
-          updatedObj[editField][i - 1] = thisPerson;
-          break;
-        }
-      }
-    } else if (editField == 'links' || editField == 'images') {
-      if (orderId > 0 && updatedObj[editField].length > orderId) {
-        var temp = updatedObj[editField][orderId - 1];
-        updatedObj[editField][orderId - 1] = updatedObj[editField][orderId];
-        updatedObj[editField][orderId] = temp;
-      }
+      dataType = 'people';
     }
+
+    updatedObj[editField] = reorderList(person[editField], orderId, dataType);
 
     person.update(updatedObj, function(err) {
       if (err) {

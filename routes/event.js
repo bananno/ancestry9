@@ -5,6 +5,7 @@ var router = express.Router();
 var getDateValues = require('../tools/getDateValues');
 var getLocationValues = require('../tools/getLocationValues');
 var removePersonFromList = require('../tools/removePersonFromList');
+var reorderList = require('../tools/reorderList');
 
 router.get('/:eventId', makeRouteEditGet('none'));
 router.post('/:eventId/delete', deleteEvent);
@@ -101,19 +102,9 @@ function makeRouteReorder(attr) {
     var eventId = req.params.eventId;
     mongoose.model('Event').findById(eventId, function(err, event) {
       var updatedObj = {};
-      updatedObj[attr] = event[attr];
       var orderId = req.params.orderId;
 
-      if (attr == 'people') {
-        for (var i = 1; i < updatedObj[attr].length; i++) {
-          var thisPerson = updatedObj[attr][i];
-          if (isSamePerson(thisPerson, orderId)) {
-            updatedObj[attr][i] = updatedObj[attr][i - 1];
-            updatedObj[attr][i - 1] = thisPerson;
-            break;
-          }
-        }
-      }
+      updatedObj[attr] = reorderList(event[attr], orderId, attr);
 
       event.update(updatedObj, function(err) {
         res.format({
