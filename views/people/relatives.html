@@ -6,16 +6,28 @@
 
 <%- include ../partials/header %>
 
-<div id="content">
+<%
+    var previousRelationship = '';
+%>
+
+<div id="page-content">
     <%- include('../people/personHeader', { params: {
         person: person,
     }}) %>
 
     <table border="1">
-        <% relativeList.forEach((obj) => { %>
+        <% relativeList.forEach(obj => { %>
+            <%
+                var thisRelationship = '';
+
+                if (obj.relationship != previousRelationship) {
+                    thisRelationship = obj.relationship;
+                    previousRelationship = obj.relationship;
+                }
+            %>
             <tr>
                 <td>
-                    <%= obj.relationship %>
+                    <%= thisRelationship %>
                 </td>
                 <td>
                     <%- include('../partials/linkToPerson', {person: obj.person}) %>
