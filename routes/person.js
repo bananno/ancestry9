@@ -42,9 +42,11 @@ module.exports = router;
 function createRelationshipRoutes(relationship, corresponding) {
   var addPath = '/:personId/add/' + relationship;
   var deletePath = '/:personId/delete/' + relationship + '/:deleteId';
+  var reorderPath = '/:personId/reorder/' + relationship + '/:orderId';
 
   router.post(addPath, makeRouteEditPost(relationship, corresponding));
   router.post(deletePath, makeRouteDelete(relationship, corresponding));
+  router.post(reorderPath, makeRouteReorder(relationship));
 }
 
 function convertParamPersonId() {
@@ -272,7 +274,16 @@ function makeRouteReorder(editField) {
     var orderId = req.params.orderId;
     updatedObj[editField] = person[editField];
 
-    if (editField == 'links' || editField == 'images') {
+    if (editField == 'parents' || editField == 'spouses' || editField == 'children') {
+      for (var i = 1; i < updatedObj[editField].length; i++) {
+        var thisPerson = updatedObj[editField][i];
+        if (isSamePerson(thisPerson, orderId)) {
+          updatedObj[editField][i] = updatedObj[editField][i - 1];
+          updatedObj[editField][i - 1] = thisPerson;
+          break;
+        }
+      }
+    } else if (editField == 'links' || editField == 'images') {
       if (orderId > 0 && updatedObj[editField].length > orderId) {
         var temp = updatedObj[editField][orderId - 1];
         updatedObj[editField][orderId - 1] = updatedObj[editField][orderId];
