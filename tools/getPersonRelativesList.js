@@ -11,13 +11,21 @@ var relationshipNames = {
   'p' : 'parent',
   's' : 'spouse',
   'c' : 'child',
-  'pc' : 'sibling',
+  'x' : 'sibling',
   'ps' : 'stepparent',
   'pp' : 'grandparent',
   'ppp' : 'great-grandparent',
   'pppp' : 'great-great-grandparent',
   'cs' : 'child-in-law',
+  'px': 'aunt/uncle',
 };
+
+for (var i = 3; i <= 10; i++) {
+  var key1 = new Array(i + 2).fill('p').join('');
+  var key2 = new Array(i + 2).fill('c').join('');
+  relationshipNames[key1] = '' + i + '-great-grandparent';
+  relationshipNames[key2] = '' + i + '-great-grandchild';
+}
 
 function getRelativesList(allPeople, person) {
   people = allPeople;
@@ -48,6 +56,11 @@ function addPersonToList(person, generation, track) {
   }
 
   personPlaced[person._id] = true;
+
+  while (track.match('pc')) {
+    // change "parent, child" to "sibling" to count 1 degree of removal instead of 2
+    track = track.replace('pc', 'x');
+  }
 
   relativeList.push({
     person: person,
