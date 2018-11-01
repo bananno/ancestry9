@@ -12,6 +12,18 @@ function getRelativesList(allPeople, person) {
 
   addRelatives(person, null, 0, 0);
 
+  var remainingPeople = allPeople.filter(thisPerson => {
+    return peoplePlaced[thisPerson._id] == null;
+  });
+
+  remainingPeople.forEach(thisPerson => {
+    relativeList.push({
+      person: thisPerson,
+      relationship: 'no connection (' + remainingPeople.length + ')',
+      generation: null,
+    });
+  });
+
   return sortList(relativeList, relativeList.length);
 }
 
@@ -67,7 +79,9 @@ function sortList(relativeList, endPoint) {
   var madeChange = false;
 
   for (var i = 0; i < endPoint - 1; i++) {
-    if (relativeList[i].generation > relativeList[i + 1].generation) {
+    var gen1 = relativeList[i].generation;
+    var gen2 = relativeList[i + 1].generation;
+    if (gen2 != null && (gen1 == null || gen1 > gen2)) {
       var temp = relativeList[i];
       relativeList[i] = relativeList[i + 1];
       relativeList[i + 1] = temp;
