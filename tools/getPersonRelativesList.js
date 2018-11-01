@@ -87,7 +87,15 @@ function sortList(relativeList, endPoint) {
   for (var i = 0; i < endPoint - 1; i++) {
     var gen1 = relativeList[i].generation;
     var gen2 = relativeList[i + 1].generation;
-    if (gen2 != null && (gen1 == null || gen1 > gen2)) {
+    var shouldSwap;
+
+    if (gen1 == gen2) {
+      shouldSwap = relativeList[i].relationship > relativeList[i + 1].relationship;
+    } else {
+      shouldSwap = gen2 != null && (gen1 == null || gen1 > gen2);
+    }
+
+    if (shouldSwap) {
       var temp = relativeList[i];
       relativeList[i] = relativeList[i + 1];
       relativeList[i + 1] = temp;
