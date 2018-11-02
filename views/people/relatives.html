@@ -23,7 +23,25 @@
         </p>
     <% } %>
 
-    <table border="1">
+    <div class="filter-buttons relative-list">
+        <div class="filter-button active" relative-type="ancestor">
+            ancestors
+        </div>
+        <div class="filter-button active" relative-type="descendent">
+            descendents
+        </div>
+        <div class="filter-button active" relative-type="blood">
+            blood relatives
+        </div>
+        <div class="filter-button active" relative-type="marriage">
+            marriage relatives
+        </div>
+        <div class="filter-button active" relative-type="none">
+            no relationship
+        </div>
+    </div>
+
+    <table class="info-table relative-list">
         <tr>
             <th> relationship </th>
             <th> person </th>
@@ -39,8 +57,9 @@
                     thisRelationship = obj.relationship;
                     previousRelationship = obj.relationship;
                 }
+
             %>
-            <tr>
+            <tr class="person-row" relative-type="<%= obj.type %>">
                 <td>
                     <%= thisRelationship %>
                 </td>
@@ -57,3 +76,7 @@
         <% }); %>
     </table>
 </div>
+
+<script>
+  filterRelativeList();
+</script>
