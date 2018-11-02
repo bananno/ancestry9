@@ -1,13 +1,18 @@
 
 var removePersonFromList = require('./removePersonFromList');
 
-var relativeList = [];
-var nextGroupList = [];
-var personIsPlaced = {};
+var relativeList;
+var nextGroupList;
+var personIsPlaced;
 var relationshipNames = getRelationshipNameList();
 var people;
 
 function getRelativesList(allPeople, person) {
+  // these will cache if they are not reset
+  relativeList = [];
+  nextGroupList = [];
+  personIsPlaced = {};
+
   people = allPeople;
 
   addPersonToGroup(person, 0, '');

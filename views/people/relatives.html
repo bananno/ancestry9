@@ -15,14 +15,6 @@
         person: person,
     }}) %>
 
-    <% if (relativeList[0].person.name != person.name) { %>
-        <p style="color: red;">
-            List is cached.
-            <br> - <%= relativeList[0].person.name %>
-            <br> - <%= person.name %>
-        </p>
-    <% } %>
-
     <div class="filter-buttons relative-list">
         <div class="filter-button active" relative-type="ancestor">
             ancestors
