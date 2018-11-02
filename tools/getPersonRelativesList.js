@@ -102,12 +102,26 @@ function getRelationshipName(track) {
     return relationship;
   }
 
-  var lastChar = track.slice(track.length - 1);
-  var tempTrack = track.slice(0, track.length - 1);
-  var newRel = relationshipNames[tempTrack];
+  var siblingIndex = track.indexOf('x');
 
-  if (lastChar == 's' && newRel) {
-    return newRel + '\'s spouse';
+  if (siblingIndex >= 0) {
+    var before = track.slice(0, siblingIndex);
+    var after = track.slice(siblingIndex + 1);
+
+    if (before.length > 0) {
+      if (relationshipNames[before] == null) {
+        return 'other: ' + track;
+      }
+      before = relationshipNames[before] + ' ';
+    }
+    if (after.length > 0) {
+      if (relationshipNames[after] == null) {
+        return 'other: ' + track;
+      }
+      after = '\'s ' + relationshipNames[after];
+    }
+
+    return before + 'sibling' + after;
   }
 
   return 'other: ' + track;
