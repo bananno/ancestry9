@@ -2,17 +2,10 @@
 var removePersonFromList = require('./removePersonFromList');
 
 var relativeList = [];
-var personIsPlaced = {};
-var people;
 var nextGroupList = [];
-
-var basicRelationshipNames = {
-  p: 'parent',
-  c: 'child',
-  s: 'spouse',
-  x: 'sibling',
-};
+var personIsPlaced = {};
 var relationshipNames = getRelationshipNameList();
+var people;
 
 function getRelativesList(allPeople, person) {
   people = allPeople;
@@ -29,6 +22,7 @@ function getRelativesList(allPeople, person) {
       person: thisPerson,
       relationship: 'no connection (' + remainingPeople.length + ')',
       generation: null,
+      type: 'none',
     });
   });
 
@@ -46,6 +40,8 @@ function processNextGenList(safety) {
       relationship: getRelationshipName(obj.track),
       generation: obj.generation,
       distance: obj.track.length,
+      track: obj.track,
+      type: getRelationshipType(obj.track),
     });
   });
 
@@ -110,6 +106,27 @@ function getRelationshipName(track) {
   }
 
   return 'other: ' + track;
+}
+
+function getRelationshipType(track) {
+  if (track.match('s')) {
+    return 'marriage';
+  }
+
+  if (track.match('x')) {
+    return 'blood';
+  }
+
+  if (track.match('p')) {
+    if (track.match('c')) {
+      return 'blood';
+    }
+    return 'ancestor';
+  }
+
+  if (track.match('c')) {
+    return 'descendent';
+  }
 }
 
 function sortList(relativeList, endPoint) {
