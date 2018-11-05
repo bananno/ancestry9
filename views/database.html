@@ -1,30 +1,50 @@
-<%- include ./partials/header %>
+<%
+    var personStrItems = ['_id', 'customId', 'name'];
+    var personArrItems = ['links', 'parents', 'spouses', 'children'];
+%>
 
 <div id="content">
-    <h1>Database</h1>
+    <h1>var database = {</h1>
 
-    <h2>People</h2>
+    <h2>people: [</h2>
 
     <% people.forEach(person => { %>
-        <p>person</p>
+        <span>
+            &#160;&#160;"<%= person._id %>": {<br>
+            <% personStrItems.forEach(str => { %>
+                &#160;&#160;&#160;&#160;"<%= str %>":
+                "<%= person[str] %>",<br>
+            <% }); %>
+            <% personArrItems.forEach((str, j) => { %>
+                <% var punct = j < personArrItems.length - 1 ? ',' : ''; %>
+                &#160;&#160;&#160;&#160;"<%= str %>":
+                <% if (person[str] == null || person[str].length == 0) { %>
+                    []<%= punct %><br>
+                <% } else { %>
+                    ["<%= person[str].join('", "') %>"]<%= punct %><br>
+                <% } %>
+            <% }); %>
+            &#160;&#160;},<br>
+        </span>
     <% });%>
 
-    <h2>Sources</h2>
+    <h2>], sources: [</h2>
 
     <% sources.forEach(source => { %>
         <p>source</p>
     <% });%>
 
-    <h2>Events</h2>
+    <h2>], events: [</h2>
 
     <% events.forEach(event => { %>
         <p>event</p>
     <% });%>
 
-    <h2>Citations</h2>
+    <h2>], citations: [</h2>
 
     <% citations.forEach(citation => { %>
         <p>citation</p>
     <% });%>
 
+    <h1>}</h1>
 </div>
