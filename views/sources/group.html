@@ -35,6 +35,18 @@
                 </p>
             <% } %>
 
+            <h3>links</h3>
+
+            <ul class="bullet-list">
+                <% source.links.forEach(url => { %>
+                    <li>
+                        <%- include('../format/externalLink', { url: url }) %>
+                    </li>
+                <% }); %>
+            </ul>
+
+            <h3>content</h3>
+
             <%- include('../format/content', {
                 content: source.content,
                 limit: false,
