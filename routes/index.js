@@ -37,6 +37,8 @@ mainSourceTypes.forEach(sourceType => {
   router.get('/sources/' + sourceType, makeSourcesIndexRoute(sourceType));
 });
 
+router.get('/source-group/:sourceId', getSourceGroup);
+
 // DATABASE
 
 router.get('/database', showDatabase);
@@ -216,6 +218,28 @@ function showDatabase(req, res) {
             citations: citations,
           });
         });
+      });
+    });
+  });
+}
+
+function getSourceGroup(req, res, next) {
+  var sourceId = req.params.sourceId;
+  mongoose.model('Source')
+  .findById(sourceId)
+  .populate('people')
+  .exec(function(err, source) {
+    mongoose.model('Citation')
+    .find({ source: source })
+    .populate('person')
+    .exec(function(err, citations) {
+      res.format({
+        html: function() {
+          res.render('sources/group', {
+            source: source,
+            citations: citations,
+          });
+        }
       });
     });
   });
