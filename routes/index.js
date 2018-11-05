@@ -227,18 +227,15 @@ function getSourceGroup(req, res, next) {
   var sourceId = req.params.sourceId;
   mongoose.model('Source')
   .findById(sourceId)
-  .populate('people')
-  .exec(function(err, source) {
-    mongoose.model('Citation')
-    .find({ source: source })
-    .populate('person')
-    .exec(function(err, citations) {
+  .exec(function(err, rootSource) {
+    mongoose.model('Source')
+    .find({ group: rootSource.group })
+    .exec(function(err, sources) {
       res.format({
         html: function() {
           res.render('sources/group', {
-            rootSource: source,
-            source: source,
-            citations: citations,
+            rootSource: rootSource,
+            sources: sources,
           });
         }
       });

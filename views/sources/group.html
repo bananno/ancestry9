@@ -1,6 +1,7 @@
 <%- include ../partials/header %>
-
-<% var rootPath = '/source/' + source._id; %>
+<%
+    var previousSourceType = '';
+%>
 
 <div id="page-content">
     <h1>
@@ -10,4 +11,34 @@
     <p>
         (<%= rootSource.type %> group)
     </p>
+
+    <% for (var i = 0; i < sources.length; i++) { %>
+        <%
+            var source = sources[i];
+        %>
+
+        <div class="source-item-box">
+            <p>
+                <a href="/source/<%= source._id %>"><%= source.group %>
+                <% if (source.group && source.title) { %>
+                    -
+                <% } %>
+                <%= source.title %></a>
+            </p>
+
+            <% if (source.images.length) { %>
+                <p>
+                    <% for (var j = 0; j < source.images.length; j++) { %>
+                        <a href="<%= source.images[j] %>" target="_blank"><img
+                            src="<%= source.images[j] %>" height="100"></a>
+                    <% } %>
+                </p>
+            <% } %>
+
+            <%- include('../format/content', {
+                content: source.content,
+                limit: false,
+            }) %>
+        </div>
+    <% } %>
 </div>
