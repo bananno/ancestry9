@@ -12,6 +12,12 @@
         (<%= rootSource.type %> group)
     </p>
 
+    <div class="filter-buttons" filter="source-details">
+        <div class="filter-button active" filter-set="content">
+            content
+        </div>
+    </div>
+
     <% for (var i = 0; i < sources.length; i++) { %>
         <%
             var source = sources[i];
@@ -45,12 +51,18 @@
                 <% }); %>
             </ul>
 
-            <h3>content</h3>
+            <div filter="source-details" filter-set="content">
+                <h3>content</h3>
 
-            <%- include('../format/content', {
-                content: source.content,
-                limit: false,
-            }) %>
+                <%- include('../format/content', {
+                    content: source.content,
+                    limit: false,
+                }) %>
+            </div>
         </div>
     <% } %>
 </div>
+
+<script>
+    createToggleFilter('source-details');
+</script>
