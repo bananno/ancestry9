@@ -1,12 +1,12 @@
 <%
     var personStrItems = ['_id', 'customId', 'name'];
-    var personArrItems = ['links', 'parents', 'spouses', 'children'];
+    var personArrItems = ['parents', 'spouses', 'children'];
 %>
 
 <div id="content">
     <h1>var database = {</h1>
 
-    <h2>people: [</h2>
+    <h2>"people": {</h2>
 
     <% people.forEach(person => { %>
         <span>
@@ -16,35 +16,50 @@
                 "<%= person[str] %>",<br>
             <% }); %>
             <% personArrItems.forEach((str, j) => { %>
-                <% var punct = j < personArrItems.length - 1 ? ',' : ''; %>
                 &#160;&#160;&#160;&#160;"<%= str %>":
                 <% if (person[str] == null || person[str].length == 0) { %>
-                    []<%= punct %><br>
+                    [],<br>
                 <% } else { %>
-                    ["<%= person[str].join('", "') %>"]<%= punct %><br>
+                    ["<%= person[str].join('", "') %>"],<br>
                 <% } %>
             <% }); %>
+
+            &#160;&#160;&#160;&#160;"links":
+            <% if (person.links == null || person.links.length == 0) { %>
+                 []<br>
+            <% } else if (person.links.length == 1) { %>
+                ["<%= person.links[0] %>"]<br>
+            <% } else { %>
+                <% person.links.forEach((url, i) => { %>
+                    <% if (i == 0) { %>
+                        ["<%= url %>",<br>
+                    <% } else if (i == person.links.length - 1) { %>
+                        &#160;&#160;&#160;&#160;&#160;&#160;"<%= url %>"]<br>
+                    <% } else { %>
+                        &#160;&#160;&#160;&#160;&#160;&#160;"<%= url %>",<br>
+                    <% } %>
+                <% }); %>
+            <% } %>
+
             &#160;&#160;},<br>
         </span>
     <% });%>
 
-    <h2>], sources: [</h2>
+    <h2>}, "sources": {</h2>
 
     <% sources.forEach(source => { %>
-        <p>source</p>
     <% });%>
 
-    <h2>], events: [</h2>
+    <h2>}, "events": {</h2>
 
     <% events.forEach(event => { %>
-        <p>event</p>
     <% });%>
 
-    <h2>], citations: [</h2>
+    <h2>}, "citations": {</h2>
 
     <% citations.forEach(citation => { %>
-        <p>citation</p>
     <% });%>
 
+    <h2>}</h2>
     <h1>}</h1>
 </div>
