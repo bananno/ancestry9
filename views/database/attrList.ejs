@@ -1,12 +1,25 @@
 <%
     var attr = params.attr;
     var list = params.list || [];
+    var numberOfItems = list.length;
+    var splitAll = params.splitAll || false;
+    var punctuation = params.comma ? ',' : '';
 %>
 
 &#160;&#160;&#160;&#160;"<%= attr %>":
 
 <% if (list.length == 0) { %>
-    [],<br>
+    []<%= punctuation %><br>
+<% } else if (!splitAll || numberOfItems == 1) { %>
+    ["<%= list.join('", "') %>"]<%= punctuation %><br>
 <% } else { %>
-    ["<%= list.join('", "') %>"],<br>
+    <% list.forEach((value, i) => { %>
+        <% if (i == 0) { %>
+            ["<%= value %>",<br>
+        <% } else if (i == numberOfItems - 1) { %>
+            &#160;&#160;&#160;&#160;&#160;&#160;"<%= value %>"]<%= punctuation %><br>
+        <% } else { %>
+            &#160;&#160;&#160;&#160;&#160;&#160;"<%= value %>",<br>
+        <% } %>
+    <% }); %>
 <% } %>

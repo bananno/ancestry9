@@ -15,30 +15,22 @@
                 &#160;&#160;&#160;&#160;"<%= str %>":
                 "<%= person[str] %>",<br>
             <% }); %>
+
             <% personArrItems.forEach((str, j) => { %>
                 <%- include('./attrList', { params: {
                     attr: str,
                     list: person[str],
                     splitAll: false,
+                    comma: true,
                 }}) %>
             <% }); %>
 
-            &#160;&#160;&#160;&#160;"links":
-            <% if (person.links == null || person.links.length == 0) { %>
-                 []<br>
-            <% } else if (person.links.length == 1) { %>
-                ["<%= person.links[0] %>"]<br>
-            <% } else { %>
-                <% person.links.forEach((url, i) => { %>
-                    <% if (i == 0) { %>
-                        ["<%= url %>",<br>
-                    <% } else if (i == person.links.length - 1) { %>
-                        &#160;&#160;&#160;&#160;&#160;&#160;"<%= url %>"]<br>
-                    <% } else { %>
-                        &#160;&#160;&#160;&#160;&#160;&#160;"<%= url %>",<br>
-                    <% } %>
-                <% }); %>
-            <% } %>
+            <%- include('./attrList', { params: {
+                attr: 'links',
+                list: person.links,
+                splitAll: true,
+                comma: false,
+            }}) %>
 
             &#160;&#160;},<br>
         </span>
