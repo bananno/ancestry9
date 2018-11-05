@@ -236,6 +236,7 @@ function getSourceGroup(req, res, next) {
       res.format({
         html: function() {
           res.render('sources/group', {
+            rootSource: source,
             source: source,
             citations: citations,
           });
