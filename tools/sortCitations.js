@@ -23,7 +23,8 @@ function sortCitations(citationList, sortBy, endPoint) {
 
 function citationsShouldSwap(citation1, citation2, sortBy) {
   if (sortBy == 'item') {
-    return compareItems(citation1.item, citation2.item);
+    return compareItems(citation1.item, citation2.item,
+      citation1.information, citation2.information);
   }
 
   return false;
@@ -43,9 +44,13 @@ var citationItemOrder = [
   'residence',
 ];
 
-function compareItems(item1, item2) {
+function compareItems(item1, item2, information1, information2) {
 
   for (var i = 0; i < citationItemOrder.length; i++) {
+    if (item1 == item2) {
+      return information1 > information2;
+    }
+
     if (item1 == citationItemOrder[i]) {
       return false;
     }
@@ -71,7 +76,7 @@ function compareItems(item1, item2) {
     }
   }
 
-  return false;
+  return item1 > item2;
 }
 
 module.exports = sortCitations;
