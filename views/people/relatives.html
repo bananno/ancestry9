@@ -15,20 +15,20 @@
         person: person,
     }}) %>
 
-    <div class="filter-buttons relative-list">
-        <div class="filter-button active" relative-type="ancestor">
+    <div class="filter-buttons" filter="relative-list">
+        <div class="filter-button active" filter-set="ancestor">
             ancestors
         </div>
-        <div class="filter-button active" relative-type="descendent">
+        <div class="filter-button active" filter-set="descendent">
             descendents
         </div>
-        <div class="filter-button active" relative-type="blood">
+        <div class="filter-button active" filter-set="blood">
             blood relatives
         </div>
-        <div class="filter-button active" relative-type="marriage">
+        <div class="filter-button active" filter-set="marriage">
             marriage relatives
         </div>
-        <div class="filter-button active" relative-type="none">
+        <div class="filter-button active" filter-set="none">
             no relationship
         </div>
     </div>
@@ -51,7 +51,7 @@
                 }
 
             %>
-            <tr class="person-row" relative-type="<%= obj.type %>">
+            <tr class="person-row" filter="relative-list" filter-set="<%= obj.type %>">
                 <td>
                     <%= thisRelationship %>
                 </td>
@@ -70,5 +70,5 @@
 </div>
 
 <script>
-  filterRelativeList();
+    createToggleFilter('relative-list');
 </script>
