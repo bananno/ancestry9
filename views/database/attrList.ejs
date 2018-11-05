@@ -1,0 +1,12 @@
+<%
+    var attr = params.attr;
+    var list = params.list || [];
+%>
+
+&#160;&#160;&#160;&#160;"<%= attr %>":
+
+<% if (list.length == 0) { %>
+    [],<br>
+<% } else { %>
+    ["<%= list.join('", "') %>"],<br>
+<% } %>

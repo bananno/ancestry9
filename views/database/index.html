@@ -16,12 +16,11 @@
                 "<%= person[str] %>",<br>
             <% }); %>
             <% personArrItems.forEach((str, j) => { %>
-                &#160;&#160;&#160;&#160;"<%= str %>":
-                <% if (person[str] == null || person[str].length == 0) { %>
-                    [],<br>
-                <% } else { %>
-                    ["<%= person[str].join('", "') %>"],<br>
-                <% } %>
+                <%- include('./attrList', { params: {
+                    attr: str,
+                    list: person[str],
+                    splitAll: false,
+                }}) %>
             <% }); %>
 
             &#160;&#160;&#160;&#160;"links":
