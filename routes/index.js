@@ -37,6 +37,10 @@ mainSourceTypes.forEach(sourceType => {
   router.get('/sources/' + sourceType, makeSourcesIndexRoute(sourceType));
 });
 
+// DATABASE
+
+router.get('/database', showDatabase);
+
 //
 
 module.exports = router;
@@ -197,5 +201,22 @@ function createNewSource(req, res) {
         }
       });
     }
+  });
+}
+
+function showDatabase(req, res) {
+  mongoose.model('Person').find({}, function(err, people) {
+    mongoose.model('Source').find({}, function(err, sources) {
+      mongoose.model('Event').find({}, function(err, events) {
+        mongoose.model('Citation').find({}, function(err, citations) {
+          res.render('database', {
+            people: people,
+            sources: sources,
+            events: events,
+            citations: citations,
+          });
+        });
+      });
+    });
   });
 }
