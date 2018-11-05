@@ -19,6 +19,12 @@
   <div filter="putNameHere" filter-set="thing2"></div>
   <div filter="putNameHere" filter-set="thing2"></div>
 
+  BOTTOM OF PAGE:
+
+  <script>
+      createToggleFilter('putNameHere');
+  </script>
+
 */
 
 function createToggleFilter(filterName) {

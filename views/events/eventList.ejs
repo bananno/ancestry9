@@ -3,14 +3,14 @@
 %>
 
 <% if (filterByType) { %>
-    <div id="event-list-filters">
-        <div class="active" event-type="personal">
+    <div class="filter-buttons" filter="timeline">
+        <div class="filter-button active" filter-set="personal">
             personal
         </div>
-        <div class="active" event-type="spouse">
+        <div class="filter-button active" filter-set="spouse">
             spouse
         </div>
-        <div class="active" event-type="child">
+        <div class="filter-button active" filter-set="child">
             children
         </div>
     </div>
@@ -28,8 +28,9 @@
         <%
             var event = events[i];
             var eventPath = '/event/' + events[i]._id;
+            var eventType = event.type || 'notype';
         %>
-        <tr class="event-row-<%= event.type || 'notype' %>">
+        <tr class="event-row-<%= eventType %>" filter="timeline" filter-set="<%= eventType %>">
             <td>
                 <a href="<%= eventPath %>"><%= event.title %></a>
             </td>
@@ -57,20 +58,6 @@
 
 <% if (filterByType) { %>
     <script>
-        $('#event-list-filters div').toArray().forEach(function(element, i) {
-            var current = true;
-            var $button = $(element);
-            var eventType = $button.attr('event-type');
-            var $rows = $('.event_list').find('tr.event-row-' + eventType);
-            $button.click(function() {
-                current = !current;
-                if (current) {
-                    $button.addClass('active');
-                } else {
-                    $button.removeClass('active');
-                }
-                $rows.toggle(current);
-            });
-        });
+        createToggleFilter('timeline');
     </script>
 <% } %>
