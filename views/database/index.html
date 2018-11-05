@@ -8,48 +8,35 @@
 
     <h2>"people": {</h2>
 
-    <% people.forEach(person => { %>
+    <% people.forEach((person, i) => { %>
         <span>
-            &#160;&#160;"<%= person._id %>": {<br>
-            <% personStrItems.forEach(str => { %>
-                &#160;&#160;&#160;&#160;"<%= str %>":
-                "<%= person[str] %>",<br>
-            <% }); %>
-
-            <% personArrItems.forEach((str, j) => { %>
-                <%- include('./attrList', { params: {
-                    attr: str,
-                    list: person[str],
-                    splitAll: false,
-                    comma: true,
-                }}) %>
-            <% }); %>
-
-            <%- include('./attrList', { params: {
-                attr: 'links',
-                list: person.links,
-                splitAll: true,
-                comma: false,
-            }}) %>
-
-            &#160;&#160;},<br>
-        </span>
-    <% });%>
+            "<%= person._id %>": <%= JSON.stringify(person) %><%= i < people.length - 1 ? ',' : '' %>
+        </span><br>
+    <% }); %>
 
     <h2>}, "sources": {</h2>
 
-    <% sources.forEach(source => { %>
-    <% });%>
+    <% sources.forEach((source, i) => { %>
+        <span>
+            "<%= source._id %>": <%= JSON.stringify(source) %><%= i < sources.length - 1 ? ',' : '' %>
+        </span><br>
+    <% }); %>
 
     <h2>}, "events": {</h2>
 
-    <% events.forEach(event => { %>
-    <% });%>
+    <% events.forEach((event, i) => { %>
+        <span>
+            "<%= event._id %>": <%= JSON.stringify(event) %><%= i < events.length - 1 ? ',' : '' %>
+        </span><br>
+    <% }); %>
 
     <h2>}, "citations": {</h2>
 
-    <% citations.forEach(citation => { %>
-    <% });%>
+    <% citations.forEach((citation, i) => { %>
+        <span>
+            "<%= citation._id %>": <%= JSON.stringify(citation) %><%= i < citations.length - 1 ? ',' : '' %>
+        </span><br>
+    <% }); %>
 
     <h2>}</h2>
     <h1>}</h1>

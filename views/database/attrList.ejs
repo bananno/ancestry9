@@ -2,15 +2,15 @@
     var attr = params.attr;
     var list = params.list || [];
     var numberOfItems = list.length;
-    var splitAll = params.splitAll || false;
     var punctuation = params.comma ? ',' : '';
+    var valuesPerLine = params.valuesPerLine || numberOfItems;
 %>
 
 &#160;&#160;&#160;&#160;"<%= attr %>":
 
 <% if (list.length == 0) { %>
     []<%= punctuation %><br>
-<% } else if (!splitAll || numberOfItems == 1) { %>
+<% } else if (numberOfItems <= valuesPerLine) { %>
     ["<%= list.join('", "') %>"]<%= punctuation %><br>
 <% } else { %>
     <% list.forEach((value, i) => { %>
