@@ -209,7 +209,7 @@ function showDatabase(req, res) {
     mongoose.model('Source').find({}, function(err, sources) {
       mongoose.model('Event').find({}, function(err, events) {
         mongoose.model('Citation').find({}, function(err, citations) {
-          res.render('database', {
+          res.render('database/index', {
             people: people,
             sources: sources,
             events: events,
