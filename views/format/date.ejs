@@ -1,20 +1,49 @@
 <%
     var date = params.date;
-    var dateComponents = [];
+    var format = params.format || '';
+    var dateString = '';
+
+    var monthNames = [
+        'January', 'February', 'March', 'April',
+        'May', 'June', 'July', 'August',
+        'September', 'October', 'November', 'December'
+    ];
 
     if (date != null) {
-        if (date.year > 0) {
-            dateComponents.push(date.year);
-        }
-        if (date.month > 0) {
-            dateComponents.push(date.month);
-        }
-        if (date.day > 0) {
-            dateComponents.push(date.day);
+        if (format == 'long') {
+            if (date.month > 0 && date.month <= 12) {
+                dateString += monthNames[date.month - 1];
+                if (date.day > 0 || date.year > 0) {
+                    dateString += ' ';
+                }
+            }
+            if (date.day > 0) {
+                dateString += date.day;
+                if (date.year > 0) {
+                    dateString += ', ';
+                }
+            }
+            if (date.year > 0) {
+                dateString += date.year;
+            }
+        } else {
+            var dateComponents = [];
+            if (date.year > 0) {
+                dateComponents.push(date.year);
+            }
+            if (date.month > 0 && date.month <= 12) {
+                if (format == 'long') {
+                    dateComponents.push(monthNames[date.month - 1]);
+                } else {
+                    dateComponents.push(date.month);
+                }
+            }
+            if (date.day > 0) {
+                dateComponents.push(date.day);
+            }
+            dateString = dateComponents.join('-');
         }
     }
-
-    var dateString = dateComponents.join('-');
 %>
 
 <% if (date && date.display) { %>
