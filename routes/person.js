@@ -302,13 +302,16 @@ function personTimeline(req, res, next) {
   .exec(function(err, person) {
 
       mongoose.model('Event')
-      .find({ people: person })
+      .find({ })
       .populate('people')
       .exec(function(err, events) {
 
         mongoose.model('Source')
         .find({ people: person })
         .exec(function(err, sources) {
+
+          events = sortEvents(events);
+          events = filterEvents(events, person);
 
           res.render('people/timeline', {
             personId: req.personId,
