@@ -199,7 +199,8 @@ ul.bullet-list li {
 }
 
 .event_list th,
-.event_list tr.event-row-personal td {
+.event_list tr.event-row-personal td,
+.event_list tr.event-row-census td {
     background-color: #d1ecfc;
 }
 

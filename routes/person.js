@@ -300,25 +300,24 @@ function personTimeline(req, res, next) {
   mongoose.model('Person')
   .findById(req.personId)
   .exec(function(err, person) {
-
-      mongoose.model('Event')
-      .find({ })
+    mongoose.model('Event')
+    .find({ })
+    .populate('people')
+    .exec(function(err, events) {
+      mongoose.model('Source')
+      .find({ people: person })
       .populate('people')
-      .exec(function(err, events) {
-
-        mongoose.model('Source')
-        .find({ people: person })
-        .exec(function(err, sources) {
-
-          events = sortEvents(events);
-          events = filterEvents(events, person);
-
-          res.render('people/timeline', {
-            personId: req.personId,
-            person: person,
-            events: events,
-          });
-
+      .exec(function(err, sources) {
+        var sourceEvents = getSourceEvents(sources);
+        events = sortEvents(events);
+        events = filterEvents(events, person);
+        events = events.concat(sourceEvents);
+        events = sortEvents(events);
+        res.render('people/timeline', {
+          personId: req.personId,
+          person: person,
+          events: events,
+        });
       });
     });
   });
@@ -532,6 +531,28 @@ function populateParents(person, people, safety) {
   });
 
   return person;
+}
+
+function getSourceEvents(sources) {
+  var events = [];
+
+  sources.forEach(source => {
+    if (source.type != 'document' || source.group.match('Census') == null) {
+      return;
+    }
+
+    var event = {
+      title: source.group,
+      date: { ...source.date },
+      location: { ...source.location },
+      people: [ ...source.people ],
+      type: 'census',
+    };
+
+    events.push(event);
+  });
+
+  return events;
 }
 
 function filterEvents(events, person) {
