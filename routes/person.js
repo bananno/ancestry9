@@ -296,27 +296,25 @@ function makeRouteReorder(editField) {
   };
 }
 
-function personTimeline(req, res, ntext) {
+function personTimeline(req, res, next) {
   mongoose.model('Person')
   .findById(req.personId)
   .exec(function(err, person) {
 
-    mongoose.model('Event')
-    .find({ people: person })
-    .exec(function(err, events) {
-
-      mongoose.model('Source')
+      mongoose.model('Event')
       .find({ people: person })
-      .exec(function(err, sources) {
+      .populate('people')
+      .exec(function(err, events) {
 
-        res.format({
-          html: function() {
-            res.render('people/timeline', {
-              personId: req.personId,
-              person: person,
-            });
-          }
-        });
+        mongoose.model('Source')
+        .find({ people: person })
+        .exec(function(err, sources) {
+
+          res.render('people/timeline', {
+            personId: req.personId,
+            person: person,
+            events: events,
+          });
 
       });
     });
