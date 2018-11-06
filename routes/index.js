@@ -230,6 +230,7 @@ function getSourceGroup(req, res, next) {
   .exec(function(err, rootSource) {
     mongoose.model('Source')
     .find({ group: rootSource.group })
+    .populate('people')
     .exec(function(err, sources) {
       sources = sortSources(sources, 'date');
       res.format({
