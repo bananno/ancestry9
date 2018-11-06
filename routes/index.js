@@ -231,6 +231,7 @@ function getSourceGroup(req, res, next) {
     mongoose.model('Source')
     .find({ group: rootSource.group })
     .exec(function(err, sources) {
+      sources = sortSources(sources, 'date');
       res.format({
         html: function() {
           res.render('sources/group', {

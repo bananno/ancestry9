@@ -1,4 +1,6 @@
 
+var compareDate = require('./compareDate');
+
 function sortSources(sourceList, sortBy, endPoint) {
   var madeChange = false;
   var endPoint = endPoint || sourceList.length;
@@ -25,6 +27,10 @@ function sourcesShouldSwap(source1, source2, sortBy) {
   if (sortBy == 'group') {
     return compareGroup(source1.type, source1.group, source2.type, source2.group);
   }
+  if (sortBy == 'date') {
+    return compareDate(source1.date, source2.date);
+  }
+  return false;
 }
 
 function compareGroup(type1, group1, type2, group2) {
