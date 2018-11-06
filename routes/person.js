@@ -29,8 +29,8 @@ router.post('/:personId/edit/name', makeRouteEditPost('name'));
 router.get('/:personId/edit/id', makeRouteEditGet('customId'));
 router.post('/:personId/edit/id', makeRouteEditPost('customId'));
 
-router.get('/:personId/edit/links', makeRouteEditGet('links'));
-router.post('/:personId/edit/links', makeRouteEditPost('links'));
+router.get('/:personId/add/links', makeRouteEditGet('links'));
+router.post('/:personId/add/links', makeRouteEditPost('links'));
 router.post('/:personId/delete/links/:deleteId', makeRouteDelete('links'));
 router.post('/:personId/reorder/links/:orderId', makeRouteReorder('links'));
 
