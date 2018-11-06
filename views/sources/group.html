@@ -42,6 +42,14 @@
                     </p>
                 <% } %>
 
+                <p>
+                    <%- include('../format/date', { date: source.date }) %>
+                </p>
+
+                <p>
+                    <%- include('../format/location', { location: source.location }) %>
+                </p>
+
                 <h3>links</h3>
 
                 <ul class="bullet-list">
