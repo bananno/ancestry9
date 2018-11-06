@@ -72,7 +72,10 @@
         </p>
     <% } %>
 
-    <%- include('../events/eventList', { events: events, people: people }) %>
+    <%- include('../events/eventList', { params: {
+        events: events,
+        people: people,
+    }}) %>
 
     <h2> Citations </h2>
 
