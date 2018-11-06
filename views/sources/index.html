@@ -70,10 +70,14 @@
                     }) %>
                 </td>
                 <td>
-                    <%- include('../format/date', {date: source.date}) %>
+                    <%- include('../format/date', { params: {
+                        date: source.date,
+                    }}) %>
                 </td>
                 <td>
-                    <%- include('../format/location', {location: source.location}) %>
+                    <%- include('../format/location', { params: {
+                        location: source.location,
+                    }}) %>
                 </td>
             </tr>
         <% } %>

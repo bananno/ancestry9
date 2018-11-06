@@ -25,9 +25,13 @@
 
             <% } else { %>
                 <% if (attr == 'date') { %>
-                    <%- include('../format/date', { date: originalValue }) %>
+                    <%- include('../format/date', { params: {
+                        date: originalValue,
+                    }}) %>
                 <% } else if (attr == 'location') { %>
-                    <%- include('../format/location', { location: originalValue }) %>
+                    <%- include('../format/location', { params: {
+                        location: originalValue,
+                    }}) %>
                 <% } %>
             <% } %>
         </td>

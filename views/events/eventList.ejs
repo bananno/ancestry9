@@ -35,10 +35,14 @@
                 <a href="<%= eventPath %>"><%= event.title %></a>
             </td>
             <td>
-                <%- include('../format/date', {date: event.date}) %>
+                <%- include('../format/date', { params: {
+                    date: event.date,
+                }}) %>
             </td>
             <td>
-                <%- include('../format/location', { location: event.location }) %>
+                <%- include('../format/location', { params: {
+                    location: event.location,
+                }}) %>
             </td>
             <td>
                 <ul>

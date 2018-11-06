@@ -43,11 +43,15 @@
                 <% } %>
 
                 <p>
-                    <%- include('../format/date', { date: source.date }) %>
+                    <%- include('../format/date', { params: {
+                        date: source.date,
+                    }}) %>
                 </p>
 
                 <p>
-                    <%- include('../format/location', { location: source.location }) %>
+                    <%- include('../format/location', { params: {
+                        location: source.location,
+                    }}) %>
                 </p>
 
                 <h3>people</h3>
