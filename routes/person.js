@@ -89,8 +89,7 @@ function makeRouteGet(editView) {
       .find({})
       .exec(function(err, allPeople) {
         mongoose.model('Event')
-        .find({})
-        // .find({ people: person })
+        .find({ people: person })
         .populate('people')
         .exec(function(err, events) {
           mongoose.model('Citation')
@@ -118,7 +117,6 @@ function makeRouteGet(editView) {
             }
 
             events = sortEvents(events);
-            events = filterEvents(events, person);
             citations = sortCitations(citations, 'item');
 
             res.format({
