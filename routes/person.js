@@ -20,7 +20,7 @@ router.get('/:personId/relatives', personRelatives);
 router.get('/:personId/checklist', personChecklist);
 
 router.get('/:personId/addEvent', makeRouteGet('events'));
-router.post('/:personId/addEvent', makeRouteEditPost('events'));
+router.post('/:personId/add/events', makeRouteEditPost('events'));
 
 router.get('/:personId/edit', makeRouteEditGet('none'));
 
