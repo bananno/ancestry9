@@ -22,19 +22,17 @@ table {
 
 /* LINKS */
 
-a {
+a, .clickable-link {
     color: #00B7FF;
+    text-decoration: underline;
 }
 
-a:hover {
+a:hover, .clickable-link:hover {
     text-decoration: none;
-}
-
-.clickable-link {
     cursor: pointer;
 }
 
-a.main-link {
+.main-link {
     display: inline-block;
     margin: 10px;
 }

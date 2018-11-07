@@ -1,10 +1,38 @@
 <%- include ../partials/header %>
-<% var rootPath = "/person/" + (person.customId || person._id); %>
+<%
+    var rootPath = "/person/" + (person.customId || person._id);
+    var addEventPath = rootPath + "/addEvent";
+%>
+
+<script>
+    function toggleNew(showForm) {
+        $('#toggle-new-event-link').toggle(!showForm);
+        $('#toggle-new-event-form').toggle(showForm);
+    }
+</script>
+
+<style>
+    #toggle-new-event-form {
+        display: none;
+        margin: 10px;
+    }
+</style>
 
 <div id="content">
     <%- include('../people/personHeader', { params: {
         person: person,
     }}) %>
+
+    <p id="toggle-new-event-link">
+        <span class="clickable-link main-link" onClick="toggleNew(true)">+ Add Event</span>
+    </p>
+
+    <div id="toggle-new-event-form">
+        <%- include('../forms/newEvent', { params: {
+            actionPath: addEventPath,
+        }}) %>
+        <span class="clickable-link" onClick="toggleNew(false)">cancel</span>
+    </div>
 
     <%- include('../events/eventList', { params: {
         events: events,
