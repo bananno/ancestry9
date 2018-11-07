@@ -1,11 +1,24 @@
 
-function compareDate(date1, date2) {
-  if (date1 == null) {
-    return false;
-  }
+function compareDate(date1, date2, putEmptyDatesOnTop) {
+  var date1IsEmpty = date1 == null || (date1.year || 0) == 0;
+  var date2IsEmpty = date2 == null || (date2.year || 0) == 0;
 
-  if (date2 == null) {
-    return true;
+  if (putEmptyDatesOnTop) {
+    if (date1IsEmpty) {
+      return false;
+    }
+
+    if (date2IsEmpty) {
+      return true;
+    }
+  } else {
+    if (date2IsEmpty) {
+      return false;
+    }
+
+    if (date1IsEmpty) {
+      return true;
+    }
   }
 
   if (date1.year == date2.year) {
