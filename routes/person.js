@@ -537,18 +537,19 @@ function getSourceEvents(sources) {
   var events = [];
 
   sources.forEach(source => {
-    if (source.type != 'document' || source.group.match('Census') == null) {
-      return;
-    }
-
     var event = {
       title: source.group,
       date: { ...source.date },
       location: { ...source.location },
       people: [ ...source.people ],
-      type: 'census',
       sourceId: source._id,
     };
+
+    if (source.type == 'document' && source.group.match('Census')) {
+      event.type = 'census';
+    } else {
+      event.type = 'source';
+    }
 
     events.push(event);
   });
