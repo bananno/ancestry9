@@ -19,18 +19,10 @@ router.get('/:personId/nationality', personNationality);
 router.get('/:personId/relatives', personRelatives);
 router.get('/:personId/checklist', personChecklist);
 
-router.get('/:personId/addEvent', makeRouteGet('events'));
 router.post('/:personId/add/events', makeRouteEditPost('events'));
-
 router.get('/:personId/edit', makeRouteEditGet('none'));
-
-router.get('/:personId/edit/name', makeRouteEditGet('name'));
 router.post('/:personId/edit/name', makeRouteEditPost('name'));
-
-router.get('/:personId/edit/id', makeRouteEditGet('customId'));
 router.post('/:personId/edit/id', makeRouteEditPost('customId'));
-
-router.get('/:personId/add/links', makeRouteEditGet('links'));
 router.post('/:personId/add/links', makeRouteEditPost('links'));
 router.post('/:personId/delete/links/:deleteId', makeRouteDelete('links'));
 router.post('/:personId/reorder/links/:orderId', makeRouteReorder('links'));
