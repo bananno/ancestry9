@@ -4,10 +4,10 @@
     <h1>All Events</h1>
 
     <% if (showNew) { %>
-        <%- include('../forms/newEvent', {
+        <%- include('../forms/newEvent', { params: {
             actionPath: '/events/new',
             cancelPath: '/events',
-        }) %>
+        }}) %>
     <% } else { %>
         <p>
             <a href="/events/new">+ Create Event</a>
