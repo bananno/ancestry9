@@ -13,19 +13,19 @@ var reorderList = require('../tools/reorderList');
 convertParamPersonId();
 
 router.get('/:personId', makeRouteGet('none'));
+router.get('/:personId/edit', personEdit);
 router.get('/:personId/timeline', personTimeline);
 router.get('/:personId/sources', personSources);
 router.get('/:personId/nationality', personNationality);
 router.get('/:personId/relatives', personRelatives);
 router.get('/:personId/checklist', personChecklist);
 
-router.post('/:personId/add/events', makeRouteEditPost('events'));
-router.get('/:personId/edit', makeRouteEditGet('none'));
 router.post('/:personId/edit/name', makeRouteEditPost('name'));
 router.post('/:personId/edit/id', makeRouteEditPost('customId'));
 router.post('/:personId/add/links', makeRouteEditPost('links'));
 router.post('/:personId/delete/links/:deleteId', makeRouteDelete('links'));
 router.post('/:personId/reorder/links/:orderId', makeRouteReorder('links'));
+router.post('/:personId/add/events', makeRouteEditPost('events'));
 
 createRelationshipRoutes('parents', 'children');
 createRelationshipRoutes('spouses', 'spouses');
@@ -131,28 +131,24 @@ function makeRouteGet(editView) {
   };
 }
 
-function makeRouteEditGet(editView) {
-  return function(req, res, next) {
-    mongoose.model('Person').findById(req.personId)
-    .populate('parents')
-    .populate('spouses')
-    .populate('children')
-    .exec(function(err, person) {
-      mongoose.model('Person').find({}, function(err, allPeople) {
-        var people = removePersonFromList(allPeople, person);
-        res.format({
-          html: function() {
-            res.render('people/edit', {
-              personId: req.personId,
-              person: person,
-              people: people,
-              editView: editView,
-            });
-          }
-        });
+function personEdit(req, res, next) {
+  mongoose.model('Person')
+  .findById(req.personId)
+  .populate('parents')
+  .populate('spouses')
+  .populate('children')
+  .exec((err, person) => {
+    mongoose.model('Person')
+    .find({})
+    .exec((err, allPeople) => {
+      var people = removePersonFromList(allPeople, person);
+      res.render('people/edit', {
+        personId: req.personId,
+        person: person,
+        people: people,
       });
     });
-  };
+  });
 }
 
 function makeRouteEditPost(editField, corresponding) {
