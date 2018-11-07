@@ -214,7 +214,9 @@ function makeRouteEditPost(editField, corresponding) {
           redirectUrl += (person.customId || person._id);
         }
 
-        if (editField != 'events') {
+        if (editField == 'events') {
+          redirectUrl += '/timeline';
+        } else {
           redirectUrl += '/edit';
         }
 
