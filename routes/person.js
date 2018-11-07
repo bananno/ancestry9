@@ -547,6 +547,7 @@ function getSourceEvents(sources) {
       location: { ...source.location },
       people: [ ...source.people ],
       type: 'census',
+      sourceId: source._id,
     };
 
     events.push(event);
