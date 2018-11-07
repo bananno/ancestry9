@@ -542,7 +542,7 @@ function getSourceEvents(sources) {
       date: { ...source.date },
       location: { ...source.location },
       people: [ ...source.people ],
-      sourceId: source._id,
+      source: source,
     };
 
     if (source.type == 'document' && source.group.match('Census')) {
