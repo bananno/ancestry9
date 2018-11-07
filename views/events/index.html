@@ -14,5 +14,7 @@
         </p>
     <% } %>
 
-    <%- include('./eventList', {events: events}) %>
+    <%- include('./eventList', { params: {
+        events: events,
+    }}) %>
 </div>
