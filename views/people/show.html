@@ -64,17 +64,6 @@
 
     <h2> Timeline </h2>
 
-    <% if (editView == 'events') { %>
-        <%- include('../forms/newEvent', { params: {
-            actionPath: addEventPath,
-            cancelPath: rootPath,
-        }}) %>
-    <% } else if (editView == 'none') { %>
-        <p>
-            <a href="<%= addEventPath %>" class="main-link">+ Create Event</a>
-        </p>
-    <% } %>
-
     <%- include('../events/eventList', { params: {
         events: events,
         people: people,
