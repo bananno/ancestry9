@@ -71,61 +71,57 @@ function convertParamPersonId() {
 }
 
 function personSummary(req, res, next) {
-    mongoose.model('Person').findById(req.personId)
-    .populate('parents')
-    .populate('spouses')
-    .populate('children')
-    .exec(function(err, person) {
-      mongoose.model('Person')
-      .find({})
-      .exec(function(err, allPeople) {
-        mongoose.model('Event')
-        .find({ people: person })
-        .populate('people')
-        .exec(function(err, events) {
-          mongoose.model('Citation')
-          .find({ person: person })
-          .populate('source')
-          .exec(function(err, citations) {
+  mongoose.model('Person').findById(req.personId)
+  .populate('parents')
+  .populate('spouses')
+  .populate('children')
+  .exec(function(err, person) {
+    mongoose.model('Person')
+    .find({})
+    .exec(function(err, allPeople) {
+      mongoose.model('Event')
+      .find({ people: person })
+      .populate('people')
+      .exec(function(err, events) {
+        mongoose.model('Citation')
+        .find({ person: person })
+        .populate('source')
+        .exec(function(err, citations) {
 
-            var people = removePersonFromList(allPeople, person);
+          var people = removePersonFromList(allPeople, person);
 
-            var siblings = [];
+          var siblings = [];
 
-            if (person.parents.length > 0) {
-              siblings = people.filter(function(thisPerson) {
-                for (var i = 0; i < thisPerson.parents.length; i++) {
-                  var thisParent1 = thisPerson.parents[i];
-                  for (var j = 0; j < person.parents.length; j++) {
-                    var thisParent2 = person.parents[j];
-                    if (thisParent1 == thisParent2.id) {
-                      return true;
-                    }
+          if (person.parents.length > 0) {
+            siblings = people.filter(function(thisPerson) {
+              for (var i = 0; i < thisPerson.parents.length; i++) {
+                var thisParent1 = thisPerson.parents[i];
+                for (var j = 0; j < person.parents.length; j++) {
+                  var thisParent2 = person.parents[j];
+                  if (thisParent1 == thisParent2.id) {
+                    return true;
                   }
                 }
-                return false;
-              });
-            }
-
-            events = sortEvents(events);
-            citations = sortCitations(citations, 'item');
-
-            res.format({
-              html: function() {
-                res.render('people/show', {
-                  personId: req.personId,
-                  person: person,
-                  people: people,
-                  siblings: siblings,
-                  events: events,
-                  citations: citations,
-                });
               }
+              return false;
             });
+          }
+
+          events = sortEvents(events);
+          citations = sortCitations(citations, 'item');
+
+          res.render('people/show', {
+            personId: req.personId,
+            person: person,
+            people: people,
+            siblings: siblings,
+            events: events,
+            citations: citations,
           });
         });
       });
     });
+  });
 }
 
 function personEdit(req, res, next) {
