@@ -12,7 +12,7 @@ var reorderList = require('../tools/reorderList');
 
 convertParamPersonId();
 
-router.get('/:personId', makeRouteGet('none'));
+router.get('/:personId', personSummary);
 router.get('/:personId/edit', personEdit);
 router.get('/:personId/timeline', personTimeline);
 router.get('/:personId/sources', personSources);
@@ -70,8 +70,7 @@ function convertParamPersonId() {
   });
 }
 
-function makeRouteGet(editView) {
-  return function(req, res, next) {
+function personSummary(req, res, next) {
     mongoose.model('Person').findById(req.personId)
     .populate('parents')
     .populate('spouses')
@@ -119,7 +118,6 @@ function makeRouteGet(editView) {
                   people: people,
                   siblings: siblings,
                   events: events,
-                  editView: editView,
                   citations: citations,
                 });
               }
@@ -128,7 +126,6 @@ function makeRouteGet(editView) {
         });
       });
     });
-  };
 }
 
 function personEdit(req, res, next) {
