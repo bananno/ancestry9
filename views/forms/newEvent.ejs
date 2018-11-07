@@ -2,6 +2,7 @@
     var actionPath = params.actionPath;
     var cancelPath = params.cancelPath;
 %>
+
 <form method="POST" action="<%= actionPath %>">
     <table>
         <tr>
@@ -34,6 +35,8 @@
     </p>
 </form>
 
-<p>
-    <a href="<%= cancelPath %>">cancel</a>
-</p>
+<% if (cancelPath) { %>
+    <p>
+        <a href="<%= cancelPath %>">cancel</a>
+    </p>
+<% } %>
