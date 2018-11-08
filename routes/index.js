@@ -27,7 +27,7 @@ router.post('/events/new', createNewEvent);
 
 // SOURCES - INDEX + NEW
 
-var mainSourceTypes = ['articles', 'documents', 'graves', 'photos', 'other'];
+var mainSourceTypes = ['articles', 'documents', 'graves', 'photos', 'newspapers', 'other'];
 
 router.get('/sources', makeSourcesIndexRoute('none'));
 router.get('/sources/new', makeSourcesIndexRoute('new'));
