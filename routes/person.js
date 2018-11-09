@@ -18,6 +18,7 @@ router.get('/:personId/timeline', personTimeline);
 router.get('/:personId/sources', personSources);
 router.get('/:personId/nationality', personNationality);
 router.get('/:personId/relatives', personRelatives);
+router.get('/:personId/connection', personConnection);
 router.get('/:personId/checklist', personChecklist);
 
 router.post('/:personId/edit/name', makeRouteEditPost('name'));
@@ -382,6 +383,27 @@ function personRelatives(req, res) {
           person: person,
           people: people,
           relativeList: relativeList,
+        });
+      }
+    });
+  });
+}
+
+function personConnection(req, res) {
+  mongoose.model('Person')
+  .find({})
+  .populate('parents')
+  .populate('spouses')
+  .populate('children')
+  .exec(function(err, people) {
+    var person = findPersonInList(people, req.personId);
+    var relativeList = getPersonRelativesList(people, person);
+
+    res.format({
+      html: function() {
+        res.render('people/connection', {
+          person: person,
+          people: people,
         });
       }
     });
