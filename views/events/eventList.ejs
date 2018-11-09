@@ -73,7 +73,8 @@
                 <% if (event.source) { %>
                     <% for (var j = 0; j < event.source.images.length; j++) { %>
                         <a href="<%= event.source.images[j] %>" target="_blank"><img
-                            src="<%= event.source.images[j] %>" height="100"></a>
+                            src="<%= event.source.images[j] %>"
+                            style="max-height: 100px; max-width: 350px;"></a>
                     <% } %>
                 <% } %>
             </td>
