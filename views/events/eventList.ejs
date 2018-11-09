@@ -42,7 +42,7 @@
             if (event.source) {
                 eventPath = '/source/' + event.source._id;
             } else {
-                eventPath = '/event/' + events._id;
+                eventPath = '/event/' + event._id;
             }
         %>
         <tr class="event-row-<%= eventType %>" filter="timeline" filter-set="<%= eventType %>">
