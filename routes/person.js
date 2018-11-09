@@ -465,6 +465,28 @@ function personChecklist(req, res) {
           });
         }
 
+        if (birthYear != null && birthYear < 1900
+            && deathYear != null && deathYear > 1917) {
+          var sourceName = 'World War I draft';
+          sourceChecklist[sourceName] = false;
+          sources.forEach((thisSource) => {
+            if (thisSource.group == sourceName) {
+              sourceChecklist[sourceName] = true;
+            }
+          });
+        }
+
+        if (birthYear != null && birthYear < 1925
+            && deathYear != null && deathYear > 1940) {
+          var sourceName = 'World War II draft';
+          sourceChecklist[sourceName] = false;
+          sources.forEach((thisSource) => {
+            if (thisSource.group == sourceName) {
+              sourceChecklist[sourceName] = true;
+            }
+          });
+        }
+
         res.format({
           html: function() {
             res.render('people/checklist', {
