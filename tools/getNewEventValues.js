@@ -1,14 +1,10 @@
 
 var getLocationValues = require('./getLocationValues');
+var getDateValues = require('./getDateValues');
 
 function getNewEventValues(req) {
   var newEvent = {
     title: req.body.title.trim(),
-    date: {
-      year: req.body.date_year,
-      month: req.body.date_month,
-      day: req.body.date_day,
-    },
     people: [],
   };
 
@@ -17,6 +13,7 @@ function getNewEventValues(req) {
   }
 
   newEvent.location = getLocationValues(req);
+  newEvent.date = getDateValues(req);
 
   return newEvent;
 }
