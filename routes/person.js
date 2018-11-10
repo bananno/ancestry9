@@ -570,7 +570,9 @@ function getSourceEvents(sources) {
       source: source,
     };
 
-    if (source.type == 'document' && source.group.match('Census')) {
+    if (source.type == 'newspaper') {
+      event.type = source.type;
+    } else if (source.type == 'document' && source.group.match('Census')) {
       event.type = 'census';
     } else {
       event.type = 'source';
