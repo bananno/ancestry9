@@ -8,4 +8,21 @@
 
     <h2>Connection</h2>
 
+    <% if (isSame) { %>
+        <p>
+            Same person.
+        </p>
+    <% } else if (isAncestor) { %>
+        <p>
+            Ancestor.
+        </p>
+        <% ancestorList.forEach(thisPerson => { %>
+            <div class="treecell">
+                <div>
+                    <%- include('../partials/linkToPerson', { person: thisPerson }) %>
+                </div>
+            </div>
+        <% }); %>
+    <% } %>
+
 </div>

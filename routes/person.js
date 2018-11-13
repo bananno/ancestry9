@@ -397,15 +397,48 @@ function personConnection(req, res) {
   .populate('children')
   .exec(function(err, people) {
     var person = findPersonInList(people, req.personId);
-    var relativeList = getPersonRelativesList(people, person);
+    var compare = people.filter(thisPerson => {
+      return thisPerson.name == 'Anna Peterson';
+    })[0];
+    var ancestorList = [];
 
-    res.format({
-      html: function() {
+    if (person._id == compare._id) {
+      res.render('people/connection', {
+        person: person,
+        compare: compare,
+        people: people,
+        isSame: true,
+        isAncestor: false,
+        ancestorList: ancestorList,
+      });
+      return;
+    }
+
+    console.log(person.children)
+
+    if (person.children.length > 0) {
+      if (isSamePerson(person.children[0], compare)) {
+        ancestorList.push(person);
+        ancestorList.push(compare);
         res.render('people/connection', {
           person: person,
+          compare: compare,
           people: people,
+          isSame: false,
+          isAncestor: true,
+          ancestorList: ancestorList,
         });
+        return;
       }
+    }
+
+    res.render('people/connection', {
+      person: person,
+      compare: compare,
+      people: people,
+      isSame: false,
+      isAncestor: false,
+      ancestorList: ancestorList,
     });
   });
 }
