@@ -7,7 +7,11 @@
 %>
 
 <title>
-    Sources | Lundberg Ancestry
+    <% if (showNew) { %>
+        New Source | Lundberg Ancestry
+    <% } else {%> | Lundberg Ancestry
+        Sources
+    <% } %>
 </title>
 
 <div id="page-content">
