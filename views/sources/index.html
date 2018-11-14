@@ -42,8 +42,15 @@
 
     <%
         var showTableType = showAllTypes;
-        var showTableGroup = subView != 'graves' && subView != 'photos';
-        var showTableCemetery = subView == 'graves';
+        var showTableGroup = subView != 'photos';
+        var showTableDate = subView != 'graves';
+
+        var groupLabel = 'group';
+        if (subView == 'graves') {
+            groupLabel = 'cemetery';
+        } else if (subView == 'newspapers') {
+            groupLabel = 'paper';
+        }
     %>
 
     <table class="info-table">
@@ -52,13 +59,12 @@
                 <th>type</th>
             <% } %>
             <% if (showTableGroup) { %>
-                <th>group</th>
-            <% } %>
-            <% if (showTableCemetery) { %>
-                <th>cemetery</th>
+                <th><%= groupLabel %></th>
             <% } %>
             <th>title</th>
-            <th>date</th>
+            <% if (showTableDate) { %>
+                <th>date</th>
+            <% } %>
             <th>location</th>
         </tr>
 
@@ -70,7 +76,7 @@
                         <%= source.type %>
                     </td>
                 <% } %>
-                <% if (showTableGroup || showTableCemetery) { %>
+                <% if (showTableGroup) { %>
                     <td>
                         <%= source.group %>
                     </td>
@@ -81,11 +87,13 @@
                         showGroup: false,
                     }) %>
                 </td>
-                <td>
-                    <%- include('../format/date', { params: {
-                        date: source.date,
-                    }}) %>
-                </td>
+                <% if (showTableDate) { %>
+                    <td>
+                        <%- include('../format/date', { params: {
+                            date: source.date,
+                        }}) %>
+                    </td>
+                <% } %>
                 <td>
                     <%- include('../format/location', { params: {
                         location: source.location,
