@@ -12,15 +12,22 @@
         <%= rootSource.group %>
     </h1>
 
-    <p>
-        (<%= rootSource.type %> group)
-    </p>
-
-    <div class="filter-buttons" filter="source-details">
-        <div class="filter-button active" filter-set="content">
-            content
+    <% if (rootSource.type == 'grave') { %>
+        <p>
+            <%- include('../format/location', { params: {
+                location: rootSource.location,
+            }}) %>
+        </p>
+    <% } else { %>
+        <p>
+            (<%= rootSource.type %> group)
+        </p>
+        <div class="filter-buttons" filter="source-details">
+            <div class="filter-button active" filter-set="content">
+                content
+            </div>
         </div>
-    </div>
+    <% }%>
 
     <% for (var i = 0; i < sources.length; i++) { %>
         <%
