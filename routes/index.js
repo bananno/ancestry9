@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var router = express.Router();
 
 var getDateValues = require('../tools/getDateValues');
+var getLocationValues = require('../tools/getLocationValues');
 var getNewEventValues = require('../tools/getNewEventValues');
 var sortSources = require('../tools/sortSources');
 var sortEvents = require('../tools/sortEvents');
@@ -188,6 +189,7 @@ function createNewSource(req, res) {
   };
 
   newItem.date = getDateValues(req);
+  newItem.location = getLocationValues(req);
 
   if (newItem.title == '') {
     return;
