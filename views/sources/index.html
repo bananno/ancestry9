@@ -43,6 +43,7 @@
     <%
         var showTableType = showAllTypes;
         var showTableGroup = subView != 'graves' && subView != 'photos';
+        var showTableCemetery = subView == 'graves';
     %>
 
     <table class="info-table">
@@ -52,6 +53,9 @@
             <% } %>
             <% if (showTableGroup) { %>
                 <th>group</th>
+            <% } %>
+            <% if (showTableCemetery) { %>
+                <th>cemetery</th>
             <% } %>
             <th>title</th>
             <th>date</th>
@@ -66,7 +70,7 @@
                         <%= source.type %>
                     </td>
                 <% } %>
-                <% if (showTableGroup) { %>
+                <% if (showTableGroup || showTableCemetery) { %>
                     <td>
                         <%= source.group %>
                     </td>
