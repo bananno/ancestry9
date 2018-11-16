@@ -6,6 +6,7 @@ var getDateValues = require('../tools/getDateValues');
 var getLocationValues = require('../tools/getLocationValues');
 var removePersonFromList = require('../tools/removePersonFromList');
 var reorderList = require('../tools/reorderList');
+var sortPeople = require('../tools/sortPeople');
 
 router.get('/:sourceId', sourceShow);
 router.get('/:sourceId/edit', makeRouteEditGet('none'));
@@ -76,6 +77,8 @@ function makeRouteEditGet(editField) {
         .find({ source: source })
         .populate('person')
         .exec(function(err, citations) {
+          people = sortPeople(people, 'name');
+
           source.people.forEach((thisPerson) => {
             people = removePersonFromList(people, thisPerson);
           });
