@@ -34,51 +34,53 @@
         <% } %>
 
         <div class="source-item-box">
-            <p>
-                <a href="/source/<%= source._id %>"><%= source.group %>
-                <% if (source.group && source.title) { %>
-                    -
-                <% } %>
-                <%= source.title %></a>
-            </p>
-
-            <% if (source.images.length) { %>
+            <div class="column" style="width: 450px;">
                 <p>
-                    <% for (var j = 0; j < source.images.length; j++) { %>
-                        <a href="<%= source.images[j] %>" target="_blank"><img
-                            src="<%= source.images[j] %>" height="100"></a>
+                    <a href="/source/<%= source._id %>"><%= source.group %>
+                    <% if (source.group && source.title) { %>
+                        -
                     <% } %>
+                    <%= source.title %></a>
                 </p>
-            <% } %>
 
-            <p>
-                <%- include('../format/date', { params: {
-                    date: source.date,
-                    format: 'long',
-                }}) %>
-            </p>
+                <% if (source.images.length) { %>
+                    <p>
+                        <% for (var j = 0; j < source.images.length; j++) { %>
+                            <a href="<%= source.images[j] %>" target="_blank"><img
+                                src="<%= source.images[j] %>" height="100"></a>
+                        <% } %>
+                    </p>
+                <% } %>
 
-            <p>
-                <%- include('../format/location', { params: {
-                    location: source.location,
-                }}) %>
-            </p>
+                <p>
+                    <%- include('../format/date', { params: {
+                        date: source.date,
+                        format: 'long',
+                    }}) %>
+                </p>
 
-            <%- include('../format/content', {
-                content: source.content,
-                limit: true,
-            }) %>
+                <p>
+                    <%- include('../format/location', { params: {
+                        location: source.location,
+                    }}) %>
+                </p>
 
-            <% if (sourceCitations.length) { %>
-                <%- include('../partials/citationList', {
-                    citations: sourceCitations,
-                    showDelete: false,
-                    showSource: false,
-                    showPerson: false,
-                    rootPath: rootPath,
-                    groupBy: 'item',
+                <%- include('../format/content', {
+                    content: source.content,
+                    limit: true,
                 }) %>
-            <% } %>
+
+                <% if (sourceCitations.length) { %>
+                    <%- include('../partials/citationList', {
+                        citations: sourceCitations,
+                        showDelete: false,
+                        showSource: false,
+                        showPerson: false,
+                        rootPath: rootPath,
+                        groupBy: 'item',
+                    }) %>
+                <% } %>
+            </div>
         </div>
     <% } %>
 </div>
