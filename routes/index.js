@@ -28,7 +28,7 @@ router.post('/events/new', createNewEvent);
 
 // SOURCES - INDEX + NEW
 
-var mainSourceTypes = ['articles', 'documents', 'graves', 'photos', 'newspapers', 'other'];
+var mainSourceTypes = ['documents', 'index', 'graves', 'newspapers', 'photos', 'articles', 'other'];
 
 router.get('/sources', makeSourcesIndexRoute('none'));
 router.get('/sources/new', makeSourcesIndexRoute('new'));
@@ -170,13 +170,19 @@ function filterSourcesByType(sources, type) {
 
   if (type == 'other') {
     return sources.filter(thisSource => {
-      var thisSourceType = thisSource.type.toLowerCase() + 's';
+      var thisSourceType = thisSource.type.toLowerCase();
+      if (thisSourceType != 'index') {
+        thisSourceType += 's';
+      }
       return thisSourceType == 'others' || mainSourceTypes.indexOf(thisSourceType) == -1;
     });
   }
 
   return sources.filter(thisSource => {
-    var thisSourceType = thisSource.type.toLowerCase() + 's';
+    var thisSourceType = thisSource.type.toLowerCase();
+    if (thisSourceType != 'index') {
+      thisSourceType += 's';
+    }
     return thisSourceType == type;
   });
 }
