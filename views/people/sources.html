@@ -51,6 +51,19 @@
                 </p>
             <% } %>
 
+            <p>
+                <%- include('../format/date', { params: {
+                    date: source.date,
+                    format: 'long',
+                }}) %>
+            </p>
+
+            <p>
+                <%- include('../format/location', { params: {
+                    location: source.location,
+                }}) %>
+            </p>
+
             <%- include('../format/content', {
                 content: source.content,
                 limit: true,
