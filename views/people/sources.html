@@ -65,11 +65,6 @@
                     }}) %>
                 </p>
 
-                <%- include('../format/content', {
-                    content: source.content,
-                    limit: true,
-                }) %>
-
                 <% if (sourceCitations.length) { %>
                     <%- include('../partials/citationList', {
                         citations: sourceCitations,
@@ -80,6 +75,13 @@
                         groupBy: 'item',
                     }) %>
                 <% } %>
+            </div>
+
+            <div class="column" style="max-width: 600px;" filter="source-details" filter-set="content">
+                <%- include('../format/content', {
+                    content: source.content,
+                    limit: true,
+                }) %>
             </div>
         </div>
     <% } %>
