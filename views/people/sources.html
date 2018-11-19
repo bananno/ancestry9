@@ -16,19 +16,21 @@
             var sourceCitations = citations.filter((thisCitation) => {
                 return ('' + thisCitation.source) == ('' + source._id);
             });
-
-            var pluralType = source.type;
-
-            if (pluralType == 'index') {
-                pluralType = 'web index';
-            } else {
-                pluralType += 's';
-            }
         %>
 
         <% if (source.type != previousSourceType) { %>
+            <%
+                var pluralType = source.type;
+
+                if (pluralType == 'index') {
+                    pluralType = 'web index';
+                } else {
+                    pluralType += 's';
+                }
+
+                previousSourceType = source.type;
+            %>
             <h2><%= pluralType %></h2>
-            <% previousSourceType = source.type; %>
         <% } %>
 
         <div class="source-item-box">
