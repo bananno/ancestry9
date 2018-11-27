@@ -65,6 +65,8 @@
                     }}) %>
                 </p>
 
+                <h3>citations</h3>
+
                 <% if (sourceCitations.length) { %>
                     <%- include('../partials/citationList', {
                         citations: sourceCitations,
@@ -78,6 +80,8 @@
             </div>
 
             <div class="column" style="max-width: 600px;" filter="source-details" filter-set="content">
+                <h3>content</h3>
+
                 <%- include('../format/content', {
                     content: source.content,
                     limit: true,
