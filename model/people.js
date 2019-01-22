@@ -7,6 +7,7 @@ var personSchema = new mongoose.Schema({
   spouses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
   children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
   links: [String],
+  share: Boolean,
 });
 
 mongoose.model('Person', personSchema);
