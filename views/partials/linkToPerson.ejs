@@ -1,9 +1,12 @@
-<%
-    let person = params.person;
-%>
-
-<% if (person != null) { %>
-    <a href="/person/<%= person.customId || person._id %>"><%= person.name %></a>
-<% } else { %>
+<% if (params.person == null) { %>
     ________
+<% } else { %>
+    <%
+        let person = params.person;
+        let personId = person.customId;
+        if (personId == null) {
+            personId = person._id;
+        }
+    %>
+    <a href="/person/<%= personId %>"><%= person.name %></a>
 <% } %>
