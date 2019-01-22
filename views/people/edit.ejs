@@ -30,6 +30,14 @@
             originalValue: person.customId,
         }}) %>
 
+        <!-- SHARE -->
+
+        <%- include('../forms/tableRowSingle', { params: {
+            attr: 'share',
+            editPath: rootEditPath + '/share',
+            originalValue: person.share == true,
+        }}) %>
+
         <!-- PARENTS -->
 
         <%- include('../forms/tableRowMulti', { params: {
