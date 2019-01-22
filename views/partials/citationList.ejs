@@ -48,7 +48,9 @@
         <tr>
             <% if (showPerson) { %>
                 <td class="citation_cell">
-                    <%- include('../partials/linkToPerson', { person: citation.person }) %>
+                    <%- include('../partials/linkToPerson', { params: {
+                        person: citation.person
+                    }}) %>
                 </td>
             <% } %>
             <td class="<%= itemCellClass1 %>">

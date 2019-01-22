@@ -37,7 +37,9 @@
                 var searchName = person.name.toLowerCase();
             %>
             <li person_name="<%= searchName %>" class="person_row">
-                <%- include('../partials/linkToPerson', {person: person}) %>
+                <%- include('../partials/linkToPerson', { params: {
+                    person: person
+                }}) %>
             </li>
         <% } %>
     </ul>

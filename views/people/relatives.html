@@ -56,7 +56,9 @@
                     <%= thisRelationship %>
                 </td>
                 <td>
-                    <%- include('../partials/linkToPerson', {person: obj.person}) %>
+                    <%- include('../partials/linkToPerson', { params: {
+                        person: obj.person
+                    }}) %>
                 </td>
                 <td>
                     <%= obj.generation %>

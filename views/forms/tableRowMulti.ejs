@@ -35,7 +35,9 @@
             <% } else if (dataType == 'images') { %>
                 <a href="<%= thisItem %>" target="_blank"><img src="<%= thisItem %>" height="100"></a>
             <% } else if (dataType == 'people') { %>
-                <%- include('../partials/linkToPerson', { person: thisItem }) %>
+                <%- include('../partials/linkToPerson', { params: {
+                    person: thisItem
+                }}) %>
             <% } else { %>
                 <%= thisItem %>
             <% } %>

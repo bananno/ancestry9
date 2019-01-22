@@ -10,7 +10,9 @@
     <ul class="list_of_items">
         <% people.forEach(person => { %>
             <li class="person_row">
-                <%- include('../partials/linkToPerson', {person: person}) %>
+                <%- include('../partials/linkToPerson', { params: {
+                    person: person
+                }}) %>
             </li>
         <% }); %>
     </ul>

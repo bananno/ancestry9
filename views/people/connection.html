@@ -19,7 +19,9 @@
         <% ancestorList.forEach(thisPerson => { %>
             <div class="treecell">
                 <div>
-                    <%- include('../partials/linkToPerson', { person: thisPerson }) %>
+                    <%- include('../partials/linkToPerson', { params: {
+                        person: thisPerson
+                    }}) %>
                 </div>
             </div>
         <% }); %>
