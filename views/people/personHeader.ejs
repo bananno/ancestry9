@@ -1,6 +1,7 @@
 <%
     var person = params.person;
-    var rootPath = '/person/' + (person.customId || person._id);
+    let personId = params.paramPersonId || person.customId || person._id;
+    var rootPath = '/person/' + personId;
 %>
 
 <title>
