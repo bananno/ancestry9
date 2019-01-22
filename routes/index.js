@@ -42,6 +42,7 @@ router.get('/source-group/:sourceId', getSourceGroup);
 
 // DATABASE
 
+router.get('/sharing', shareDatabase);
 router.get('/database', showDatabase);
 
 //
@@ -211,6 +212,23 @@ function createNewSource(req, res) {
         }
       });
     }
+  });
+}
+
+function shareDatabase(req, res) {
+  mongoose.model('Person').find({}, function(err, people) {
+    mongoose.model('Source').find({}, function(err, sources) {
+      mongoose.model('Event').find({}, function(err, events) {
+        mongoose.model('Citation').find({}, function(err, citations) {
+          res.render('sharing', {
+            people: people,
+            sources: sources,
+            events: events,
+            citations: citations,
+          });
+        });
+      });
+    });
   });
 }
 
