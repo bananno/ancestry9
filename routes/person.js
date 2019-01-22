@@ -59,9 +59,10 @@ function convertParamPersonId() {
             res.render('people/notFound', { personId: paramPersonId });
           } else if (personWithId.length > 1) {
             console.log('Found more than one person with ID "' + paramPersonId + '".');
-            req.personId = personWithId[0]._id;
-            req.person = personWithId[0];
-            next();
+            res.render('people/duplicateIDs', {
+              personId: paramPersonId,
+              people: personWithId
+            });
           } else {
             req.personId = personWithId[0]._id;
             req.person = personWithId[0];

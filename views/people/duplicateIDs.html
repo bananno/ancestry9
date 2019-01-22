@@ -1,0 +1,17 @@
+<%- include ../partials/header %>
+
+<div id="page-content">
+    <h1> Person: <%= personId %> </h1>
+
+    <p style="color: red">
+        DUPLICATES
+    </p>
+
+    <ul class="list_of_items">
+        <% people.forEach(person => { %>
+            <li class="person_row">
+                <%- include('../partials/linkToPerson', {person: person}) %>
+            </li>
+        <% }); %>
+    </ul>
+</div>
