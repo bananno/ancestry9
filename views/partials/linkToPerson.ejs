@@ -1,3 +1,7 @@
+<%
+    let person = params.person;
+%>
+
 <% if (person != null) { %>
     <a href="/person/<%= person.customId || person._id %>"><%= person.name %></a>
 <% } else { %>
