@@ -65,6 +65,31 @@
                     }}) %>
                 </p>
 
+                <h3>links</h3>
+
+                <ul class="bullet-list">
+                    <% source.links.forEach(url => { %>
+                        <li>
+                            <%- include('../format/externalLink', { url: url }) %>
+                        </li>
+                    <% }); %>
+                </ul>
+
+                <% if (source.notes) { %>
+                    <%
+                        var notesList = source.notes.split('\n');
+                    %>
+                    <h3>notes</h3>
+
+                    <ul class="bullet-list">
+                        <% notesList.forEach(str => { %>
+                            <li style="max-width: 600px;">
+                                <%= str %>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } %>
+
                 <h3>citations</h3>
 
                 <% if (sourceCitations.length) { %>
