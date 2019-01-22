@@ -146,6 +146,7 @@ function personEdit(req, res, next) {
     .exec((err, allPeople) => {
       var people = removePersonFromList(allPeople, person);
       res.render('people/edit', {
+        paramPersonId: req.paramPersonId,
         personId: req.personId,
         person: person,
         people: people,
@@ -305,6 +306,7 @@ function personTimeline(req, res, next) {
         events = events.concat(sourceEvents);
         events = sortEvents(events);
         res.render('people/timeline', {
+          paramPersonId: req.paramPersonId,
           personId: req.personId,
           person: person,
           events: events,
@@ -329,6 +331,7 @@ function personSources(req, res, ntext) {
           html: function() {
             sources = sortSources(sources, 'group');
             res.render('people/sources', {
+              paramPersonId: req.paramPersonId,
               personId: req.personId,
               person: person,
               sources: sources,
@@ -365,6 +368,7 @@ function personNationality(req, res) {
       res.format({
         html: function() {
           res.render('people/nationality', {
+            paramPersonId: req.paramPersonId,
             personId: req.personId,
             person: person,
             people: people,
@@ -389,6 +393,7 @@ function personRelatives(req, res) {
     res.format({
       html: function() {
         res.render('people/relatives', {
+          paramPersonId: req.paramPersonId,
           person: person,
           people: people,
           relativeList: relativeList,
@@ -413,6 +418,7 @@ function personConnection(req, res) {
 
     if (person._id == compare._id) {
       res.render('people/connection', {
+        paramPersonId: req.paramPersonId,
         person: person,
         compare: compare,
         people: people,
@@ -430,6 +436,7 @@ function personConnection(req, res) {
         ancestorList.push(person);
         ancestorList.push(compare);
         res.render('people/connection', {
+          paramPersonId: req.paramPersonId,
           person: person,
           compare: compare,
           people: people,
@@ -442,6 +449,7 @@ function personConnection(req, res) {
     }
 
     res.render('people/connection', {
+      paramPersonId: req.paramPersonId,
       person: person,
       compare: compare,
       people: people,
@@ -554,6 +562,7 @@ function personChecklist(req, res) {
         res.format({
           html: function() {
             res.render('people/checklist', {
+              paramPersonId: req.paramPersonId,
               person: person,
               checklistLinks: checklistLinks,
               checklistLife: checklistLife,
