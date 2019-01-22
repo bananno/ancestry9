@@ -46,6 +46,7 @@ function createRelationshipRoutes(relationship, corresponding) {
 
 function convertParamPersonId() {
   router.param('personId', function(req, res, next, paramPersonId) {
+    req.paramPersonId = paramPersonId;
     mongoose.model('Person').findById(paramPersonId, function (err, person) {
       if (err || person == null) {
         mongoose.model('Person').find({}, function (err, people) {
@@ -119,6 +120,7 @@ function personSummary(req, res, next) {
           citations = sortCitations(citations, 'item');
 
           res.render('people/show', {
+            paramPersonId: req.paramPersonId,
             personId: req.personId,
             person: person,
             people: people,
