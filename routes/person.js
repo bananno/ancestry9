@@ -50,16 +50,22 @@ function convertParamPersonId() {
       if (err || person == null) {
         mongoose.model('Person').find({}, function (err, people) {
           var personWithId = people.filter(function(thisPerson) {
-            return thisPerson.customId == paramPersonId;
+            return thisPerson.customId == paramPersonId
+              || ('' + thisPerson._id) == ('' + paramPersonId);
           });
-          if (personWithId.length) {
+          if (personWithId.length == 0) {
+            console.log('Person with ID "' + paramPersonId + '" was not found.');
+            res.status(404);
+            res.render('people/notFound', { personId: paramPersonId });
+          } else if (personWithId.length > 1) {
+            console.log('Found more than one person with ID "' + paramPersonId + '".');
             req.personId = personWithId[0]._id;
             req.person = personWithId[0];
             next();
           } else {
-            console.log('Person with ID "' + paramPersonId + '" was not found.');
-            res.status(404);
-            res.render('people/notFound', { personId: paramPersonId });
+            req.personId = personWithId[0]._id;
+            req.person = personWithId[0];
+            next();
           }
         });
       } else {
