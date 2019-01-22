@@ -4,7 +4,7 @@
     <%
         let person = params.person;
         let personId = person.customId;
-        if (personId == null) {
+        if (personId == null || params.useRealId) {
             personId = person._id;
         }
     %>

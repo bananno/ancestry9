@@ -11,7 +11,8 @@
         <% people.forEach(person => { %>
             <li class="person_row">
                 <%- include('../partials/linkToPerson', { params: {
-                    person: person
+                    person: person,
+                    useRealId: true,
                 }}) %>
             </li>
         <% }); %>
