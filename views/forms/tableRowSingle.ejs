@@ -53,7 +53,11 @@
 
             <!-- TOGGLE SHOW/EDIT -->
 
-            <a item="<%= attr %>" class="link-start" onclick="startEdit('<%= attr %>')">edit</a>
+            <% if (params.toggle) { %>
+                <button item="<%= attr %>" class="link-start" type="submit">toggle</button>
+            <% } else { %>
+                <a item="<%= attr %>" class="link-start" onclick="startEdit('<%= attr %>')">edit</a>
+            <% } %>
         </td>
         <td>
             <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
