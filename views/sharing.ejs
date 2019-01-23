@@ -3,4 +3,20 @@
 </title>
 
 <div id="content">
+    <h1>const people = [</h1>
+
+    <% people.forEach((person, i) => { %>
+        <span>
+            &#160;&#160;<%= JSON.stringify(person) %><%= i < people.length - 1 ? ',' : '' %>
+        </span><br>
+    <% }); %>
+
+    <h1>];</h1>
+
+    <p>
+        <br>
+        module.exports = {<br>
+        &#160;&#160;people: people<br>
+        };<br>
+    </p>
 </div>

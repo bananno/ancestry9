@@ -216,7 +216,7 @@ function createNewSource(req, res) {
 }
 
 function shareDatabase(req, res) {
-  mongoose.model('Person').find({}, function(err, people) {
+  mongoose.model('Person').find({ share: true }, function(err, people) {
     mongoose.model('Source').find({}, function(err, sources) {
       mongoose.model('Event').find({}, function(err, events) {
         mongoose.model('Citation').find({}, function(err, citations) {
