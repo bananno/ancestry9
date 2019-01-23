@@ -34,8 +34,9 @@
 
         <%- include('../forms/tableRowSingle', { params: {
             attr: 'share',
-            editPath: rootEditPath + '/share',
+            editPath: rootPath + '/toggle/share',
             originalValue: person.share == true,
+            toggle: true,
         }}) %>
 
         <!-- PARENTS -->
