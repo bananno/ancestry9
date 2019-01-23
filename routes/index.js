@@ -216,31 +216,34 @@ function createNewSource(req, res) {
 }
 
 function shareDatabase(req, res) {
-  mongoose.model('Person').find({ share: 2 }, function(err, people) {
-    mongoose.model('Person').find({ share: 1 }, function(err, peoplePlaceholder) {
-      mongoose.model('Source').find({}, function(err, sources) {
-        mongoose.model('Event').find({}, function(err, events) {
-          mongoose.model('Citation').find({}, function(err, citations) {
+  mongoose.model('Person').find({}, function(err, allPeople) {
+    mongoose.model('Source').find({}, function(err, sources) {
+      mongoose.model('Event').find({}, function(err, events) {
+        mongoose.model('Citation').find({}, function(err, citations) {
+          let people = allPeople.map(person => {
+            if (person.sharing.level == 0) {
+              return null;
+            }
 
-            peoplePlaceholder.forEach(person => {
-              let placeholder = {};
-              placeholder.private = true;
-              placeholder.name = '(private)';
-              placeholder._id = person._id;
-              placeholder.customId = person._id;
-              placeholder.parents = person.parents;
-              placeholder.spouses = person.spouses;
-              placeholder.children = person.children;
-              placeholder.links = [];
-              people.push(placeholder);
-            });
+            if (person.sharing.level == 1) {
+              person.name = person.sharing.name || 'Person';
+              person.customId = person._id;
+              person.links = undefined;
+            }
 
-            res.render('sharing', {
-              people: people,
-              sources: sources,
-              events: events,
-              citations: citations,
-            });
+            person.__v = undefined;
+            person.sharing = undefined;
+
+            return person;
+          });
+
+          people = people.filter(person => person != null);
+
+          res.render('sharing', {
+            people: people,
+            sources: sources,
+            events: events,
+            citations: citations,
           });
         });
       });
