@@ -29,6 +29,9 @@
                         <% }); %>
                     </ul>
                 <% } else { %>
+                    <% if (params.toggle) { %>
+                        <img class="checkmark-inline" src="/images/check-<%= originalValue %>.png">
+                    <% } %>
                     <%= originalValue %>
                 <% } %>
             </div>

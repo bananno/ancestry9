@@ -227,6 +227,10 @@ ul.bullet-list li {
     overflow: scroll;
 }
 
+img.checkmark-inline {
+    height: 20px;
+}
+
 .checklist .checkmark {
     width: 30px;
 }
