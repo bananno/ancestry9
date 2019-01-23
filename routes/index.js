@@ -224,12 +224,14 @@ function shareDatabase(req, res) {
 
             peoplePlaceholder.forEach(person => {
               let placeholder = {};
+              placeholder.private = true;
               placeholder.name = '(private)';
               placeholder._id = person._id;
               placeholder.customId = person._id;
               placeholder.parents = person.parents;
               placeholder.spouses = person.spouses;
               placeholder.children = person.children;
+              placeholder.links = [];
               people.push(placeholder);
             });
 
