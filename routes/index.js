@@ -216,15 +216,29 @@ function createNewSource(req, res) {
 }
 
 function shareDatabase(req, res) {
-  mongoose.model('Person').find({ share: true }, function(err, people) {
-    mongoose.model('Source').find({}, function(err, sources) {
-      mongoose.model('Event').find({}, function(err, events) {
-        mongoose.model('Citation').find({}, function(err, citations) {
-          res.render('sharing', {
-            people: people,
-            sources: sources,
-            events: events,
-            citations: citations,
+  mongoose.model('Person').find({ share: 2 }, function(err, people) {
+    mongoose.model('Person').find({ share: 1 }, function(err, peoplePlaceholder) {
+      mongoose.model('Source').find({}, function(err, sources) {
+        mongoose.model('Event').find({}, function(err, events) {
+          mongoose.model('Citation').find({}, function(err, citations) {
+
+            peoplePlaceholder.forEach(person => {
+              let placeholder = {};
+              placeholder.name = '(private)';
+              placeholder._id = person._id;
+              placeholder.customId = person._id;
+              placeholder.parents = person.parents;
+              placeholder.spouses = person.spouses;
+              placeholder.children = person.children;
+              people.push(placeholder);
+            });
+
+            res.render('sharing', {
+              people: people,
+              sources: sources,
+              events: events,
+              citations: citations,
+            });
           });
         });
       });
