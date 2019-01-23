@@ -201,7 +201,7 @@ function makeRouteEditPost(editField, corresponding) {
         if (editField == 'customId') {
           redirectUrl += newValue;
         } else {
-          redirectUrl += (person.customId || person._id);
+          redirectUrl += req.paramPersonId;
         }
 
         if (editField == 'events') {
@@ -253,7 +253,7 @@ function makeRouteDelete(editField, corresponding) {
       } else {
         res.format({
           html: function() {
-            res.redirect('/person/' + (person.customId || person._id) + '/edit');
+            res.redirect('/person/' + req.paramPersonId + '/edit');
           }
         });
        }
@@ -280,7 +280,7 @@ function makeRouteReorder(editField) {
       } else {
         res.format({
           html: function() {
-            res.redirect('/person/' + (person.customId || person._id) + '/edit');
+            res.redirect('/person/' + req.paramPersonId + '/edit');
           }
         });
        }
