@@ -33,10 +33,18 @@
         <!-- SHARE -->
 
         <%- include('../forms/tableRowSingle', { params: {
-            attr: 'share',
-            editPath: rootPath + '/toggle/share',
-            originalValue: person.share || 0,
+            attr: 'shareLevel',
+            attrName: 'sharing level',
+            editPath: rootPath + '/toggle/shareLevel',
+            originalValue: person.sharing.level,
             toggle: true,
+        }}) %>
+
+        <%- include('../forms/tableRowSingle', { params: {
+            attr: 'shareName',
+            attrName: 'sharing name',
+            editPath: rootEditPath + '/shareName',
+            originalValue: person.sharing.name,
         }}) %>
 
         <!-- PARENTS -->

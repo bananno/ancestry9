@@ -7,9 +7,9 @@ var personSchema = new mongoose.Schema({
   spouses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
   children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
   links: [String],
-  share: {
+  sharing: {
     level: { type: Number, default: 0 },
-    name: { type: String, default: 'Person' },
+    name: { type: String, default: '' },
   },
 });
 

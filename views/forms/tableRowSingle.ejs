@@ -28,11 +28,11 @@
                             <li><%= str %></li>
                         <% }); %>
                     </ul>
-                <% } else if (attr == 'share') { %>
+                <% } else if (attr == 'shareLevel') { %>
                     <% if (originalValue == 2) { %>
                         <img class="checkmark-inline" src="/images/check-true.png"> everything
                     <% } else if (originalValue == 1) { %>
-                        <img class="checkmark-inline" src="/images/check-false.png"> placeholder only
+                        <img class="checkmark-inline" src="/images/check-false.png"> restricted
                     <% } else { %>
                         <img class="checkmark-inline" src="/images/check-false.png"> none
                     <% } %>

@@ -23,11 +23,12 @@ router.get('/:personId/checklist', personChecklist);
 
 router.post('/:personId/edit/name', makeRouteEditPost('name'));
 router.post('/:personId/edit/id', makeRouteEditPost('customId'));
+router.post('/:personId/edit/shareName', makeRouteEditPost('shareName'));
 router.post('/:personId/add/links', makeRouteEditPost('links'));
 router.post('/:personId/delete/links/:deleteId', makeRouteDelete('links'));
 router.post('/:personId/reorder/links/:orderId', makeRouteReorder('links'));
 router.post('/:personId/add/events', makeRouteEditPost('events'));
-router.post('/:personId/toggle/share', makeRouteTogglePost('share'));
+router.post('/:personId/toggle/shareLevel', makeRouteTogglePost('shareLevel'));
 
 createRelationshipRoutes('parents', 'children');
 createRelationshipRoutes('spouses', 'spouses');
@@ -189,6 +190,9 @@ function makeRouteEditPost(editField, corresponding) {
       if (newValue != '') {
         updatedObj[editField] = (person[editField] || []).concat(newValue);
       }
+    } else if (editField == 'shareName') {
+      updatedObj.sharing = person.sharing;
+      updatedObj.sharing.name = newValue;
     } else {
       updatedObj[editField] = newValue;
     }
@@ -226,10 +230,11 @@ function makeRouteTogglePost(editField) {
     let person = req.person;
     let updatedObj = {};
 
-    if (editField == 'share') {
-      updatedObj[editField] = (person[editField] || 0) + 1;
-      if (updatedObj[editField] == 3) {
-        updatedObj[editField] = 0;
+    if (editField == 'shareLevel') {
+      updatedObj.sharing = person.sharing;
+      updatedObj.sharing.level += 1;
+      if (updatedObj.sharing.level == 3) {
+        updatedObj.sharing.level = 0;
       }
     }
 
