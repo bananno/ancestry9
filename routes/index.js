@@ -215,24 +215,35 @@ function createNewSource(req, res) {
   });
 }
 
+const allFields = ['_id', 'parents', 'spouses', 'children'];
+const nonRestrictedFields = ['name', 'customId', 'links'];
+
 function shareDatabase(req, res) {
   mongoose.model('Person').find({}, function(err, allPeople) {
     mongoose.model('Source').find({}, function(err, sources) {
       mongoose.model('Event').find({}, function(err, events) {
         mongoose.model('Citation').find({}, function(err, citations) {
-          let people = allPeople.map(person => {
-            if (person.sharing.level == 0) {
+          let people = allPeople.map(thisPerson => {
+            if (thisPerson.sharing.level == 0) {
               return null;
             }
 
-            if (person.sharing.level == 1) {
-              person.name = person.sharing.name || 'Person';
-              person.customId = person._id;
-              person.links = undefined;
-            }
+            let person = {};
 
-            person.__v = undefined;
-            person.sharing = undefined;
+            allFields.forEach(key => {
+              person[key] = thisPerson[key];
+            });
+
+            if (thisPerson.sharing.level == 1) {
+              person.private = true;
+              person.name = thisPerson.sharing.name || 'Person';
+              person.customId = thisPerson._id;
+            } else {
+              person.private = false;
+              nonRestrictedFields.forEach(key => {
+                person[key] = thisPerson[key];
+              });
+            }
 
             return person;
           });
