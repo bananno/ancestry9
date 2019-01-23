@@ -40,12 +40,14 @@
             toggle: true,
         }}) %>
 
-        <%- include('../forms/tableRowSingle', { params: {
-            attr: 'shareName',
-            attrName: 'sharing name',
-            editPath: rootEditPath + '/shareName',
-            originalValue: person.sharing.name,
-        }}) %>
+        <% if (person.sharing.level == 1) { %>
+            <%- include('../forms/tableRowSingle', { params: {
+                attr: 'shareName',
+                attrName: 'sharing name',
+                editPath: rootEditPath + '/shareName',
+                originalValue: person.sharing.name,
+            }}) %>
+        <% } %>
 
         <!-- PARENTS -->
 
