@@ -13,7 +13,18 @@
 
     ];<br><br>
 
+    const events = [<br>
+
+    <% events.forEach((event, i) => { %>
+        <span>
+            &#160;&#160;<%= JSON.stringify(event) %><%= i < events.length - 1 ? ',' : '' %>
+        </span><br>
+    <% }); %>
+
+    ];<br><br>
+
     module.exports = {<br>
-    &#160;&#160;people: people<br>
+    &#160;&#160;people: people,<br>
+    &#160;&#160;events: events,<br>
     };<br>
 </div>
