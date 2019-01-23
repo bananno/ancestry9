@@ -7,7 +7,10 @@ var personSchema = new mongoose.Schema({
   spouses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
   children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
   links: [String],
-  share: Number,
+  share: {
+    level: { type: Number, default: 0 },
+    name: { type: String, default: 'Person' },
+  },
 });
 
 mongoose.model('Person', personSchema);
