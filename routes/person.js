@@ -27,6 +27,7 @@ router.post('/:personId/add/links', makeRouteEditPost('links'));
 router.post('/:personId/delete/links/:deleteId', makeRouteDelete('links'));
 router.post('/:personId/reorder/links/:orderId', makeRouteReorder('links'));
 router.post('/:personId/add/events', makeRouteEditPost('events'));
+router.post('/:personId/toggle/share', makeRouteTogglePost('share'));
 
 createRelationshipRoutes('parents', 'children');
 createRelationshipRoutes('spouses', 'spouses');
@@ -213,6 +214,26 @@ function makeRouteEditPost(editField, corresponding) {
         res.format({
           html: function() {
             res.redirect(redirectUrl);
+          }
+        });
+       }
+    });
+  };
+}
+
+function makeRouteTogglePost(editField) {
+  return function(req, res) {
+    let person = req.person;
+    let updatedObj = {};
+    updatedObj[editField] = !(person[editField] == true);
+
+    person.update(updatedObj, function(err) {
+      if (err) {
+        res.send('There was a problem updating the information to the database: ' + err);
+      } else {
+        res.format({
+          html: function() {
+            res.redirect('/person/' + req.paramPersonId + '/edit');
           }
         });
        }
