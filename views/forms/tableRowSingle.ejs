@@ -28,10 +28,16 @@
                             <li><%= str %></li>
                         <% }); %>
                     </ul>
-                <% } else { %>
-                    <% if (params.toggle) { %>
-                        <img class="checkmark-inline" src="/images/check-<%= originalValue %>.png">
+                <% } else if (attr == 'share') { %>
+                    <% if (originalValue == 2) { %>
+                        <img class="checkmark-inline" src="/images/check-true.png"> everything
+                    <% } else if (originalValue == 1) { %>
+                        <img class="checkmark-inline" src="/images/check-false.png"> placeholder only
+                    <% } else { %>
+                        <img class="checkmark-inline" src="/images/check-false.png"> none
                     <% } %>
+                    (<%= originalValue %>)
+                <% } else { %>
                     <%= originalValue %>
                 <% } %>
             </div>

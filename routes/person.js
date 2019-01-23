@@ -225,7 +225,13 @@ function makeRouteTogglePost(editField) {
   return function(req, res) {
     let person = req.person;
     let updatedObj = {};
-    updatedObj[editField] = !(person[editField] == true);
+
+    if (editField == 'share') {
+      updatedObj[editField] = (person[editField] || 0) + 1;
+      if (updatedObj[editField] == 3) {
+        updatedObj[editField] = 0;
+      }
+    }
 
     person.update(updatedObj, function(err) {
       if (err) {
