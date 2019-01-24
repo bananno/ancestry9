@@ -223,6 +223,8 @@ function shareDatabase(req, res) {
     mongoose.model('Source').find({}, function(err, sources) {
       mongoose.model('Event').find({}, function(err, events) {
         mongoose.model('Citation').find({}, function(err, citations) {
+          events = sortEvents(events);
+
           let people = allPeople.map(thisPerson => {
             if (thisPerson.sharing.level == 0) {
               return null;
