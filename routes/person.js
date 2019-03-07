@@ -366,17 +366,15 @@ function personSources(req, res, ntext) {
       .find({ person: person })
       .exec(function(err, citations) {
         citations = sortCitations(citations, 'item');
-        res.format({
-          html: function() {
-            sources = sortSources(sources, 'group');
-            res.render('people/sources', {
-              paramPersonId: req.paramPersonId,
-              personId: req.personId,
-              person: person,
-              sources: sources,
-              citations: citations,
-            });
-          }
+        res.render('layout', {
+          view: 'people/layout',
+          subview: 'sources',
+          title: person.name,
+          paramPersonId: req.paramPersonId,
+          personId: req.personId,
+          person: person,
+          sources: sources,
+          citations: citations,
         });
       });
     });
