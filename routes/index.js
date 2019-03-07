@@ -10,8 +10,11 @@ var sortEvents = require('../tools/sortEvents');
 
 // HOME
 
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', (req, res, next) => {
+  res.render('layout', {
+    view: 'index',
+    title: null,
+  });
 });
 
 // PEOPLE - INDEX + NEW

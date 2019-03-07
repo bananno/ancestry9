@@ -1,0 +1,37 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/treecell.css">
+
+    <script src="/vendor/jquery.3.3.1.min.js"></script>
+
+    <script src="/scripts/script.js"></script>
+    <script src="/scripts/tableForm.js"></script>
+    <script src="/scripts/filterToggle.js"></script>
+
+    <link href="/images/favicon.ico" rel="shortcut icon" type="image/icon">
+    <link href="/images/favicon.ico" rel="icon" type="image/icon">
+
+    <title>
+        <% if (title) { %>
+            <%= title %> |
+        <% } %>
+        Lundberg Ancestry
+    </title>
+</head>
+<body>
+    <ul id="main_navigation">
+        <li><a href="/">Home</a></li>
+        <li><a href="/person/AnnaPeterson">Anna</a></li>
+        <li><a href="/allPeople">All People</a></li>
+        <li><a href="/events">All Events</a></li>
+        <li><a href="/sources">All Sources</a></li>
+        <li><a href="/sharing">Sharing</a></li>
+        <li><a href="/database">Database</a></li>
+    </ul>
+
+    <div id="page-content">
+        <%- include('./' + view) %>
+    </div>
+</body>
+</html>
