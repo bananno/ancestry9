@@ -1,82 +1,70 @@
-<%- include ../partials/header %>
-<% var rootPath = "/person/" + paramPersonId; %>
+<h2>Family</h2>
 
-<div id="page-content">
-    <%- include('../people/personHeader', { params: {
-        person: person,
-    }}) %>
-
-    <h2>Family</h2>
-
-    <div>
-        <% if (person.parents.length) { %>
-            <div class="family-list-block">
-                <h3>parents</h3>
-                <%- include('../partials/peopleList', { people: person.parents }) %>
-            </div>
-        <% } %>
-
-        <% if (siblings.length) { %>
-            <div class="family-list-block">
-                <h3>siblings</h3>
-                <%- include('../partials/peopleList', { people: siblings }) %>
-            </div>
-        <% } %>
-    </div>
-
-    <div>
-        <% if (person.spouses.length) { %>
-            <div class="family-list-block">
-                <h3>spouses</h3>
-                <%- include('../partials/peopleList', { people: person.spouses }) %>
-            </div>
-        <% } %>
-
-        <% if (person.children.length) { %>
-            <div class="family-list-block">
-                <h3>children</h3>
-                <%- include('../partials/peopleList', { people: person.children }) %>
-            </div>
-        <% } %>
-    </div>
-
-    <% if (person.links.length) { %>
-        <h2>Links</h2>
-        <ul class="bullet-list">
-            <% for (var i = 0; i < person.links.length; i++) { %>
-                <li>
-                    <%- include('../format/externalLink', { url: person.links[i] }) %>
-                </li>
-            <% } %>
-        </ul>
+<div>
+    <% if (person.parents.length) { %>
+        <div class="family-list-block">
+            <h3>parents</h3>
+            <%- include('../partials/peopleList', { people: person.parents }) %>
+        </div>
     <% } %>
 
-    <h2> Tree </h2>
+    <% if (siblings.length) { %>
+        <div class="family-list-block">
+            <h3>siblings</h3>
+            <%- include('../partials/peopleList', { people: siblings }) %>
+        </div>
+    <% } %>
+</div>
 
-    <div class="scrollbox">
-        <%- include('../partials/personTree', { params: {
-            person: person,
-            people: people,
-        }}) %>
-    </div>
+<div>
+    <% if (person.spouses.length) { %>
+        <div class="family-list-block">
+            <h3>spouses</h3>
+            <%- include('../partials/peopleList', { people: person.spouses }) %>
+        </div>
+    <% } %>
 
-    <% var addEventPath = rootPath + "/addEvent"; %>
+    <% if (person.children.length) { %>
+        <div class="family-list-block">
+            <h3>children</h3>
+            <%- include('../partials/peopleList', { people: person.children }) %>
+        </div>
+    <% } %>
+</div>
 
-    <h2> Timeline </h2>
+<% if (person.links.length) { %>
+    <h2>Links</h2>
+    <ul class="bullet-list">
+        <% for (var i = 0; i < person.links.length; i++) { %>
+            <li>
+                <%- include('../format/externalLink', { url: person.links[i] }) %>
+            </li>
+        <% } %>
+    </ul>
+<% } %>
 
-    <%- include('../events/eventList', { params: {
-        events: events,
+<h2> Tree </h2>
+
+<div class="scrollbox">
+    <%- include('../partials/personTree', { params: {
+        person: person,
         people: people,
     }}) %>
-
-    <h2> Citations </h2>
-
-    <%- include('../partials/citationList', {
-        citations: citations,
-        showDelete: false,
-        showSource: true,
-        showPerson: false,
-        groupBy: 'item',
-    }) %>
-
 </div>
+
+<h2> Timeline </h2>
+
+<%- include('../events/eventList', { params: {
+    events: events,
+    people: people,
+}}) %>
+
+<h2> Citations </h2>
+
+<%- include('../partials/citationList', {
+    citations: citations,
+    showDelete: false,
+    showSource: true,
+    showPerson: false,
+    groupBy: 'item',
+}) %>

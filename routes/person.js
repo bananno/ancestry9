@@ -121,7 +121,10 @@ function personSummary(req, res, next) {
           events = sortEvents(events);
           citations = sortCitations(citations, 'item');
 
-          res.render('people/show', {
+          res.render('layout', {
+            view: 'people/layout',
+            subview: 'show',
+            title: person.name,
             paramPersonId: req.paramPersonId,
             personId: req.personId,
             person: person,

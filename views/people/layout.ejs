@@ -1,0 +1,28 @@
+<%
+    const rootPath = '/person/' + paramPersonId;
+%>
+
+<div class="column">
+    <img src="/images/generic-profile-picture.png" class="profile-picture">
+</div>
+
+<div class="column">
+    <% if (subview == 'edit') { %>
+        <h1><%= person.name %>: Edit</h1>
+        <a href="<%= rootPath %>" class="main-link">done</a>
+    <% } else { %>
+        <h1><%= person.name %></h1>
+        <ul class="person-navigation">
+            <li><a href="<%= rootPath %>">summary</a></li>
+            <li><a href="<%= rootPath %>/edit">edit person</a></li>
+            <li><a href="<%= rootPath %>/timeline">timeline</a></li>
+            <li><a href="<%= rootPath %>/sources">sources</a></li>
+            <li><a href="<%= rootPath %>/nationality">nationality</a></li>
+            <li><a href="<%= rootPath %>/relatives">relatives</a></li>
+            <li><a href="<%= rootPath %>/connection">connection</a></li>
+            <li><a href="<%= rootPath %>/checklist">checklist</a></li>
+        </ul>
+    <% } %>
+</div>
+
+<%- include('./' + subview) %>
