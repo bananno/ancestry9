@@ -1,5 +1,5 @@
 <%
-    var countryNames = [
+    const countryNames = [
         'Czech Republic',
         'Denmark',
         'England',
@@ -11,7 +11,7 @@
         'United States',
     ];
 
-    var usaStates = [
+    const usaStates = [
         'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
         'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
         'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
@@ -19,11 +19,11 @@
         'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
     ];
 
-    var selectedCountry = 'United States';
-    var selectedRegion1 = '';
-    var selectedRegion2 = '';
-    var selectedCity = '';
-    var notesValue = '';
+    let selectedCountry = 'United States';
+    let selectedRegion1 = '';
+    let selectedRegion2 = '';
+    let selectedCity = '';
+    let notesValue = '';
 
     if (location != null) {
         selectedCountry = location.country;
@@ -36,8 +36,8 @@
 
 <select name="location_country">
     <option value="">country</option>
-    <% for (var i = 0; i < countryNames.length; i++) { %>
-        <% var str = countryNames[i]; %>
+    <% for (let i = 0; i < countryNames.length; i++) { %>
+        <% const str = countryNames[i]; %>
         <% if (str == selectedCountry) { %>
             <option value="<%= str %>" selected="selected"><%= str %></option>
         <% } else { %>
@@ -52,8 +52,8 @@
 
 <select name="location_region1_usa">
     <option value="">state</option>
-    <% for (var i = 0; i < usaStates.length; i++) { %>
-        <% var str = usaStates[i]; %>
+    <% for (let i = 0; i < usaStates.length; i++) { %>
+        <% const str = usaStates[i]; %>
         <% if (str == selectedRegion1) { %>
             <option value="<%= str %>" selected="selected"><%= str %></option>
         <% } else { %>
