@@ -1,101 +1,89 @@
-<%- include ../partials/header %>
-<%
-    var rootPath = "/person/" + paramPersonId;
-%>
+<h2>Links</h2>
 
-<div id="page-content">
-    <%- include('../people/personHeader', { params: {
-        person: person,
-    }}) %>
-
-    <h2>Links</h2>
-
-    <div class="checklist">
-        <% for (var linkType in checklistLinks) { %>
-            <%
-                var url = checklistLinks[linkType];
-                var checked = url != null;
-            %>
-            <div class="checklist-item checklist-<%= checked %>">
-                <div class="checkmark">
-                    <img src="/images/check-<%= checked %>.png">
-                </div>
-                <div class="info">
-                    <p>
-                        <b><%= linkType %></b>
-                    </p>
-                </div>
-            </div>
-        <% } %>
-    </div>
-
-    <h2>Relatives</h2>
-
-    <div class="checklist">
+<div class="checklist">
+    <% for (var linkType in checklistLinks) { %>
         <%
-            var parent1 = person.parents.length >= 1;
-            var parent2 = person.parents.length >= 2;
+            var url = checklistLinks[linkType];
+            var checked = url != null;
         %>
-        <div class="checklist-item checklist-<%= parent1 %>">
+        <div class="checklist-item checklist-<%= checked %>">
             <div class="checkmark">
-                <img src="/images/check-<%= parent1 %>.png">
+                <img src="/images/check-<%= checked %>.png">
             </div>
             <div class="info">
                 <p>
-                    <b>Parent 1</b>
+                    <b><%= linkType %></b>
                 </p>
             </div>
         </div>
-        <div class="checklist-item checklist-<%= parent2 %>">
+    <% } %>
+</div>
+
+<h2>Relatives</h2>
+
+<div class="checklist">
+    <%
+        var parent1 = person.parents.length >= 1;
+        var parent2 = person.parents.length >= 2;
+    %>
+    <div class="checklist-item checklist-<%= parent1 %>">
+        <div class="checkmark">
+            <img src="/images/check-<%= parent1 %>.png">
+        </div>
+        <div class="info">
+            <p>
+                <b>Parent 1</b>
+            </p>
+        </div>
+    </div>
+    <div class="checklist-item checklist-<%= parent2 %>">
+        <div class="checkmark">
+            <img src="/images/check-<%= parent2 %>.png">
+        </div>
+        <div class="info">
+            <p>
+                <b>Parent 2</b>
+            </p>
+        </div>
+    </div>
+</div>
+
+<h2>Life</h2>
+
+<div class="checklist">
+    <% for (var lifeItem in checklistLife) { %>
+        <%
+            var isChecked = checklistLife[lifeItem];
+        %>
+        <div class="checklist-item checklist-<%= isChecked %>">
             <div class="checkmark">
-                <img src="/images/check-<%= parent2 %>.png">
+                <img src="/images/check-<%= isChecked %>.png">
             </div>
             <div class="info">
                 <p>
-                    <b>Parent 2</b>
+                    <b><%= lifeItem %></b>
                 </p>
             </div>
         </div>
-    </div>
+    <% } %>
+</div>
 
-    <h2>Life</h2>
+<h2>Sources</h2>
 
-    <div class="checklist">
-        <% for (var lifeItem in checklistLife) { %>
-            <%
-                var isChecked = checklistLife[lifeItem];
-            %>
-            <div class="checklist-item checklist-<%= isChecked %>">
-                <div class="checkmark">
-                    <img src="/images/check-<%= isChecked %>.png">
-                </div>
-                <div class="info">
-                    <p>
-                        <b><%= lifeItem %></b>
-                    </p>
-                </div>
+<div class="checklist">
+    <% for (var sourceName in sourceChecklist) { %>
+        <%
+            var isChecked = sourceChecklist[sourceName];
+        %>
+        <div class="checklist-item checklist-<%= isChecked %>">
+            <div class="checkmark">
+                <img src="/images/check-<%= isChecked %>.png">
             </div>
-        <% } %>
-    </div>
-
-    <h2>Sources</h2>
-
-    <div class="checklist">
-        <% for (var sourceName in sourceChecklist) { %>
-            <%
-                var isChecked = sourceChecklist[sourceName];
-            %>
-            <div class="checklist-item checklist-<%= isChecked %>">
-                <div class="checkmark">
-                    <img src="/images/check-<%= isChecked %>.png">
-                </div>
-                <div class="info">
-                    <p>
-                        <b><%= sourceName %></b>
-                    </p>
-                </div>
+            <div class="info">
+                <p>
+                    <b><%= sourceName %></b>
+                </p>
             </div>
-        <% } %>
-    </div>
-
+        </div>
+    <% } %>
 </div>

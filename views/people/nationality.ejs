@@ -1,33 +1,24 @@
-<%- include ../partials/header %>
-<% var rootPath = "/person/" + paramPersonId; %>
+<h2> Chart </h2>
 
-<div id="page-content">
-    <%- include('../people/personHeader', { params: {
+<table border="1">
+    <% for (var country in nationality) { %>
+        <tr>
+            <td>
+                <%= nationality[country] %>
+            </td>
+            <td>
+                <%= country %>
+            </td>
+        </tr>
+    <% } %>
+</table>
+
+<h2> Tree </h2>
+
+<div class="scrollbox">
+    <%- include('../partials/personTree', { params: {
         person: person,
+        people: people,
+        showCountry: true,
     }}) %>
-
-    <h2> Chart </h2>
-
-    <table border="1">
-        <% for (var country in nationality) { %>
-            <tr>
-                <td>
-                    <%= nationality[country] %>
-                </td>
-                <td>
-                    <%= country %>
-                </td>
-            </tr>
-        <% } %>
-    </table>
-
-    <h2> Tree </h2>
-
-    <div class="scrollbox">
-        <%- include('../partials/personTree', { params: {
-            person: person,
-            people: people,
-            showCountry: true,
-        }}) %>
-    </div>
 </div>

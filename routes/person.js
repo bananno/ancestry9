@@ -59,7 +59,11 @@ function convertParamPersonId() {
           if (personWithId.length == 0) {
             console.log('Person with ID "' + paramPersonId + '" was not found.');
             res.status(404);
-            res.render('people/notFound', { personId: paramPersonId });
+            res.render('layout', {
+              view: 'people/notFound',
+              title: 'Not Found',
+              personId: paramPersonId,
+            });
           } else if (personWithId.length > 1) {
             console.log('Found more than one person with ID "' + paramPersonId + '".');
             res.render('people/duplicateIDs', {
@@ -402,7 +406,10 @@ function personNationality(req, res) {
 
       res.format({
         html: function() {
-          res.render('people/nationality', {
+          res.render('layout', {
+            view: 'people/layout',
+            subview: 'nationality',
+            title: person.name,
             paramPersonId: req.paramPersonId,
             personId: req.personId,
             person: person,
@@ -594,16 +601,15 @@ function personChecklist(req, res) {
           });
         }
 
-        res.format({
-          html: function() {
-            res.render('people/checklist', {
-              paramPersonId: req.paramPersonId,
-              person: person,
-              checklistLinks: checklistLinks,
-              checklistLife: checklistLife,
-              sourceChecklist: sourceChecklist,
-            });
-          }
+        res.render('layout', {
+          view: 'people/layout',
+          subview: 'checklist',
+          title: person.name,
+          paramPersonId: req.paramPersonId,
+          person: person,
+          checklistLinks: checklistLinks,
+          checklistLife: checklistLife,
+          sourceChecklist: sourceChecklist,
         });
       });
     });
