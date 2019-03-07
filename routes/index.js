@@ -54,19 +54,16 @@ module.exports = router;
 
 function getPersonsIndexRoute(showNew) {
   return function(req, res, next) {
-    mongoose.model('Person').find({}, function (err, people) {
-      if (err) {
-        return console.error(err);
-      } else {
-        res.format({
-          html: function() {
-            res.render('people/index', {
-              people: people,
-              showNew: showNew,
-            });
-          }
-        });
+    mongoose.model('Person').find({}, (error, people) => {
+      if (error) {
+        return console.error(error);
       }
+      res.render('layout', {
+        view: 'people/index',
+        title: 'All People',
+        people: people,
+        showNew: showNew,
+      });
     });
   };
 }
