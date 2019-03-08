@@ -14,10 +14,16 @@ function showMap(req, res, next) {
 
     sources.concat(events).forEach(pin => {
       const country = (pin.location || {}).country || 'Other';
+      const region1 = (pin.location || {}).region1 || 'Other';
+      const region2 = (pin.location || {}).region2 || 'Other';
+      const city = (pin.location || {}).city || 'Other';
 
       pins[country] = pins[country] || [];
+      pins[country][region1] = pins[country][region1] || [];
+      pins[country][region1][region2] = pins[country][region1][region2] || [];
+      pins[country][region1][region2][city] = pins[country][region1][region2][city] || [];
 
-      pins[country].push(pin);
+      pins[country][region1][region2][city].push(pin);
     });
 
     res.render('layout', {
