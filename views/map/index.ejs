@@ -63,32 +63,55 @@ ul {
 </div>
 
 <div id="show-pins">
-    <ul>
+    <table class="event_list">
+        <tr>
+            <th> title </th>
+            <th> date </th>
+            <th> location </th>
+            <th> people </th>
+        </tr>
         <% for (let country in pins) { %>
             <% for (let region1 in pins[country]) { %>
                 <% for (let region2 in pins[country][region1]) { %>
                     <% for (let city in pins[country][region1][region2]) { %>
                         <% pins[country][region1][region2][city].forEach(pin => { %>
-                            <li class="pin" country="<%= country %>" region1="<%= region1 %>"
+                            <tr class="pin" country="<%= country %>" region1="<%= region1 %>"
                                     region2="<%= region2 %>" city="<%= city %>">
-                                <% if (pin.pinType == 'source') { %>
-                                    <%- include('../partials/linkToSource', {
-                                        source: pin,
-                                        showGroup: false,
-                                    }) %>
-                                <% } else if (pin.pinType == 'event') { %>
-                                    <a href="/event/<%= pin._id %>"><%= pin.title %></a>
-                                <% } else { %>
-                                    <%= pin.title %>
-                                <% } %>
-                                (<%= country %>, <%= region1 %>, <%= region2 %>, <%= city %>)
-                            </li>
+                                <td>
+                                    <% if (pin.pinType == 'source') { %>
+                                        <%- include('../partials/linkToSource', {
+                                            source: pin,
+                                            showGroup: false,
+                                        }) %>
+                                    <% } else if (pin.pinType == 'event') { %>
+                                        <a href="/event/<%= pin._id %>"><%= pin.title %></a>
+                                    <% } else { %>
+                                        <%= pin.title %>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <%- include('../format/date', { params: {
+                                        date: pin.date,
+                                    }}) %>
+                                </td>
+                                <td>
+                                    <%- include('../format/location', { params: {
+                                        location: pin.location,
+                                    }}) %>
+                                </td>
+                                <td>
+                                    <%- include('../partials/peopleList', { params: {
+                                        people: pin.people,
+                                        format: 'list',
+                                    }}) %>
+                                </td>
+                            </tr>
                         <% });%>
                     <% } %>
                 <% } %>
             <% } %>
         <% } %>
-    </ul>
+    </table>
 </div>
 
 <script>
