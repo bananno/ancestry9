@@ -105,13 +105,11 @@ function makeEventsIndexRoute(showNew) {
       if (err) {
         return console.error(err);
       } else {
-        res.format({
-          html: function() {
-            res.render('events/index', {
-              events: events,
-              showNew: showNew,
-            });
-          }
+        res.render('layout', {
+          view: 'events/index',
+          title: 'All Events',
+          events: events,
+          showNew: showNew,
         });
       }
     });

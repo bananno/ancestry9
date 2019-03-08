@@ -1,24 +1,16 @@
-<%- include ../partials/header %>
+<h1>All Events</h1>
 
-<title>
-    Events | Lundberg Ancestry
-</title>
-
-<div id="content">
-    <h1>All Events</h1>
-
-    <% if (showNew) { %>
-        <%- include('../forms/newEvent', { params: {
-            actionPath: '/events/new',
-            cancelPath: '/events',
-        }}) %>
-    <% } else { %>
-        <p>
-            <a href="/events/new">+ Create Event</a>
-        </p>
-    <% } %>
-
-    <%- include('./eventList', { params: {
-        events: events,
+<% if (showNew) { %>
+    <%- include('../forms/newEvent', { params: {
+        actionPath: '/events/new',
+        cancelPath: '/events',
     }}) %>
-</div>
+<% } else { %>
+    <p>
+        <a href="/events/new">+ Create Event</a>
+    </p>
+<% } %>
+
+<%- include('./eventList', { params: {
+    events: events,
+}}) %>
