@@ -4,14 +4,20 @@
     <% if (person.parents.length) { %>
         <div class="family-list-block">
             <h3>parents</h3>
-            <%- include('../partials/peopleList', { people: person.parents }) %>
+            <%- include('../partials/peopleList', { params: {
+                people: person.parents,
+                format: 'bullet',
+            }}) %>
         </div>
     <% } %>
 
     <% if (siblings.length) { %>
         <div class="family-list-block">
             <h3>siblings</h3>
-            <%- include('../partials/peopleList', { people: siblings }) %>
+            <%- include('../partials/peopleList', { params: {
+                people: siblings,
+                format: 'bullet',
+            }}) %>
         </div>
     <% } %>
 </div>
@@ -20,14 +26,20 @@
     <% if (person.spouses.length) { %>
         <div class="family-list-block">
             <h3>spouses</h3>
-            <%- include('../partials/peopleList', { people: person.spouses }) %>
+            <%- include('../partials/peopleList', { params: {
+                people: person.spouses,
+                format: 'bullet',
+            }}) %>
         </div>
     <% } %>
 
     <% if (person.children.length) { %>
         <div class="family-list-block">
             <h3>children</h3>
-            <%- include('../partials/peopleList', { people: person.children }) %>
+            <%- include('../partials/peopleList', { params: {
+                people: person.children,
+                format: 'bullet',
+            }}) %>
         </div>
     <% } %>
 </div>

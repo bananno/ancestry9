@@ -1,9 +1,9 @@
 <ul class="bullet-list">
-    <% for (var p = 0; p < people.length; p++) { %>
+    <% params.people.forEach(person => { %>
         <li>
             <%- include('../partials/linkToPerson', { params: {
-                person: people[p]
+                person: person,
             }}) %>
         </li>
-    <% } %>
+    <% }); %>
 </ul>
