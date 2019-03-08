@@ -28,11 +28,13 @@ var indexRouter = require('./routes/index');
 var personRouter = require('./routes/person');
 var eventRouter = require('./routes/event');
 var sourceRouter = require('./routes/source');
+var mapRouter = require('./routes/map');
 
 app.use('/', indexRouter);
 app.use('/person/', personRouter);
 app.use('/event/', eventRouter);
 app.use('/source/', sourceRouter);
+app.use('/map/', mapRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
