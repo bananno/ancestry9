@@ -12,7 +12,19 @@ function showMap(req, res, next) {
 
     const pins = {};
 
-    sources.concat(events).forEach(pin => {
+    const pinList = [];
+
+    sources.forEach(source => {
+      source.pinType = 'source';
+      pinList.push(source);
+    });
+
+    events.forEach(event => {
+      event.pinType = 'event';
+      pinList.push(event);
+    });
+
+    pinList.forEach(pin => {
       const country = (pin.location || {}).country || 'Other';
       const region1 = (pin.location || {}).region1 || 'Other';
       const region2 = (pin.location || {}).region2 || 'Other';

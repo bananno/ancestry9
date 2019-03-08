@@ -13,6 +13,9 @@ ul {
 #location-list {
     width: 30%;
 }
+#show-pins {
+    width: 60%;
+}
 </style>
 
 <div id="location-list">
@@ -68,7 +71,16 @@ ul {
                         <% pins[country][region1][region2][city].forEach(pin => { %>
                             <li class="pin" country="<%= country %>" region1="<%= region1 %>"
                                     region2="<%= region2 %>" city="<%= city %>">
-                                <%= pin.title %>
+                                <% if (pin.pinType == 'source') { %>
+                                    <%- include('../partials/linkToSource', {
+                                        source: pin,
+                                        showGroup: false,
+                                    }) %>
+                                <% } else if (pin.pinType == 'event') { %>
+                                    <a href="/event/<%= pin._id %>"><%= pin.title %></a>
+                                <% } else { %>
+                                    <%= pin.title %>
+                                <% } %>
                                 (<%= country %>, <%= region1 %>, <%= region2 %>, <%= city %>)
                             </li>
                         <% });%>
