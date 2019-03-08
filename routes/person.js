@@ -154,7 +154,10 @@ function personEdit(req, res, next) {
     .find({})
     .exec((err, allPeople) => {
       var people = removePersonFromList(allPeople, person);
-      res.render('people/edit', {
+      res.render('layout', {
+        view: 'people/layout',
+        subview: 'edit',
+        title: person.name,
         paramPersonId: req.paramPersonId,
         personId: req.personId,
         person: person,
@@ -344,7 +347,10 @@ function personTimeline(req, res, next) {
         events = filterEvents(events, person);
         events = events.concat(sourceEvents);
         events = sortEvents(events);
-        res.render('people/timeline', {
+        res.render('layout', {
+          view: 'people/layout',
+          subview: 'timeline',
+          title: person.name,
           paramPersonId: req.paramPersonId,
           personId: req.personId,
           person: person,
@@ -427,18 +433,16 @@ function personRelatives(req, res) {
   .populate('spouses')
   .populate('children')
   .exec(function(err, people) {
-    var person = findPersonInList(people, req.personId);
-    var relativeList = getPersonRelativesList(people, person);
-
-    res.format({
-      html: function() {
-        res.render('people/relatives', {
-          paramPersonId: req.paramPersonId,
-          person: person,
-          people: people,
-          relativeList: relativeList,
-        });
-      }
+    const person = findPersonInList(people, req.personId);
+    const relativeList = getPersonRelativesList(people, person);
+    res.render('layout', {
+      view: 'people/layout',
+      subview: 'relatives',
+      title: person.name,
+      paramPersonId: req.paramPersonId,
+      person: person,
+      people: people,
+      relativeList: relativeList,
     });
   });
 }
@@ -457,7 +461,10 @@ function personConnection(req, res) {
     var ancestorList = [];
 
     if (person._id == compare._id) {
-      res.render('people/connection', {
+      res.render('layout', {
+        view: 'people/layout',
+        subview: 'connection',
+        title: person.name,
         paramPersonId: req.paramPersonId,
         person: person,
         compare: compare,
@@ -475,7 +482,10 @@ function personConnection(req, res) {
       if (isSamePerson(person.children[0], compare)) {
         ancestorList.push(person);
         ancestorList.push(compare);
-        res.render('people/connection', {
+        res.render('layout', {
+          view: 'people/layout',
+          subview: 'connection',
+          title: person.name,
           paramPersonId: req.paramPersonId,
           person: person,
           compare: compare,
@@ -488,7 +498,10 @@ function personConnection(req, res) {
       }
     }
 
-    res.render('people/connection', {
+    res.render('layout', {
+      view: 'people/layout',
+      subview: 'connection',
+      title: person.name,
       paramPersonId: req.paramPersonId,
       person: person,
       compare: compare,

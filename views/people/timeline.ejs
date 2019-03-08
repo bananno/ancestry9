@@ -1,7 +1,6 @@
-<%- include ../partials/header %>
 <%
-    var rootPath = "/person/" + paramPersonId;
-    var addEventPath = rootPath + "/add/events";
+    const rootPath = '/person/' + paramPersonId;
+    const addEventPath = rootPath + '/add/events';
 %>
 
 <script>
@@ -18,23 +17,17 @@
     }
 </style>
 
-<div id="page-content">
-    <%- include('../people/personHeader', { params: {
-        person: person,
+<p id="toggle-new-event-link">
+    <span class="clickable-link main-link" onClick="toggleNew(true)">+ Add Event</span>
+</p>
+
+<div id="toggle-new-event-form">
+    <%- include('../forms/newEvent', { params: {
+        actionPath: addEventPath,
     }}) %>
-
-    <p id="toggle-new-event-link">
-        <span class="clickable-link main-link" onClick="toggleNew(true)">+ Add Event</span>
-    </p>
-
-    <div id="toggle-new-event-form">
-        <%- include('../forms/newEvent', { params: {
-            actionPath: addEventPath,
-        }}) %>
-        <span class="clickable-link" onClick="toggleNew(false)">cancel</span>
-    </div>
-
-    <%- include('../events/eventList', { params: {
-        events: events,
-    }}) %>
+    <span class="clickable-link" onClick="toggleNew(false)">cancel</span>
 </div>
+
+<%- include('../events/eventList', { params: {
+    events: events,
+}}) %>

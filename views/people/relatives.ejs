@@ -4,72 +4,64 @@
     }
 </style>
 
-<%- include ../partials/header %>
-
 <%
-    var previousRelationship = '';
+    let previousRelationship;
 %>
 
-<div id="page-content">
-    <%- include('../people/personHeader', { params: {
-        person: person,
-    }}) %>
-
-    <div class="filter-buttons" filter="relative-list">
-        <div class="filter-button active" filter-set="ancestor">
-            ancestors
-        </div>
-        <div class="filter-button active" filter-set="descendent">
-            descendents
-        </div>
-        <div class="filter-button active" filter-set="blood">
-            blood relatives
-        </div>
-        <div class="filter-button active" filter-set="marriage">
-            marriage relatives
-        </div>
-        <div class="filter-button active" filter-set="none">
-            no relationship
-        </div>
+<div class="filter-buttons" filter="relative-list">
+    <div class="filter-button active" filter-set="ancestor">
+        ancestors
     </div>
-
-    <table class="info-table relative-list">
-        <tr>
-            <th> relationship </th>
-            <th> person </th>
-            <th> generation </th>
-            <th> distance </th>
-        </tr>
-
-        <% relativeList.forEach(obj => { %>
-            <%
-                var thisRelationship = '';
-
-                if (obj.relationship != previousRelationship) {
-                    thisRelationship = obj.relationship;
-                    previousRelationship = obj.relationship;
-                }
-
-            %>
-            <tr class="person-row" filter="relative-list" filter-set="<%= obj.type %>">
-                <td>
-                    <%= thisRelationship %>
-                </td>
-                <td>
-                    <%- include('../partials/linkToPerson', { params: {
-                        person: obj.person
-                    }}) %>
-                </td>
-                <td>
-                    <%= obj.generation %>
-                </td>
-                <td>
-                    <%= obj.distance %>
-                </td>
-            </tr>
-        <% }); %>
-    </table>
+    <div class="filter-button active" filter-set="descendent">
+        descendents
+    </div>
+    <div class="filter-button active" filter-set="blood">
+        blood relatives
+    </div>
+    <div class="filter-button active" filter-set="marriage">
+        marriage relatives
+    </div>
+    <div class="filter-button active" filter-set="none">
+        no relationship
+    </div>
 </div>
+
+<table class="info-table relative-list">
+    <tr>
+        <th> relationship </th>
+        <th> person </th>
+        <th> generation </th>
+        <th> distance </th>
+    </tr>
+
+    <% relativeList.forEach(obj => { %>
+        <%
+            let thisRelationship = '';
+
+            if (obj.relationship != previousRelationship) {
+                thisRelationship = obj.relationship;
+                previousRelationship = obj.relationship;
+            }
+
+        %>
+        <tr class="person-row" filter="relative-list" filter-set="<%= obj.type %>">
+            <td>
+                <%= thisRelationship %>
+            </td>
+            <td>
+                <%- include('../partials/linkToPerson', { params: {
+                    person: obj.person
+                }}) %>
+            </td>
+            <td>
+                <%= obj.generation %>
+            </td>
+            <td>
+                <%= obj.distance %>
+            </td>
+        </tr>
+    <% }); %>
+</table>
 
 <script>
     createToggleFilter('relative-list');

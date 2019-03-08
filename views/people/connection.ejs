@@ -1,30 +1,20 @@
-<%- include ../partials/header %>
-<% var rootPath = "/person/" + paramPersonId; %>
+<h2>Connection</h2>
 
-<div id="page-content">
-    <%- include('../people/personHeader', { params: {
-        person: person,
-    }}) %>
-
-    <h2>Connection</h2>
-
-    <% if (isSame) { %>
-        <p>
-            Same person.
-        </p>
-    <% } else if (isAncestor) { %>
-        <p>
-            Ancestor.
-        </p>
-        <% ancestorList.forEach(thisPerson => { %>
-            <div class="treecell">
-                <div>
-                    <%- include('../partials/linkToPerson', { params: {
-                        person: thisPerson
-                    }}) %>
-                </div>
+<% if (isSame) { %>
+    <p>
+        Same person.
+    </p>
+<% } else if (isAncestor) { %>
+    <p>
+        Ancestor.
+    </p>
+    <% ancestorList.forEach(thisPerson => { %>
+        <div class="treecell">
+            <div>
+                <%- include('../partials/linkToPerson', { params: {
+                    person: thisPerson
+                }}) %>
             </div>
-        <% }); %>
-    <% } %>
-
-</div>
+        </div>
+    <% }); %>
+<% } %>
