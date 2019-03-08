@@ -63,15 +63,10 @@
                 }}) %>
             </td>
             <td>
-                <ul>
-                    <% for (var p = 0; p < event.people.length; p++) { %>
-                        <li>
-                            <%- include('../partials/linkToPerson', { params: {
-                                person: event.people[p]
-                            }}) %>
-                        </li>
-                    <% } %>
-                </ul>
+                <%- include('../partials/peopleList', { params: {
+                    people: event.people,
+                    format: 'list',
+                }}) %>
             </td>
             <td style="max-width: 400px;">
                 <%= event.notes %>

@@ -59,6 +59,11 @@ ul.bullet-list li {
     padding: 3px;
 }
 
+ul.no-bullet-list {
+    list-style: none;
+    margin-left: 0;
+}
+
 /* OTHER */
 
 #main_navigation {
