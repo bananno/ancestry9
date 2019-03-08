@@ -4,38 +4,63 @@
 ul {
     margin-left: 30px;
 }
+#location-list, #show-pins {
+    display: inline-block;
+    width: 45%;
+    vertical-align: text-top;
+}
 </style>
 
-<ul class="map-list-country">
-    <% for (let country in pins) { %>
-        <li onClick="showPlace('country', '<%= country %>')">
-            <%= country %>
-            <ul class="map-list-region1">
-                <% for (let region1 in pins[country]) { %>
-                    <li>
-                        <%= region1 %>
-                        <ul class="map-list-region2">
-                            <% for (let region2 in pins[country][region1]) { %>
-                                <li>
-                                    <%= region2 %>
-                                    <ul class="map-list-city">
-                                        <% for (let city in pins[country][region1][region2]) { %>
-                                            <li>
-                                                <%= city %>
-                                                <% pins[country][region1][region2][city].forEach(pin => { %>
-                                                <% });%>
-                                            </li>
-                                        <% } %>
-                                    </ul>
-                                </li>
-                            <% } %>
-                        </ul>
-                    </li>
+<div id="location-list">
+    <ul class="map-list-country">
+        <% for (let country in pins) { %>
+            <li onClick="showPlace('country', '<%= country %>')">
+                <%= country %>
+                <ul class="map-list-region1">
+                    <% for (let region1 in pins[country]) { %>
+                        <li>
+                            <%= region1 %>
+                            <ul class="map-list-region2">
+                                <% for (let region2 in pins[country][region1]) { %>
+                                    <li>
+                                        <%= region2 %>
+                                        <ul class="map-list-city">
+                                            <% for (let city in pins[country][region1][region2]) { %>
+                                                <li>
+                                                    <%= city %>
+                                                    <% pins[country][region1][region2][city].forEach(pin => { %>
+                                                    <% });%>
+                                                </li>
+                                            <% } %>
+                                        </ul>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </li>
+                    <% } %>
+                </ul>
+            </li>
+        <% } %>
+    </ul>
+</div>
+
+<div id="show-pins">
+    <ul>
+        <% for (let country in pins) { %>
+            <% for (let region1 in pins[country]) { %>
+                <% for (let region2 in pins[country][region1]) { %>
+                    <% for (let city in pins[country][region1][region2]) { %>
+                        <% pins[country][region1][region2][city].forEach(pin => { %>
+                            <li>
+                                <%= pin.title %>
+                            </li>
+                        <% });%>
+                    <% } %>
                 <% } %>
-            </ul>
-        </li>
-    <% } %>
-</ul>
+            <% } %>
+        <% } %>
+    </ul>
+</div>
 
 <script>
     function showPlace(level, name) {
