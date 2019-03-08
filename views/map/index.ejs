@@ -6,13 +6,22 @@ ul {
 }
 #location-list, #show-pins {
     display: inline-block;
-    width: 45%;
     vertical-align: text-top;
+    height: 85%;
+    overflow: scroll;
+}
+#location-list {
+    width: 30%;
 }
 </style>
 
 <div id="location-list">
     <ul class="map-list-country">
+        <li>
+            <span onClick="showPlace()">
+                show all
+            </span>
+        </li>
         <% for (let country in pins) { %>
             <li>
                 <span onClick="showPlace('<%= country %>')">
@@ -87,7 +96,11 @@ ul {
             selector += '[city="' + city + '"]';
         }
 
-        $('.pin').hide();
-        $('.pin').filter(selector).show();
+        if (selector) {
+            $('.pin').hide();
+            $('.pin').filter(selector).show();
+        } else {
+            $('.pin').show();
+        }
     }
 </script>
