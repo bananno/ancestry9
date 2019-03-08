@@ -1,68 +1,64 @@
-<%- include ../partials/header %>
-
 <%
-    var rootPath = '/event/' + event._id;
+    const rootPath = '/event/' + event._id;
 %>
 
-<div id="page-content">
-    <h1><%= event.title %></h1>
+<h1><%= event.title %></h1>
 
-    <table class="edit-form-frame">
+<table class="edit-form-frame">
 
-        <!-- TITLE -->
+    <!-- TITLE -->
 
-        <%- include('../forms/tableRowSingle', { params: {
-            attr: 'title',
-            editPath: rootPath + '/edit/title',
-            originalValue: event.title,
-        }}) %>
+    <%- include('../forms/tableRowSingle', { params: {
+        attr: 'title',
+        editPath: rootPath + '/edit/title',
+        originalValue: event.title,
+    }}) %>
 
-        <!-- DATE -->
+    <!-- DATE -->
 
-        <%- include('../forms/tableRowRoute', { params: {
-            attr: 'date',
-            rootEditPath: rootPath,
-            editPath: rootPath + '/edit/date',
-            originalValue: event.date,
-        }}) %>
+    <%- include('../forms/tableRowRoute', { params: {
+        attr: 'date',
+        rootEditPath: rootPath,
+        editPath: rootPath + '/edit/date',
+        originalValue: event.date,
+    }}) %>
 
-        <!-- LOCATION -->
+    <!-- LOCATION -->
 
-        <%- include('../forms/tableRowRoute', { params: {
-            attr: 'location',
-            rootEditPath: rootPath,
-            editPath: rootPath + '/edit/location',
-            originalValue: event.location,
-        }}) %>
+    <%- include('../forms/tableRowRoute', { params: {
+        attr: 'location',
+        rootEditPath: rootPath,
+        editPath: rootPath + '/edit/location',
+        originalValue: event.location,
+    }}) %>
 
-        <!-- PEOPLE -->
+    <!-- PEOPLE -->
 
-        <%- include('../forms/tableRowMulti', { params: {
-            attr: 'people',
-            rootPath: rootPath,
-            values: event.people,
-        }}) %>
+    <%- include('../forms/tableRowMulti', { params: {
+        attr: 'people',
+        rootPath: rootPath,
+        values: event.people,
+    }}) %>
 
-        <!-- NOTES -->
+    <!-- NOTES -->
 
-        <%- include('../forms/tableRowSingle', { params: {
-            attr: 'notes',
-            editPath: rootPath + '/edit/notes',
-            originalValue: event.notes,
-        }}) %>
-    </table>
+    <%- include('../forms/tableRowSingle', { params: {
+        attr: 'notes',
+        editPath: rootPath + '/edit/notes',
+        originalValue: event.notes,
+    }}) %>
+</table>
 
-    <!-- DELETE EVENT -->
+<!-- DELETE EVENT -->
 
-    <% if (editField == 'none') { %>
-        <form action="<%= rootPath %>/delete" method="POST" onsubmit="return confirmDeletion('event')">
-            <p style="padding-top: 20px;">
-                <input type="hidden" value="PUT" name="_method">
-                <button type="submit" class="button-delete">delete event</button>
-            </p>
-        </form>
-    <% } %>
-</div>
+<% if (editField == 'none') { %>
+    <form action="<%= rootPath %>/delete" method="POST" onsubmit="return confirmDeletion('event')">
+        <p style="padding-top: 20px;">
+            <input type="hidden" value="PUT" name="_method">
+            <button type="submit" class="button-delete">delete event</button>
+        </p>
+    </form>
+<% } %>
 
 <script>
   initializeEditForm('<%= editField %>' != 'none');

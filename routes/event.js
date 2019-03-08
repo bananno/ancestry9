@@ -33,7 +33,9 @@ function makeRouteEditGet(editField) {
       mongoose.model('Person').find({}, function(err, people) {
         res.format({
           html: function() {
-            res.render('events/show', {
+            res.render('layout', {
+              view: 'events/show',
+              title: 'Edit Event',
               eventId: req.eventId,
               event: event,
               editField: editField,
