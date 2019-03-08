@@ -126,7 +126,7 @@ function personSummary(req, res, next) {
           citations = sortCitations(citations, 'item');
 
           res.render('layout', {
-            view: 'people/person/layout',
+            view: 'person/layout',
             subview: 'show',
             title: person.name,
             paramPersonId: req.paramPersonId,
@@ -155,7 +155,7 @@ function personEdit(req, res, next) {
     .exec((err, allPeople) => {
       var people = removePersonFromList(allPeople, person);
       res.render('layout', {
-        view: 'people/person/layout',
+        view: 'person/layout',
         subview: 'edit',
         title: person.name,
         paramPersonId: req.paramPersonId,
@@ -348,7 +348,7 @@ function personTimeline(req, res, next) {
         events = events.concat(sourceEvents);
         events = sortEvents(events);
         res.render('layout', {
-          view: 'people/person/layout',
+          view: 'person/layout',
           subview: 'timeline',
           title: person.name,
           paramPersonId: req.paramPersonId,
@@ -373,7 +373,7 @@ function personSources(req, res, ntext) {
       .exec(function(err, citations) {
         citations = sortCitations(citations, 'item');
         res.render('layout', {
-          view: 'people/person/layout',
+          view: 'person/layout',
           subview: 'sources',
           title: person.name,
           paramPersonId: req.paramPersonId,
@@ -411,7 +411,7 @@ function personNationality(req, res) {
       res.format({
         html: function() {
           res.render('layout', {
-            view: 'people/person/layout',
+            view: 'person/layout',
             subview: 'nationality',
             title: person.name,
             paramPersonId: req.paramPersonId,
@@ -436,7 +436,7 @@ function personRelatives(req, res) {
     const person = findPersonInList(people, req.personId);
     const relativeList = getPersonRelativesList(people, person);
     res.render('layout', {
-      view: 'people/person/layout',
+      view: 'person/layout',
       subview: 'relatives',
       title: person.name,
       paramPersonId: req.paramPersonId,
@@ -462,7 +462,7 @@ function personConnection(req, res) {
 
     if (person._id == compare._id) {
       res.render('layout', {
-        view: 'people/person/layout',
+        view: 'person/layout',
         subview: 'connection',
         title: person.name,
         paramPersonId: req.paramPersonId,
@@ -483,7 +483,7 @@ function personConnection(req, res) {
         ancestorList.push(person);
         ancestorList.push(compare);
         res.render('layout', {
-          view: 'people/person/layout',
+          view: 'person/layout',
           subview: 'connection',
           title: person.name,
           paramPersonId: req.paramPersonId,
@@ -499,7 +499,7 @@ function personConnection(req, res) {
     }
 
     res.render('layout', {
-      view: 'people/person/layout',
+      view: 'person/layout',
       subview: 'connection',
       title: person.name,
       paramPersonId: req.paramPersonId,
@@ -613,7 +613,7 @@ function personChecklist(req, res) {
         }
 
         res.render('layout', {
-          view: 'people/person/layout',
+          view: 'person/layout',
           subview: 'checklist',
           title: person.name,
           paramPersonId: req.paramPersonId,
