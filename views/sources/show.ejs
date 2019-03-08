@@ -26,7 +26,10 @@
 
     <h2>people</h2>
 
-    <%- include('../partials/peopleList', { people: source.people }) %>
+    <%- include('../partials/peopleList', { params: {
+        people: source.people,
+        format: 'bullet',
+    }}) %>
 
     <h2>links</h2>
 
