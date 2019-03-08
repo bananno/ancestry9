@@ -9,11 +9,23 @@ function showMap(req, res, next) {
     if (error) {
       return next(error);
     }
+
+    const pins = {};
+
+    sources.concat(events).forEach(pin => {
+      const country = (pin.location || {}).country || 'Other';
+
+      pins[country] = pins[country] || [];
+
+      pins[country].push(pin);
+    });
+
     res.render('layout', {
       view: 'map/index',
       title: 'Map',
       events: events,
       sources: sources,
+      pins: pins,
     });
   });
 }
