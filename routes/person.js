@@ -66,9 +66,11 @@ function convertParamPersonId() {
             });
           } else if (personWithId.length > 1) {
             console.log('Found more than one person with ID "' + paramPersonId + '".');
-            res.render('people/duplicateIDs', {
+            res.render('layout', {
+              view: 'people/duplicateIDs',
+              title: paramPersonId,
               personId: paramPersonId,
-              people: personWithId
+              people: personWithId,
             });
           } else {
             req.personId = personWithId[0]._id;
