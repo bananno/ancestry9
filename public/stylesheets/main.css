@@ -1,277 +1,277 @@
 * {
-    padding: 0px;
-    margin: 0px;
-    font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 body {
-    background: url("/images/leaves.png");
-    background-position: right -5;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-color: #eaf7ff;
+  background: url("/images/leaves.png");
+  background-position: right -5;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-color: #eaf7ff;
 }
 
 table {
-    border-collapse: collapse;
+  border-collapse: collapse;
 }
 
 #page-content {
-    margin: 15px 100px;
+  margin: 15px 100px;
 }
 
 /* LINKS */
 
 a, .clickable-link {
-    color: #00B7FF;
-    text-decoration: underline;
+  color: #00B7FF;
+  text-decoration: underline;
 }
 
 a:hover, .clickable-link:hover {
-    text-decoration: none;
-    cursor: pointer;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .main-link {
-    display: inline-block;
-    margin: 10px;
+  display: inline-block;
+  margin: 10px;
 }
 
 /* PRIMARY ELEMENTS */
 
 button {
-    padding: 5px;
-    margin: 2px;
-    cursor: pointer;
+  padding: 5px;
+  margin: 2px;
+  cursor: pointer;
 }
 
 h1, h2, h3 {
-    margin: 10px 0px;
+  margin: 10px 0px;
 }
 
 /* REUSABLE */
 
 ul.bullet-list {
-    margin-left: 25px;
+  margin-left: 25px;
 }
 
 ul.bullet-list li {
-    padding: 3px;
+  padding: 3px;
 }
 
 ul.no-bullet-list {
-    list-style: none;
-    margin-left: 0;
+  list-style: none;
+  margin-left: 0;
 }
 
 /* OTHER */
 
 #main_navigation {
-    list-style: none;
+  list-style: none;
 }
 
 #main_navigation li {
-    display: inline-block;
-    margin: 2px 5px;
+  display: inline-block;
+  margin: 2px 5px;
 }
 
 .edit-form-frame td {
-    border: 1px solid black;
-    padding: 3px;
-    max-width: 400px;
+  border: 1px solid black;
+  padding: 3px;
+  max-width: 400px;
 }
 
 .edit-form-frame img {
-    max-width: 300px;
+  max-width: 300px;
 }
 
 #content {
-    padding: 15px;
+  padding: 15px;
 }
 
 .list_of_items {
-    list-style: none;
+  list-style: none;
 }
 
 .list_of_items li {
-    padding: 2px;
+  padding: 2px;
 }
 
 #create_person_box {
-    display: inline-block;
-    padding: 10px;
-    min-height: 80px;
+  display: inline-block;
+  padding: 10px;
+  min-height: 80px;
 }
 
 .citation_list th {
-    border: 2px solid #bbb;
+  border: 2px solid #bbb;
 }
 
 .citation_list tr td:first-child {
-    border-left: 1px solid #bbb;
+  border-left: 1px solid #bbb;
 }
 
 .citation_list tr td:last-child {
-    border-right: 1px solid #bbb;
+  border-right: 1px solid #bbb;
 }
 
 .citation_list th, .citation_list td {
-    padding: 5px 10px;
+  padding: 5px 10px;
 }
 
 .citation_list tr:last-child td {
-    border-bottom: 1px solid #bbb;
+  border-bottom: 1px solid #bbb;
 }
 
 .citation_cell {
-    border-top: 1px solid #bbb;
-    border-bottom: 1px solid #bbb;
+  border-top: 1px solid #bbb;
+  border-bottom: 1px solid #bbb;
 }
 
 .citation_item {
-    border-top: 1px solid #bbb;
+  border-top: 1px solid #bbb;
 }
 
 .citation_item_repeat {
-    color: transparent;
-    border-color: red;
+  color: transparent;
+  border-color: red;
 }
 
 .event_list th, .event_list td {
-    padding: 5px 10px;
-    border: 1px solid black;
+  padding: 5px 10px;
+  border: 1px solid black;
 }
 
 .event_list ul {
-    list-style: none;
+  list-style: none;
 }
 
 .text-content {
-    max-width: 700px;
-    margin: 10px 0px;
+  max-width: 700px;
+  margin: 10px 0px;
 }
 
 .source-item-box {
-    border: 1px solid black;
-    border-radius: 5px;
-    margin: 10px;
-    padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 10px;
+  padding: 10px;
 }
 
 .source-item-box p {
-    padding: 5px;
+  padding: 5px;
 }
 
 .content-table th, .content-table td {
-    border: 1px solid black;
-    padding: 4px;
-    font-size: 12px;
+  border: 1px solid black;
+  padding: 4px;
+  font-size: 12px;
 }
 
 .content-textarea {
-    height: 300px;
-    width: 500px;
+  height: 300px;
+  width: 500px;
 }
 
 #event-list-filters {
-    padding: 5px;
+  padding: 5px;
 }
 
 .filter-buttons .filter-button {
-    display: inline-block;
-    border: 1px solid #aaa;
-    border-radius: 3px;
-    padding: 5px;
-    cursor: pointer;
+  display: inline-block;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 5px;
+  cursor: pointer;
 }
 
 .filter-buttons .filter-button.active {
-    background-color: #ddd;
+  background-color: #ddd;
 }
 
 #event-list-filters div {
-    display: inline-block;
-    border: 1px solid #aaa;
-    border-radius: 3px;
-    padding: 5px;
-    cursor: pointer;
+  display: inline-block;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 5px;
+  cursor: pointer;
 }
 
 #event-list-filters div.active {
-    background-color: #ddd;
+  background-color: #ddd;
 }
 
 .event_list th,
 .event_list tr.event-row-personal td,
 .event_list tr.event-row-census td {
-    background-color: #d1ecfc;
+  background-color: #d1ecfc;
 }
 
 .family-list-block {
-    padding: 10px;
-    vertical-align: text-top;
-    width: 300px;
-    display: inline-block;
+  padding: 10px;
+  vertical-align: text-top;
+  width: 300px;
+  display: inline-block;
 }
 
 .family-list-block ul {
-    margin-left: 25px;
+  margin-left: 25px;
 }
 
 .person-navigation {
-    list-style: none;
+  list-style: none;
 }
 
 .person-navigation li {
-    display: inline-block;
-    margin: 10px;
+  display: inline-block;
+  margin: 10px;
 }
 
 .scrollbox {
-    width: 100%;
-    overflow: scroll;
+  width: 100%;
+  overflow: scroll;
 }
 
 img.checkmark-inline {
-    height: 20px;
+  height: 20px;
 }
 
 .checklist .checkmark {
-    width: 30px;
+  width: 30px;
 }
 
 .checklist .checkmark img {
-    height: 20px;
+  height: 20px;
 }
 
 .checklist-item div {
-    display: inline-block;
-    vertical-align: text-top;
+  display: inline-block;
+  vertical-align: text-top;
 }
 
 .checklist-item {
-    margin-left: 20px;
-    margin-top: 5px;
+  margin-left: 20px;
+  margin-top: 5px;
 }
 
 .column {
-    display: inline-block;
-    margin-right: 10px;
-    vertical-align: text-top;
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: text-top;
 }
 
 .profile-picture {
-    max-height: 100px;
+  max-height: 100px;
 }
 
 .info-table {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .info-table th,
 .info-table td {
-    border: 1px solid black;
-    padding: 3px;
+  border: 1px solid black;
+  padding: 3px;
 }
 
 .value-edit,
@@ -280,5 +280,5 @@ img.checkmark-inline {
 .link-cancel,
 .button-submit,
 .link-start {
-    display: none;
+  display: none;
 }

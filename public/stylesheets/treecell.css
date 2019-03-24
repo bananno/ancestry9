@@ -1,40 +1,40 @@
 .treecell div {
-    border: 1px solid black;
-    padding: 5px;
-    margin: 2px;
-    text-align: center;
+  border: 1px solid black;
+  padding: 5px;
+  margin: 2px;
+  text-align: center;
 }
 
 .treecell a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 /* NATIONALITY */
 
 .treecell.first-generation div,
 .treecell.dead-end div {
-    border-width: 2px;
-    font-weight: bold;
+  border-width: 2px;
+  font-weight: bold;
 }
 
 /* COLORS BY NATIONALITY */
 
 .treecell.unknown div {
-    background-color: #efefef;
+  background-color: #efefef;
 }
 
 .treecell.first-generation div {
-    background-color: #bce6ff;
+  background-color: #bce6ff;
 }
 
 .treecell.old-country div {
-    background-color: #dbf1ff;
+  background-color: #dbf1ff;
 }
 
 .treecell.dead-end div {
-    background-color: #ffc9c9;
+  background-color: #ffc9c9;
 }
 
 .treecell.usa div {
-    background-color: white;
+  background-color: white;
 }
