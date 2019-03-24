@@ -1,111 +1,112 @@
-<%- include ../partials/header %>
-
 <%
-    var rootPath = '/sources';
-    var newSourcePath = rootPath + '/new';
-    var showAllTypes = subView == 'none' || subView == 'new';
+    const rootPath = '/sources';
+    const newSourcePath = rootPath + '/new';
+    const showAllTypes = subView == 'none' || subView == 'new';
+
+    const showTableType = showAllTypes;
+    const showTableGroup = subView != 'photos';
+    const showTableDate = subView != 'graves';
+    const headerRowTitles = [];
+
+    if (showTableType) {
+        headerRowTitles.push('type');
+    }
+
+    if (showTableGroup) {
+        if (subView == 'graves') {
+            headerRowTitles.push('cemetery');
+        } else if (subView == 'newspapers') {
+            headerRowTitles.push('paper');
+        } else {
+            headerRowTitles.push('group');
+        }
+    }
+
+    headerRowTitles.push(title);
+
+    if (showTableDate) {
+        headerRowTitles.push('date');
+    }
+
+    headerRowTitles.push('location');
 %>
 
-<title>
-    <% if (showNew) { %>
-        New Source | Lundberg Ancestry
-    <% } else {%> | Lundberg Ancestry
-        Sources
-    <% } %>
-</title>
+<h1>Sources</h1>
 
-<div id="page-content">
-    <h1>Sources</h1>
+<% if (showNew) { %>
+    <%- include('../forms/newSource', {
+        actionPath: newSourcePath,
+        cancelPath: rootPath,
+    }) %>
+<% } else { %>
+    <p>
+        <a href="/sources/new" class="main-link">+ New Source</a>
+    </p>
+<% } %>
 
-    <% if (showNew) { %>
-        <%- include('../forms/newSource', { actionPath: newSourcePath, cancelPath: rootPath }) %>
-    <% } else { %>
-        <p>
-            <a href="/sources/new" class="main-link">+ New Source</a>
-        </p>
-    <% } %>
+<ul class="bullet-list">
+    <li>
+        <a href="/sources">all</a>
+    </li>
+    <% mainSourceTypes.forEach(sourceType => { %>
+        <%
+            let sourceTypeText = sourceType;
 
-    <ul class="bullet-list">
+            if (sourceType == 'index') {
+                sourceTypeText = 'web index';
+            }
+        %>
         <li>
-            <a href="/sources">all</a>
+            <a href="/sources/<%= sourceType %>"><%= sourceTypeText %></a>
         </li>
-        <% mainSourceTypes.forEach(sourceType => { %>
-            <%
-                var sourceTypeText = sourceType;
-                if (sourceType == 'index') {
-                    sourceTypeText = 'web index';
-                }
-            %>
-            <li>
-                <a href="/sources/<%= sourceType %>"><%= sourceTypeText %></a>
-            </li>
+    <% }); %>
+</ul>
+
+<% if (!showAllTypes) { %>
+    <h2><%= subView %></h2>
+<% } %>
+
+<table class="info-table">
+    <tr>
+        <% headerRowTitles.forEach(str => { %>
+            <th><%= str %></th>
         <% }); %>
-    </ul>
+    </tr>
 
-    <% if (!showAllTypes) { %>
-        <h2><%= subView %></h2>
-    <% } %>
-
-    <%
-        var showTableType = showAllTypes;
-        var showTableGroup = subView != 'photos';
-        var showTableDate = subView != 'graves';
-
-        var groupLabel = 'group';
-        if (subView == 'graves') {
-            groupLabel = 'cemetery';
-        } else if (subView == 'newspapers') {
-            groupLabel = 'paper';
-        }
-    %>
-
-    <table class="info-table">
+    <% sources.forEach(source => { %>
         <tr>
             <% if (showTableType) { %>
-                <th>type</th>
-            <% } %>
-            <% if (showTableGroup) { %>
-                <th><%= groupLabel %></th>
-            <% } %>
-            <th>title</th>
-            <% if (showTableDate) { %>
-                <th>date</th>
-            <% } %>
-            <th>location</th>
-        </tr>
-
-        <% for (var i = 0; i < sources.length; i++) { %>
-            <% var source = sources[i]; %>
-            <tr>
-                <% if (showTableType) { %>
-                    <td>
-                        <%= source.type %>
-                    </td>
-                <% } %>
-                <% if (showTableGroup) { %>
-                    <td>
-                        <%= source.group %>
-                    </td>
-                <% } %>
                 <td>
-                    <%- include('../partials/linkToSource', {
-                        source: source,
-                        showGroup: false,
-                    }) %>
+                    <%= source.type %>
                 </td>
-                <% if (showTableDate) { %>
-                    <td>
-                        <%- include('../format/date', { params: {
-                            date: source.date,
-                        }}) %>
-                    </td>
-                <% } %>
+            <% } %>
+
+            <% if (showTableGroup) { %>
                 <td>
-                    <%- include('../format/location', { params: {
-                        location: source.location,
+                    <%= source.group %>
+                </td>
+            <% } %>
+
+            <td>
+                <%- include('../partials/linkToSource', {
+                    source: source,
+                    showGroup: false,
+                }) %>
+            </td>
+
+            <% if (showTableDate) { %>
+                <td>
+                    <%- include('../format/date', { params: {
+                        date: source.date,
                     }}) %>
                 </td>
-            </tr>
-        <% } %>
-    </table>
-</div>
+            <% } %>
+
+            <td>
+                <%- include('../format/location', { params: {
+                    location: source.location,
+                }}) %>
+            </td>
+        </tr>
+    <% }); %>
+</table>
