@@ -6,13 +6,31 @@ body {
   background-color: #eaf7ff;
 }
 
+#page-header {
+  background-color: black;
+  padding: 10px 20px;
+}
+
 #main-navigation {
   list-style: none;
 }
 
 #main-navigation li {
+  margin-left: 10px;
   display: inline-block;
   margin: 2px 5px;
+  border-bottom: 3px solid black;
+}
+
+#main-navigation li:hover {
+  cursor: pointer;
+  border-color: green;
+}
+
+#main-navigation a {
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
 }
 
 #page-content {
