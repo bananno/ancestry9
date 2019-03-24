@@ -31,7 +31,7 @@ router.post('/events/new', createNewEvent);
 
 // SOURCES - INDEX + NEW
 
-var mainSourceTypes = ['documents', 'index', 'graves', 'newspapers', 'photos', 'articles', 'other'];
+const mainSourceTypes = ['documents', 'index', 'graves', 'newspapers', 'photos', 'articles', 'other'];
 
 router.get('/sources', makeSourcesIndexRoute('none'));
 router.get('/sources/new', makeSourcesIndexRoute('new'));
@@ -137,27 +137,26 @@ function createNewEvent(req, res) {
 }
 
 function makeSourcesIndexRoute(subView) {
-  return function(req, res, next) {
+  return (req, res, next) => {
     mongoose.model('Source')
     .find({})
     .populate('people')
-    .exec(function (err, sources) {
+    .exec((err, sources) => {
       if (err) {
         return console.error(err);
-      } else {
-        sources = filterSourcesByType(sources, subView);
-        sources = sortSources(sources, 'group');
-        res.format({
-          html: function() {
-            res.render('sources/index', {
-              sources: sources,
-              subView: subView,
-              showNew: subView == 'new',
-              mainSourceTypes: mainSourceTypes,
-            });
-          }
-        });
       }
+
+      sources = filterSourcesByType(sources, subView);
+      sources = sortSources(sources, 'group');
+
+      res.render('layout', {
+        view: 'sources/index',
+        title: subView == 'new' ? 'New Source' : 'Sources',
+        sources: sources,
+        subView: subView,
+        showNew: subView === 'new',
+        mainSourceTypes: mainSourceTypes,
+      });
     });
   };
 }
