@@ -51,13 +51,12 @@ function sourceShow(req, res) {
     .find({ source: source })
     .populate('person')
     .exec(function(err, citations) {
-      res.format({
-        html: function() {
-          res.render('sources/show', {
-            source: source,
-            citations: citations,
-          });
-        }
+      res.render('layout', {
+        view: 'sources/layout',
+        subview: 'show',
+        title: source.group + ' - ' + source.title,
+        source: source,
+        citations: citations,
       });
     });
   });

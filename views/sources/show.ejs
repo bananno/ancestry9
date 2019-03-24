@@ -1,87 +1,80 @@
-<%- include ../partials/header %>
+<%
+    const rootPath = '/source/' + source._id;
+%>
 
-<% var rootPath = '/source/' + source._id; %>
+<h2>date</h2>
 
-<div id="page-content">
-    <%- include('./sourceHeader', { params: {
-        source: source,
-        view: 'show',
+<p>
+    <%- include('../format/date', { params: {
+        date: source.date,
     }}) %>
+</p>
 
-    <h2>date</h2>
+<h2>location</h2>
+
+<p>
+    <%- include('../format/location', {  params: {
+        location: source.location,
+    }}) %>
+</p>
+
+<h2>people</h2>
+
+<%- include('../partials/peopleList', { params: {
+    people: source.people,
+    format: 'bullet',
+}}) %>
+
+<h2>links</h2>
+
+<ul class="bullet-list">
+    <% source.links.forEach(linkUrl => { %>
+        <li>
+            <%- include('../format/externalLink', { url: linkUrl }) %>
+        </li>
+    <% }); %>
+</ul>
+
+<% if (source.images.length) { %>
+    <h2>images</h2>
 
     <p>
-        <%- include('../format/date', { params: {
-            date: source.date,
-        }}) %>
+        <% source.images.forEach(imageUrl => { %>
+            <a href="<%= imageUrl %>" target="_blank"><img
+                src="<%= imageUrl %>" style="max-height: 100px; max-width: 800px;"></a>
+        <% }); %>
     </p>
+<% } %>
 
-    <h2>location</h2>
-
-    <p>
-        <%- include('../format/location', {  params: {
-            location: source.location,
-        }}) %>
-    </p>
-
-    <h2>people</h2>
-
-    <%- include('../partials/peopleList', { params: {
-        people: source.people,
-        format: 'bullet',
-    }}) %>
-
-    <h2>links</h2>
+<% if (source.notes) { %>
+    <%
+        const notesList = source.notes.split('\n');
+    %>
+    <h2>notes</h2>
 
     <ul class="bullet-list">
-        <% for (var i = 0; i < source.links.length; i++) { %>
-            <li>
-                <%- include('../format/externalLink', { url: source.links[i] }) %>
+        <% notesList.forEach(note => { %>
+            <li style="max-width: 600px;">
+                <%= note %>
             </li>
-        <% } %>
+        <% }); %>
     </ul>
+<% } %>
 
-    <% if (source.images.length) { %>
-        <h2>images</h2>
+<h2>content</h2>
 
-        <p>
-            <% for (var j = 0; j < source.images.length; j++) { %>
-                <a href="<%= source.images[j] %>" target="_blank"><img
-                    src="<%= source.images[j] %>" height="100"></a>
-            <% } %>
-        </p>
-    <% } %>
+<%- include('../format/content', {
+    content: source.content,
+    limit: false,
+}) %>
 
-    <% if (source.notes) { %>
-        <%
-            var notesList = source.notes.split('\n');
-        %>
-        <h2>notes</h2>
+<h2>citations</h2>
 
-        <ul class="bullet-list">
-            <% for (var i = 0; i < notesList.length; i++) { %>
-                <li style="max-width: 600px;">
-                    <%= notesList[i] %>
-                </li>
-            <% } %>
-        </ul>
-    <% } %>
-
-    <h2>content</h2>
-
-    <%- include('../format/content', {
-        content: source.content,
-        limit: false,
-    }) %>
-
-    <h2>citations</h2>
-
-    <%- include('../partials/citationList', {
-        citations: citations,
-        showDelete: false,
-        showSource: false,
-        showPerson: true,
-        rootPath: rootPath,
-        groupBy: 'person',
-    }) %>
-</div>
+<%- include('../partials/citationList', {
+    citations: citations,
+    showDelete: false,
+    showSource: false,
+    showPerson: true,
+    rootPath: rootPath,
+    groupBy: 'person',
+}) %>
