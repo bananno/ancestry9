@@ -1,3 +1,18 @@
+<h2>Sharing</h2>
+
+<div>
+    <% if (person.sharing.level == 2) { %>
+        <img class="checkmark-inline" src="/images/check-true.png"> everything
+    <% } else if (person.sharing.level == 1) { %>
+        <img class="checkmark-inline" src="/images/check-false.png"> restricted
+        <% if (person.sharing.name && person.sharing.name != person.name) { %>
+            (name: "<%= person.sharing.name %>")
+        <% } %>
+    <% } else { %>
+        <img class="checkmark-inline" src="/images/check-false.png"> none
+    <% } %>
+</div>
+
 <h2>Family</h2>
 
 <div>
