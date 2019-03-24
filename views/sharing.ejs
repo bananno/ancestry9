@@ -3,7 +3,8 @@
 </title>
 
 <div id="content">
-    const people = [<br>
+    const DATABASE = {};<br><br>
+    DATABASE.people = [<br>
 
     <% people.forEach((person, i) => { %>
         <span>
@@ -13,7 +14,7 @@
 
     ];<br><br>
 
-    const events = [<br>
+    DATABASE.events = [<br>
 
     <% events.forEach((event, i) => { %>
         <span>
@@ -23,8 +24,5 @@
 
     ];<br><br>
 
-    module.exports = {<br>
-    &#160;&#160;people: people,<br>
-    &#160;&#160;events: events,<br>
-    };<br>
+    module.exports = DATABASE;<br>
 </div>
