@@ -85,15 +85,14 @@ function makeRouteEditGet(editField) {
 
           people = [].concat(source.people).concat(people);
 
-          res.format({
-            html: function() {
-              res.render('sources/edit', {
-                source: source,
-                editField: editField,
-                people: people,
-                citations: citations,
-              });
-            }
+          res.render('layout', {
+            view: 'sources/layout',
+            subview: 'edit',
+            title: 'Edit Source',
+            source: source,
+            editField: editField,
+            people: people,
+            citations: citations,
           });
         });
       });

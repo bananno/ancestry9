@@ -1,186 +1,177 @@
-<%- include ../partials/header %>
-
 <%
-    var rootPath = '/source/' + source._id;
-    var rootEditPath = '/source/' + source._id + '/edit';
+    const rootPath = '/source/' + source._id;
+    const rootEditPath = '/source/' + source._id + '/edit';
 %>
 
-<div id="page-content">
-    <%- include('./sourceHeader', { params: {
-        source: source,
-        view: 'edit',
+<table class="edit-form-frame">
+
+    <!-- TYPE -->
+
+    <%- include('../forms/tableRowSingle', { params: {
+        attr: 'type',
+        editPath: rootEditPath + '/type',
+        originalValue: source.type,
     }}) %>
 
-    <table class="edit-form-frame">
+    <!-- GROUP -->
 
-        <!-- TYPE -->
+    <%- include('../forms/tableRowSingle', { params: {
+        attr: 'group',
+        editPath: rootEditPath + '/group',
+        originalValue: source.group,
+    }}) %>
 
-        <%- include('../forms/tableRowSingle', { params: {
-            attr: 'type',
-            editPath: rootEditPath + '/type',
-            originalValue: source.type,
-        }}) %>
+    <!-- TITLE -->
 
-        <!-- GROUP -->
+    <%- include('../forms/tableRowSingle', { params: {
+        attr: 'title',
+        editPath: rootEditPath + '/title',
+        originalValue: source.title,
+    }}) %>
 
-        <%- include('../forms/tableRowSingle', { params: {
-            attr: 'group',
-            editPath: rootEditPath + '/group',
-            originalValue: source.group,
-        }}) %>
+    <!-- DATE -->
 
-        <!-- TITLE -->
+    <%- include('../forms/tableRowRoute', { params: {
+        attr: 'date',
+        rootEditPath: rootEditPath,
+        originalValue: source.date,
+    }}) %>
 
-        <%- include('../forms/tableRowSingle', { params: {
-            attr: 'title',
-            editPath: rootEditPath + '/title',
-            originalValue: source.title,
-        }}) %>
+    <!-- LOCATION -->
 
-        <!-- DATE -->
+    <%- include('../forms/tableRowRoute', { params: {
+        attr: 'location',
+        rootEditPath: rootEditPath,
+        originalValue: source.location,
+    }}) %>
 
-        <%- include('../forms/tableRowRoute', { params: {
-            attr: 'date',
-            rootEditPath: rootEditPath,
-            originalValue: source.date,
-        }}) %>
+    <!-- PEOPLE -->
 
-        <!-- LOCATION -->
-
-        <%- include('../forms/tableRowRoute', { params: {
-            attr: 'location',
-            rootEditPath: rootEditPath,
-            originalValue: source.location,
-        }}) %>
-
-        <!-- PEOPLE -->
-
-        <%- include('../forms/tableRowMulti', { params: {
-            attr: 'people',
-            rootPath: rootPath,
-            values: source.people,
-        }}) %>
-
-        <!-- LINKS -->
-
-        <%- include('../forms/tableRowMulti', { params: {
-            attr: 'links',
-            rootPath: rootPath,
-            values: source.links,
-        }}) %>
-
-        <!-- IMAGES -->
-
-        <%- include('../forms/tableRowMulti', { params: {
-            attr: 'images',
-            rootPath: rootPath,
-            values: source.images,
-        }}) %>
-
-        <!-- NOTES -->
-
-        <%- include('../forms/tableRowSingle', { params: {
-            attr: 'notes',
-            editPath: rootEditPath + '/notes',
-            originalValue: source.notes,
-            fieldType: 'textarea',
-        }}) %>
-    </table>
-
-    <!-- CONTENT -->
-
-    <%
-        var editContentPath = rootEditPath + '/content';
-    %>
-
-    <h2>Content</h2>
-
-    <% if (editField == 'none') { %>
-        <p>
-            <a href="<%= editContentPath %>" class="link-start">edit</a>
-        </p>
-    <% } %>
-
-    <form action="<%= editContentPath %>" method="POST">
-        <% if (editField == 'content') { %>
-            <textarea name="content" class="content-textarea"><%= source.content %></textarea>
-            <input type="hidden" value="PUT" name="_method">
-            <button type="submit">save</button>
-            <a href="<%= rootEditPath %>">cancel</a>
-        <% } else { %>
-            <%- include('../format/content', {
-                content: source.content,
-                limit: false,
-            }) %>
-        <% } %>
-    </form>
-
-    <h2>Citations</h2>
-
-    <%
-        var addCitationPath = rootPath + '/add/citations';
-        var deleteCitationPath = rootPath + '/delete/citations';
-
-        var defaultPerson = null;
-
-        if (source.people.length == 1) {
-            defaultPerson = source.people[0];
-        }
-    %>
-
-    <% if (editField == 'citations') { %>
-        <form action="<%= addCitationPath %>" method="POST">
-            <table>
-                <tr>
-                    <td>
-                        <b>person</b>
-                    </td>
-                    <td>
-                        <%- include('../forms/personDropdown', { params: {
-                            name: 'person',
-                            selected: defaultPerson,
-                        }}) %>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>item</b>
-                    </td>
-                    <td>
-                        <input type="text" name="item" placeholder="e.g., birth - place">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>information</b>
-                    </td>
-                    <td>
-                        <input type="text" name="information" placeholder="e.g., 1880">
-                    </td>
-                </tr>
-            </table>
-            <p>
-                <button type="submit">create</button>
-            </p>
-        </form>
-        <p>
-            <a href="<%= rootEditPath %>">cancel</a>
-        </p>
-    <% } else if (editField == 'none') { %>
-        <p>
-            <a href="<%= addCitationPath %>" class="main-link link-start">+ Add Citation</a>
-        </p>
-    <% } %>
-
-    <%- include('../partials/citationList', {
-        citations: citations,
-        showDelete: true,
-        showSource: false,
-        showPerson: true,
+    <%- include('../forms/tableRowMulti', { params: {
+        attr: 'people',
         rootPath: rootPath,
-        groupBy: 'person',
-    }) %>
-</div>
+        values: source.people,
+    }}) %>
+
+    <!-- LINKS -->
+
+    <%- include('../forms/tableRowMulti', { params: {
+        attr: 'links',
+        rootPath: rootPath,
+        values: source.links,
+    }}) %>
+
+    <!-- IMAGES -->
+
+    <%- include('../forms/tableRowMulti', { params: {
+        attr: 'images',
+        rootPath: rootPath,
+        values: source.images,
+    }}) %>
+
+    <!-- NOTES -->
+
+    <%- include('../forms/tableRowSingle', { params: {
+        attr: 'notes',
+        editPath: rootEditPath + '/notes',
+        originalValue: source.notes,
+        fieldType: 'textarea',
+    }}) %>
+</table>
+
+<!-- CONTENT -->
+
+<%
+    var editContentPath = rootEditPath + '/content';
+%>
+
+<h2>Content</h2>
+
+<% if (editField == 'none') { %>
+    <p>
+        <a href="<%= editContentPath %>" class="link-start">edit</a>
+    </p>
+<% } %>
+
+<form action="<%= editContentPath %>" method="POST">
+    <% if (editField == 'content') { %>
+        <textarea name="content" class="content-textarea"><%= source.content %></textarea>
+        <input type="hidden" value="PUT" name="_method">
+        <button type="submit">save</button>
+        <a href="<%= rootEditPath %>">cancel</a>
+    <% } else { %>
+        <%- include('../format/content', {
+            content: source.content,
+            limit: false,
+        }) %>
+    <% } %>
+</form>
+
+<h2>Citations</h2>
+
+<%
+    var addCitationPath = rootPath + '/add/citations';
+    var deleteCitationPath = rootPath + '/delete/citations';
+
+    var defaultPerson = null;
+
+    if (source.people.length == 1) {
+        defaultPerson = source.people[0];
+    }
+%>
+
+<% if (editField == 'citations') { %>
+    <form action="<%= addCitationPath %>" method="POST">
+        <table>
+            <tr>
+                <td>
+                    <b>person</b>
+                </td>
+                <td>
+                    <%- include('../forms/personDropdown', { params: {
+                        name: 'person',
+                        selected: defaultPerson,
+                    }}) %>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>item</b>
+                </td>
+                <td>
+                    <input type="text" name="item" placeholder="e.g., birth - place">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>information</b>
+                </td>
+                <td>
+                    <input type="text" name="information" placeholder="e.g., 1880">
+                </td>
+            </tr>
+        </table>
+        <p>
+            <button type="submit">create</button>
+        </p>
+    </form>
+    <p>
+        <a href="<%= rootEditPath %>">cancel</a>
+    </p>
+<% } else if (editField == 'none') { %>
+    <p>
+        <a href="<%= addCitationPath %>" class="main-link link-start">+ Add Citation</a>
+    </p>
+<% } %>
+
+<%- include('../partials/citationList', {
+    citations: citations,
+    showDelete: true,
+    showSource: false,
+    showPerson: true,
+    rootPath: rootPath,
+    groupBy: 'person',
+}) %>
 
 <script>
   initializeEditForm('<%= editField %>' != 'none');

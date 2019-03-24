@@ -1,0 +1,31 @@
+<%
+    const rootPath = '/source/' + source._id;
+%>
+
+<title>
+    <%= source.group %> - <%= source.title %> | Lundberg Ancestry
+</title>
+
+<div class="column">
+    <img src="/images/source-document.ico" class="profile-picture">
+</div>
+
+<div class="column">
+    <h1>
+        <%= source.group %><br>
+        <%= source.title %>
+    </h1>
+
+    <% if (view == 'show') { %>
+        <p>
+            <a href="<%= rootPath %>/edit" class="main-link">edit source</a>
+            <a href="/source-group/<%= source._id %>" class="main-link">view group</a>
+        </p>
+    <% } else { %>
+        <p>
+            <a href="<%= rootPath %>" class="main-link">done</a>
+        </p>
+    <% } %>
+</div>
+
+<%- include('./' + subview) %>
