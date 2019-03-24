@@ -1,6 +1,7 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/treecell.css">
 
     <script src="/vendor/jquery.3.3.1.min.js"></script>
@@ -20,16 +21,18 @@
     </title>
 </head>
 <body>
-    <ul id="main_navigation">
-        <li><a href="/">Home</a></li>
-        <li><a href="/person/AnnaPeterson">Anna</a></li>
-        <li><a href="/allPeople">All People</a></li>
-        <li><a href="/events">All Events</a></li>
-        <li><a href="/sources">All Sources</a></li>
-        <li><a href="/map">Map</a></li>
-        <li><a href="/sharing">Sharing</a></li>
-        <li><a href="/database">Database</a></li>
-    </ul>
+    <div id="page-header">
+        <ul id="main-navigation">
+            <li><a href="/">Home</a></li>
+            <li><a href="/person/AnnaPeterson">Anna</a></li>
+            <li><a href="/allPeople">All People</a></li>
+            <li><a href="/events">All Events</a></li>
+            <li><a href="/sources">All Sources</a></li>
+            <li><a href="/map">Map</a></li>
+            <li><a href="/sharing">Sharing</a></li>
+            <li><a href="/database">Database</a></li>
+        </ul>
+    </div>
 
     <div id="page-content">
         <%- include('./' + view) %>

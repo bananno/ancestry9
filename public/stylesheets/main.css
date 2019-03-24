@@ -4,20 +4,8 @@
   font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-body {
-  background: url("/images/leaves.png");
-  background-position: right -5;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-color: #eaf7ff;
-}
-
 table {
   border-collapse: collapse;
-}
-
-#page-content {
-  margin: 15px 100px;
 }
 
 /* LINKS */
@@ -66,15 +54,6 @@ ul.no-bullet-list {
 
 /* OTHER */
 
-#main_navigation {
-  list-style: none;
-}
-
-#main_navigation li {
-  display: inline-block;
-  margin: 2px 5px;
-}
-
 .edit-form-frame td {
   border: 1px solid black;
   padding: 3px;
@@ -83,10 +62,6 @@ ul.no-bullet-list {
 
 .edit-form-frame img {
   max-width: 300px;
-}
-
-#content {
-  padding: 15px;
 }
 
 .list_of_items {

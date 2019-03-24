@@ -1,0 +1,20 @@
+body {
+  background: url(/images/leaves.png);
+  background-position: right 0;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-color: #eaf7ff;
+}
+
+#main-navigation {
+  list-style: none;
+}
+
+#main-navigation li {
+  display: inline-block;
+  margin: 2px 5px;
+}
+
+#page-content {
+  margin: 15px 100px;
+}
