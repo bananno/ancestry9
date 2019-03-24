@@ -1,115 +1,104 @@
-<%- include ../partials/header %>
 <%
-    var previousSourceType = '';
+    const previousSourceType = '';
 %>
 
-<title>
-    <%= rootSource.group %> | Lundberg Ancestry
-</title>
+<h1>
+    <%= rootSource.group %>
+</h1>
 
-<div id="page-content">
-    <h1>
-        <%= rootSource.group %>
-    </h1>
-
-    <% if (rootSource.type == 'grave') { %>
-        <p>
-            <%- include('../format/location', { params: {
-                location: rootSource.location,
-            }}) %>
-        </p>
-    <% } else { %>
-        <p>
-            (<%= rootSource.type %> group)
-        </p>
-        <div class="filter-buttons" filter="source-details">
-            <div class="filter-button active" filter-set="content">
-                content
-            </div>
+<% if (rootSource.type == 'grave') { %>
+    <p>
+        <%- include('../format/location', { params: {
+            location: rootSource.location,
+        }}) %>
+    </p>
+<% } else { %>
+    <p>
+        (<%= rootSource.type %> group)
+    </p>
+    <div class="filter-buttons" filter="source-details">
+        <div class="filter-button active" filter-set="content">
+            content
         </div>
-    <% }%>
+    </div>
+<% }%>
 
-    <% for (var i = 0; i < sources.length; i++) { %>
-        <%
-            var source = sources[i];
-        %>
-
-        <div class="source-item-box">
-            <div class="column" style="width: 450px;">
-                <p>
-                    <a href="/source/<%= source._id %>"><%= source.group %>
-                    <% if (source.group && source.title) { %>
-                        -
-                    <% } %>
-                    <%= source.title %></a>
-                </p>
-
-                <% if (source.images.length) { %>
-                    <p>
-                        <% for (var j = 0; j < source.images.length; j++) { %>
-                            <a href="<%= source.images[j] %>" target="_blank"><img
-                                src="<%= source.images[j] %>" height="100"></a>
-                        <% } %>
-                    </p>
+<% sources.forEach(source => { %>
+    <div class="source-item-box">
+        <div class="column" style="width: 450px;">
+            <p>
+                <a href="/source/<%= source._id %>"><%= source.group %>
+                <% if (source.group && source.title) { %>
+                    -
                 <% } %>
+                <%= source.title %></a>
+            </p>
 
+            <% if (source.images.length) { %>
                 <p>
-                    <%- include('../format/date', { params: {
-                        date: source.date,
-                        format: 'long',
-                    }}) %>
+                    <% source.images.forEach(imageUrl => { %>
+                        <a href="<%= imageUrl %>" target="_blank"><img
+                            src="<%= imageUrl %>" style="max-height: 100px; max-width: 100%;"></a>
+                    <% }); %>
                 </p>
+            <% } %>
 
-                <p>
-                    <%- include('../format/location', { params: {
-                        location: source.location,
-                    }}) %>
-                </p>
-
-                <h3>people</h3>
-
-                <%- include('../partials/peopleList', { params: {
-                    people: source.people,
-                    format: 'bullet',
+            <p>
+                <%- include('../format/date', { params: {
+                    date: source.date,
+                    format: 'long',
                 }}) %>
+            </p>
 
-                <h3>links</h3>
+            <p>
+                <%- include('../format/location', { params: {
+                    location: source.location,
+                }}) %>
+            </p>
+
+            <h3>people</h3>
+
+            <%- include('../partials/peopleList', { params: {
+                people: source.people,
+                format: 'bullet',
+            }}) %>
+
+            <h3>links</h3>
+
+            <ul class="bullet-list">
+                <% source.links.forEach(url => { %>
+                    <li>
+                        <%- include('../format/externalLink', { url: url }) %>
+                    </li>
+                <% }); %>
+            </ul>
+
+            <% if (source.notes) { %>
+                <%
+                    const notesList = source.notes.split('\n');
+                %>
+                <h3>notes</h3>
 
                 <ul class="bullet-list">
-                    <% source.links.forEach(url => { %>
-                        <li>
-                            <%- include('../format/externalLink', { url: url }) %>
+                    <% notesList.forEach(str => { %>
+                        <li style="max-width: 600px;">
+                            <%= str %>
                         </li>
                     <% }); %>
                 </ul>
-
-                <% if (source.notes) { %>
-                    <%
-                        var notesList = source.notes.split('\n');
-                    %>
-                    <h3>notes</h3>
-
-                    <ul class="bullet-list">
-                        <% notesList.forEach(str => { %>
-                            <li style="max-width: 600px;">
-                                <%= str %>
-                            </li>
-                        <% }); %>
-                    </ul>
-                <% } %>
-            </div>
-
-            <div class="column" style="max-width: 600px;" filter="source-details" filter-set="content">
-                <h3>content</h3>
-
-                <%- include('../format/content', {
-                    content: source.content,
-                    limit: false,
-                }) %>
-            </div>
+            <% } %>
         </div>
-    <% } %>
-</div>
+
+        <div class="column" style="max-width: 600px;" filter="source-details" filter-set="content">
+            <h3>content</h3>
+
+            <%- include('../format/content', {
+                content: source.content,
+                limit: false,
+            }) %>
+        </div>
+    </div>
+<% }); %>
 
 <script>
     createToggleFilter('source-details');

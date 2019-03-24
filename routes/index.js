@@ -280,22 +280,20 @@ function showDatabase(req, res) {
 }
 
 function getSourceGroup(req, res, next) {
-  var sourceId = req.params.sourceId;
+  const sourceId = req.params.sourceId;
   mongoose.model('Source')
   .findById(sourceId)
-  .exec(function(err, rootSource) {
+  .exec((err, rootSource) => {
     mongoose.model('Source')
     .find({ group: rootSource.group })
     .populate('people')
-    .exec(function(err, sources) {
+    .exec((err, sources) => {
       sources = sortSources(sources, 'date');
-      res.format({
-        html: function() {
-          res.render('sources/group', {
-            rootSource: rootSource,
-            sources: sources,
-          });
-        }
+      res.render('layout', {
+        view: 'sources/group',
+        title: rootSource.group,
+        rootSource: rootSource,
+        sources: sources,
       });
     });
   });
