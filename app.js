@@ -5,11 +5,11 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
-require('./model/db');
-require('./model/people');
-require('./model/events');
-require('./model/sources');
-require('./model/citations');
+require('./models/db');
+require('./models/person');
+require('./models/event');
+require('./models/source');
+require('./models/citation');
 
 const app = express();
 
