@@ -170,10 +170,10 @@ function personEdit(req, res, next) {
 }
 
 function makeRouteEditPost(editField, corresponding) {
-  return function(req, res) {
-    var person = req.person;
-    var updatedObj = {};
-    var newValue = req.body[editField];
+  return (req, res) => {
+    const person = req.person;
+    const updatedObj = {};
+    const newValue = req.body[editField];
 
     if (corresponding) {
       var newPersonId = newValue;
@@ -181,7 +181,7 @@ function makeRouteEditPost(editField, corresponding) {
       if (newPersonId != '0') {
         updatedObj[editField] = (person[editField] || []).concat(newPersonId);
 
-        mongoose.model('Person').findById(newPersonId, function(err, relative) {
+        mongoose.model('Person').findById(newPersonId, (err, relative) => {
           var updatedRelative = {};
           updatedRelative[corresponding] = relative[corresponding] || [];
           updatedRelative[corresponding].push(person.id);
@@ -197,7 +197,7 @@ function makeRouteEditPost(editField, corresponding) {
 
       newEvent.people.push(person);
 
-      mongoose.model('Event').create(newEvent, function() {});
+      mongoose.model('Event').create(newEvent, () => {});
     } else if (editField == 'links') {
       if (newValue != '') {
         updatedObj[editField] = (person[editField] || []).concat(newValue);
@@ -209,30 +209,26 @@ function makeRouteEditPost(editField, corresponding) {
       updatedObj[editField] = newValue;
     }
 
-    person.update(updatedObj, function(err) {
+    person.update(updatedObj, err => {
       if (err) {
-        res.send('There was a problem updating the information to the database: ' + err);
+        return res.send('There was a problem updating the information to the database: ' + err);
+      }
+
+      let redirectUrl = '/person/';
+
+      if (editField == 'customId') {
+        redirectUrl += newValue;
       } else {
-        var redirectUrl = '/person/';
+        redirectUrl += req.paramPersonId;
+      }
 
-        if (editField == 'customId') {
-          redirectUrl += newValue;
-        } else {
-          redirectUrl += req.paramPersonId;
-        }
+      if (editField == 'events') {
+        redirectUrl += '/timeline';
+      } else {
+        redirectUrl += '/edit';
+      }
 
-        if (editField == 'events') {
-          redirectUrl += '/timeline';
-        } else {
-          redirectUrl += '/edit';
-        }
-
-        res.format({
-          html: function() {
-            res.redirect(redirectUrl);
-          }
-        });
-       }
+      res.redirect(redirectUrl);
     });
   };
 }
