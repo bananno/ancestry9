@@ -216,11 +216,13 @@ const allFields = ['_id', 'parents', 'spouses', 'children'];
 const nonRestrictedFields = ['name', 'customId', 'links'];
 
 function shareDatabase(req, res) {
-  mongoose.model('Person').find({}, function(err, allPeople) {
-    mongoose.model('Source').find({}, function(err, sources) {
-      mongoose.model('Event').find({}, function(err, events) {
-        mongoose.model('Citation').find({}, function(err, citations) {
+  mongoose.model('Person').find({}, (err, allPeople) => {
+    mongoose.model('Source').find({}, (err, sources) => {
+      mongoose.model('Event').find({}, (err, events) => {
+        mongoose.model('Citation').find({}, (err, citations) => {
           events = sortEvents(events);
+
+          const tempPersonRef = {};
 
           let people = allPeople.map(thisPerson => {
             if (thisPerson.sharing.level == 0) {
@@ -242,12 +244,22 @@ function shareDatabase(req, res) {
               nonRestrictedFields.forEach(key => {
                 person[key] = thisPerson[key];
               });
+              tempPersonRef['' + person._id] = true;
             }
 
             return person;
           });
 
           people = people.filter(person => person != null);
+
+          events = events.map(event => {
+            event.people = event.people.filter(person => {
+              return tempPersonRef['' + person] !== undefined;
+            });
+            return event;
+          });
+
+          events = events.filter(event => event.people.length > 0);
 
           res.render('sharing', {
             people: people,
