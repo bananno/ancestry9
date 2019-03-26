@@ -23,6 +23,7 @@ router.get('/:personId/checklist', personChecklist);
 
 router.post('/:personId/edit/name', makeRouteEditPost('name'));
 router.post('/:personId/edit/id', makeRouteEditPost('customId'));
+router.post('/:personId/edit/profileImage', makeRouteEditPost('profileImage'));
 router.post('/:personId/edit/shareName', makeRouteEditPost('shareName'));
 router.post('/:personId/add/links', makeRouteEditPost('links'));
 router.post('/:personId/delete/links/:deleteId', makeRouteDelete('links'));

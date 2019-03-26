@@ -41,6 +41,15 @@
         }}) %>
     <% } %>
 
+    <!-- PROFILE IMAGE -->
+
+    <%- include('../forms/tableRowSingle', { params: {
+        attr: 'profileImage',
+        attrName: 'profile image',
+        editPath: rootEditPath + '/profileImage',
+        originalValue: person.profileImage,
+    }}) %>
+
     <!-- PARENTS -->
 
     <%- include('../forms/tableRowMulti', { params: {
