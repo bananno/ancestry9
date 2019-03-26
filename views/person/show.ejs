@@ -1,3 +1,15 @@
+<%
+    const linksList = person.links;
+
+    if (person.sharing.level == 2) {
+        linksList.push('https://ancestry.annacpeterson.com/?person/' + person.customId
+            + ' CustomSite');
+    } else if (person.sharing.level == 1) {
+        linksList.push('https://ancestry.annacpeterson.com/?person/' + person._id
+            + ' CustomSite');
+    }
+%>
+
 <h2>Sharing</h2>
 
 <div>
@@ -59,14 +71,14 @@
     <% } %>
 </div>
 
-<% if (person.links.length) { %>
+<% if (linksList.length) { %>
     <h2>Links</h2>
     <ul class="bullet-list">
-        <% for (var i = 0; i < person.links.length; i++) { %>
+        <% linksList.forEach(linkUrl => { %>
             <li>
-                <%- include('../format/externalLink', { url: person.links[i] }) %>
+                <%- include('../format/externalLink', { url: linkUrl }) %>
             </li>
-        <% } %>
+        <% }); %>
     </ul>
 <% } %>
 
