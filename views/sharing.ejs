@@ -24,5 +24,15 @@
 
     ];<br><br>
 
+    DATABASE.sources = [<br>
+
+    <% sources.forEach((source, i) => { %>
+        <span>
+            &#160;&#160;<%= JSON.stringify(source) %><%= i < sources.length - 1 ? ',' : '' %>
+        </span><br>
+    <% }); %>
+
+    ];<br><br>
+
     module.exports = DATABASE;<br>
 </div>

@@ -217,7 +217,7 @@ const nonRestrictedFields = ['name', 'customId', 'links', 'profileImage'];
 
 function shareDatabase(req, res) {
   mongoose.model('Person').find({}, (err, allPeople) => {
-    mongoose.model('Source').find({}, (err, sources) => {
+    mongoose.model('Source').find({ sharing: true }, (err, sources) => {
       mongoose.model('Event').find({}, (err, events) => {
         mongoose.model('Citation').find({}, (err, citations) => {
           events = sortEvents(events);
