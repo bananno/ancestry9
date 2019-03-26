@@ -1,12 +1,15 @@
-var mongoose = require('mongoose');
-var dateStructure = require('./date.js');
-var locationStructure = require('./location.js');
+const mongoose = require('mongoose');
+const dateStructure = require('./date.js');
+const locationStructure = require('./location.js');
 
-var eventSchema = new mongoose.Schema({
+const eventSchema = new mongoose.Schema({
   title: String,
   date: dateStructure,
   location: locationStructure,
-  people: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
+  people: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Person',
+  }],
   notes: String,
 });
 

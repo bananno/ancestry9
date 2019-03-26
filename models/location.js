@@ -1,4 +1,3 @@
-
 module.exports = {
   country: String,
   region1: String, // province or state

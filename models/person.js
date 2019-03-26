@@ -1,11 +1,20 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var personSchema = new mongoose.Schema({
+const personSchema = new mongoose.Schema({
   name: String,
   customId: String,
-  parents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
-  spouses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
-  children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Person' }],
+  parents: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Person',
+  }],
+  spouses: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Person',
+  }],
+  children: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Person',
+  }],
   links: [String],
   sharing: {
     level: { type: Number, default: 0 },
