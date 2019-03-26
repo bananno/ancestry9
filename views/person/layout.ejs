@@ -1,9 +1,10 @@
 <%
     const rootPath = '/person/' + paramPersonId;
+    const profileImage = person.profileImage || '/images/generic-profile-picture.png';
 %>
 
 <div class="column">
-    <img src="/images/generic-profile-picture.png" class="profile-picture">
+    <img src="<%= profileImage %>" class="profile-picture">
 </div>
 
 <div class="column">
