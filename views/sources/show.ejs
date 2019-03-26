@@ -2,6 +2,16 @@
     const rootPath = '/source/' + source._id;
 %>
 
+<h2>sharing</h2>
+
+<p>
+    <% if (source.sharing) { %>
+        <img class="checkmark-inline" src="/images/check-true.png"> yes
+    <% } else { %>
+        <img class="checkmark-inline" src="/images/check-false.png"> no
+    <% } %>
+</p>
+
 <h2>date</h2>
 
 <p>
