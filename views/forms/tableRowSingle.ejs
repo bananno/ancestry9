@@ -28,15 +28,25 @@
                             <li><%= str %></li>
                         <% }); %>
                     </ul>
-                <% } else if (attr == 'shareLevel') { %>
-                    <% if (originalValue == 2) { %>
-                        <img class="checkmark-inline" src="/images/check-true.png"> everything
-                    <% } else if (originalValue == 1) { %>
-                        <img class="checkmark-inline" src="/images/check-false.png"> restricted
-                    <% } else { %>
-                        <img class="checkmark-inline" src="/images/check-false.png"> none
-                    <% } %>
-                    (<%= originalValue %>)
+                <% } else if (attr == 'sharing' || attr == 'shareLevel') { %>
+                    <%
+                        let imageValue = originalValue === 2 || originalValue === true;
+                        let shareText = '';
+
+                        if (originalValue === 2) {
+                            shareText = 'everything (2)';
+                        } else if (originalValue === 1) {
+                            shareText = 'restricted (1)';
+                        } else if (originalValue === 0) {
+                            shareText = 'none (0)';
+                        } else if (originalValue === true) {
+                            shareText = 'yes';
+                        } else {
+                            shareText = 'no';
+                        }
+                    %>
+                    <img class="checkmark-inline" src="/images/check-<%= imageValue %>.png">
+                    <%= shareText %>
                 <% } else { %>
                     <%= originalValue %>
                 <% } %>
