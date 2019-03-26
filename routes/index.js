@@ -213,7 +213,7 @@ function createNewSource(req, res) {
 }
 
 const allFields = ['_id', 'parents', 'spouses', 'children'];
-const nonRestrictedFields = ['name', 'customId', 'links'];
+const nonRestrictedFields = ['name', 'customId', 'links', 'profileImage'];
 
 function shareDatabase(req, res) {
   mongoose.model('Person').find({}, (err, allPeople) => {
