@@ -22,6 +22,7 @@ makeSourcesRoutes('images', true);
 makeSourcesRoutes('content');
 makeSourcesRoutes('notes');
 makeSourcesRoutes('citations', true);
+makeSourcesRoutes('sharing');
 
 module.exports = router;
 
@@ -132,6 +133,8 @@ function makeRouteEditPost(editField) {
         }
 
         mongoose.model('Citation').create(newItem, () => { });
+      } else if (editField === 'sharing') {
+        updatedObj.sharing = !(source.sharing || false);
       } else {
         updatedObj[editField] = req.body[editField];
       }

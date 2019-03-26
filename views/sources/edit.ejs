@@ -5,6 +5,15 @@
 
 <table class="edit-form-frame">
 
+    <!-- SHARING -->
+
+    <%- include('../forms/tableRowSingle', { params: {
+        attr: 'sharing',
+        editPath: rootEditPath + '/sharing',
+        originalValue: source.sharing,
+        toggle: true,
+    }}) %>
+
     <!-- TYPE -->
 
     <%- include('../forms/tableRowSingle', { params: {
