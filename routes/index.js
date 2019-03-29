@@ -219,7 +219,8 @@ function shareDatabase(req, res) {
   mongoose.model('Person').find({}, (err, allPeople) => {
     mongoose.model('Source').find({ sharing: true }, (err, sources) => {
       mongoose.model('Event').find({}, (err, events) => {
-        mongoose.model('Citation').find({}, (err, citations) => {
+        mongoose.model('Citation').find({}).populate('person').populate('source').exec((err, citations) => {
+
           events = sortEvents(events);
 
           const tempPersonRef = {};
@@ -260,6 +261,16 @@ function shareDatabase(req, res) {
           });
 
           events = events.filter(event => event.people.length > 0);
+
+          citations = citations.filter(citation => {
+            return citation.person.sharing.level == 2 && citation.source.sharing;
+          });
+
+          citations = citations.map(citation => {
+            citation.source = citation.source._id;
+            citation.person = citation.person._id;
+            return citation;
+          });
 
           res.render('sharing', {
             people: people,

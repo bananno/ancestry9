@@ -6,9 +6,9 @@
     const DATABASE = {};<br><br>
     DATABASE.people = [<br>
 
-    <% people.forEach((person, i) => { %>
+    <% people.forEach(person => { %>
         <span>
-            &#160;&#160;<%= JSON.stringify(person) %><%= i < people.length - 1 ? ',' : '' %>
+            &#160;&#160;<%= JSON.stringify(person) %>,
         </span><br>
     <% }); %>
 
@@ -16,9 +16,9 @@
 
     DATABASE.events = [<br>
 
-    <% events.forEach((event, i) => { %>
+    <% events.forEach(event => { %>
         <span>
-            &#160;&#160;<%= JSON.stringify(event) %><%= i < events.length - 1 ? ',' : '' %>
+            &#160;&#160;<%= JSON.stringify(event) %>,
         </span><br>
     <% }); %>
 
@@ -26,9 +26,19 @@
 
     DATABASE.sources = [<br>
 
-    <% sources.forEach((source, i) => { %>
+    <% sources.forEach(source => { %>
         <span>
-            &#160;&#160;<%= JSON.stringify(source) %><%= i < sources.length - 1 ? ',' : '' %>
+            &#160;&#160;<%= JSON.stringify(source) %>,
+        </span><br>
+    <% }); %>
+
+    ];<br><br>
+
+    DATABASE.citations = [<br>
+
+    <% citations.forEach(citation => { %>
+        <span>
+            &#160;&#160;<%= JSON.stringify(citation) %>,
         </span><br>
     <% }); %>
 
