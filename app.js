@@ -5,6 +5,11 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
+const routeFiles = [
+  'index',
+  'database',
+];
+
 require('./models/db');
 require('./models/person');
 require('./models/event');
@@ -29,7 +34,11 @@ const eventRouter = require('./routes/event');
 const sourceRouter = require('./routes/source');
 const mapRouter = require('./routes/map');
 
-app.use('/', indexRouter);
+routeFiles.forEach(filename => {
+  const router = require('./routes/' + filename);
+  app.use('/', router);
+});
+
 app.use('/person/', personRouter);
 app.use('/event/', eventRouter);
 app.use('/source/', sourceRouter);
