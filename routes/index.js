@@ -186,7 +186,7 @@ function filterSourcesByType(sources, type) {
 }
 
 function createNewSource(req, res) {
-  var newItem = {
+  const newItem = {
     type: req.body.type.trim(),
     group: req.body.group.trim(),
     title: req.body.title.trim(),
@@ -196,19 +196,14 @@ function createNewSource(req, res) {
   newItem.location = getLocationValues(req);
 
   if (newItem.title == '') {
-    return;
+    return res.send('Title is required.');
   }
 
-  mongoose.model('Source').create(newItem, function(err, source) {
+  mongoose.model('Source').create(newItem, (err, source) => {
     if (err) {
-      res.send('There was a problem adding the information to the database.');
-    } else {
-      res.format({
-        html: function() {
-          res.redirect('/source/' + source._id + '/edit');
-        }
-      });
+      return res.send('There was a problem adding the information to the database.');
     }
+    res.redirect('/source/' + source._id + '/edit');
   });
 }
 
