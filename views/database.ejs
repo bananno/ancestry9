@@ -1,6 +1,5 @@
 <%
-    var personStrItems = ['_id', 'customId', 'name'];
-    var personArrItems = ['parents', 'spouses', 'children'];
+    const databaseParts = ['people', 'sources', 'events', 'citations'];
 %>
 
 <title>
@@ -8,38 +7,22 @@
 </title>
 
 <div id="page-content">
-    <h1>var database = {</h1>
+    <h1>const database = {</h1>
 
-    <h2>"people": {</h2>
+    <% databaseParts.forEach((attr, i) => { %>
+        <h2>
+            <% if (i > 0) { %>
+                },
+            <% } %>
+            "<%= attr %>": {
+        </h2>
 
-    <% people.forEach((person, i) => { %>
-        <span>
-            "<%= person._id %>": <%= JSON.stringify(person) %><%= i < people.length - 1 ? ',' : '' %>
-        </span><br>
-    <% }); %>
-
-    <h2>}, "sources": {</h2>
-
-    <% sources.forEach((source, i) => { %>
-        <span>
-            "<%= source._id %>": <%= JSON.stringify(source) %><%= i < sources.length - 1 ? ',' : '' %>
-        </span><br>
-    <% }); %>
-
-    <h2>}, "events": {</h2>
-
-    <% events.forEach((event, i) => { %>
-        <span>
-            "<%= event._id %>": <%= JSON.stringify(event) %><%= i < events.length - 1 ? ',' : '' %>
-        </span><br>
-    <% }); %>
-
-    <h2>}, "citations": {</h2>
-
-    <% citations.forEach((citation, i) => { %>
-        <span>
-            "<%= citation._id %>": <%= JSON.stringify(citation) %><%= i < citations.length - 1 ? ',' : '' %>
-        </span><br>
+        <% locals[attr].forEach((obj, j) => { %>
+            <span>
+                "<%= obj._id %>":
+                <%= JSON.stringify(obj) %><%= j < locals[attr].length - 1 ? ',' : '' %>
+            </span><br>
+        <% }); %>
     <% }); %>
 
     <h2>}</h2>
