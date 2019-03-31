@@ -80,6 +80,14 @@ function compareItems(item1, item2, information1, information2) {
     if (item2 == citationItemOrder[i] + ' - place') {
       return true;
     }
+
+    if (item1.match(citationItemOrder[i])) {
+      return false;
+    }
+
+    if (item2.match(citationItemOrder[i])) {
+      return true;
+    }
   }
 
   return item1 > item2;
