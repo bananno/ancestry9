@@ -1,5 +1,11 @@
 <%
     const rootPath = '/source/' + source._id;
+
+    const linksList = source.links;
+
+    if (source.sharing) {
+        linksList.push('https://ancestry.annacpeterson.com/?source/' + source._id + ' CustomSite');
+    }
 %>
 
 <h2>sharing</h2>
@@ -35,15 +41,16 @@
     format: 'bullet',
 }}) %>
 
-<h2>links</h2>
-
-<ul class="bullet-list">
-    <% source.links.forEach(linkUrl => { %>
-        <li>
-            <%- include('../format/externalLink', { url: linkUrl }) %>
-        </li>
-    <% }); %>
-</ul>
+<% if (linksList.length) { %>
+    <h2>Links</h2>
+    <ul class="bullet-list">
+        <% linksList.forEach(linkUrl => { %>
+            <li>
+                <%- include('../format/externalLink', { url: linkUrl }) %>
+            </li>
+        <% }); %>
+    </ul>
+<% } %>
 
 <% if (source.images.length) { %>
     <h2>images</h2>
