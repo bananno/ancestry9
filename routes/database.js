@@ -63,6 +63,32 @@ function showDatabaseForSharing(req, res) {
       return citation;
     });
 
+    data.places = {
+      list: [],
+      items: [],
+    };
+
+    [...data.events, ...data.sources].forEach(item => {
+      if (item.location == null) {
+        return;
+      }
+      const places = [item.location.country || 'other', item.location.region1 || 'other',
+        item.location.region2 || 'other', item.location.city || 'other'];
+
+      let tempObj = data.places;
+
+      for (let i = 0; i < 4; i++) {
+        if (tempObj[places[i]] == null) {
+          tempObj.list.push(places[i]);
+          tempObj[places[i]] = {
+            list: [],
+            items: [],
+          };
+        }
+        tempObj = tempObj[places[i]];
+      }
+    });
+
     res.render('sharing', data);
   });
 }
