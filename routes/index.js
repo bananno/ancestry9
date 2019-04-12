@@ -43,6 +43,10 @@ mainSourceTypes.forEach(sourceType => {
 
 router.get('/source-group/:sourceId', getSourceGroup);
 
+// TO-DO LIST
+
+router.get('/to-do', showToDoList);
+
 //
 
 module.exports = router;
@@ -219,5 +223,12 @@ function getSourceGroup(req, res, next) {
         sources: sources,
       });
     });
+  });
+}
+
+function showToDoList(req, res, next) {
+  res.render('layout', {
+    view: 'to-do',
+    title: 'To-do List',
   });
 }
