@@ -1,7 +1,7 @@
 <h1>To-do List</h1>
 
 <form class="edit-to-do-list" method="post" action="/to-do/new">
-    <textarea name="todo"></textarea>
+    <textarea name="items"></textarea>
     <button>add</button>
 </form>
 
@@ -20,8 +20,8 @@
                 <% }); %>
             </td>
             <td class="edit-todo">
-                <form class="edit-to-do-list" method="post" action="/to-do/edit/<%= todo._id %>">
-                    <textarea name="todo"><%= todo.items.join('\n') %></textarea>
+                <form class="edit-to-do-list" method="post" action="/to-do/<%= todo._id %>/edit">
+                    <textarea name="items"><%= todo.items.join('\n') %></textarea>
                     <button>save</button>
                 </form>
             </td>
