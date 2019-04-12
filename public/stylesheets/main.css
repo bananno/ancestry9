@@ -52,6 +52,27 @@ ul.no-bullet-list {
   margin-left: 0;
 }
 
+/* TO-DO LIST */
+
+.to-do-list td {
+  border: 1px solid gray;
+  padding: 5px;
+}
+
+.to-do-list p {
+  margin-bottom: 5px;
+}
+
+.to-do-list .edit-todo,
+.to-do-list .button-cancel {
+  display: none;
+}
+
+.edit-to-do-list textarea {
+  width: 300px;
+  height: 100px;
+}
+
 /* OTHER */
 
 .edit-form-frame td {

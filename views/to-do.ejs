@@ -1,22 +1,49 @@
 <h1>To-do List</h1>
 
-<form method="post" action="/to-do/new">
-    <textarea name="todo" style="width: 300px; height: 100px;"></textarea>
+<form class="edit-to-do-list" method="post" action="/to-do/new">
+    <textarea name="todo"></textarea>
     <button>add</button>
 </form>
 
-<ul style="margin-left: 30px;">
-    <% todoItems.forEach(todo => { %>
-        <li style="margin-top: 10px;">
-            <% todo.items.forEach(item => { %>
-                <p style="margin-bottom: 5px;">
-                    <% if (item.match('http')) { %>
-                        <a href="<%=item %>" target="_blank"><%= item %></a>
-                    <% } else { %>
-                        <%= item %>
-                    <% } %>
-                </p>
-            <% }); %>
-        </li>
+<table class="to-do-list">
+    <% todoItems.reverse().forEach(todo => { %>
+        <tr class="to-do-list-item">
+            <td class="display-todo">
+                <% todo.items.forEach(item => { %>
+                    <p>
+                        <% if (item.match('http')) { %>
+                            <a href="<%=item %>" target="_blank"><%= item %></a>
+                        <% } else { %>
+                            <%= item %>
+                        <% } %>
+                    </p>
+                <% }); %>
+            </td>
+            <td class="edit-todo">
+                <form class="edit-to-do-list" method="post" action="/to-do/edit/<%= todo._id %>">
+                    <textarea name="todo"><%= todo.items.join('\n') %></textarea>
+                    <button>save</button>
+                </form>
+            </td>
+            <td>
+                <span class="button-edit clickable-link">edit</span>
+                <span class="button-cancel clickable-link">cancel</span>
+            </td>
+        </tr>
     <% }); %>
-</ul>
+</table>
+
+<script>
+    $('.to-do-list-item').each((i, todo) => {
+        $(todo).find('.button-edit').click(() => {
+            $('.to-do-list-item').find('.button-edit').hide();
+            $(todo).find('.display-todo').hide();
+            $(todo).find('.edit-todo, .button-cancel').show();
+        });
+        $(todo).find('.button-cancel').click(() => {
+            $('.to-do-list-item').find('.button-edit').show();
+            $(todo).find('.display-todo').show();
+            $(todo).find('.edit-todo, .button-cancel').hide();
+        });
+    });
+</script>
