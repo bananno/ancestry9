@@ -46,6 +46,7 @@ router.get('/source-group/:sourceId', getSourceGroup);
 // TO-DO LIST
 
 router.get('/to-do', showToDoList);
+router.post('/to-do/new', newToDoItem);
 
 //
 
@@ -230,5 +231,10 @@ function showToDoList(req, res, next) {
   res.render('layout', {
     view: 'to-do',
     title: 'To-do List',
+    todoItems: [['temp', 'temp'], ['temp'], ['https://temp.com']],
   });
+}
+
+function newToDoItem(req, res, next) {
+  res.redirect('/to-do');
 }
