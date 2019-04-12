@@ -228,13 +228,28 @@ function getSourceGroup(req, res, next) {
 }
 
 function showToDoList(req, res, next) {
-  res.render('layout', {
-    view: 'to-do',
-    title: 'To-do List',
-    todoItems: [['temp', 'temp'], ['temp'], ['https://temp.com']],
+  mongoose.model('To-do').find({}, (err, todoItems) => {
+    res.render('layout', {
+      view: 'to-do',
+      title: 'To-do List',
+      todoItems: todoItems,
+    });
   });
 }
 
 function newToDoItem(req, res, next) {
-  res.redirect('/to-do');
+  const items = req.body.todo.split('\n')
+    .map(item => item.trim())
+    .filter(item => item);
+
+  const newTodo = {
+    items: items,
+  };
+
+  mongoose.model('To-do').create(newTodo, (err, todo) => {
+    if (err) {
+      return res.send('There was a problem adding the information to the database.');
+    }
+    res.redirect('/to-do');
+  });
 }

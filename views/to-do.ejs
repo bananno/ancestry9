@@ -1,14 +1,14 @@
 <h1>To-do List</h1>
 
 <form method="post" action="/to-do/new">
-    <textarea style="width: 300px; height: 100px;"></textarea>
+    <textarea name="todo" style="width: 300px; height: 100px;"></textarea>
     <button>add</button>
 </form>
 
 <ul style="margin-left: 30px;">
     <% todoItems.forEach(todo => { %>
         <li style="margin-top: 10px;">
-            <% todo.forEach(item => { %>
+            <% todo.items.forEach(item => { %>
                 <p style="margin-bottom: 5px;">
                     <% if (item.match('http')) { %>
                         <a href="<%=item %>" target="_blank"><%= item %></a>
