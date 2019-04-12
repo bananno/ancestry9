@@ -1,12 +1,12 @@
-var express = require('express');
-var mongoose = require('mongoose');
-var router = express.Router();
+const express = require('express');
+const mongoose = require('mongoose');
+const router = express.Router();
 
-var getDateValues = require('../tools/getDateValues');
-var getLocationValues = require('../tools/getLocationValues');
-var getNewEventValues = require('../tools/getNewEventValues');
-var sortSources = require('../tools/sortSources');
-var sortEvents = require('../tools/sortEvents');
+const getDateValues = require('../tools/getDateValues');
+const getLocationValues = require('../tools/getLocationValues');
+const getNewEventValues = require('../tools/getNewEventValues');
+const sortSources = require('../tools/sortSources');
+const sortEvents = require('../tools/sortEvents');
 
 // HOME
 
@@ -69,7 +69,7 @@ function getPersonsIndexRoute(showNew) {
 }
 
 function createNewPerson(req, res, next) {
-  var newPerson = {
+  const newPerson = {
     name: req.body.name,
     customId: req.body.name,
   };
@@ -117,7 +117,7 @@ function makeEventsIndexRoute(showNew) {
 }
 
 function createNewEvent(req, res) {
-  var newEvent = getNewEventValues(req);
+  const newEvent = getNewEventValues(req);
 
   if (newEvent == null) {
     return;
@@ -168,7 +168,7 @@ function filterSourcesByType(sources, type) {
 
   if (type == 'other') {
     return sources.filter(thisSource => {
-      var thisSourceType = thisSource.type.toLowerCase();
+      let thisSourceType = thisSource.type.toLowerCase();
       if (thisSourceType != 'index') {
         thisSourceType += 's';
       }
@@ -177,7 +177,7 @@ function filterSourcesByType(sources, type) {
   }
 
   return sources.filter(thisSource => {
-    var thisSourceType = thisSource.type.toLowerCase();
+    let thisSourceType = thisSource.type.toLowerCase();
     if (thisSourceType != 'index') {
       thisSourceType += 's';
     }
