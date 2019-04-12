@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 
 const routeFiles = [
   'index',
+  'to-do',
   'database',
 ];
 
