@@ -10,11 +10,18 @@ const routeFiles = [
   'database',
 ];
 
-require('./models/db');
-require('./models/person');
-require('./models/event');
-require('./models/source');
-require('./models/citation');
+const modelFiles = [
+  'db',
+  'person',
+  'event',
+  'source',
+  'citation',
+  'to-do',
+];
+
+modelFiles.forEach(model => {
+  require('./models/' + model);
+});
 
 const app = express();
 
