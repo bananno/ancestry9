@@ -10,13 +10,13 @@ router.get('/:personId/checklist', personChecklist);
 function personChecklist(req, res) {
   mongoose.model('Person')
   .findById(req.personId)
-  .exec(function(err, person) {
+  .exec((err, person) => {
     mongoose.model('Event')
     .find({ people: person })
-    .exec(function(err, events) {
+    .exec((err, events) => {
       mongoose.model('Source')
       .find({ people: person })
-      .exec(function(err, sources) {
+      .exec((err, sources) => {
         var checklistLinks = {
           Ancestry: null,
           FamilySearch: null,
@@ -115,8 +115,32 @@ function personChecklist(req, res) {
           checklistLinks: checklistLinks,
           checklistLife: checklistLife,
           sourceChecklist: sourceChecklist,
+          incompleteSourceList: getIncompleteSources(sources),
         });
       });
     });
   });
+}
+
+function getIncompleteSources(sourceList) {
+  const list = [];
+
+  sourceList.forEach(source => {
+    if (source.content == null || source.content == '') {
+      if (source.type == 'newspaper') {
+        list.push([source, 'newspaper article: ' + source.title, 'transcription']);
+        return;
+      }
+      if (source.type == 'grave') {
+        list.push([source, source.type, 'transcription']);
+        return;
+      }
+      if (source.type == 'document' && source.group.match('Census')) {
+        list.push([source, source.group, 'transcription']);
+        return;
+      }
+    }
+  });
+
+  return list;
 }

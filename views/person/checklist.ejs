@@ -87,3 +87,23 @@
         </div>
     <% } %>
 </div>
+
+<% if (incompleteSourceList.length) { %>
+    <h2>Incomplete Sources</h2>
+
+    <div class="checklist">
+        <% incompleteSourceList.forEach(([source, linkText, reason]) => { %>
+            <div class="checklist-item checklist-false">
+                <div class="checkmark">
+                    <img src="/images/check-false.png">
+                </div>
+                <div class="info">
+                    <p>
+                        <a href="/source/<%= source._id %>"><%= linkText %></a>
+                        - <%= reason %>
+                    </p>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+<% } %>
