@@ -39,18 +39,24 @@
     <% for (var i = 0; i < events.length; i++) { %>
         <%
             var event = events[i];
-            var eventPath;
             var eventType = event.type || 'notype';
+            let eventPath, eventTitle;
 
             if (event.source) {
                 eventPath = '/source/' + event.source._id;
             } else {
                 eventPath = '/event/' + event._id;
             }
+
+            if (event.title.match('global - ')) {
+                eventTitle = event.title.replace('global - ', '');
+            } else {
+                eventTitle = event.title;
+            }
         %>
         <tr class="event-row-<%= eventType %>" filter="timeline" filter-set="<%= eventType %>">
             <td>
-                <a href="<%= eventPath %>"><%= event.title %></a>
+                <a href="<%= eventPath %>"><%= eventTitle %></a>
             </td>
             <td>
                 <%- include('../format/date', { params: {
