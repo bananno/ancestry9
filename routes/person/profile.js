@@ -372,7 +372,7 @@ function personNationality(req, res) {
         return thisPerson;
       });
 
-      var person = populateParents(req.personId, people);
+      var person = personTools.populateParents(req.personId, people);
 
       var nationality = calculateNationality(person, people);
 
@@ -401,7 +401,7 @@ function personRelatives(req, res) {
   .populate('spouses')
   .populate('children')
   .exec(function(err, people) {
-    const person = findPersonInList(people, req.personId);
+    const person = personTools.findPersonInList(people, req.personId);
     const relativeList = getPersonRelativesList(people, person);
     res.render('layout', {
       view: 'person/layout',
@@ -422,7 +422,7 @@ function personConnection(req, res) {
   .populate('spouses')
   .populate('children')
   .exec(function(err, people) {
-    var person = findPersonInList(people, req.personId);
+    var person = personTools.findPersonInList(people, req.personId);
     var compare = people.filter(thisPerson => {
       return thisPerson.name == 'Anna Peterson';
     })[0];
@@ -596,30 +596,6 @@ function personChecklist(req, res) {
 }
 
 // HELPER
-
-function findPersonInList(people, person) {
-  return people.filter((thisPerson) => {
-    return personTools.isSamePerson(thisPerson, person);
-  })[0];
-}
-
-function populateParents(person, people, safety) {
-  safety = safety || 0;
-
-  if (safety > 30) {
-    return person;
-  }
-
-  person = findPersonInList(people, person);
-
-  person.testMe = 'hello';
-
-  person.parents = person.parents.map((thisPerson) => {
-    return populateParents(thisPerson, people, safety + 1);
-  });
-
-  return person;
-}
 
 function mapPersonCountries(events) {
   var personBirthCountries = {};
