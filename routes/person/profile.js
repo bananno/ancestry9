@@ -1,17 +1,17 @@
-var express = require('express');
-var mongoose = require('mongoose');
-var router = express.Router();
+const express = require('express');
+const mongoose = require('mongoose');
+const router = express.Router();
 
 const personTools = require('./tools');
-var sortEvents = require('../../tools/sortEvents');
-var sortCitations = require('../../tools/sortCitations');
-var sortSources = require('../../tools/sortSources');
-var removePersonFromList = require('../../tools/removePersonFromList');
-var getNewEventValues = require('../../tools/getNewEventValues');
-var getPersonRelativesList = require('../../tools/getPersonRelativesList');
-var reorderList = require('../../tools/reorderList');
+const sortEvents = require('../../tools/sortEvents');
+const sortCitations = require('../../tools/sortCitations');
+const sortSources = require('../../tools/sortSources');
+const removePersonFromList = require('../../tools/removePersonFromList');
+const getNewEventValues = require('../../tools/getNewEventValues');
+const getPersonRelativesList = require('../../tools/getPersonRelativesList');
+const reorderList = require('../../tools/reorderList');
 
-convertParamPersonId();
+personTools.convertParamPersonId(router);
 
 router.get('/:personId', personSummary);
 router.get('/:personId/edit', personEdit);
@@ -45,47 +45,6 @@ function createRelationshipRoutes(relationship, corresponding) {
   router.post(addPath, makeRouteEditPost(relationship, corresponding));
   router.post(deletePath, makeRouteDelete(relationship, corresponding));
   router.post(reorderPath, makeRouteReorder(relationship));
-}
-
-function convertParamPersonId() {
-  router.param('personId', function(req, res, next, paramPersonId) {
-    req.paramPersonId = paramPersonId;
-    mongoose.model('Person').findById(paramPersonId, function (err, person) {
-      if (err || person == null) {
-        mongoose.model('Person').find({}, function (err, people) {
-          var personWithId = people.filter(function(thisPerson) {
-            return thisPerson.customId == paramPersonId
-              || ('' + thisPerson._id) == ('' + paramPersonId);
-          });
-          if (personWithId.length == 0) {
-            console.log('Person with ID "' + paramPersonId + '" was not found.');
-            res.status(404);
-            res.render('layout', {
-              view: 'people/notFound',
-              title: 'Not Found',
-              personId: paramPersonId,
-            });
-          } else if (personWithId.length > 1) {
-            console.log('Found more than one person with ID "' + paramPersonId + '".');
-            res.render('layout', {
-              view: 'people/duplicateIDs',
-              title: paramPersonId,
-              personId: paramPersonId,
-              people: personWithId,
-            });
-          } else {
-            req.personId = personWithId[0]._id;
-            req.person = personWithId[0];
-            next();
-          }
-        });
-      } else {
-        req.personId = paramPersonId;
-        req.person = person;
-        next();
-      }
-    });
-  });
 }
 
 function personSummary(req, res, next) {

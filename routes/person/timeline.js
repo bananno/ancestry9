@@ -5,7 +5,7 @@ const router = express.Router();
 const personTools = require('./tools');
 const sortEvents = require('../../tools/sortEvents');
 
-convertParamPersonId();
+personTools.convertParamPersonId(router);
 
 router.get('/:personId/timeline', personTimeline);
 
@@ -134,45 +134,4 @@ function filterEvents(events, person) {
   });
 
   return events;
-}
-
-function convertParamPersonId() {
-  router.param('personId', function(req, res, next, paramPersonId) {
-    req.paramPersonId = paramPersonId;
-    mongoose.model('Person').findById(paramPersonId, function (err, person) {
-      if (err || person == null) {
-        mongoose.model('Person').find({}, function (err, people) {
-          var personWithId = people.filter(function(thisPerson) {
-            return thisPerson.customId == paramPersonId
-              || ('' + thisPerson._id) == ('' + paramPersonId);
-          });
-          if (personWithId.length == 0) {
-            console.log('Person with ID "' + paramPersonId + '" was not found.');
-            res.status(404);
-            res.render('layout', {
-              view: 'people/notFound',
-              title: 'Not Found',
-              personId: paramPersonId,
-            });
-          } else if (personWithId.length > 1) {
-            console.log('Found more than one person with ID "' + paramPersonId + '".');
-            res.render('layout', {
-              view: 'people/duplicateIDs',
-              title: paramPersonId,
-              personId: paramPersonId,
-              people: personWithId,
-            });
-          } else {
-            req.personId = personWithId[0]._id;
-            req.person = personWithId[0];
-            next();
-          }
-        });
-      } else {
-        req.personId = paramPersonId;
-        req.person = person;
-        next();
-      }
-    });
-  });
 }
