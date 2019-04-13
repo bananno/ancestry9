@@ -12,41 +12,40 @@ router.get('/:personId/timeline', personTimeline);
 module.exports = router;
 
 function personTimeline(req, res, next) {
-  mongoose.model('Person')
-  .findById(req.personId)
-  .exec(function(err, person) {
-    mongoose.model('Event')
-    .find({ })
+  const person = req.person;
+
+  mongoose.model('Event')
+  .find({ })
+  .populate('people')
+  .exec((err, events) => {
+    mongoose.model('Source')
+    .find({ people: person })
     .populate('people')
-    .exec(function(err, events) {
-      mongoose.model('Source')
-      .find({ people: person })
-      .populate('people')
-      .exec(function(err, sources) {
-        var sourceEvents = getSourceEvents(sources);
-        events = sortEvents(events);
-        events = filterEvents(events, person);
-        events = events.concat(sourceEvents);
-        events = sortEvents(events);
-        res.render('layout', {
-          view: 'person/layout',
-          subview: 'timeline',
-          title: person.name,
-          paramPersonId: req.paramPersonId,
-          personId: req.personId,
-          person: person,
-          events: events,
-        });
+    .exec((err, sources) => {
+      const sourceEvents = getSourceEvents(sources);
+      events = sortEvents(events);
+      events = filterEvents(events, person);
+      events = events.concat(sourceEvents);
+      events = sortEvents(events);
+
+      res.render('layout', {
+        view: 'person/layout',
+        subview: 'timeline',
+        title: person.name,
+        paramPersonId: req.paramPersonId,
+        personId: req.personId,
+        person: person,
+        events: events,
       });
     });
   });
 }
 
 function getSourceEvents(sources) {
-  var events = [];
+  const events = [];
 
   sources.forEach(source => {
-    var event = {
+    const event = {
       title: source.group,
       date: { ...source.date },
       location: { ...source.location },
@@ -69,10 +68,9 @@ function getSourceEvents(sources) {
 }
 
 function filterEvents(events, person) {
-  var children = person.children;
-  var spouses = person.spouses;
-  var birthYear = null;
-  var deathYear = null;
+  const children = person.children;
+  const spouses = person.spouses;
+  let birthYear, deathYear;
 
   events = events.map((thisEvent) => {
     thisEvent.type = null;
@@ -87,7 +85,7 @@ function filterEvents(events, person) {
       return thisEvent;
     }
 
-    for (var i = 0; i < thisEvent.people.length; i++) {
+    for (let i = 0; i < thisEvent.people.length; i++) {
       if (personTools.isSamePerson(thisEvent.people[i], person)) {
         thisEvent.type = 'personal';
         if (thisEvent.title == 'birth' || thisEvent.title == 'birth and death') {
@@ -100,8 +98,8 @@ function filterEvents(events, person) {
       }
     }
 
-    for (var i = 0; i < thisEvent.people.length; i++) {
-      for (var j = 0; j < spouses.length; j++) {
+    for (let i = 0; i < thisEvent.people.length; i++) {
+      for (let j = 0; j < spouses.length; j++) {
         if (personTools.isSamePerson(thisEvent.people[i], spouses[j])) {
           thisEvent.type = 'spouse';
           return thisEvent;
@@ -117,8 +115,8 @@ function filterEvents(events, person) {
       return thisEvent;
     }
 
-    for (var i = 0; i < thisEvent.people.length; i++) {
-      for (var j = 0; j < children.length; j++) {
+    for (let i = 0; i < thisEvent.people.length; i++) {
+      for (let j = 0; j < children.length; j++) {
         if (personTools.isSamePerson(thisEvent.people[i], children[j])) {
           thisEvent.type = 'child';
           return thisEvent;
