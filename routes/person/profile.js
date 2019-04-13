@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
 
+const personTools = require('./tools');
 var sortEvents = require('../../tools/sortEvents');
 var sortCitations = require('../../tools/sortCitations');
 var sortSources = require('../../tools/sortSources');
@@ -14,7 +15,6 @@ convertParamPersonId();
 
 router.get('/:personId', personSummary);
 router.get('/:personId/edit', personEdit);
-router.get('/:personId/timeline', personTimeline);
 router.get('/:personId/sources', personSources);
 router.get('/:personId/nationality', personNationality);
 router.get('/:personId/relatives', personRelatives);
@@ -329,37 +329,6 @@ function makeRouteReorder(editField) {
   };
 }
 
-function personTimeline(req, res, next) {
-  mongoose.model('Person')
-  .findById(req.personId)
-  .exec(function(err, person) {
-    mongoose.model('Event')
-    .find({ })
-    .populate('people')
-    .exec(function(err, events) {
-      mongoose.model('Source')
-      .find({ people: person })
-      .populate('people')
-      .exec(function(err, sources) {
-        var sourceEvents = getSourceEvents(sources);
-        events = sortEvents(events);
-        events = filterEvents(events, person);
-        events = events.concat(sourceEvents);
-        events = sortEvents(events);
-        res.render('layout', {
-          view: 'person/layout',
-          subview: 'timeline',
-          title: person.name,
-          paramPersonId: req.paramPersonId,
-          personId: req.personId,
-          person: person,
-          events: events,
-        });
-      });
-    });
-  });
-}
-
 function personSources(req, res, ntext) {
   mongoose.model('Person')
   .findById(req.personId)
@@ -478,7 +447,7 @@ function personConnection(req, res) {
     console.log(person.children)
 
     if (person.children.length > 0) {
-      if (isSamePerson(person.children[0], compare)) {
+      if (personTools.isSamePerson(person.children[0], compare)) {
         ancestorList.push(person);
         ancestorList.push(compare);
         res.render('layout', {
@@ -630,16 +599,8 @@ function personChecklist(req, res) {
 
 function findPersonInList(people, person) {
   return people.filter((thisPerson) => {
-    return isSamePerson(thisPerson, person);
+    return personTools.isSamePerson(thisPerson, person);
   })[0];
-}
-
-function isSamePerson(person1, person2) {
-  var id1 = person1._id ? person1._id : person1;
-  var id2 = person2._id ? person2._id : person2;
-  id1 = '' + id1;
-  id2 = '' + id2;
-  return id1 == id2;
 }
 
 function populateParents(person, people, safety) {
@@ -658,100 +619,6 @@ function populateParents(person, people, safety) {
   });
 
   return person;
-}
-
-function getSourceEvents(sources) {
-  var events = [];
-
-  sources.forEach(source => {
-    var event = {
-      title: source.group,
-      date: { ...source.date },
-      location: { ...source.location },
-      people: [ ...source.people ],
-      source: source,
-    };
-
-    if (source.type == 'newspaper') {
-      event.type = source.type;
-    } else if (source.type == 'document' && source.group.match('Census')) {
-      event.type = 'census';
-    } else {
-      event.type = 'source';
-    }
-
-    events.push(event);
-  });
-
-  return events;
-}
-
-function filterEvents(events, person) {
-  var children = person.children;
-  var spouses = person.spouses;
-  var birthYear = null;
-  var deathYear = null;
-
-  events = events.map((thisEvent) => {
-    thisEvent.type = null;
-
-    if (thisEvent.title.match('global -')) {
-      if (!birthYear || !deathYear || !thisEvent.date
-          || thisEvent.date.year < birthYear || thisEvent.date.year > deathYear) {
-        return thisEvent;
-      }
-
-      thisEvent.type = 'global';
-      return thisEvent;
-    }
-
-    for (var i = 0; i < thisEvent.people.length; i++) {
-      if (isSamePerson(thisEvent.people[i], person)) {
-        thisEvent.type = 'personal';
-        if (thisEvent.title == 'birth' || thisEvent.title == 'birth and death') {
-          birthYear = thisEvent.date ? thisEvent.date.year : null;
-        }
-        if (thisEvent.title == 'death' || thisEvent.title == 'birth and death') {
-          deathYear = thisEvent.date ? thisEvent.date.year : null;
-        }
-        return thisEvent;
-      }
-    }
-
-    for (var i = 0; i < thisEvent.people.length; i++) {
-      for (var j = 0; j < spouses.length; j++) {
-        if (isSamePerson(thisEvent.people[i], spouses[j])) {
-          thisEvent.type = 'spouse';
-          return thisEvent;
-        }
-      }
-    }
-
-    if (birthYear && thisEvent.date && thisEvent.date.year < birthYear) {
-      return thisEvent;
-    }
-
-    if (deathYear && thisEvent.date && thisEvent.date.year > deathYear) {
-      return thisEvent;
-    }
-
-    for (var i = 0; i < thisEvent.people.length; i++) {
-      for (var j = 0; j < children.length; j++) {
-        if (isSamePerson(thisEvent.people[i], children[j])) {
-          thisEvent.type = 'child';
-          return thisEvent;
-        }
-      }
-    }
-
-    return thisEvent;
-  });
-
-  events = events.filter((thisEvent) => {
-    return thisEvent.type != null;
-  });
-
-  return events;
 }
 
 function mapPersonCountries(events) {
