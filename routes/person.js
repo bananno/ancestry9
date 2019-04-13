@@ -694,12 +694,24 @@ function filterEvents(events, person) {
 
   events = events.map((thisEvent) => {
     thisEvent.type = null;
+
+    if (thisEvent.title.match('global -')) {
+      if (!birthYear || !deathYear || !thisEvent.date
+          || thisEvent.date.year < birthYear || thisEvent.date.year > deathYear) {
+        return thisEvent;
+      }
+
+      thisEvent.type = 'global';
+      return thisEvent;
+    }
+
     for (var i = 0; i < thisEvent.people.length; i++) {
       if (isSamePerson(thisEvent.people[i], person)) {
         thisEvent.type = 'personal';
-        if (thisEvent.title == 'birth') {
+        if (thisEvent.title == 'birth' || thisEvent.title == 'birth and death') {
           birthYear = thisEvent.date ? thisEvent.date.year : null;
-        } else if (thisEvent.title == 'death') {
+        }
+        if (thisEvent.title == 'death' || thisEvent.title == 'birth and death') {
           deathYear = thisEvent.date ? thisEvent.date.year : null;
         }
         return thisEvent;
