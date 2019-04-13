@@ -9,6 +9,7 @@ const routeFiles = [
   ['index'],
   ['person/profile', 'person'],
   ['person/timeline', 'person'],
+  ['person/checklist', 'person'],
   ['event', 'event'],
   ['source', 'source'],
   ['map', 'map'],
