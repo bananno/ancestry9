@@ -2,13 +2,13 @@ var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
 
-var sortEvents = require('../tools/sortEvents');
-var sortCitations = require('../tools/sortCitations');
-var sortSources = require('../tools/sortSources');
-var removePersonFromList = require('../tools/removePersonFromList');
-var getNewEventValues = require('../tools/getNewEventValues');
-var getPersonRelativesList = require('../tools/getPersonRelativesList');
-var reorderList = require('../tools/reorderList');
+var sortEvents = require('../../tools/sortEvents');
+var sortCitations = require('../../tools/sortCitations');
+var sortSources = require('../../tools/sortSources');
+var removePersonFromList = require('../../tools/removePersonFromList');
+var getNewEventValues = require('../../tools/getNewEventValues');
+var getPersonRelativesList = require('../../tools/getPersonRelativesList');
+var reorderList = require('../../tools/reorderList');
 
 convertParamPersonId();
 

@@ -6,9 +6,13 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 
 const routeFiles = [
-  'index',
-  'to-do',
-  'database',
+  ['index'],
+  ['person/profile', 'person'],
+  ['event', 'event'],
+  ['source', 'source'],
+  ['map', 'map'],
+  ['to-do'],
+  ['database'],
 ];
 
 const modelFiles = [
@@ -36,21 +40,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const indexRouter = require('./routes/index');
-const personRouter = require('./routes/person');
-const eventRouter = require('./routes/event');
-const sourceRouter = require('./routes/source');
-const mapRouter = require('./routes/map');
-
-routeFiles.forEach(filename => {
+routeFiles.forEach(([filename, addlPath]) => {
+  const routePath = '/' + (addlPath ? addlPath + '/' : '');
   const router = require('./routes/' + filename);
-  app.use('/', router);
+  app.use(routePath, router);
 });
-
-app.use('/person/', personRouter);
-app.use('/event/', eventRouter);
-app.use('/source/', sourceRouter);
-app.use('/map/', mapRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
