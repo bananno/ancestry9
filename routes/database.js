@@ -51,7 +51,9 @@ function showDatabaseForSharing(req, res) {
       return event;
     });
 
-    data.events = data.events.filter(event => event.people.length > 0);
+    data.events = data.events.filter(event => {
+      return event.people.length > 0 || event.title.match('global - ');
+    });
 
     data.citations = data.citations.filter(citation => {
       return citation.person.sharing.level == 2 && citation.source.sharing;
