@@ -75,13 +75,13 @@ function filterEvents(events, person) {
   events = events.map((thisEvent) => {
     thisEvent.type = null;
 
-    if (thisEvent.title.match('global -')) {
+    if (thisEvent.title.match('historical -') && thisEvent.people.length == 0) {
       if (!birthYear || !deathYear || !thisEvent.date
           || thisEvent.date.year < birthYear || thisEvent.date.year > deathYear) {
         return thisEvent;
       }
 
-      thisEvent.type = 'global';
+      thisEvent.type = 'historical';
       return thisEvent;
     }
 

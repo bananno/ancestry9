@@ -45,15 +45,24 @@ function showDatabaseForSharing(req, res) {
     data.people = data.people.filter(person => person != null);
 
     data.events = data.events.map(event => {
+      // historical events that have NO people in the list are global events; always include them
+      if (event.people.length == 0 && event.title.match('historical - ')) {
+        return event;
+      }
+
       event.people = event.people.filter(person => {
         return tempPersonRef['' + person] !== undefined;
       });
-      return event;
+
+      // all other events are shared IF they apply to at least one non-private person
+      if (event.people.length > 0) {
+        return event;
+      }
+
+      return null;
     });
 
-    data.events = data.events.filter(event => {
-      return event.people.length > 0 || event.title.match('global - ');
-    });
+    data.events = data.events.filter(event => event);
 
     data.citations = data.citations.filter(citation => {
       return citation.person.sharing.level == 2 && citation.source.sharing;

@@ -48,8 +48,8 @@
                 eventPath = '/event/' + event._id;
             }
 
-            if (event.title.match('global - ')) {
-                eventTitle = event.title.replace('global - ', '');
+            if (event.title.match('historical - ')) {
+                eventTitle = event.title.replace('historical - ', '');
             } else {
                 eventTitle = event.title;
             }
