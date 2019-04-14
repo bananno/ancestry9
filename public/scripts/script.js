@@ -20,15 +20,18 @@ function filterPersonList() {
   }
 }
 
-function toggleRegionUsState() {
-  var $country = $('[name="location_country"]');
-  var $usaRegion = $('[name="location_region1_usa"]');
-  var $otherRegion = $('[name="location_region1"]');
+function toggleLocationOptions() {
+  const $country = $('[name="location-country"]');
+  const $otherCountry = $('[name="location-country-other"]');
+  const $usaRegion = $('[name="location-region1-usa"]');
+  const $otherRegion = $('[name="location-region1"]');
 
   function toggle() {
-    var isUSA = $country.val() == 'United States';
+    const isUSA = $country.val() == 'United States';
+    const isOther = $country.val() == 'other';
     $usaRegion.toggle(isUSA);
     $otherRegion.toggle(!isUSA);
+    $otherCountry.toggle(isOther);
   }
 
   toggle();
