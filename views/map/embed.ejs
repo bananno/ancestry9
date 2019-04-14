@@ -1,0 +1,83 @@
+<style>
+  #map {
+    height: 500px;
+    width: 700px;
+  }
+</style>
+
+<div id="map"></div>
+<div id="list"></div>
+
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9Oqxh__YCA&callback=initMap">
+</script>
+
+<script>
+  let map;
+  let count = 0;
+
+  const placeList = [
+    {
+      title:'Flowery Branch, Hall County, Georgia, United States',
+      lat: 34.19, long: -83.92, count: 1
+    },
+    {
+      title:'Ruthton, Pipestone County, Minnesota, United States',
+      lat: 44.18, long: -96.10, count: 12
+    }
+  ];
+
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 2,
+      center: {lat: 34.19, lng: -83.92}
+    });
+
+    placeList.forEach(place => {
+      mapPin(place.title, place.lat, place.long, place.count);
+    });
+
+    hideDevPopup();
+  }
+
+  function mapPin(title, lat, long, count) {
+    const marker = new google.maps.Marker({
+      position: {lat: lat, lng: long},
+      map: map,
+      title: title,
+      label: '' + count
+    });
+
+    marker.addListener('click', () => {
+      console.log(title);
+    });
+
+    let checkboxId = 'checkbox_count_' + count;
+    count += 1;
+
+    const $checkbox = $('<input type="checkbox" checked="true">').attr('id', checkboxId);
+    const $label = $('<label>').attr('for', checkboxId).text(title);
+
+    $('#list').append($('<div>').append($checkbox).append($label));
+
+    $checkbox.change(() => {
+      if ($checkbox.is(':checked')) {
+        marker.setMap(map);
+      } else {
+        marker.setMap(null);
+      }
+    });
+  }
+
+  function hideDevPopup(safety) {
+    safety = safety || 0;
+    setTimeout(() => {
+      const $span = $('span:contains("This page can\'t load Google Maps correctly.")');
+      if ($span.length == 0 && safety < 50) {
+        hideDevPopup(safety + 1);
+      } else {
+        $span.parent().parent().remove();
+      }
+    }, 500);
+  }
+</script>
