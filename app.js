@@ -12,7 +12,7 @@ const routeFiles = [
   ['person/checklist', 'person'],
   ['event', 'event'],
   ['source', 'source'],
-  ['map', 'map'],
+  ['map'],
   ['to-do'],
   ['database'],
 ];

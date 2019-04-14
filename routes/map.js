@@ -1,8 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
+const getLocationValues = require('../tools/getLocationValues');
+module.exports = router;
 
-router.get('/', showMap);
+router.get('/map', showMap);
+router.post('/map/newPlace', addMapPlace);
 
 function showMap(req, res, next) {
   getEventsAndSources((error, sources, events) => {
@@ -62,4 +65,17 @@ function getEventsAndSources(callback) {
   });
 }
 
-module.exports = router;
+function addMapPlace(req, res, next) {
+  const newPlace = getLocationValues(req);
+
+  ['latitude', 'longitude', 'zoom'].forEach(attr => {
+    newPlace[attr] = parseInt(req.body['location-' + attr]);
+  });
+
+  mongoose.model('Location').create(newPlace, err => {
+    if (err) {
+      return res.send('There was a problem adding the information to the database.');
+    }
+    res.redirect('/map');
+  });
+}

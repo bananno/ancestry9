@@ -1,0 +1,24 @@
+<h2>Locations</h2>
+
+<form class="add-location" method="post" action="/map/newPlace">
+    <%- include('../forms/location', { includeNotes: false }) %>
+    <br><input type="text" name="location-latitude" placeholder="latitude">
+    <br><input type="text" name="location-longitude" placeholder="longitude">
+    <br><input type="text" name="location-zoom" placeholder="zoom">
+    <br>
+    <button>add</button>
+</form>
+
+<table class="location-list">
+    <tr>
+        <th>country</th>
+        <th>region1</th>
+        <th>region2</th>
+        <th>city</th>
+        <th>latitude</th>
+        <th>longitude</th>
+        <th>zoom</th>
+        <th>items</th>
+        <th>sub-items</th>
+    </tr>
+</table>

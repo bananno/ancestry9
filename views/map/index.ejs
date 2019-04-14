@@ -18,13 +18,22 @@
         height: 500px;
         width: 700px;
     }
+    .location-list th,
+    .location-list td {
+        border: 1px solid black;
+        padding: 5px;
+    }
 </style>
 
-<h2>Map</h2>
+<h1>Map</h1>
 
 <%- include('./embed') %>
 
 <br>
+
+<%- include('./locations') %>
+
+<h2>List</h2>
 
 <div id="location-list">
     <ul class="map-list-country">
