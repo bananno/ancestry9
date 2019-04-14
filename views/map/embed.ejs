@@ -13,49 +13,69 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9O
 <script>
   let map;
   let countId = 0;
-  const markers = [];
+  const mapPinList = [];
 
-  const useCluster = true;
+  const useCluster = false;
 
   const placeList = [
     {
       title:'Denmark',
+      level: 'country',
       lat: 56.26, long: 9.50, count: 12
     },
     {
       title:'Sweden',
+      level: 'country',
       lat: 62.39, long: 16.33, count: 19
     },
     {
       title:'United States',
+      level: 'country',
       lat: 39.83, long: -98.58, count: 300
     },
     {
+      title:'Georgia, United States',
+      level: 'region1',
+      lat: 32.66, long: -83.44, count: 5
+    },
+    {
+      title:'Minnesota, United States',
+      level: 'region1',
+      lat: 46.36, long: -94.20, count: 20
+    },
+    {
       title:'Bock, Mille Lacs County, Minnesota, USA',
+      level: 'city',
       lat: 45.79, long: -93.55, count: 1
     },
     {
       title:'Dalby, Odense, Fyn, Denmark',
+      level: 'city',
       lat: 55.52, long: 10.66, count: 1
     },
     {
       title:'Flowery Branch, Hall County, Georgia, United States',
+      level: 'city',
       lat: 34.19, long: -83.92, count: 1
     },
     {
       title:'Hinckley, Pine County, Minnesota, United States',
+      level: 'city',
       lat: 46.02, long: -92.94, count: 1
     },
     {
       title:'Milaca, Mille Lacs County, Minnesota, United States',
+      level: 'city',
       lat: 45.76, long: -93.65, count: 1
     },
     {
       title:'Minneapolis, Hennepin County, Minnesota, USA',
+      level: 'city',
       lat: 44.98, long: -93.27, count: 1
     },
     {
       title:'Ruthton, Pipestone County, Minnesota, United States',
+      level: 'city',
       lat: 44.18, long: -96.10, count: 12
     }
   ];
@@ -66,67 +86,98 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9O
       center: {lat: 34.19, lng: -83.92}
     });
 
-    placeList.forEach(place => {
-      mapPin(place.title, place.lat, place.long, place.count);
-    });
+    placeList.forEach(mapPin);
 
     if (useCluster) {
-      new MarkerClusterer(map, markers,
+      new MarkerClusterer(map, markerList(),
       {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
     } else {
-      markers.forEach(marker => {
-        marker.setMap(map);
-      });
-
+      toggleMarkers(map.zoom);
       map.addListener('zoom_changed', () => {
-        const zoom = map.zoom;
-        if (zoom < 0) {
-          return;
-        }
-        if (zoom < 3) {
-          console.log('show countries');
-          return;
-        }
-        if (zoom < 5) {
-          console.log('show US states & other countries');
-          return;
-        }
-        console.log('show all');
+        toggleMarkers(map.zoom);
       });
     }
 
     hideDevPopup();
   }
 
-  function mapPin(title, lat, long, count) {
-    const marker = new google.maps.Marker({
-      position: {lat: lat, lng: long},
-      // map: map,
-      title: title,
-      label: '' + count
+  function mapPin(data) {
+    const pin = {
+      title: data.title,
+      level: data.level,
+    };
+
+    pin.marker = new google.maps.Marker({
+      position: {lat: data.lat, lng: data.long},
+      title: data.title,
+      label: '' + data.count
     });
 
-    marker.addListener('click', () => {
-      console.log(title);
+    pin.marker.addListener('click', () => {
+      console.log(data.title);
     });
 
     let checkboxId = 'checkbox_count_' + countId;
     countId += 1;
 
     const $checkbox = $('<input type="checkbox" checked="true">').attr('id', checkboxId);
-    const $label = $('<label>').attr('for', checkboxId).text(title);
+    const $label = $('<label>').attr('for', checkboxId).text(data.title);
 
     $('#list').append($('<div>').append($checkbox).append($label));
 
     $checkbox.change(() => {
       if ($checkbox.is(':checked')) {
-        marker.setMap(map);
+        pin.marker.setMap(map);
       } else {
-        marker.setMap(null);
+        pin.marker.setMap(null);
       }
     });
 
-    markers.push(marker);
+    mapPinList.push(pin);
+  }
+
+  function markerList() {
+    return mapPinList.map(pin => pin.marker);
+  }
+
+  function toggleMarkers(zoom) {
+    if (zoom < 0) {
+      return;
+    }
+
+    // show country pins only
+    if (zoom < 3) {
+      mapPinList.forEach(pin => {
+        if (pin.level == 'country') {
+          pin.marker.setMap(map);
+        } else {
+          pin.marker.setMap(null);
+        }
+      });
+      return;
+    }
+
+    // show US states; for other countries, show country pin only
+    if (zoom < 5) {
+      mapPinList.forEach(pin => {
+        if (pin.level == 'region1' && pin.title.match('United States')) {
+          pin.marker.setMap(map);
+        } else if (pin.level == 'country' && pin.title != 'United States') {
+        } else {
+          pin.marker.setMap(null);
+        }
+      });
+      return;
+    }
+
+    // show city pins
+    mapPinList.forEach(pin => {
+      if (pin.level == 'city') {
+        pin.marker.setMap(map);
+      } else {
+        pin.marker.setMap(null);
+      }
+    });
   }
 
   function hideDevPopup(safety) {
