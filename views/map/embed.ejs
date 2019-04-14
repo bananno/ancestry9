@@ -12,7 +12,7 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9O
 
 <script>
   let map;
-  let count = 0;
+  let countId = 0;
   const markers = [];
 
   const useCluster = true;
@@ -110,8 +110,8 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9O
       console.log(title);
     });
 
-    let checkboxId = 'checkbox_count_' + count;
-    count += 1;
+    let checkboxId = 'checkbox_count_' + countId;
+    countId += 1;
 
     const $checkbox = $('<input type="checkbox" checked="true">').attr('id', checkboxId);
     const $label = $('<label>').attr('for', checkboxId).text(title);
