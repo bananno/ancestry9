@@ -8,14 +8,10 @@
 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9Oqxh__YCA&callback=initMap">
 </script>
 
-<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
-
 <script>
   let map;
   let countId = 0;
   const mapPinList = [];
-
-  const useCluster = false;
 
   const placeList = [
     {
@@ -88,15 +84,11 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9O
 
     placeList.forEach(mapPin);
 
-    if (useCluster) {
-      new MarkerClusterer(map, markerList(),
-      {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-    } else {
+    toggleMarkers(map.zoom);
+
+    map.addListener('zoom_changed', () => {
       toggleMarkers(map.zoom);
-      map.addListener('zoom_changed', () => {
-        toggleMarkers(map.zoom);
-      });
-    }
+    });
 
     hideDevPopup();
   }
