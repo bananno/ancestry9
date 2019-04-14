@@ -23,6 +23,7 @@ const modelFiles = [
   'event',
   'source',
   'citation',
+  'location',
   'to-do',
 ];
 
