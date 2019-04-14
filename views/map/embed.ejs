@@ -1,9 +1,3 @@
-<style>
-</style>
-
-<div id="map"></div>
-<div id="list"></div>
-
 <script async defer
 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9Oqxh__YCA&callback=initMap">
 </script>
@@ -13,68 +7,18 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9O
   let countId = 0;
   const mapPinList = [];
 
-  const placeList = [
-    {
-      title:'Denmark',
+  const placeList = [];
+
+  <% places.forEach(place => { %>
+    placeList.push({
+      title: "<%= [place.city, place.region2, place.region1, place.country].filter(p => p).join(', ') %>",
       level: 'country',
-      lat: 56.26, long: 9.50, count: 12
-    },
-    {
-      title:'Sweden',
-      level: 'country',
-      lat: 62.39, long: 16.33, count: 19
-    },
-    {
-      title:'United States',
-      level: 'country',
-      lat: 39.83, long: -98.58, count: 300
-    },
-    {
-      title:'Georgia, United States',
-      level: 'region1',
-      lat: 32.66, long: -83.44, count: 5
-    },
-    {
-      title:'Minnesota, United States',
-      level: 'region1',
-      lat: 46.36, long: -94.20, count: 20
-    },
-    {
-      title:'Bock, Mille Lacs County, Minnesota, USA',
-      level: 'city',
-      lat: 45.79, long: -93.55, count: 1
-    },
-    {
-      title:'Dalby, Odense, Fyn, Denmark',
-      level: 'city',
-      lat: 55.52, long: 10.66, count: 1
-    },
-    {
-      title:'Flowery Branch, Hall County, Georgia, United States',
-      level: 'city',
-      lat: 34.19, long: -83.92, count: 1
-    },
-    {
-      title:'Hinckley, Pine County, Minnesota, United States',
-      level: 'city',
-      lat: 46.02, long: -92.94, count: 1
-    },
-    {
-      title:'Milaca, Mille Lacs County, Minnesota, United States',
-      level: 'city',
-      lat: 45.76, long: -93.65, count: 1
-    },
-    {
-      title:'Minneapolis, Hennepin County, Minnesota, USA',
-      level: 'city',
-      lat: 44.98, long: -93.27, count: 1
-    },
-    {
-      title:'Ruthton, Pipestone County, Minnesota, United States',
-      level: 'city',
-      lat: 44.18, long: -96.10, count: 12
-    }
-  ];
+      lat: <%= place.latitude %>,
+      long: <%= place.longitude %>,
+      zoom: <%= place.zoom %>,
+      count: '*'
+    });
+  <% }); %>
 
   function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -113,7 +57,7 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9O
     countId += 1;
 
     const $checkbox = $('<input type="checkbox" checked="true">').attr('id', checkboxId);
-    const $label = $('<label>').attr('for', checkboxId).text(data.title);
+    const $label = $('<label>').attr('for', checkboxId).text(data.title + ' (' + data.lat + ', ' + data.long + ')');
 
     $('#list').append($('<div>').append($checkbox).append($label));
 
