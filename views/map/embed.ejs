@@ -1,8 +1,4 @@
 <style>
-  #map {
-    height: 500px;
-    width: 700px;
-  }
 </style>
 
 <div id="map"></div>
@@ -12,14 +8,51 @@
 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9Oqxh__YCA&callback=initMap">
 </script>
 
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+
 <script>
   let map;
   let count = 0;
+  const markers = [];
+
+  const useCluster = true;
 
   const placeList = [
     {
+      title:'Denmark',
+      lat: 56.26, long: 9.50, count: 12
+    },
+    {
+      title:'Sweden',
+      lat: 62.39, long: 16.33, count: 19
+    },
+    {
+      title:'United States',
+      lat: 39.83, long: -98.58, count: 300
+    },
+    {
+      title:'Bock, Mille Lacs County, Minnesota, USA',
+      lat: 45.79, long: -93.55, count: 1
+    },
+    {
+      title:'Dalby, Odense, Fyn, Denmark',
+      lat: 55.52, long: 10.66, count: 1
+    },
+    {
       title:'Flowery Branch, Hall County, Georgia, United States',
       lat: 34.19, long: -83.92, count: 1
+    },
+    {
+      title:'Hinckley, Pine County, Minnesota, United States',
+      lat: 46.02, long: -92.94, count: 1
+    },
+    {
+      title:'Milaca, Mille Lacs County, Minnesota, United States',
+      lat: 45.76, long: -93.65, count: 1
+    },
+    {
+      title:'Minneapolis, Hennepin County, Minnesota, USA',
+      lat: 44.98, long: -93.27, count: 1
     },
     {
       title:'Ruthton, Pipestone County, Minnesota, United States',
@@ -37,13 +70,38 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9O
       mapPin(place.title, place.lat, place.long, place.count);
     });
 
+    if (useCluster) {
+      new MarkerClusterer(map, markers,
+      {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+    } else {
+      markers.forEach(marker => {
+        marker.setMap(map);
+      });
+
+      map.addListener('zoom_changed', () => {
+        const zoom = map.zoom;
+        if (zoom < 0) {
+          return;
+        }
+        if (zoom < 3) {
+          console.log('show countries');
+          return;
+        }
+        if (zoom < 5) {
+          console.log('show US states & other countries');
+          return;
+        }
+        console.log('show all');
+      });
+    }
+
     hideDevPopup();
   }
 
   function mapPin(title, lat, long, count) {
     const marker = new google.maps.Marker({
       position: {lat: lat, lng: long},
-      map: map,
+      // map: map,
       title: title,
       label: '' + count
     });
@@ -67,6 +125,8 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnqHt8YeDYPAlsfxt0daWQO9O
         marker.setMap(null);
       }
     });
+
+    markers.push(marker);
   }
 
   function hideDevPopup(safety) {

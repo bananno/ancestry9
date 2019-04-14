@@ -1,24 +1,30 @@
+<style>
+    ul {
+        margin-left: 30px;
+    }
+    #location-list, #show-pins {
+        display: inline-block;
+        vertical-align: text-top;
+        height: 85%;
+        overflow: scroll;
+    }
+    #location-list {
+        width: 30%;
+    }
+    #show-pins {
+        width: 60%;
+    }
+    #map {
+        height: 500px;
+        width: 700px;
+    }
+</style>
+
 <h2>Map</h2>
 
 <%- include('./embed') %>
 
-<style>
-ul {
-    margin-left: 30px;
-}
-#location-list, #show-pins {
-    display: inline-block;
-    vertical-align: text-top;
-    height: 85%;
-    overflow: scroll;
-}
-#location-list {
-    width: 30%;
-}
-#show-pins {
-    width: 60%;
-}
-</style>
+<br>
 
 <div id="location-list">
     <ul class="map-list-country">
