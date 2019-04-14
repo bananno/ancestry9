@@ -8,7 +8,7 @@ router.get('/map', showMap);
 router.post('/map/newPlace', addMapPlace);
 
 function showMap(req, res, next) {
-  getEventsAndSources((error, sources, events) => {
+  getEventsAndSources((error, sources, events, places) => {
     if (error) {
       return next(error);
     }
@@ -46,6 +46,7 @@ function showMap(req, res, next) {
       title: 'Map',
       events: events,
       sources: sources,
+      places: places,
       pins: pins,
     });
   });
@@ -60,7 +61,11 @@ function getEventsAndSources(callback) {
     .find({})
     .populate('people')
     .exec((error2, events) => {
-      callback(error1 || error2, sources, events);
+      mongoose.model('Location')
+      .find({})
+      .exec((error3, places) => {
+        callback(error1 || error2 || error3, sources, events, places);
+      });
     });
   });
 }

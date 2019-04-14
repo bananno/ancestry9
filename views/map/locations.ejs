@@ -21,4 +21,18 @@
         <th>items</th>
         <th>sub-items</th>
     </tr>
+
+    <% places.forEach(place => { %>
+        <tr>
+            <td><%= place.country %></td>
+            <td><%= place.region1 %></td>
+            <td><%= place.region2 %></td>
+            <td><%= place.city %></td>
+            <td><%= place.latitude %></td>
+            <td><%= place.longitude %></td>
+            <td><%= place.zoom %></td>
+            <td>items</td>
+            <td>sub-items</td>
+        </tr>
+    <% }); %>
 </table>
