@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const dateStructure = require('./date.js');
-const locationStructure = require('./location.js');
+const dateStructure = require('./dateStructure.js');
+const locationStructure = require('./locationStructure.js');
 
 const sourceSchema = new mongoose.Schema({
   type: String,
