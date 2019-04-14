@@ -74,7 +74,13 @@ function addMapPlace(req, res, next) {
   const newPlace = getLocationValues(req);
 
   ['latitude', 'longitude', 'zoom'].forEach(attr => {
-    newPlace[attr] = parseInt(req.body['location-' + attr]);
+    let value = req.body['location-' + attr].trim();
+    if (value == '') {
+      newPlace[attr] = 0;
+    } else {
+      value = parseFloat(value);
+      newPlace[attr] = (isNaN(value) || value == 0) ? 0 : value;
+    }
   });
 
   mongoose.model('Location').create(newPlace, err => {
