@@ -1,6 +1,6 @@
 <h2>Locations</h2>
 
-<form class="add-location" method="post" action="/map/newPlace">
+<form method="post" action="/map/newPlace">
     <%- include('../forms/location', { includeNotes: false }) %>
     <br><input type="text" name="location-latitude" placeholder="latitude">
     <br><input type="text" name="location-longitude" placeholder="longitude">
@@ -20,6 +20,7 @@
         <th>zoom</th>
         <th>items</th>
         <th>sub-items</th>
+        <th></th>
     </tr>
 
     <% places.forEach(place => { %>
@@ -33,6 +34,11 @@
             <td><%= place.zoom %></td>
             <td>items</td>
             <td>sub-items</td>
+            <td>
+                <form method="post" action="/map/<%= place._id %>/delete">
+                    <button type="submit">delete</button>
+                </form>
+            </td>
         </tr>
     <% }); %>
 </table>

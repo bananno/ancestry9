@@ -6,6 +6,7 @@ module.exports = router;
 
 router.get('/map', showMap);
 router.post('/map/newPlace', addMapPlace);
+router.post('/map/:id/delete', deleteMapPlace);
 
 function showMap(req, res, next) {
   getEventsAndSources((error, sources, events, places) => {
@@ -88,5 +89,15 @@ function addMapPlace(req, res, next) {
       return res.send('There was a problem adding the information to the database.');
     }
     res.redirect('/map');
+  });
+}
+
+function deleteMapPlace(req, res, next) {
+   mongoose.model('Location').deleteOne({ _id: req.params.id }, err => {
+    if (err) {
+      console.log(err);
+      return res.send('There was a problem deleting the information from the database.');
+    }
+   res.redirect('/map');
   });
 }
