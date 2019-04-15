@@ -24,7 +24,7 @@
     </tr>
 
     <% places.forEach(place => { %>
-        <tr>
+        <tr class="display-info" place-id="<%= place._id %>">
             <td><%= place.country %></td>
             <td><%= place.region1 %></td>
             <td><%= place.region2 %></td>
@@ -35,10 +35,56 @@
             <td>items</td>
             <td>sub-items</td>
             <td>
-                <form method="post" action="/map/<%= place._id %>/delete">
+                <form class="delete-item" method="post" action="/map/<%= place._id %>/delete"
+                        onsubmit="return confirmDeletion('map location')">
                     <button type="submit">delete</button>
                 </form>
+                <button class="edit-button" onClick="editPlace('<%= place._id %>')">edit</button>
             </td>
+        </tr>
+        <tr class="edit-info" place-id="<%= place._id %>">
+            <form>
+                <td>
+                    <input type="text" name="country" value="<%= place.country %>">
+                </td>
+                <td>
+                    <input type="text" name="region1" value="<%= place.region1 %>">
+                </td>
+                <td>
+                    <input type="text" name="region2" value="<%= place.region2 %>">
+                </td>
+                <td>
+                    <input type="text" name="city" value="<%= place.city %>">
+                </td>
+                <td>
+                    <input type="text" name="latitude" value="<%= place.latitude %>" style="width: 50px">
+                </td>
+                <td>
+                    <input type="text" name="longitude" value="<%= place.longitude %>" style="width: 50px">
+                </td>
+                <td>
+                    <input type="text" name="zoom" value="<%= place.zoom %>" style="width: 20px">
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <button type="submit">save</button>
+                    <span class="clickable-link" onClick="cancelEdit()">cancel</span>
+                </td>
+            </form>
         </tr>
     <% }); %>
 </table>
+
+<script>
+    function editPlace(placeId) {
+        $('.location-list').find('.edit-button, .delete-item').hide();
+        $('.display-info[place-id="' + placeId + '"]').hide();
+        $('.edit-info[place-id="' + placeId + '"]').show();
+    }
+
+    function cancelEdit() {
+        $('.location-list').find('.display-info, .edit-button, .delete-item').show();
+        $('.location-list').find('.edit-info').hide();
+    }
+</script>
