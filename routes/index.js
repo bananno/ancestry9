@@ -19,9 +19,9 @@ router.get('/', (req, res, next) => {
 
 // PEOPLE - INDEX + NEW
 
-router.get('/allPeople', getPersonsIndexRoute(false));
-router.get('/allPeople/new', getPersonsIndexRoute(true));
-router.post('/allPeople/new', createNewPerson);
+router.get('/people', getPersonsIndexRoute(false));
+router.get('/people/new', getPersonsIndexRoute(true));
+router.post('/people/new', createNewPerson);
 
 // EVENTS - INDEX + NEW
 

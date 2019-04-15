@@ -2,19 +2,19 @@
 
 <div id="create_person_box">
     <% if (showNew) { %>
-        <form action="/allPeople/new" method="POST">
+        <form action="/people/new" method="POST">
             <p>
                 <b>Name:</b>
                 <input type="text" name="name">
             </p>
             <p>
                 <button type="submit">submit</button>
-                <a href="/allPeople">cancel</a>
+                <a href="/people">cancel</a>
             </p>
         </form>
     <% } else { %>
         <p>
-            <a href="/allPeople/new">+ Create Person</a>
+            <a href="/people/new">+ Create Person</a>
         </p>
         <br>
         <p>
