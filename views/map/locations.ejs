@@ -1,13 +1,17 @@
 <h2>Locations</h2>
 
-<form method="post" action="/map/newPlace">
+<form id="new-map-place-form" method="post" action="/map/newPlace">
     <%- include('../forms/location', { includeNotes: false }) %>
     <br><input type="text" name="location-latitude" placeholder="latitude">
     <br><input type="text" name="location-longitude" placeholder="longitude">
     <br><input type="text" name="location-zoom" placeholder="zoom">
     <br>
-    <button>add</button>
+    <button>add</button> <span class="clickable-link">cancel</span>
 </form>
+
+<div id="show-new-map-place-form" class="clickable-link">
+    + add place
+</div>
 
 <table class="location-list">
     <tr>
@@ -87,4 +91,14 @@
         $('.location-list').find('.display-info, .edit-button, .delete-item').show();
         $('.location-list').find('.edit-info').hide();
     }
+
+    $('#show-new-map-place-form').click(() => {
+        $('#show-new-map-place-form').hide();
+        $('#new-map-place-form').show();
+    });
+
+    $('#new-map-place-form span.clickable-link').click(() => {
+        $('#show-new-map-place-form').show();
+        $('#new-map-place-form').hide();
+    });
 </script>
