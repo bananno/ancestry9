@@ -126,19 +126,28 @@ function getIncompleteSources(sourceList) {
   const list = [];
 
   sourceList.forEach(source => {
-    if (source.content == null || source.content == '') {
-      if (source.type == 'newspaper') {
-        list.push([source, 'newspaper article: ' + source.title, 'transcription']);
-        return;
+    const needsContent = source.content == null || source.content == '';
+    const needsImage = source.images.length == 0;
+    const isCensus = source.type == 'document' && source.group.match('Census');
+
+    let text1, text2;
+
+    if (source.type == 'newspaper') {
+      text1 = 'newspaper article: ' + source.title;
+    } else if (source.type == 'grave' || isCensus) {
+      text1 = source.group;
+    } else {
+      return;
+    }
+
+    if (needsContent) {
+      if (needsImage) {
+        list.push([source, text1, 'transcription & image']);
+      } else {
+        list.push([source, text1, 'transcription']);
       }
-      if (source.type == 'grave') {
-        list.push([source, source.type, 'transcription']);
-        return;
-      }
-      if (source.type == 'document' && source.group.match('Census')) {
-        list.push([source, source.group, 'transcription']);
-        return;
-      }
+    } else if (needsImage) {
+      list.push([source, text1, 'image']);
     }
   });
 
