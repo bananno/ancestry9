@@ -1,6 +1,6 @@
 <%
-    var events = params.events;
-    var filterByType = events.length && events[0].type;
+    const events = locals.events || params.events;
+    const filterByType = events.length && events[0].type;
 %>
 
 <% if (filterByType) { %>
@@ -36,10 +36,10 @@
         <th> people </th>
         <th> notes </th>
     </tr>
-    <% for (var i = 0; i < events.length; i++) { %>
+
+    <% events.forEach(event => { %>
         <%
-            var event = events[i];
-            var eventType = event.type || 'notype';
+            let eventType = event.type || 'notype';
             let eventPath, eventTitle;
 
             if (event.source) {
@@ -77,15 +77,14 @@
             <td style="max-width: 400px;">
                 <%= event.notes %>
                 <% if (event.source) { %>
-                    <% for (var j = 0; j < event.source.images.length; j++) { %>
-                        <a href="<%= event.source.images[j] %>" target="_blank"><img
-                            src="<%= event.source.images[j] %>"
+                    <% event.source.images.forEach(url => { %>
+                        <a href="<%= url %>" target="_blank"><img src="<%= url %>"
                             style="max-height: 100px; max-width: 350px;"></a>
-                    <% } %>
+                    <% }); %>
                 <% } %>
             </td>
         </tr>
-    <% } %>
+    <% }); %>
 </table>
 
 <% if (filterByType) { %>
