@@ -46,7 +46,7 @@ function getSourceEvents(sources) {
 
   sources.forEach(source => {
     const event = {
-      title: source.group,
+      title: source.group + ' - ' + source.title,
       date: { ...source.date },
       location: { ...source.location },
       people: [ ...source.people ],
