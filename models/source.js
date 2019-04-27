@@ -16,6 +16,7 @@ const sourceSchema = new mongoose.Schema({
   images: [String],
   content: String,
   notes: String,
+  summary: String,
   sharing: { type: Boolean, default: false },
 });
 

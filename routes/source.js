@@ -21,6 +21,7 @@ makeSourcesRoutes('links', true);
 makeSourcesRoutes('images', true);
 makeSourcesRoutes('content');
 makeSourcesRoutes('notes');
+makeSourcesRoutes('summary');
 makeSourcesRoutes('citations', true);
 makeSourcesRoutes('sharing');
 
