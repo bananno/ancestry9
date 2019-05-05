@@ -1,20 +1,43 @@
 <h2>Connection</h2>
 
-<% if (isSame) { %>
-    <p>
-        Same person.
-    </p>
-<% } else if (isAncestor) { %>
-    <p>
-        Ancestor.
-    </p>
-    <% ancestorList.forEach(thisPerson => { %>
-        <div class="treecell">
-            <div>
-                <%- include('../partials/linkToPerson', { params: {
-                    person: thisPerson
-                }}) %>
-            </div>
-        </div>
+<%
+  let tempList = [];
+  let ancestorList = [];
+
+  getAncestorList([], compare, person);
+
+  function getAncestorList(trackList, nextPerson, endPerson, safety) {
+    safety = safety || 0;
+    if (safety > 20) {
+      return;
+    }
+
+    trackList = [nextPerson, ...trackList];
+
+    if (isSamePerson(nextPerson, endPerson)) {
+      ancestorList = trackList;
+      return;
+    }
+
+    for (let p = 0; p < nextPerson.parents.length; p++) {
+      const parent = findPerson(nextPerson.parents[p]);
+      getAncestorList(trackList, parent, endPerson, safety + 1);
+    }
+  }
+%>
+
+<% if (ancestorList.length) { %>
+  <table>
+    <% ancestorList.forEach(person => { %>
+      <tr>
+          <td class="treecell">
+              <div>
+                  <%- include('../partials/linkToPerson', { params: { person: person }}) %>
+              </div>
+          </td>
+      </tr>
     <% }); %>
+  </table>
+<% } else { %>
+  <p>Not found.</p>
 <% } %>

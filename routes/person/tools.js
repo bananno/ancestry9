@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 function isSamePerson(person1, person2) {
-  const id1 = '' + (person1._id || person1);
-  const id2 = '' + (person2._id || person2);
+  const id1 = '' + (person1 ? (person1._id || person1) : 'null');
+  const id2 = '' + (person2 ? (person2._id || person2) : 'null');
   return id1 == id2;
 }
 

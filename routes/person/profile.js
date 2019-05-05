@@ -376,53 +376,11 @@ function personRelatives(req, res) {
 function personConnection(req, res) {
   mongoose.model('Person')
   .find({})
-  .populate('parents')
-  .populate('spouses')
-  .populate('children')
-  .exec(function(err, people) {
-    var person = personTools.findPersonInList(people, req.personId);
-    var compare = people.filter(thisPerson => {
+  .exec((err, people) => {
+    const person = personTools.findPersonInList(people, req.personId);
+    const compare = people.filter(thisPerson => {
       return thisPerson.name == 'Anna Peterson';
     })[0];
-    var ancestorList = [];
-
-    if (person._id == compare._id) {
-      res.render('layout', {
-        view: 'person/layout',
-        subview: 'connection',
-        title: person.name,
-        paramPersonId: req.paramPersonId,
-        person: person,
-        compare: compare,
-        people: people,
-        isSame: true,
-        isAncestor: false,
-        ancestorList: ancestorList,
-      });
-      return;
-    }
-
-    console.log(person.children)
-
-    if (person.children.length > 0) {
-      if (personTools.isSamePerson(person.children[0], compare)) {
-        ancestorList.push(person);
-        ancestorList.push(compare);
-        res.render('layout', {
-          view: 'person/layout',
-          subview: 'connection',
-          title: person.name,
-          paramPersonId: req.paramPersonId,
-          person: person,
-          compare: compare,
-          people: people,
-          isSame: false,
-          isAncestor: true,
-          ancestorList: ancestorList,
-        });
-        return;
-      }
-    }
 
     res.render('layout', {
       view: 'person/layout',
@@ -432,9 +390,10 @@ function personConnection(req, res) {
       person: person,
       compare: compare,
       people: people,
-      isSame: false,
-      isAncestor: false,
-      ancestorList: ancestorList,
+      findPerson: person => {
+        return personTools.findPersonInList(people, person)
+      },
+      isSamePerson: personTools.isSamePerson,
     });
   });
 }
