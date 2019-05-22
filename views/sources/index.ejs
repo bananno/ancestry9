@@ -29,6 +29,7 @@
     }
 
     headerRowTitles.push('location');
+    headerRowTitles.push('sharing');
 %>
 
 <h1>Sources</h1>
@@ -106,6 +107,10 @@
                 <%- include('../format/location', { params: {
                     location: source.location,
                 }}) %>
+            </td>
+
+            <td>
+                <img class="checkmark-inline" src="/images/check-<%= source.sharing %>.png">
             </td>
         </tr>
     <% }); %>
