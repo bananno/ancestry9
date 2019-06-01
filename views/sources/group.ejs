@@ -56,22 +56,41 @@
                 }}) %>
             </p>
 
-            <h3>people</h3>
+            <% if (source.people.length) { %>
+                <h3>people</h3>
 
-            <%- include('../partials/peopleList', { params: {
-                people: source.people,
-                format: 'bullet',
-            }}) %>
+                <%- include('../partials/peopleList', { params: {
+                    people: source.people,
+                    format: 'bullet',
+                }}); %>
+            <% } %>
 
-            <h3>links</h3>
+            <% if (source.links.length) { %>
+                <h3>links</h3>
 
-            <ul class="bullet-list">
-                <% source.links.forEach(url => { %>
-                    <li>
-                        <%- include('../format/externalLink', { url: url }) %>
-                    </li>
-                <% }); %>
-            </ul>
+                <ul class="bullet-list">
+                    <% source.links.forEach(url => { %>
+                        <li>
+                            <%- include('../format/externalLink', { url: url }) %>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } %>
+
+            <% if (source.summary) { %>
+                <%
+                    const summaryList = source.summary.split('\n');
+                %>
+                <h3>summary</h3>
+
+                <ul class="bullet-list">
+                    <% summaryList.forEach(str => { %>
+                        <li style="max-width: 600px;">
+                            <%= str %>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } %>
 
             <% if (source.notes) { %>
                 <%
@@ -87,6 +106,10 @@
                     <% }); %>
                 </ul>
             <% } %>
+
+            <h3>sharing</h3>
+            <img class="checkmark-inline" src="/images/check-<%= source.sharing %>.png">
+            <%= source.sharing ? 'yes' : 'no' %>
         </div>
 
         <div class="column" style="max-width: 600px;" filter="source-details" filter-set="content">
