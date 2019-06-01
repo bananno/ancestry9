@@ -99,6 +99,8 @@ ul.no-bullet-list {
   min-height: 80px;
 }
 
+/* CITATION TABLE */
+
 table.citation-list th {
   border: 2px solid #bbb;
 }
@@ -120,19 +122,21 @@ table.citation-list tr:last-child td {
   border-bottom: 1px solid #bbb;
 }
 
-.citation_cell {
+td.citation-cell {
   border-top: 1px solid #bbb;
   border-bottom: 1px solid #bbb;
 }
 
-.citation_item {
+td.citation-item {
   border-top: 1px solid #bbb;
 }
 
-.citation_item_repeat {
+td.citation-item-repeat {
   color: transparent;
   border-color: red;
 }
+
+/*******/
 
 .event_list th, .event_list td {
   padding: 5px 10px;
