@@ -1,5 +1,7 @@
 
 function sortCitations(citationList, sortBy, endPoint) {
+  citationList = [...citationList];
+
   var madeChange = false;
   var endPoint = endPoint || citationList.length - 1;
 
