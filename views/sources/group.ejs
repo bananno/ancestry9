@@ -56,6 +56,11 @@
                 }}) %>
             </p>
 
+            <p>
+                <img class="checkmark-inline" src="/images/check-<%= source.sharing %>.png">
+                <%= source.sharing ? 'sharing' : 'not sharing' %>
+            </p>
+
             <% if (source.people.length) { %>
                 <h3>people</h3>
 
@@ -106,10 +111,6 @@
                     <% }); %>
                 </ul>
             <% } %>
-
-            <h3>sharing</h3>
-            <img class="checkmark-inline" src="/images/check-<%= source.sharing %>.png">
-            <%= source.sharing ? 'yes' : 'no' %>
         </div>
 
         <div class="column" style="max-width: 600px;" filter="source-details" filter-set="content">
