@@ -1,4 +1,4 @@
-<table class="citation_list">
+<table class="citation-list">
   <tr>
     <% if (showPerson) { %>
       <th> person </th>
@@ -14,19 +14,17 @@
   </tr>
 
   <%
-    var previousItem1 = '';
-    var previousItem2 = '';
+    let previousItem1 = '';
+    let previousItem2 = '';
   %>
 
-  <% for (var i = 0; i < citations.length; i++) { %>
+  <% citations.forEach(citation => { %>
     <%
-      var citation = citations[i];
+      let item1 = citation.item;
+      let item2 = '';
 
-      var item1 = citation.item;
-      var item2 = '';
-
-      var itemCellClass1 = 'citation_item';
-      var itemCellClass2 = 'citation_item';
+      let itemCellClass1 = 'citation_item';
+      let itemCellClass2 = 'citation_item';
 
       if (item1.match(' - ')) {
         item2 = item1.slice(item1.indexOf(' - ') + 3);
@@ -80,5 +78,5 @@
         </td>
       <% } %>
     </tr>
-  <% } %>
+  <% }); %>
 </table>
