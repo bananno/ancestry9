@@ -27,6 +27,10 @@ function citationsShouldSwap(citation1, citation2, sortBy) {
       citation1.information, citation2.information);
   }
 
+  if (sortBy == 'person') {
+    return citation1.person._id > citation2.person._id;
+  }
+
   return false;
 }
 

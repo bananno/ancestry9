@@ -1,21 +1,17 @@
 <%
-  const citationSortableTables = locals.citationsByItem != null;
+  let citationSortableTables;
 
-  let citationTables = [];
+  const citationTables = [{
+    list: citations,
+    sort: 'item',
+  }];
 
-  if (citationSortableTables) {
-    citationTables.push({
-      list: citationsByItem,
-      sort: 'item',
-    });
+  if (showPerson && locals.citationsByPerson) {
+    citationSortableTables = true;
+
     citationTables.push({
       list: citationsByPerson,
       sort: 'person',
-    });
-  } else {
-    citationTables.push({
-      list: citations,
-      sort: 'none',
     });
   }
 %>
@@ -40,7 +36,7 @@
         <th>
           person
           <% if (citationTable.sort == 'person') { %>
-            [sort]
+            <span class="already-sorted"><u>[sort]</u></span>
           <% } else if (citationTable.sort != 'none') { %>
             <span class="clickable-link" onClick="sortCitationsByPerson()">[sort]</span>
           <% } %>
@@ -49,7 +45,7 @@
       <th colspan="2">
         item
         <% if (citationTable.sort == 'item') { %>
-          [sort]
+          <span class="already-sorted"><u>[sort]</u></span>
         <% } else if (citationTable.sort != 'none') { %>
           <span class="clickable-link" onClick="sortCitationsByItem()">[sort]</span>
         <% } %>
@@ -68,7 +64,7 @@
       let previousItem2 = '';
     %>
 
-    <% citations.forEach(citation => { %>
+    <% citationTable.list.forEach(citation => { %>
       <%
         let item1 = citation.item;
         let item2 = '';

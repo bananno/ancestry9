@@ -118,6 +118,12 @@ table.citation-list td {
   padding: 5px 10px;
 }
 
+table.citation-list th .already-sorted,
+table.citation-list th .clickable-link {
+  font-size: 12px;
+  font-weight: normal;
+}
+
 table.citation-list tr:last-child td {
   border-bottom: 1px solid #bbb;
 }

@@ -54,18 +54,13 @@ function sourceShow(req, res) {
     .find({ source: source })
     .populate('person')
     .exec((err, citations) => {
-      let citationsByPerson = [...citations].sort((a, b) => {
-        return 0;
-      });
-
       res.render('layout', {
         view: 'sources/layout',
         subview: 'show',
         title: source.group + ' - ' + source.title,
         source: source,
-        citations: citations,
-        citationsByItem: sortCitations([...citations], 'item'),
-        citationsByPerson: citationsByPerson,
+        citations: sortCitations([...citations], 'item'),
+        citationsByPerson: sortCitations([...citations], 'person'),
       });
     });
   });
