@@ -7,6 +7,7 @@ const getLocationValues = require('../tools/getLocationValues');
 const removePersonFromList = require('../tools/removePersonFromList');
 const reorderList = require('../tools/reorderList');
 const sortPeople = require('../tools/sortPeople');
+const sortCitations = require('../tools/sortCitations');
 
 router.get('/:sourceId', sourceShow);
 router.get('/:sourceId/edit', makeRouteEditGet('none'));
@@ -53,12 +54,18 @@ function sourceShow(req, res) {
     .find({ source: source })
     .populate('person')
     .exec((err, citations) => {
+      let citationsByPerson = [...citations].sort((a, b) => {
+        return 0;
+      });
+
       res.render('layout', {
         view: 'sources/layout',
         subview: 'show',
         title: source.group + ' - ' + source.title,
         source: source,
         citations: citations,
+        citationsByItem: sortCitations([...citations], 'item'),
+        citationsByPerson: citationsByPerson,
       });
     });
   });

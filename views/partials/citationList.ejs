@@ -1,82 +1,134 @@
-<table class="citation-list">
-  <tr>
-    <% if (showPerson) { %>
-      <th> person </th>
-    <% } %>
-    <th colspan="2"> item </th>
-    <th> information </th>
-    <% if (showSource) { %>
-      <th> source </th>
-    <% } %>
-    <% if (showDelete) { %>
-      <th> delete </th>
-    <% } %>
-  </tr>
+<%
+  const citationSortableTables = locals.citationsByItem != null;
 
-  <%
-    let previousItem1 = '';
-    let previousItem2 = '';
-  %>
+  let citationTables = [];
 
-  <% citations.forEach(citation => { %>
-    <%
-      let item1 = citation.item;
-      let item2 = '';
+  if (citationSortableTables) {
+    citationTables.push({
+      list: citationsByItem,
+      sort: 'item',
+    });
+    citationTables.push({
+      list: citationsByPerson,
+      sort: 'person',
+    });
+  } else {
+    citationTables.push({
+      list: citations,
+      sort: 'none',
+    });
+  }
+%>
 
-      let itemCellClass1 = 'citation-item';
-      let itemCellClass2 = 'citation-item';
+<% if (citationSortableTables) { %>
+  <script>
+    function sortCitationsByItem() {
+      $('table.citation-sort-by-item').show();
+      $('table.citation-sort-by-person').hide();
+    }
+    function sortCitationsByPerson() {
+      $('table.citation-sort-by-person').show();
+      $('table.citation-sort-by-item').hide();
+    }
+  </script>
+<% } %>
 
-      if (item1.match(' - ')) {
-        item2 = item1.slice(item1.indexOf(' - ') + 3);
-        item1 = item1.slice(0, item1.indexOf(' - '));
-      }
-
-      if (groupBy == 'item') {
-        if (item1 == previousItem1) {
-          itemCellClass1 += '-repeat';
-          if (item2 == previousItem2) {
-            itemCellClass2 += '-repeat';
-          }
-        }
-
-        previousItem1 = item1;
-        previousItem2 = item2;
-      }
-    %>
+<% citationTables.forEach(citationTable => { %>
+  <table class="citation-list citation-sort-by-<%= citationTable.sort %>">
     <tr>
       <% if (showPerson) { %>
-        <td class="citation-cell">
-          <%- include('../partials/linkToPerson', { params: {
-            person: citation.person
-          }}) %>
-        </td>
+        <th>
+          person
+          <% if (citationTable.sort == 'person') { %>
+            [sort]
+          <% } else if (citationTable.sort != 'none') { %>
+            <span class="clickable-link" onClick="sortCitationsByPerson()">[sort]</span>
+          <% } %>
+        </th>
       <% } %>
-      <td class="<%= itemCellClass1 %>">
-        <%= item1 %>
-      </td>
-      <td class="<%= itemCellClass2 %>">
-        <%= item2 %>
-      </td>
-      <td class="citation-cell">
-        <%= citation.information %>
-      </td>
+      <th colspan="2">
+        item
+        <% if (citationTable.sort == 'item') { %>
+          [sort]
+        <% } else if (citationTable.sort != 'none') { %>
+          <span class="clickable-link" onClick="sortCitationsByItem()">[sort]</span>
+        <% } %>
+      </th>
+      <th> information </th>
       <% if (showSource) { %>
-        <td class="citation-cell">
-          <%- include('../partials/linkToSource', {
-            source: citation.source,
-            showGroup: true,
-          }) %>
-        </td>
+        <th> source </th>
       <% } %>
       <% if (showDelete) { %>
-        <td class="citation-cell">
-          <form action="<%= rootPath %>/delete/citations/<%= citation._id %>" method="POST"
-              onsubmit="return confirmDeletion('citation')">
-            <input type="hidden" value="DELETE" name="_method">
-            <button type="submit" class="button-delete">delete</button>
-          </form>
-        </td>
+        <th> delete </th>
       <% } %>
     </tr>
-  <% }); %>
-</table>
+
+    <%
+      let previousItem1 = '';
+      let previousItem2 = '';
+    %>
+
+    <% citations.forEach(citation => { %>
+      <%
+        let item1 = citation.item;
+        let item2 = '';
+
+        let itemCellClass1 = 'citation-item';
+        let itemCellClass2 = 'citation-item';
+
+        if (item1.match(' - ')) {
+          item2 = item1.slice(item1.indexOf(' - ') + 3);
+          item1 = item1.slice(0, item1.indexOf(' - '));
+        }
+
+        if (groupBy == 'item') {
+          if (item1 == previousItem1) {
+            itemCellClass1 += '-repeat';
+            if (item2 == previousItem2) {
+              itemCellClass2 += '-repeat';
+            }
+          }
+
+          previousItem1 = item1;
+          previousItem2 = item2;
+        }
+      %>
+
+      <tr>
+        <% if (showPerson) { %>
+          <td class="citation-cell">
+            <%- include('../partials/linkToPerson', { params: {
+              person: citation.person
+            }}) %>
+          </td>
+        <% } %>
+        <td class="<%= itemCellClass1 %>">
+          <%= item1 %>
+        </td>
+        <td class="<%= itemCellClass2 %>">
+          <%= item2 %>
+        </td>
+        <td class="citation-cell">
+          <%= citation.information %>
+        </td>
+        <% if (showSource) { %>
+          <td class="citation-cell">
+            <%- include('../partials/linkToSource', {
+              source: citation.source,
+              showGroup: true,
+            }) %>
+          </td>
+        <% } %>
+        <% if (showDelete) { %>
+          <td class="citation-cell">
+            <form action="<%= rootPath %>/delete/citations/<%= citation._id %>" method="POST"
+                onsubmit="return confirmDeletion('citation')">
+              <input type="hidden" value="DELETE" name="_method">
+              <button type="submit" class="button-delete">delete</button>
+            </form>
+          </td>
+        <% } %>
+      </tr>
+    <% }); %>
+  </table>
+<% }); %>

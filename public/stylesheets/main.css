@@ -136,6 +136,10 @@ td.citation-item-repeat {
   border-color: red;
 }
 
+table.citation-sort-by-item {
+  display: none;
+}
+
 /*******/
 
 .event_list th, .event_list td {
