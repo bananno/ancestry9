@@ -95,7 +95,8 @@ function makeRouteEditGet(editField) {
             source: source,
             editField: editField,
             people: people,
-            citations: citations,
+            citations: sortCitations(citations, 'item'),
+            citationsByPerson: sortCitations(citations, 'person'),
           });
         });
       });
