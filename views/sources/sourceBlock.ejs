@@ -1,0 +1,98 @@
+<div class="source-item-box">
+    <div class="column" style="width: 450px;">
+        <p>
+            <a href="/source/<%= source._id %>"><%= source.group %>
+            <% if (source.group && source.title) { %>
+                -
+            <% } %>
+            <%= source.title %></a>
+        </p>
+
+        <% if (source.images.length) { %>
+            <p>
+                <% source.images.forEach(imageUrl => { %>
+                    <a href="<%= imageUrl %>" target="_blank"><img
+                        src="<%= imageUrl %>" style="max-height: 100px; max-width: 100%;"></a>
+                <% }); %>
+            </p>
+        <% } %>
+
+        <p>
+            <%- include('../format/date', { params: {
+                date: source.date,
+                format: 'long',
+            }}) %>
+        </p>
+
+        <p>
+            <%- include('../format/location', { params: {
+                location: source.location,
+            }}) %>
+        </p>
+
+        <p>
+            <img class="checkmark-inline" src="/images/check-<%= source.sharing %>.png">
+            <%= source.sharing ? 'sharing' : 'not sharing' %>
+        </p>
+
+        <% if (source.people.length) { %>
+            <h3>people</h3>
+
+            <%- include('../partials/peopleList', { params: {
+                people: source.people,
+                format: 'bullet',
+            }}); %>
+        <% } %>
+
+        <% if (source.links.length) { %>
+            <h3>links</h3>
+
+            <ul class="bullet-list">
+                <% source.links.forEach(url => { %>
+                    <li>
+                        <%- include('../format/externalLink', { url: url }) %>
+                    </li>
+                <% }); %>
+            </ul>
+        <% } %>
+
+        <% if (source.summary) { %>
+            <%
+                const summaryList = source.summary.split('\n');
+            %>
+            <h3>summary</h3>
+
+            <ul class="bullet-list">
+                <% summaryList.forEach(str => { %>
+                    <li style="max-width: 600px;">
+                        <%= str %>
+                    </li>
+                <% }); %>
+            </ul>
+        <% } %>
+
+        <% if (source.notes) { %>
+            <%
+                const notesList = source.notes.split('\n');
+            %>
+            <h3>notes</h3>
+
+            <ul class="bullet-list">
+                <% notesList.forEach(str => { %>
+                    <li style="max-width: 600px;">
+                        <%= str %>
+                    </li>
+                <% }); %>
+            </ul>
+        <% } %>
+    </div>
+
+    <div class="column" style="max-width: 600px;" filter="source-details" filter-set="content">
+        <h3>content</h3>
+
+        <%- include('../format/content', {
+            content: source.content,
+            limit: false,
+        }) %>
+    </div>
+</div>
