@@ -216,7 +216,8 @@ function getSourceGroup(req, res, next) {
         view: 'sources/group',
         title: rootSource.group,
         rootSource: rootSource,
-        sources: sources,
+        groupMain: sources.filter(source => source.title.toLowerCase() == 'source group')[0],
+        sources: sources.filter(source => source.title.toLowerCase() != 'source group'),
       });
     });
   });

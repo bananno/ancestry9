@@ -23,6 +23,16 @@
     </div>
 <% }%>
 
+<% if (groupMain) { %>
+    <h2>Group Main</h2>
+
+    <%- include('./sourceBlock', {
+        source: groupMain,
+    }); %>
+
+    <h2>Sources in Group</h2>
+<% } %>
+
 <% sources.forEach(source => { %>
     <%- include('./sourceBlock', {
         source: source,
