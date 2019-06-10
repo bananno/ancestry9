@@ -22,6 +22,7 @@ function personChecklist(req, res) {
           FamilySearch: null,
           FindAGrave: null,
           Lundberg: null,
+          WikiTree: null,
         };
 
         person.links.forEach((url) => {
@@ -33,6 +34,8 @@ function personChecklist(req, res) {
             checklistLinks.FamilySearch = url;
           } else if (url.match('findagrave')) {
             checklistLinks.FindAGrave = url;
+          } else if (url.match('wikitree')) {
+            checklistLinks.WikiTree = url;
           }
         });
 
