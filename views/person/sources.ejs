@@ -3,12 +3,10 @@
   let previousSourceType = '';
 %>
 
-<% for (var i = 0; i < sources.length; i++) { %>
+<% sources.forEach(source => { %>
   <%
-    const source = sources[i];
-
-    const sourceCitations = citations.filter((thisCitation) => {
-      return ('' + thisCitation.source) == ('' + source._id);
+    const sourceCitations = citations.filter(citation => {
+      return ('' + citation.source) == ('' + source._id);
     });
 
     const notesList = source.notes ? source.notes.split('\n') : null;
@@ -32,81 +30,16 @@
     <h2><%= pluralType %></h2>
   <% } %>
 
-  <div class="source-item-box">
-    <div class="column" style="width: 450px;">
-      <p>
-        <a href="/source/<%= source._id %>"><%= source.group %>
-        <% if (source.group && source.title) { %>
-          -
-        <% } %>
-        <%= source.title %></a>
-      </p>
-
-      <% if (source.images.length) { %>
-        <p>
-          <% for (var j = 0; j < source.images.length; j++) { %>
-            <a href="<%= source.images[j] %>" target="_blank"><img
-              src="<%= source.images[j] %>" height="100"></a>
-          <% } %>
-        </p>
-      <% } %>
-
-      <p>
-        <%- include('../format/date', { params: {
-          date: source.date,
-          format: 'long',
-        }}) %>
-      </p>
-
-      <p>
-        <%- include('../format/location', { params: {
-          location: source.location,
-        }}) %>
-      </p>
-
-      <h3>links</h3>
-
-      <ul class="bullet-list">
-        <% source.links.forEach(url => { %>
-          <li>
-            <%- include('../format/externalLink', { url: url }) %>
-          </li>
-        <% }); %>
-      </ul>
-
-      <% if (notesList) { %>
-        <h3>notes</h3>
-
-        <ul class="bullet-list">
-          <% notesList.forEach(str => { %>
-            <li style="max-width: 600px;">
-              <%= str %>
-            </li>
-          <% }); %>
-        </ul>
-      <% } %>
-
-      <h3>citations</h3>
-
-      <% if (sourceCitations.length) { %>
-        <%- include('../partials/citationList', {
-          citations: sourceCitations,
-          showDelete: false,
-          showSource: false,
-          showPerson: false,
-          rootPath: rootPath,
-          groupBy: 'item',
-        }) %>
-      <% } %>
-    </div>
-
-    <div class="column" style="max-width: 600px;" filter="source-details" filter-set="content">
-      <h3>content</h3>
-
-      <%- include('../format/content', {
-        content: source.content,
-        limit: true,
-      }) %>
-    </div>
-  </div>
-<% } %>
+  <%- include('../sources/sourceBlock', {
+    source: source,
+    limitContent: true,
+    citationParams: {
+      citations: sourceCitations,
+      showDelete: false,
+      showSource: false,
+      showPerson: false,
+      rootPath: rootPath,
+      groupBy: 'item',
+    },
+  }); %>
+<% }); %>

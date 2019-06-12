@@ -1,3 +1,4 @@
+
 <div class="source-item-box">
   <div class="column" style="width: 450px;">
     <p>
@@ -35,7 +36,7 @@
       <%= source.sharing ? 'sharing' : 'not sharing' %>
     </p>
 
-    <% if (source.people.length) { %>
+    <% if (locals.includePeople && source.people.length) { %>
       <h3>people</h3>
 
       <%- include('../partials/peopleList', { params: {
@@ -85,6 +86,11 @@
         <% }); %>
       </ul>
     <% } %>
+
+    <% if (locals.citationParams && citationParams.citations.length) { %>
+      <h3>citations</h3>
+      <%- include('../partials/citationList', citationParams) %>
+    <% } %>
   </div>
 
   <div class="column" style="max-width: 600px;" filter="source-details" filter-set="content">
@@ -92,7 +98,7 @@
 
     <%- include('../format/content', {
       content: source.content,
-      limit: false,
+      limit: locals.limitContent === true,
     }) %>
   </div>
 </div>

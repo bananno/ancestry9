@@ -28,6 +28,7 @@
 
     <%- include('./sourceBlock', {
         source: groupMain,
+        includePeople: true,
     }); %>
 
     <h2>Sources in Group</h2>
@@ -36,6 +37,7 @@
 <% sources.forEach(source => { %>
     <%- include('./sourceBlock', {
         source: source,
+        includePeople: true,
     }); %>
 <% }); %>
 
