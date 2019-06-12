@@ -326,7 +326,7 @@ function personSources(req, res, next) {
       model: 'Citation',
       name: 'citations',
       getFinder: data => {
-        return { people: data.person };
+        return { person: data.person };
       }
     },
   ], data => {
