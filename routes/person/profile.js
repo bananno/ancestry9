@@ -331,7 +331,11 @@ function personSources(req, res, next) {
     },
   ], data => {
     data.citations = sortCitations(data.citations, 'item');
-    data.sources.sort((a, b) => a.type > b.type ? 1 : 0);
+    data.sources.sort((a, b) => {
+      let sortA = a.type + ' - ' + a.group + ' - ' + a.title;
+      let sortB = b.type + ' - ' + b.group + ' - ' + b.title;
+      return sortA == sortB ? 0 : sortA > sortB ? 1 : -1;
+    });
 
     res.render('layout', {...data,
       view: 'person/layout',
