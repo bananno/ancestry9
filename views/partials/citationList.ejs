@@ -60,8 +60,10 @@
     </tr>
 
     <%
+      let previousPerson;
       let previousItem1 = '';
       let previousItem2 = '';
+      let oddRow = false;
     %>
 
     <% citationTable.list.forEach(citation => { %>
@@ -88,9 +90,16 @@
           previousItem1 = item1;
           previousItem2 = item2;
         }
+
+        if (citationTable.sort == 'person') {
+          if (previousPerson != citation.person._id) {
+            oddRow = previousPerson === undefined ? false : !oddRow;
+            previousPerson = citation.person._id;
+          }
+        }
       %>
 
-      <tr>
+      <tr class="alternate-row-<%= oddRow %>">
         <% if (showPerson) { %>
           <td class="citation-cell">
             <%- include('../partials/linkToPerson', { params: {

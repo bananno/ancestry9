@@ -128,6 +128,15 @@ table.citation-list tr:last-child td {
   border-bottom: 1px solid #bbb;
 }
 
+.citation-list th,
+.citation-list tr.alternate-row-true td {
+  background-color: #d1edff;
+}
+
+.citation-list tr.alternate-row-false td {
+  background-color: #ebf7ff;
+}
+
 td.citation-cell {
   border-top: 1px solid #bbb;
   border-bottom: 1px solid #bbb;
