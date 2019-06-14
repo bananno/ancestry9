@@ -12,6 +12,18 @@ router.get('/database', showDatabaseEverything);
 function showDatabaseForSharing(req, res) {
   getMainDatabase(data => {
 
+    const ancestors = {};
+
+    findAncestors(data.allPeople.filter(person => person.name == 'Anna Peterson')[0]);
+
+    function findAncestors(person) {
+      (person.parents || []).forEach(parentId => {
+        ancestors['' + parentId] = true;
+        const parent = data.allPeople.filter(person => person._id + '' == parentId + '')[0];
+        findAncestors(parent);
+      });
+    }
+
     data.events = sortEvents(data.events);
 
     const tempPersonRef = {};
@@ -38,6 +50,8 @@ function showDatabaseForSharing(req, res) {
         });
         tempPersonRef['' + person._id] = true;
       }
+
+      person.star = ancestors[person._id + ''] == true;
 
       return person;
     });
