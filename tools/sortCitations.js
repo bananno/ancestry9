@@ -1,52 +1,20 @@
 
-function sortCitations(citationList, sortBy, endPoint) {
-  citationList = [...citationList];
-
-  var madeChange = false;
-  var endPoint = endPoint || citationList.length - 1;
-
-  for (var i = 0; i < endPoint; i++) {
-    var citation1 = citationList[i];
-    var citation2 = citationList[i + 1];
-
-    if (citationsShouldSwap(citation1, citation2, sortBy)) {
-      madeChange = true;
-      citationList[i] = citation2;
-      citationList[i + 1] = citation1;
-    }
-  }
-
-  if (madeChange) {
-    return sortCitations(citationList, sortBy, endPoint - 1);
-  }
-
-  return citationList;
-}
-
-function citationsShouldSwap(citation1, citation2, sortBy) {
-  if (sortBy == 'item') {
-    return compareItems(citation1.item, citation2.item,
-      citation1.information, citation2.information);
-  }
-
-  if (sortBy == 'person') {
-    return citation1.person._id > citation2.person._id;
-  }
-
-  return false;
-}
-
-var citationItemOrder = [
+const citationItemOrder = [
   'name',
   'birth',
   'christening',
   'baptism',
+  'father',
+  'mother',
+  'spouse',
   'marriage',
   'marriage - spouse',
   'marriage 1',
   'marriage 1 - spouse',
+  'spouse 1',
   'marriage 2',
   'marriage 2 - spouse',
+  'spouse 2',
   'divorce',
   'immigration',
   'naturalization',
@@ -56,47 +24,76 @@ var citationItemOrder = [
   'residence',
 ];
 
-function compareItems(item1, item2, information1, information2) {
+const citationItemSubOrder = [
+  '',
+  'name',
+  'date',
+  'place',
+];
 
-  for (var i = 0; i < citationItemOrder.length; i++) {
-    if (item1 == item2) {
-      return information1 > information2;
-    }
+function sortCitations(citationList, sortBy, peopleList) {
+  citationList = [...citationList];
 
-    if (item1 == citationItemOrder[i]) {
-      return false;
-    }
-
-    if (item2 == citationItemOrder[i]) {
-      return true;
-    }
-
-    if (item1 == citationItemOrder[i] + ' - date') {
-      return false;
-    }
-
-    if (item2 == citationItemOrder[i] + ' - date') {
-      return true;
-    }
-
-    if (item1 == citationItemOrder[i] + ' - place') {
-      return false;
-    }
-
-    if (item2 == citationItemOrder[i] + ' - place') {
-      return true;
-    }
-
-    if (item1.match(citationItemOrder[i])) {
-      return false;
-    }
-
-    if (item2.match(citationItemOrder[i])) {
-      return true;
-    }
+  if (peopleList) {
+    peopleList = peopleList.map(person => person._id + '');
   }
 
-  return item1 > item2;
+  const sortRef = {};
+
+  citationList.forEach(citation => {
+    let item1 = citation.item, item2 = '';
+
+    if (citation.item.match(' - ')) {
+      item1 = citation.item.slice(0, citation.item.indexOf(' - ')).trim();
+      item2 = citation.item.slice(citation.item.indexOf(' - ') + 3).trim();
+    }
+
+    let itemIndex1 = citationItemOrder.indexOf(item1);
+    let itemIndex2 = citationItemSubOrder.indexOf(item2);
+
+    if (itemIndex1 == -1) {
+      itemIndex1 = citationItemOrder.length;
+    }
+
+    if (itemIndex2 == -1) {
+      itemIndex2 = citationItemSubOrder.length;
+    }
+
+    if (itemIndex1 < 10) {
+      itemIndex1 = '0' + itemIndex1;
+    }
+
+    if (itemIndex2 < 10) {
+      itemIndex2 = '0' + itemIndex2;
+    }
+
+    const itemSortString = [itemIndex1, itemIndex2, item1, item2].join('-');
+
+    let personSortString = '';
+
+    if (peopleList) {
+      let personIndex = peopleList.indexOf(citation.person._id + '');
+      if (personIndex == -1) {
+        personIndex = peopleList.length;
+      }
+      if (personIndex < 10) {
+        personIndex = '0' + personIndex;
+      }
+
+      personSortString = personIndex + '-' + citation.person.name;
+    }
+
+    sortRef[citation._id] = (sortBy == 'item' ? (itemSortString + '-' + personSortString)
+      : (personSortString + '-' + itemSortString)) + '-' + citation.information;
+  });
+
+  citationList.sort((a, b) => {
+    let strA = sortRef[a._id];
+    let strB = sortRef[b._id];
+    return strA === strB ? 0 : strA < strB ? -1 : 1;
+  });
+
+  return citationList;
 }
 
 module.exports = sortCitations;

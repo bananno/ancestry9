@@ -59,8 +59,8 @@ function sourceShow(req, res) {
         subview: 'show',
         title: source.group + ' - ' + source.title,
         source: source,
-        citations: sortCitations(citations, 'item'),
-        citationsByPerson: sortCitations(citations, 'person'),
+        citations: sortCitations(citations, 'item', source.people),
+        citationsByPerson: sortCitations(citations, 'person', source.people),
       });
     });
   });
@@ -95,8 +95,8 @@ function makeRouteEditGet(editField) {
             source: source,
             editField: editField,
             people: people,
-            citations: sortCitations(citations, 'item'),
-            citationsByPerson: sortCitations(citations, 'person'),
+            citations: sortCitations(citations, 'item', source.people),
+            citationsByPerson: sortCitations(citations, 'person', source.people),
           });
         });
       });
