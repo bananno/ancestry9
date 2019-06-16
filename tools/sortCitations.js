@@ -83,8 +83,19 @@ function sortCitations(citationList, sortBy, peopleList) {
       personSortString = personIndex + '-' + citation.person.name;
     }
 
-    sortRef[citation._id] = (sortBy == 'item' ? (itemSortString + '-' + personSortString)
-      : (personSortString + '-' + itemSortString)) + '-' + citation.information;
+    let sortString = '';
+
+    if (sortBy == 'item') {
+      sortString += itemSortString + '-' + personSortString;
+    } else {
+      sortString += personSortString + '-' + itemSortString;
+    }
+
+    sortString += '-' + citation.information;
+    sortString += '-' + citation.source.group;
+    sortString += '-' + citation.source.title;
+
+    sortRef[citation._id] = sortString;
   });
 
   citationList.sort((a, b) => {
