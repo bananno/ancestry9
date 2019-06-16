@@ -49,6 +49,17 @@ function showDatabaseForSharing(req, res) {
           person[key] = thisPerson[key];
         });
         tempPersonRef['' + person._id] = true;
+
+        person.tags = {};
+
+        thisPerson.tags.forEach(item => {
+          if (item.match('=')) {
+            let [key, value] = item.split('=');
+            person.tags[key.trim()] = value.trim();
+          } else {
+            person.tags[item] = true;
+          }
+        });
       }
 
       person.star = ancestors[person._id + ''] == true;
