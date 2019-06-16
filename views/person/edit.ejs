@@ -85,6 +85,14 @@
         values: person.links,
     }}) %>
 
+    <!-- TAGS -->
+
+    <%- include('../forms/tableRowMulti', { params: {
+        attr: 'tags',
+        rootPath: rootPath,
+        values: person.tags,
+    }}) %>
+
 </table>
 
 <script>

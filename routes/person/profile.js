@@ -27,6 +27,9 @@ router.post('/:personId/edit/shareName', makeRouteEditPost('shareName'));
 router.post('/:personId/add/links', makeRouteEditPost('links'));
 router.post('/:personId/delete/links/:deleteId', makeRouteDelete('links'));
 router.post('/:personId/reorder/links/:orderId', makeRouteReorder('links'));
+router.post('/:personId/add/tags', makeRouteEditPost('tags'));
+router.post('/:personId/delete/tags/:deleteId', makeRouteDelete('tags'));
+router.post('/:personId/reorder/tags/:orderId', makeRouteReorder('tags'));
 router.post('/:personId/add/events', makeRouteEditPost('events'));
 router.post('/:personId/toggle/shareLevel', makeRouteTogglePost('shareLevel'));
 
@@ -177,7 +180,7 @@ function makeRouteEditPost(editField, corresponding) {
       newEvent.people.push(person);
 
       mongoose.model('Event').create(newEvent, () => {});
-    } else if (editField == 'links') {
+    } else if (['links', 'tags'].includes(editField)) {
       if (newValue != '') {
         updatedObj[editField] = (person[editField] || []).concat(newValue);
       }
@@ -260,7 +263,7 @@ function makeRouteDelete(editField, corresponding) {
           relative.update(updatedRelative, () => {});
         }
       });
-    } else if (editField == 'links') {
+    } else if (['links', 'tags'].includes(editField)) {
       updatedObj[editField] = person[editField].filter((url, i) => {
         return i != deleteId;
       });

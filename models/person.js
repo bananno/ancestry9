@@ -16,6 +16,7 @@ const personSchema = new mongoose.Schema({
     ref: 'Person',
   }],
   links: [String],
+  tags: [String],
   profileImage: String,
   sharing: {
     level: { type: Number, default: 0 },
