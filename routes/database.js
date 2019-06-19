@@ -6,6 +6,11 @@ const sortEvents = require('../tools/sortEvents');
 const allFields = ['_id', 'parents', 'spouses', 'children'];
 const nonRestrictedFields = ['name', 'customId', 'links', 'profileImage'];
 
+const sourceFields = [
+  '_id', 'type', 'group', 'title', 'date', 'location', 'people',
+  'links', 'images', 'content', 'notes', 'summary',
+];
+
 router.get('/sharing', showDatabaseForSharing);
 router.get('/database', showDatabaseEverything);
 
@@ -99,6 +104,24 @@ function showDatabaseForSharing(req, res) {
       return citation;
     });
 
+    data.sources = data.allSources.map(sourceInfo => {
+      const source = {};
+      source.tags = {};
+
+      sourceFields.forEach(attr => source[attr] = sourceInfo[attr]);
+
+      sourceInfo.tags.forEach(tag => {
+        if (tag.match('=')) {
+          let [key, value] = tag.split('=').map(s => s.trim());
+          source.tags[key] = value;
+        } else {
+          source.tags[tag] = true;
+        }
+      });
+
+      return source;
+    });
+
     data.places = {
       list: [],
       items: [],
@@ -146,7 +169,7 @@ function getMainDatabase(callback) {
                 .exec((err, citations) => {
                   callback({
                     allPeople: people,
-                    sources: sources,
+                    allSources: sources,
                     events: events,
                     citations: citations,
                   });
