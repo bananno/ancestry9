@@ -78,6 +78,14 @@
         values: source.images,
     }}) %>
 
+    <!-- IMAGES -->
+
+    <%- include('../forms/tableRowMulti', { params: {
+        attr: 'tags',
+        rootPath: rootPath,
+        values: source.tags,
+    }}) %>
+
     <!-- NOTES -->
 
     <%- include('../forms/tableRowSingle', { params: {

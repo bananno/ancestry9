@@ -14,6 +14,7 @@ const sourceSchema = new mongoose.Schema({
   }],
   links: [String],
   images: [String],
+  tags: [String],
   content: String,
   notes: String,
   summary: String,

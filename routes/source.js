@@ -9,6 +9,8 @@ const reorderList = require('../tools/reorderList');
 const sortPeople = require('../tools/sortPeople');
 const sortCitations = require('../tools/sortCitations');
 
+const stringArrayAttributes = ['links', 'images', 'tags'];
+
 router.get('/:sourceId', sourceShow);
 router.get('/:sourceId/edit', makeRouteEditGet('none'));
 
@@ -18,13 +20,12 @@ makeSourcesRoutes('title');
 makeSourcesRoutes('date');
 makeSourcesRoutes('location');
 makeSourcesRoutes('people', true);
-makeSourcesRoutes('links', true);
-makeSourcesRoutes('images', true);
 makeSourcesRoutes('content');
 makeSourcesRoutes('notes');
 makeSourcesRoutes('summary');
 makeSourcesRoutes('citations', true);
 makeSourcesRoutes('sharing');
+stringArrayAttributes.forEach(attr => makeSourcesRoutes(attr, true));
 
 module.exports = router;
 
@@ -118,7 +119,7 @@ function makeRouteEditPost(editField) {
         const personId = req.body[editField];
         updatedObj[editField] = source.people;
         updatedObj[editField].push(personId);
-      } else if (editField == 'links' || editField == 'images') {
+      } else if (stringArrayAttributes.includes(editField)) {
         const newValue = req.body[editField].trim();
         if (newValue == '') {
           return;
@@ -159,7 +160,7 @@ function makeRouteDelete(editField) {
 
       if (editField == 'people') {
         updatedObj[editField] = removePersonFromList(source[editField], deleteId);
-      } else if (editField == 'links' || editField == 'images') {
+      } else if (stringArrayAttributes.includes(editField)) {
         updatedObj[editField] = source[editField].filter((url, i) => {
           return i != deleteId;
         });
