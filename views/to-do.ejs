@@ -33,6 +33,12 @@
     <% }); %>
 </table>
 
+<style>
+  .to-do-list a {
+    word-break: break-word;
+  }
+</style>
+
 <script>
     $('.to-do-list-item').each((i, todo) => {
         $(todo).find('.button-edit').click(() => {
