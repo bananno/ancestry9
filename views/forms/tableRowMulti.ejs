@@ -1,112 +1,112 @@
 <%
-    var attr = params.attr;
-    var values = params.values;
-    var numberOfValues = values.length;
+  var attr = params.attr;
+  var values = params.values;
+  var numberOfValues = values.length;
 
-    var links = params.values;
-    var rootPath = params.rootPath;
-    var editIsActive = false;
-    var editIsAvailable = true;
-    var dataType = params.dataType || attr;
+  var links = params.values;
+  var rootPath = params.rootPath;
+  var editIsActive = false;
+  var editIsAvailable = true;
+  var dataType = params.dataType || attr;
 
-    var addItemPath = rootPath + '/add/' + attr;
+  var addItemPath = rootPath + '/add/' + attr;
 %>
 
 <% for (var i = 0; i < numberOfValues; i++) { %>
-    <%
-        var thisItem = values[i];
-        var itemId = thisItem._id || i;
-        var deleteItemPath = rootPath + '/delete/' + attr + '/' + itemId;
-        var reorderItemPath = rootPath + '/reorder/' + attr + '/' + itemId;
-    %>
+  <%
+    var thisItem = values[i];
+    var itemId = thisItem._id || i;
+    var deleteItemPath = rootPath + '/delete/' + attr + '/' + itemId;
+    var reorderItemPath = rootPath + '/reorder/' + attr + '/' + itemId;
+  %>
 
-    <tr>
-        <td>
-            <% if (i == 0) { %>
-                <b><%= attr %></b>
-            <% } %>
-        </td>
+  <tr>
+    <td>
+      <% if (i == 0) { %>
+        <b><%= attr %></b>
+      <% } %>
+    </td>
 
-        <!-- DISPLAY VALUE -->
+    <!-- DISPLAY VALUE -->
 
-        <td>
-            <% if (dataType == 'links') { %>
-                <%- include('../format/externalLink', { url: thisItem }) %>
-            <% } else if (dataType == 'images') { %>
-                <a href="<%= thisItem %>" target="_blank"><img src="<%= thisItem %>" height="100"></a>
-            <% } else if (dataType == 'people') { %>
-                <%- include('../partials/linkToPerson', { params: {
-                    person: thisItem
-                }}) %>
-            <% } else { %>
-                <%= thisItem %>
-            <% } %>
-        </td>
+    <td>
+      <% if (dataType == 'links') { %>
+        <%- include('../format/externalLink', { url: thisItem }) %>
+      <% } else if (dataType == 'images') { %>
+        <a href="<%= thisItem %>" target="_blank"><img src="<%= thisItem %>" height="100"></a>
+      <% } else if (dataType == 'people') { %>
+        <%- include('../partials/linkToPerson', { params: {
+          person: thisItem
+        }}) %>
+      <% } else { %>
+        <%= thisItem %>
+      <% } %>
+    </td>
 
-        <!-- DELETE -->
+    <!-- DELETE -->
 
-        <td>
-            <form action="<%= deleteItemPath %>" method="POST"
-                    onsubmit="return confirmDeletion('<%= attr %>')">
-                <input type="hidden" value="PUT" name="_method">
-                <button type="submit" class="button-delete">delete</button>
-            </form>
-        </td>
+    <td>
+      <form action="<%= deleteItemPath %>" method="POST"
+          onsubmit="return confirmDeletion('<%= attr %>')">
+        <input type="hidden" value="PUT" name="_method">
+        <button type="submit" class="button-delete">delete</button>
+      </form>
+    </td>
 
-        <!-- REORDER UP -->
+    <!-- REORDER UP -->
 
-        <td>
-            <% if (i > 0) { %>
-                <form action="<%= reorderItemPath %>" method="POST">
-                    <input type="hidden" value="PUT" name="_method">
-                    <button type="submit" class="button-reorder">reorder up</button>
-                </form>
-            <% } %>
-        </td>
-    </tr>
+    <td>
+      <% if (i > 0) { %>
+        <form action="<%= reorderItemPath %>" method="POST">
+          <input type="hidden" value="PUT" name="_method">
+          <button type="submit" class="button-reorder">reorder up</button>
+        </form>
+      <% } %>
+    </td>
+  </tr>
 <% } %>
 
 <!-- ADD ANOTHER -->
 
 <tr>
+  <td>
+    <% if (numberOfValues == 0) { %>
+      <b><%= attr %></b>
+    <% } %>
+  </td>
+
+  <form action="<%= addItemPath %>" method="POST">
     <td>
-        <% if (numberOfValues == 0) { %>
-            <b><%= attr %></b>
-        <% } %>
+      <!-- START ADDING -->
+
+      <a class="link-start" onclick="startEdit('<%= attr %>')">add</a>
+      &#160;
+
+      <!-- NEW VALUE -->
+
+      <% if (dataType == 'people') { %>
+        <div item="<%= attr %>" class="value-new">
+          <%- include('../forms/personDropdown', { params: {
+            name: attr,
+            selected: null,
+          }}) %>
+        </div>
+      <% } else { %>
+        <input item="<%= attr %>" class="value-new" type="text" value="" name="<%= attr %>">
+      <% } %>
     </td>
 
-    <form action="<%= addItemPath %>" method="POST">
-        <td>
-            <!-- START ADDING -->
-
-            <a class="link-start" onclick="startEdit('<%= attr %>')">add</a>
-            &#160;
-
-            <!-- NEW VALUE -->
-
-            <% if (dataType == 'people') { %>
-                <div item="<%= attr %>" class="value-new">
-                    <%- include('../forms/personDropdown', { params: {
-                        name: attr,
-                        selected: null,
-                    }}) %>
-                </div>
-            <% } else { %>
-                <input item="<%= attr %>" class="value-new" type="text" value="" name="<%= attr %>">
-            <% } %>
-        </td>
-
-        <!-- SUBMIT NEW ITEM -->
-        <td>
-            <input type="hidden" value="PUT" name="_method">
-            <button item="<%= attr %>" class="button-submit" type="submit">save</button>
-            &#160;
-        </td>
-    </form>
-
-    <!-- CANCEL NEW ITEM -->
+    <!-- SUBMIT NEW ITEM -->
     <td>
-        <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
-        &#160;
+      <input type="hidden" value="PUT" name="_method">
+      <button item="<%= attr %>" class="button-submit" type="submit">save</button>
+      &#160;
     </td>
+  </form>
+
+  <!-- CANCEL NEW ITEM -->
+  <td>
+    <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
+    &#160;
+  </td>
 </tr>
