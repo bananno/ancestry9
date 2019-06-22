@@ -1,14 +1,5 @@
 <%
-  const attr = params.attr;
-  const values = params.values;
-  const numberOfValues = values.length;
-
-  const links = params.values;
-  const rootPath = params.rootPath;
-  const editIsActive = false;
-  const editIsAvailable = true;
-  const dataType = params.dataType || attr;
-
+  const dataType = locals.dataType || attr;
   const addItemPath = rootPath + '/add/' + attr;
 %>
 
@@ -69,7 +60,7 @@
 
 <tr>
   <td>
-    <% if (numberOfValues == 0) { %>
+    <% if (values.length == 0) { %>
       <b><%= attr %></b>
     <% } %>
   </td>
@@ -85,7 +76,7 @@
 
       <% if (dataType == 'people') { %>
         <div item="<%= attr %>" class="value-new">
-          <%- include('../forms/personDropdown', { params: {
+          <%- include('./personDropdown', { params: {
             name: attr,
             selected: null,
           }}) %>
