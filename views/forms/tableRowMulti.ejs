@@ -1,6 +1,15 @@
 <%
   const dataType = locals.dataType || attr;
   const addItemPath = rootPath + '/add/' + attr;
+
+  let peopleDropdownList = [];
+
+  if (dataType == 'people') {
+    const peopleIds = values.map(person => '' + person._id);
+    peopleDropdownList = people.filter(person => {
+      return !peopleIds.includes('' + person._id);
+    });
+  }
 %>
 
 <% values.forEach((thisItem, i) => { %>
@@ -79,6 +88,7 @@
           <%- include('./personDropdown', {
             fieldName: attr,
             selectedPerson: null,
+            people: peopleDropdownList,
           }) %>
         </div>
       <% } else { %>
