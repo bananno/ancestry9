@@ -1,23 +1,22 @@
 <%
-  var attr = params.attr;
-  var values = params.values;
-  var numberOfValues = values.length;
+  const attr = params.attr;
+  const values = params.values;
+  const numberOfValues = values.length;
 
-  var links = params.values;
-  var rootPath = params.rootPath;
-  var editIsActive = false;
-  var editIsAvailable = true;
-  var dataType = params.dataType || attr;
+  const links = params.values;
+  const rootPath = params.rootPath;
+  const editIsActive = false;
+  const editIsAvailable = true;
+  const dataType = params.dataType || attr;
 
-  var addItemPath = rootPath + '/add/' + attr;
+  const addItemPath = rootPath + '/add/' + attr;
 %>
 
-<% for (var i = 0; i < numberOfValues; i++) { %>
+<% values.forEach((thisItem, i) => { %>
   <%
-    var thisItem = values[i];
-    var itemId = thisItem._id || i;
-    var deleteItemPath = rootPath + '/delete/' + attr + '/' + itemId;
-    var reorderItemPath = rootPath + '/reorder/' + attr + '/' + itemId;
+    const itemId = thisItem._id || i;
+    const deleteItemPath = rootPath + '/delete/' + attr + '/' + itemId;
+    const reorderItemPath = rootPath + '/reorder/' + attr + '/' + itemId;
   %>
 
   <tr>
@@ -64,7 +63,7 @@
       <% } %>
     </td>
   </tr>
-<% } %>
+<% }); %>
 
 <!-- ADD ANOTHER -->
 
