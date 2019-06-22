@@ -25,6 +25,15 @@
     <% } %>
 </div>
 
+<% if (person.tags.length) { %>
+    <h2>Tags</h2>
+    <ul class="bullet-list">
+        <% person.tags.forEach(text => { %>
+            <li><%= text %></li>
+        <% }); %>
+    </ul>
+<% } %>
+
 <h2>Family</h2>
 
 <div>
