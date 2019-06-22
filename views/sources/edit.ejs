@@ -154,10 +154,10 @@
           <b>person</b>
         </td>
         <td>
-          <%- include('../forms/personDropdown', { params: {
-            name: 'person',
-            selected: defaultPerson,
-          }}) %>
+          <%- include('../forms/personDropdown', {
+            fieldName: 'person',
+            selectedPerson: defaultPerson,
+          }) %>
         </td>
       </tr>
       <tr>

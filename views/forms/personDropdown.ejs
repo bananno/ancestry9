@@ -1,27 +1,20 @@
 <%
-    var name = params.name;
-    var selected = params.selected;
-    var selectedId = null;
-
-    if (selected != null) {
-        selectedId = '' + (selected._id || selected);
-    }
+  const selectedId = selectedPerson ? ('' + (selectedPerson._id || selectedPerson)) : null;
 %>
 
-<select name="<%= name %>">
-    <option value="0">
-        -- Select --
-    </option>
-    <% for (var personIndex = 0; personIndex < people.length; personIndex++) { %>
-        <% let thisPerson = people[personIndex]; %>
-        <% if (selectedId == '' + thisPerson._id) { %>
-            <option value="<%= thisPerson.id %>" selected="selected">
-                <%= thisPerson.name %>
-            </option>
-        <% } else { %>
-            <option value="<%= thisPerson.id %>">
-                <%= thisPerson.name %>
-            </option>
-        <% } %>
+<select name="<%= fieldName %>">
+  <option value="0">
+    -- Select --
+  </option>
+  <% people.forEach(person => { %>
+    <% if (selectedId == '' + person._id) { %>
+      <option value="<%= person.id %>" selected="selected">
+        <%= person.name %>
+      </option>
+    <% } else { %>
+      <option value="<%= person.id %>">
+        <%= person.name %>
+      </option>
     <% } %>
+  <% }); %>
 </select>

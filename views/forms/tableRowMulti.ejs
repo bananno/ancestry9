@@ -76,10 +76,10 @@
 
       <% if (dataType == 'people') { %>
         <div item="<%= attr %>" class="value-new">
-          <%- include('./personDropdown', { params: {
-            name: attr,
-            selected: null,
-          }}) %>
+          <%- include('./personDropdown', {
+            fieldName: attr,
+            selectedPerson: null,
+          }) %>
         </div>
       <% } else { %>
         <input item="<%= attr %>" class="value-new" type="text" value="" name="<%= attr %>">
