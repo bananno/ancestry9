@@ -131,6 +131,7 @@ function getIncompleteSources(sourceList) {
   sourceList.forEach(source => {
     const needsContent = source.content == null || source.content == '';
     const needsImage = source.images.length == 0;
+    const needsSummary = (source.summary || '').length == 0;
     const isCensus = source.type == 'document' && source.group.match('Census');
 
     let text1, text2;
@@ -143,14 +144,20 @@ function getIncompleteSources(sourceList) {
       return;
     }
 
+    const missing = [];
+
     if (needsContent) {
-      if (needsImage) {
-        list.push([source, text1, 'transcription & image']);
-      } else {
-        list.push([source, text1, 'transcription']);
-      }
-    } else if (needsImage) {
-      list.push([source, text1, 'image']);
+      missing.push('transcription');
+    }
+    if (needsImage) {
+      missing.push('image');
+    }
+    if (needsSummary) {
+      missing.push('summary');
+    }
+
+    if (missing.length) {
+      list.push([source, text1, missing.join(', ')]);
     }
   });
 
