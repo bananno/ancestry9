@@ -119,6 +119,8 @@ function showDatabaseForSharing(req, res) {
         }
       });
 
+      source.people = source.people.filter(personId => tempPersonRef['' + personId]);
+
       return source;
     });
 
