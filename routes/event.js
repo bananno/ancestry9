@@ -1,11 +1,11 @@
-var express = require('express');
-var mongoose = require('mongoose');
-var router = express.Router();
+const express = require('express');
+const mongoose = require('mongoose');
+const router = express.Router();
 
-var getDateValues = require('../tools/getDateValues');
-var getLocationValues = require('../tools/getLocationValues');
-var removePersonFromList = require('../tools/removePersonFromList');
-var reorderList = require('../tools/reorderList');
+const getDateValues = require('../tools/getDateValues');
+const getLocationValues = require('../tools/getLocationValues');
+const removePersonFromList = require('../tools/removePersonFromList');
+const reorderList = require('../tools/reorderList');
 
 router.get('/:eventId', makeRouteEditGet('none'));
 router.post('/:eventId/delete', deleteEvent);
@@ -24,110 +24,93 @@ router.post('/:eventId/reorder/people/:orderId', makeRouteReorder('people'));
 
 module.exports = router;
 
-function makeRouteEditGet(editField) {
-  return function(req, res, next) {
-    var eventId = req.params.eventId;
-    mongoose.model('Event').findById(eventId)
-    .populate('people')
-    .exec(function(err, event) {
-      mongoose.model('Person').find({}, function(err, people) {
-        res.format({
-          html: function() {
-            res.render('layout', {
-              view: 'events/show',
-              title: 'Edit Event',
-              eventId: req.eventId,
-              event: event,
-              editField: editField,
-              people: people,
-            });
-          }
+function withEvent(req, callback) {
+  const eventId = req.params.eventId;
+  mongoose.model('Event')
+  .findById(eventId)
+  .populate('people')
+  .exec((err, event) => {
+    callback(event, eventId);
+  });
+}
+
+function makeRouteEditGet(fieldName) {
+  return (req, res, next) => {
+    withEvent(req, (event, eventId) => {
+      mongoose.model('Person').find({}, (err, people) => {
+        res.render('layout', {
+          view: 'events/show',
+          title: 'Edit Event',
+          eventId: eventId,
+          event: event,
+          editField: fieldName,
+          people: people,
         });
       });
     });
   };
 }
 
-function makeRouteEditPost(editField) {
-  return function(req, res) {
-    var eventId = req.params.eventId;
-    mongoose.model('Event').findById(eventId, function(err, event) {
-      var updatedObj = {};
+function makeRouteEditPost(fieldName) {
+  return (req, res, next) => {
+    withEvent(req, (event, eventId) => {
+      const updatedObj = {};
 
-      if (editField == 'date') {
-        updatedObj[editField] = getDateValues(req);
-      } else if (editField == 'location') {
-        updatedObj[editField] = getLocationValues(req);
-      } else if (editField == 'people') {
-        var personId = req.body[editField];
-        updatedObj[editField] = event.people;
-        updatedObj[editField].push(personId);
+      if (fieldName == 'date') {
+        updatedObj[fieldName] = getDateValues(req);
+      } else if (fieldName == 'location') {
+        updatedObj[fieldName] = getLocationValues(req);
+      } else if (fieldName == 'people') {
+        const personId = req.body[fieldName];
+        updatedObj[fieldName] = event.people;
+        updatedObj[fieldName].push(personId);
       } else {
-        updatedObj[editField] = req.body[editField];
+        updatedObj[fieldName] = req.body[fieldName];
       }
 
-      event.update(updatedObj, function(err) {
-        res.format({
-          html: function() {
-            res.redirect('/event/' + eventId);
-          }
-        });
+      event.update(updatedObj, err => {
+        res.redirect('/event/' + eventId);
       });
     });
   };
 }
 
-function makeRouteDelete(editField) {
-  return function(req, res) {
-    var eventId = req.params.eventId;
-    mongoose.model('Event').findById(eventId, function(err, event) {
-      var updatedObj = {};
-      var deleteId = req.params.deleteId;
+function makeRouteDelete(fieldName) {
+  return (req, res, next) => {
+    withEvent(req, (event, eventId) => {
+      const updatedObj = {};
+      const deleteId = req.params.deleteId;
 
-      if (editField == 'people') {
-        updatedObj[editField] = removePersonFromList(event.people, deleteId);
+      if (fieldName == 'people') {
+        updatedObj[fieldName] = removePersonFromList(event.people, deleteId);
       }
 
-      event.update(updatedObj, function(err) {
-        res.format({
-          html: function() {
-            res.redirect('/event/' + eventId);
-          }
-        });
+      event.update(updatedObj, err => {
+        res.redirect('/event/' + eventId);
       });
     });
   };
 }
 
-function makeRouteReorder(attr) {
-  return function(req, res) {
-    var eventId = req.params.eventId;
-    mongoose.model('Event').findById(eventId, function(err, event) {
-      var updatedObj = {};
-      var orderId = req.params.orderId;
+function makeRouteReorder(fieldName) {
+  return (req, res, next) => {
+    withEvent(req, (event, eventId) => {
+      const updatedObj = {};
+      const orderId = req.params.orderId;
 
-      updatedObj[attr] = reorderList(event[attr], orderId, attr);
+      updatedObj[fieldName] = reorderList(event[fieldName], orderId, fieldName);
 
-      event.update(updatedObj, function(err) {
-        res.format({
-          html: function() {
-            res.redirect('/event/' + eventId);
-          }
-        });
+      event.update(updatedObj, err => {
+        res.redirect('/event/' + eventId);
       });
     });
   };
 }
 
 function deleteEvent(req, res) {
-  var eventId = req.params.eventId;
-  mongoose.model('Event').findById(eventId, function(err, event) {
-    event.remove(function(err) {
-      res.format({
-        html: function() {
-          res.redirect('/events');
-        }
-      });
+  withEvent(req, (event, eventId) => {
+    event.remove(err => {
+      res.redirect('/events');
     });
   });
 }
