@@ -9,7 +9,7 @@ function reorderList(valuelist, orderId, attr) {
         break;
       }
     }
-  } else if (attr == 'links' || attr == 'images') {
+  } else if (['links', 'images', 'tags'].includes(attr)) {
     if (orderId > 0 && valuelist.length > orderId) {
       var temp = valuelist[orderId - 1];
       valuelist[orderId - 1] = valuelist[orderId];

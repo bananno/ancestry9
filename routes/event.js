@@ -18,9 +18,13 @@ router.post('/:eventId/edit/date', makeRouteEditPost('date'));
 router.get('/:eventId/edit/location', makeRouteEditGet('location'));
 router.post('/:eventId/edit/location', makeRouteEditPost('location'));
 
-router.post('/:eventId/add/people', makeRouteEditPost('people'));
+router.post('/:eventId/add/people', makeRouteEditPost('people', true));
 router.post('/:eventId/delete/people/:deleteId', makeRouteDelete('people'));
 router.post('/:eventId/reorder/people/:orderId', makeRouteReorder('people'));
+
+router.post('/:eventId/add/tags', makeRouteEditPost('tags', true));
+router.post('/:eventId/delete/tags/:deleteId', makeRouteDelete('tags'));
+router.post('/:eventId/reorder/tags/:orderId', makeRouteReorder('tags'));
 
 module.exports = router;
 
@@ -51,7 +55,7 @@ function makeRouteEditGet(fieldName) {
   };
 }
 
-function makeRouteEditPost(fieldName) {
+function makeRouteEditPost(fieldName, multipleValues) {
   return (req, res, next) => {
     withEvent(req, (event, eventId) => {
       const updatedObj = {};
@@ -60,10 +64,10 @@ function makeRouteEditPost(fieldName) {
         updatedObj[fieldName] = getDateValues(req);
       } else if (fieldName == 'location') {
         updatedObj[fieldName] = getLocationValues(req);
-      } else if (fieldName == 'people') {
-        const personId = req.body[fieldName];
-        updatedObj[fieldName] = event.people;
-        updatedObj[fieldName].push(personId);
+      } else if (multipleValues) {
+        const newValue = req.body[fieldName];
+        updatedObj[fieldName] = event[fieldName];
+        updatedObj[fieldName].push(newValue);
       } else {
         updatedObj[fieldName] = req.body[fieldName];
       }
@@ -83,6 +87,8 @@ function makeRouteDelete(fieldName) {
 
       if (fieldName == 'people') {
         updatedObj[fieldName] = removePersonFromList(event.people, deleteId);
+      } else {
+        updatedObj[fieldName] = event[fieldName].filter((value, index) => index != deleteId);
       }
 
       event.update(updatedObj, err => {

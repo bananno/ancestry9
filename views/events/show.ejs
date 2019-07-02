@@ -47,6 +47,14 @@
         editPath: rootPath + '/edit/notes',
         originalValue: event.notes,
     }}) %>
+
+    <!-- TAGS -->
+
+    <%- include('../forms/tableRowMulti', {
+        attr: 'tags',
+        rootPath: rootPath,
+        values: event.tags,
+    }) %>
 </table>
 
 <!-- DELETE EVENT -->

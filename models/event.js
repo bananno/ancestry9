@@ -11,6 +11,7 @@ const eventSchema = new mongoose.Schema({
     ref: 'Person',
   }],
   notes: String,
+  tags: [String],
 });
 
 mongoose.model('Event', eventSchema);
