@@ -140,6 +140,8 @@ function getIncompleteSources(sourceList) {
       text1 = 'newspaper article: ' + source.title;
     } else if (source.type == 'grave' || isCensus) {
       text1 = source.group;
+    } else if (source.type == 'book') {
+      text1 = source.group + ' - ' + source.title;
     } else {
       return;
     }
@@ -149,10 +151,10 @@ function getIncompleteSources(sourceList) {
     if (needsContent) {
       missing.push('transcription');
     }
-    if (needsImage) {
+    if (needsImage && source.type != 'book') {
       missing.push('image');
     }
-    if (needsSummary) {
+    if (needsSummary && (isCensus || source.type == 'newspaper')) {
       missing.push('summary');
     }
 
