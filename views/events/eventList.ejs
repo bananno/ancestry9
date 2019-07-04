@@ -39,23 +39,17 @@
   <% events.forEach(event => { %>
     <%
       let eventType = event.type || 'notype';
-      let eventPath, eventTitle;
+      let eventPath;
 
       if (event.source) {
         eventPath = '/source/' + event.source._id;
       } else {
         eventPath = '/event/' + event._id;
       }
-
-      if (event.title.match('historical - ')) {
-        eventTitle = event.title.replace('historical - ', '');
-      } else {
-        eventTitle = event.title;
-      }
     %>
     <tr class="event-row-<%= eventType %>" filter="timeline" filter-set="<%= eventType %>">
       <td>
-        <a href="<%= eventPath %>"><%= eventTitle %></a>
+        <a href="<%= eventPath %>"><%= event.title %></a>
       </td>
       <td>
         <%- include('../format/date', { params: {
