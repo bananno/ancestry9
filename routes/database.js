@@ -11,6 +11,8 @@ const sourceFields = [
   'links', 'images', 'content', 'notes', 'summary',
 ];
 
+const eventFields = ['title', 'date', 'location', 'people', 'notes'];
+
 router.get('/sharing', showDatabaseForSharing);
 router.get('/database', showDatabaseEverything);
 
@@ -29,42 +31,33 @@ function showDatabaseForSharing(req, res) {
       });
     }
 
-    data.events = sortEvents(data.events);
+    data.allEvents = sortEvents(data.allEvents);
 
     const tempPersonRef = {};
 
-    data.people = data.allPeople.map(thisPerson => {
-      if (thisPerson.sharing.level == 0) {
+    data.people = data.allPeople.map(personInfo => {
+      if (personInfo.sharing.level == 0) {
         return null;
       }
 
       let person = {};
 
       allFields.forEach(key => {
-        person[key] = thisPerson[key];
+        person[key] = personInfo[key];
       });
 
-      if (thisPerson.sharing.level == 1) {
+      if (personInfo.sharing.level == 1) {
         person.private = true;
-        person.name = thisPerson.sharing.name || 'Person';
-        person.customId = thisPerson._id;
+        person.name = personInfo.sharing.name || 'Person';
+        person.customId = personInfo._id;
       } else {
         person.private = false;
         nonRestrictedFields.forEach(key => {
-          person[key] = thisPerson[key];
+          person[key] = personInfo[key];
         });
         tempPersonRef['' + person._id] = true;
 
-        person.tags = {};
-
-        thisPerson.tags.forEach(item => {
-          if (item.match('=')) {
-            let [key, value] = item.split('=');
-            person.tags[key.trim()] = value.trim();
-          } else {
-            person.tags[item] = true;
-          }
-        });
+        person.tags = convertTags(personInfo);
       }
 
       person.star = ancestors[person._id + ''] == true;
@@ -74,7 +67,7 @@ function showDatabaseForSharing(req, res) {
 
     data.people = data.people.filter(person => person != null);
 
-    data.events = data.events.map(event => {
+    data.allEvents.map(event => {
       // historical events that have NO people in the list are global events; always include them
       if (event.people.length == 0 && event.title.match('historical - ')) {
         return event;
@@ -92,7 +85,14 @@ function showDatabaseForSharing(req, res) {
       return null;
     });
 
-    data.events = data.events.filter(event => event);
+    data.allEvents = data.allEvents.filter(event => event);
+
+    data.events = data.allEvents.map(eventInfo => {
+      const event = {};
+      eventFields.forEach(attr => event[attr] = eventInfo[attr]);
+      event.tags = convertTags(eventInfo);
+      return event;
+    });
 
     data.citations = data.citations.filter(citation => {
       return citation.person.sharing.level == 2 && citation.source.sharing;
@@ -106,21 +106,9 @@ function showDatabaseForSharing(req, res) {
 
     data.sources = data.allSources.map(sourceInfo => {
       const source = {};
-      source.tags = {};
-
       sourceFields.forEach(attr => source[attr] = sourceInfo[attr]);
-
-      sourceInfo.tags.forEach(tag => {
-        if (tag.match('=')) {
-          let [key, value] = tag.split('=').map(s => s.trim());
-          source.tags[key] = value;
-        } else {
-          source.tags[tag] = true;
-        }
-      });
-
+      source.tags = convertTags(sourceInfo);
       source.people = source.people.filter(personId => tempPersonRef['' + personId]);
-
       return source;
     });
 
@@ -172,7 +160,7 @@ function getMainDatabase(callback) {
                   callback({
                     allPeople: people,
                     allSources: sources,
-                    events: events,
+                    allEvents: events,
                     citations: citations,
                   });
                 });
@@ -196,6 +184,19 @@ function showDatabaseEverything(req, res) {
       });
     });
   });
+}
+
+function convertTags(obj) {
+  const tags = {};
+  obj.tags.forEach(tag => {
+    if (tag.match('=')) {
+      let [key, value] = tag.split('=').map(s => s.trim());
+      tags[key] = value;
+    } else {
+      tags[tag] = true;
+    }
+  });
+  return tags;
 }
 
 module.exports = router;
