@@ -1,94 +1,94 @@
 <%
-    const events = locals.events || params.events;
-    const filterByType = events.length && events[0].type;
+  const events = locals.events || params.events;
+  const filterByType = events.length && events[0].type;
 %>
 
 <% if (filterByType) { %>
-    <div class="filter-buttons" filter="timeline">
-        <div class="filter-button active" filter-set="personal">
-            personal
-        </div>
-        <div class="filter-button active" filter-set="spouse">
-            spouse
-        </div>
-        <div class="filter-button active" filter-set="child">
-            children
-        </div>
-        <div class="filter-button active" filter-set="census">
-            census
-        </div>
-        <div class="filter-button active" filter-set="newspapers">
-            newspapers
-        </div>
-        <div class="filter-button" filter-set="source">
-            other sources
-        </div>
+  <div class="filter-buttons" filter="timeline">
+    <div class="filter-button active" filter-set="personal">
+      personal
     </div>
+    <div class="filter-button active" filter-set="spouse">
+      spouse
+    </div>
+    <div class="filter-button active" filter-set="child">
+      children
+    </div>
+    <div class="filter-button active" filter-set="census">
+      census
+    </div>
+    <div class="filter-button active" filter-set="newspapers">
+      newspapers
+    </div>
+    <div class="filter-button" filter-set="source">
+      other sources
+    </div>
+  </div>
 <% } %>
 
 <br>
 
 <table class="event_list">
-    <tr>
-        <th> title </th>
-        <th> date </th>
-        <th> location </th>
-        <th> people </th>
-        <th> notes </th>
+  <tr>
+    <th> title </th>
+    <th> date </th>
+    <th> location </th>
+    <th> people </th>
+    <th> notes </th>
+  </tr>
+
+  <% events.forEach(event => { %>
+    <%
+      let eventType = event.type || 'notype';
+      let eventPath, eventTitle;
+
+      if (event.source) {
+        eventPath = '/source/' + event.source._id;
+      } else {
+        eventPath = '/event/' + event._id;
+      }
+
+      if (event.title.match('historical - ')) {
+        eventTitle = event.title.replace('historical - ', '');
+      } else {
+        eventTitle = event.title;
+      }
+    %>
+    <tr class="event-row-<%= eventType %>" filter="timeline" filter-set="<%= eventType %>">
+      <td>
+        <a href="<%= eventPath %>"><%= eventTitle %></a>
+      </td>
+      <td>
+        <%- include('../format/date', { params: {
+          date: event.date,
+        }}) %>
+      </td>
+      <td>
+        <%- include('../format/location', { params: {
+          location: event.location,
+        }}) %>
+      </td>
+      <td>
+        <%- include('../partials/peopleList', { params: {
+          people: event.people,
+          format: 'list',
+        }}) %>
+      </td>
+      <td style="max-width: 400px;">
+        <%= event.notes %>
+        <% if (event.source) { %>
+          <% event.source.images.forEach(url => { %>
+            <a href="<%= url %>" target="_blank"><img src="<%= url %>"
+              style="max-height: 100px; max-width: 350px;"></a>
+          <% }); %>
+        <% } %>
+      </td>
     </tr>
-
-    <% events.forEach(event => { %>
-        <%
-            let eventType = event.type || 'notype';
-            let eventPath, eventTitle;
-
-            if (event.source) {
-                eventPath = '/source/' + event.source._id;
-            } else {
-                eventPath = '/event/' + event._id;
-            }
-
-            if (event.title.match('historical - ')) {
-                eventTitle = event.title.replace('historical - ', '');
-            } else {
-                eventTitle = event.title;
-            }
-        %>
-        <tr class="event-row-<%= eventType %>" filter="timeline" filter-set="<%= eventType %>">
-            <td>
-                <a href="<%= eventPath %>"><%= eventTitle %></a>
-            </td>
-            <td>
-                <%- include('../format/date', { params: {
-                    date: event.date,
-                }}) %>
-            </td>
-            <td>
-                <%- include('../format/location', { params: {
-                    location: event.location,
-                }}) %>
-            </td>
-            <td>
-                <%- include('../partials/peopleList', { params: {
-                    people: event.people,
-                    format: 'list',
-                }}) %>
-            </td>
-            <td style="max-width: 400px;">
-                <%= event.notes %>
-                <% if (event.source) { %>
-                    <% event.source.images.forEach(url => { %>
-                        <a href="<%= url %>" target="_blank"><img src="<%= url %>"
-                            style="max-height: 100px; max-width: 350px;"></a>
-                    <% }); %>
-                <% } %>
-            </td>
-        </tr>
-    <% }); %>
+  <% }); %>
 </table>
 
 <% if (filterByType) { %>
-    <script>
-        createToggleFilter('timeline');
-    </script>
+  <script>
+    createToggleFilter('timeline');
+  </script>
 <% } %>
