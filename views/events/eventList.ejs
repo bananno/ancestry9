@@ -34,6 +34,9 @@
     <th> location </th>
     <th> people </th>
     <th> notes </th>
+    <% if (locals.showTags) { %>
+      <th> tags </th>
+    <% } %>
   </tr>
 
   <% events.forEach(event => { %>
@@ -82,6 +85,15 @@
           <% }); %>
         <% } %>
       </td>
+      <% if (locals.showTags) { %>
+        <td>
+          <ul class="bullet-list">
+            <% event.tags.forEach(tag => { %>
+              <li> <%= tag %> </li>
+            <% }); %>
+          </ul>
+        </td>
+      <% } %>
     </tr>
   <% }); %>
 </table>
