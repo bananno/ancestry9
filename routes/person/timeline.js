@@ -72,13 +72,15 @@ function filterEvents(events, person) {
   const spouses = person.spouses;
   let birthYear, deathYear;
 
-  events = events.map((thisEvent) => {
+  events = events.map(thisEvent => {
     thisEvent.type = null;
 
-    if (thisEvent.title.match('historical -') && thisEvent.people.length == 0) {
-      if (!birthYear || !deathYear || !thisEvent.date
-          || thisEvent.date.year < birthYear || thisEvent.date.year > deathYear) {
-        return thisEvent;
+    // Historical events that have no people in the list are global events.
+    // Always include them if they are during the person's life.
+    if (thisEvent.tags.includes('historical') && thisEvent.people.length == 0) {
+      if (!birthYear || !thisEvent.date || thisEvent.date.year < birthYear
+          || (deathYear && thisEvent.date.year > deathYear)) {
+        return null;
       }
 
       thisEvent.type = 'historical';
@@ -127,9 +129,5 @@ function filterEvents(events, person) {
     return thisEvent;
   });
 
-  events = events.filter((thisEvent) => {
-    return thisEvent.type != null;
-  });
-
-  return events;
+  return events.filter(event => event && event.type);
 }
