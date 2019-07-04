@@ -1,8 +1,5 @@
-<%
-  const filterByType = events.length && events[0].type;
-%>
 
-<% if (filterByType) { %>
+<% if (locals.filterByType) { %>
   <div class="filter-buttons" filter="timeline">
     <div class="filter-button active" filter-set="personal">
       personal
@@ -98,7 +95,7 @@
   <% }); %>
 </table>
 
-<% if (filterByType) { %>
+<% if (locals.filterByType) { %>
   <script>
     createToggleFilter('timeline');
   </script>
