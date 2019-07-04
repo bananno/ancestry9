@@ -73,6 +73,50 @@ ul.no-bullet-list {
   height: 100px;
 }
 
+/* EVENT LIST TABLE */
+
+.event-list th,
+.event-list td {
+  padding: 5px 10px;
+  border: 1px solid black;
+}
+
+.event-list th,
+.event-list tr.event-row-personal td,
+.event-list tr.event-row-census td {
+  background-color: #d1ecfc;
+}
+
+/* TABLE TOGGLE FILTERS */
+
+#event-list-filters {
+  padding: 5px;
+}
+
+.filter-buttons .filter-button {
+  display: inline-block;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.filter-buttons .filter-button.active {
+  background-color: #ddd;
+}
+
+#event-list-filters div {
+  display: inline-block;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+#event-list-filters div.active {
+  background-color: #ddd;
+}
+
 /* OTHER */
 
 .edit-form-frame td {
@@ -153,15 +197,6 @@ td.citation-item-repeat {
 
 /*******/
 
-.event_list th, .event_list td {
-  padding: 5px 10px;
-  border: 1px solid black;
-}
-
-.event_list ul {
-  list-style: none;
-}
-
 .text-content {
   max-width: 700px;
   margin: 10px 0px;
@@ -187,40 +222,6 @@ td.citation-item-repeat {
 .content-textarea {
   height: 300px;
   width: 500px;
-}
-
-#event-list-filters {
-  padding: 5px;
-}
-
-.filter-buttons .filter-button {
-  display: inline-block;
-  border: 1px solid #aaa;
-  border-radius: 3px;
-  padding: 5px;
-  cursor: pointer;
-}
-
-.filter-buttons .filter-button.active {
-  background-color: #ddd;
-}
-
-#event-list-filters div {
-  display: inline-block;
-  border: 1px solid #aaa;
-  border-radius: 3px;
-  padding: 5px;
-  cursor: pointer;
-}
-
-#event-list-filters div.active {
-  background-color: #ddd;
-}
-
-.event_list th,
-.event_list tr.event-row-personal td,
-.event_list tr.event-row-census td {
-  background-color: #d1ecfc;
 }
 
 .family-list-block {
