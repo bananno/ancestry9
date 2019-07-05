@@ -11,7 +11,7 @@ const sourceFields = [
   'links', 'images', 'content', 'notes', 'summary',
 ];
 
-const eventFields = ['title', 'date', 'location', 'people', 'notes'];
+const eventFields = ['_id', 'title', 'date', 'location', 'people', 'notes'];
 
 router.get('/sharing', showDatabaseForSharing);
 router.get('/database', showDatabaseEverything);
