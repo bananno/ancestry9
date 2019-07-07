@@ -162,7 +162,7 @@ function getMainDatabase(callback) {
 function getSharedEvents(eventList, tempPersonRef) {
   eventList = eventList.map(event => {
     // historical events that have NO people in the list are global events; always include them
-    if (event.people.length == 0 && event.tags.includes['historical']) {
+    if (event.people.length == 0 && event.tags.includes('historical')) {
       return event;
     }
 
