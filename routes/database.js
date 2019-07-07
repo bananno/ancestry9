@@ -13,8 +13,25 @@ const sourceFields = [
 
 const eventFields = ['_id', 'title', 'date', 'location', 'people', 'notes'];
 
-router.get('/sharing', showDatabaseForSharing);
 router.get('/database', showDatabaseEverything);
+router.get('/sharing', showDatabaseForSharing);
+
+function showDatabaseEverything(req, res) {
+  mongoose.model('Person').find({}, (err, people) => {
+    mongoose.model('Source').find({}, (err, sources) => {
+      mongoose.model('Event').find({}, (err, events) => {
+        mongoose.model('Citation').find({}, (err, citations) => {
+          res.render('database', {
+            people: people,
+            sources: sources,
+            events: events,
+            citations: citations,
+          });
+        });
+      });
+    });
+  });
+}
 
 function showDatabaseForSharing(req, res) {
   getMainDatabase(data => {
@@ -30,8 +47,6 @@ function showDatabaseForSharing(req, res) {
         findAncestors(parent);
       });
     }
-
-    data.allEvents = sortEvents(data.allEvents);
 
     const tempPersonRef = {};
 
@@ -67,32 +82,7 @@ function showDatabaseForSharing(req, res) {
 
     data.people = data.people.filter(person => person != null);
 
-    data.allEvents.map(event => {
-      // historical events that have NO people in the list are global events; always include them
-      if (event.people.length == 0 && event.title.match('historical - ')) {
-        return event;
-      }
-
-      event.people = event.people.filter(person => {
-        return tempPersonRef['' + person] !== undefined;
-      });
-
-      // all other events are shared IF they apply to at least one non-private person
-      if (event.people.length > 0) {
-        return event;
-      }
-
-      return null;
-    });
-
-    data.allEvents = data.allEvents.filter(event => event);
-
-    data.events = data.allEvents.map(eventInfo => {
-      const event = {};
-      eventFields.forEach(attr => event[attr] = eventInfo[attr]);
-      event.tags = convertTags(eventInfo);
-      return event;
-    });
+    data.events = getSharedEvents(data.allEvents, tempPersonRef);
 
     data.citations = data.citations.filter(citation => {
       return citation.person.sharing.level == 2 && citation.source.sharing;
@@ -169,21 +159,36 @@ function getMainDatabase(callback) {
     });
 }
 
-function showDatabaseEverything(req, res) {
-  mongoose.model('Person').find({}, (err, people) => {
-    mongoose.model('Source').find({}, (err, sources) => {
-      mongoose.model('Event').find({}, (err, events) => {
-        mongoose.model('Citation').find({}, (err, citations) => {
-          res.render('database', {
-            people: people,
-            sources: sources,
-            events: events,
-            citations: citations,
-          });
-        });
-      });
+function getSharedEvents(eventList, tempPersonRef) {
+  eventList = eventList.map(event => {
+    // historical events that have NO people in the list are global events; always include them
+    if (event.people.length == 0 && event.tags.includes['historical']) {
+      return event;
+    }
+
+    // Remove non-shared people from the event.
+    event.people = event.people.filter(personId => {
+      return tempPersonRef['' + personId] !== undefined;
     });
+
+    // all other events are shared IF they apply to at least one non-private person
+    if (event.people.length > 0) {
+      return event;
+    }
+
+    return null;
   });
+
+  eventList = eventList.filter(event => event);
+
+  eventList = eventList.map(eventInfo => {
+    const event = {};
+    eventFields.forEach(attr => event[attr] = eventInfo[attr]);
+    event.tags = convertTags(eventInfo);
+    return event;
+  });
+
+  return sortEvents(eventList);
 }
 
 function convertTags(obj) {
