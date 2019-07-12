@@ -17,6 +17,10 @@ router.get('/', (req, res, next) => {
   });
 });
 
+router.get('/shared', (req, res, next) => {
+  res.render('../shared/index.html');
+});
+
 // PEOPLE - INDEX + NEW
 
 router.get('/people', getPersonsIndexRoute(false));
