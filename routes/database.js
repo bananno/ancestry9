@@ -35,25 +35,49 @@ function showDatabaseEverything(req, res) {
 }
 
 function saveSharedDatabase(req, res) {
-  getProcessedSharedData(req, res, data => {
-    const content = (
-      'const DATABASE = {};\n\n' +
-      ['people', 'sources', 'events', 'citations'].map(attr => {
-        return (
-          'DATABASE.' + attr + ' = [\n' +
-            data[attr].map(item => '  ' + JSON.stringify(item)).join(',\n') +
-          '];\n'
-        );
-      }).join('\n')
-    );
-
-    fs.writeFile('shared/database/raw.js', content, err => {
-      if (err) {
-        throw err;
-      }
-      console.log('Database saved.');
-      res.redirect('/');
+  let data = {};
+  new Promise(resolve => {
+    getProcessedSharedData(req, res, output => {
+      data = output;
+      resolve();
     });
+  }).then(() => {
+    new Promise(resolve => {
+      saveRawSharedDataFile(resolve, 'people', data.people, true);
+    });
+  }).then(() => {
+    new Promise(resolve => {
+      saveRawSharedDataFile(resolve, 'sources', data.sources);
+    });
+  }).then(() => {
+    new Promise(resolve => {
+      saveRawSharedDataFile(resolve, 'events', data.events);
+    });
+  }).then(() => {
+    new Promise(resolve => {
+      saveRawSharedDataFile(resolve, 'citations', data.citations);
+    });
+  }).then(() => {
+    res.redirect('/');
+  });
+}
+
+function saveRawSharedDataFile(resolve, attr, arr, starter) {
+  const filename = 'shared/database/raw-' + attr + '.js';
+
+  const content = (
+    (starter ? 'const DATABASE = {};\n\n' : '') +
+    'DATABASE.' + attr + ' = [\n' +
+      arr.map(item => '  ' + JSON.stringify(item) + ',').join('\n') +
+    '\n];\n'
+  );
+
+  fs.writeFile(filename, content, err => {
+    if (err) {
+      throw err;
+    }
+    console.log('Shared database saved: ' + attr);
+    resolve();
   });
 }
 
