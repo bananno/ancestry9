@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const fs = require('fs');
 const router = express.Router();
 const sortEvents = require('../tools/sortEvents');
 
@@ -14,7 +15,7 @@ const sourceFields = [
 const eventFields = ['_id', 'title', 'date', 'location', 'people', 'notes'];
 
 router.get('/database', showDatabaseEverything);
-router.get('/sharing', showDatabaseForSharing);
+router.get('/sharing', saveSharedDatabase);
 
 function showDatabaseEverything(req, res) {
   mongoose.model('Person').find({}, (err, people) => {
@@ -33,8 +34,32 @@ function showDatabaseEverything(req, res) {
   });
 }
 
-function showDatabaseForSharing(req, res) {
+function saveSharedDatabase(req, res) {
+  getProcessedSharedData(req, res, data => {
+    const content = (
+      'const DATABASE = {};\n\n' +
+      ['people', 'sources', 'events', 'citations'].map(attr => {
+        return (
+          'DATABASE.' + attr + ' = [\n' +
+            data[attr].map(item => '  ' + JSON.stringify(item)).join(',\n') +
+          '];\n'
+        );
+      }).join('\n')
+    );
+
+    fs.writeFile('shared/database/raw.js', content, err => {
+      if (err) {
+        throw err;
+      }
+      console.log('Database saved.');
+      res.redirect('/');
+    });
+  });
+}
+
+function getProcessedSharedData(req, res, callback) {
   getMainDatabase(data => {
+    console.log('process shared data');
 
     const ancestors = {};
 
@@ -128,11 +153,12 @@ function showDatabaseForSharing(req, res) {
       }
     });
 
-    res.render('sharing', data);
+    callback(data);
   });
 }
 
 function getMainDatabase(callback) {
+  console.log('get shared data');
   mongoose.model('Person')
     .find({})
     .exec((err, people) => {
