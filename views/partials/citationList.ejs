@@ -147,7 +147,7 @@
         <% } %>
       </tr>
       <% if (showEditDelete) { %>
-        <form>
+        <form action="<%= rootPath %>/edit/citations/<%= citation._id %>" method="POST">
           <tr data-citation-id="<%= citation._id %>" class="<%= classEdit %>">
             <td>
               <%- include('../forms/personDropdown', {
@@ -156,10 +156,10 @@
               }) %>
             </td>
             <td colspan="2" class="citation-cell">
-              <input value="<%= citation.item %>">
+              <input name="item" value="<%= citation.item %>">
             </td>
             <td>
-              <input value="<%= citation.information %>">
+              <input name="information" value="<%= citation.information %>">
             </td>
             <td>
               <span class="clickable-link" onclick="cancelEdit()">cancel</span>

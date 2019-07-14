@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 
+const Source = mongoose.model('Source');
+const Citation = mongoose.model('Citation');
 const getDateValues = require('../tools/getDateValues');
 const getLocationValues = require('../tools/getLocationValues');
 const removePersonFromList = require('../tools/removePersonFromList');
@@ -26,6 +28,8 @@ makeSourcesRoutes('summary');
 makeSourcesRoutes('citations', true);
 makeSourcesRoutes('sharing');
 stringArrayAttributes.forEach(attr => makeSourcesRoutes(attr, true));
+
+router.post('/:sourceId/edit/citations/:citationId', editCitation);
 
 module.exports = router;
 
@@ -192,4 +196,22 @@ function makeRouteReorder(editField) {
       });
     });
   };
+}
+
+function editCitation(req, res, next) {
+  const sourceId = req.params.sourceId;
+  const citationId = req.params.citationId;
+  Citation.findById(citationId, (err, citation) => {
+    const updatedObj = {
+      source: sourceId,
+      person: req.body.person,
+      item: req.body.item.trim(),
+      information: req.body.information.trim(),
+    };
+    if (updatedObj.person && updatedObj.item && updatedObj.information) {
+      citation.update(updatedObj, err => {
+        res.redirect('/source/' + sourceId + '/edit');
+      });
+    }
+  });
 }
