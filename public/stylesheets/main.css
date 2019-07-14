@@ -195,6 +195,10 @@ td.citation-item-repeat {
   border-color: red;
 }
 
+tr.citation-row-edit {
+  display: none;
+}
+
 /*******/
 
 .text-content {

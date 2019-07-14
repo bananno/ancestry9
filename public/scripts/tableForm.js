@@ -5,7 +5,7 @@ function initializeEditForm(currentlyEditingByRoute) {
   }
 }
 
-function startEdit(item) {
+function startEdit(item, val) {
   $('.link-start').hide();
   $('.link-cancel').hide();
   $('.button-submit').hide();
@@ -17,8 +17,13 @@ function startEdit(item) {
   $('.link-cancel').filter('[item="' + item + '"]').show();
   $('.button-submit').filter('[item="' + item + '"]').show();
 
-  var originalValue = $('.value-original').filter('[item="' + item + '"]').val();
+  const originalValue = $('.value-original').filter('[item="' + item + '"]').val();
   $('.value-edit').filter('[item="' + item + '"]').val(originalValue);
+
+  if (item == 'citation') {
+    $('.citation-row-show[data-citation-id="' + val + '"]').hide();
+    $('.citation-row-edit[data-citation-id="' + val + '"]').show();
+  }
 }
 
 function cancelEdit(item) {
@@ -30,4 +35,6 @@ function cancelEdit(item) {
   $('.button-submit').hide();
   $('.button-delete').show();
   $('.button-reorder').show();
+  $('.citation-row-show').show();
+  $('.citation-row-edit').hide();
 }

@@ -1,4 +1,6 @@
 <%
+  const showEditDelete = locals.showDelete || false;
+
   let citationSortableTables;
 
   const citationTables = [{
@@ -54,7 +56,8 @@
       <% if (showSource) { %>
         <th> source </th>
       <% } %>
-      <% if (showDelete) { %>
+      <% if (showEditDelete) { %>
+        <th> edit </th>
         <th> delete </th>
       <% } %>
     </tr>
@@ -97,9 +100,12 @@
             previousPerson = citation.person._id;
           }
         }
+
+        const classShow = 'citation-row-show alternate-row-' + oddRow;
+        const classEdit = 'citation-row-edit alternate-row-' + oddRow;
       %>
 
-      <tr class="alternate-row-<%= oddRow %>">
+      <tr data-citation-id="<%= citation._id %>" class="<%= classShow %>">
         <% if (showPerson) { %>
           <td class="citation-cell">
             <%- include('../partials/linkToPerson', { params: {
@@ -124,7 +130,11 @@
             }) %>
           </td>
         <% } %>
-        <% if (showDelete) { %>
+        <% if (showEditDelete) { %>
+          <td class="citation-cell">
+            <span class="clickable-link link-start"
+              onclick="startEdit('citation', '<%= citation._id %>')">edit</span>
+          </td>
           <td class="citation-cell">
             <form action="<%= rootPath %>/delete/citations/<%= citation._id %>" method="POST"
                 onsubmit="return confirmDeletion('citation')">
@@ -134,6 +144,30 @@
           </td>
         <% } %>
       </tr>
+      <% if (showEditDelete) { %>
+        <form>
+          <tr data-citation-id="<%= citation._id %>" class="<%= classEdit %>">
+            <td>
+              <%- include('../forms/personDropdown', {
+                fieldName: 'person',
+                selectedPerson: citation.person,
+              }) %>
+            </td>
+            <td colspan="2" class="citation-cell">
+              <input value="<%= citation.item %>">
+            </td>
+            <td>
+              <input value="<%= citation.information %>">
+            </td>
+            <td>
+              <span class="clickable-link" onclick="cancelEdit()">cancel</span>
+            </td>
+            <td>
+              <button>save</button>
+            </td>
+          </tr>
+        </form>
+      <% } %>
     <% }); %>
   </table>
 <% }); %>
