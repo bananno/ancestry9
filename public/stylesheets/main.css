@@ -168,7 +168,7 @@ table.citation-list th .clickable-link {
   font-weight: normal;
 }
 
-table.citation-list tr:last-child td {
+table.citation-list tr.last-item td{
   border-bottom: 1px solid #bbb;
 }
 

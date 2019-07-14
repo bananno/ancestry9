@@ -71,7 +71,7 @@
       let oddRow = false;
     %>
 
-    <% citationTable.list.forEach(citation => { %>
+    <% citationTable.list.forEach((citation, i) => { %>
       <%
         let item1 = citation.item;
         let item2 = '';
@@ -103,8 +103,13 @@
           }
         }
 
-        const classShow = 'citation-row-show alternate-row-' + oddRow;
-        const classEdit = 'citation-row-edit alternate-row-' + oddRow;
+        let classShow = 'citation-row-show alternate-row-' + oddRow;
+        let classEdit = 'citation-row-edit alternate-row-' + oddRow;
+
+        if (i == citationTable.list.length - 1) {
+          classShow += ' last-item';
+          classEdit += ' last-item';
+        }
       %>
 
       <tr data-citation-id="<%= citation._id %>" class="<%= classShow %>">
