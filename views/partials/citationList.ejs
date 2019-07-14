@@ -46,10 +46,12 @@
       <% } %>
       <th colspan="2">
         item
-        <% if (citationTable.sort == 'item') { %>
-          <span class="already-sorted"><u>[sort]</u></span>
-        <% } else if (citationTable.sort != 'none') { %>
-          <span class="clickable-link" onClick="sortCitationsByItem()">[sort]</span>
+        <% if (citationSortableTables) { %>
+          <% if (citationTable.sort == 'item') { %>
+            <span class="already-sorted"><u>[sort]</u></span>
+          <% } else if (citationTable.sort != 'none') { %>
+            <span class="clickable-link" onClick="sortCitationsByItem()">[sort]</span>
+          <% } %>
         <% } %>
       </th>
       <th> information </th>
