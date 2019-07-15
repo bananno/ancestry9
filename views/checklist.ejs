@@ -1,0 +1,11 @@
+<h1>Checklist</h1>
+
+<table border="1">
+  <% people.forEach(person => { %>
+    <tr>
+      <td> <%= person.name %> </td>
+      <td> <%= person.birth ? JSON.stringify(person.birth.date) : '' %> </td>
+      <td> <%= person.death ? JSON.stringify(person.death.date) : '' %> </td>
+    </tr>
+  <% }); %>
+</table>

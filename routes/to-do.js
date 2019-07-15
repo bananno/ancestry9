@@ -3,9 +3,25 @@ const mongoose = require('mongoose');
 const router = express.Router();
 module.exports = router;
 
+const getAllData = require('./tools').getAllData;
+const populatePeopleDates = require('./tools').populatePeopleDates;
+
+router.get('/checklist', showChecklist);
+
 router.get('/to-do', showToDoList);
 router.post('/to-do/new', newToDoItem);
 router.post('/to-do/:id/edit', editToDoItem);
+
+function showChecklist(req, res, next) {
+  getAllData(data => {
+    data.people = populatePeopleDates(data.people, data.events);
+    res.render('layout', {
+      view: 'checklist',
+      title: 'Checklist',
+      ...data
+    });
+  });
+}
 
 function showToDoList(req, res, next) {
   mongoose.model('To-do').find({}, (err, todoItems) => {
