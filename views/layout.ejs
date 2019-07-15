@@ -1,43 +1,43 @@
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
-    <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css">
-    <link rel="stylesheet" type="text/css" href="/stylesheets/treecell.css">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/treecell.css">
 
-    <script src="/vendor/jquery.3.3.1.min.js"></script>
+  <script src="/vendor/jquery.3.3.1.min.js"></script>
 
-    <script src="/scripts/script.js"></script>
-    <script src="/scripts/tableForm.js"></script>
-    <script src="/scripts/filterToggle.js"></script>
+  <script src="/scripts/script.js"></script>
+  <script src="/scripts/tableForm.js"></script>
+  <script src="/scripts/filterToggle.js"></script>
 
-    <link href="/images/favicon.ico" rel="shortcut icon" type="image/icon">
-    <link href="/images/favicon.ico" rel="icon" type="image/icon">
+  <link href="/images/favicon.ico" rel="shortcut icon" type="image/icon">
+  <link href="/images/favicon.ico" rel="icon" type="image/icon">
 
-    <title>
-        <% if (locals.title) { %>
-            <%= title %> |
-        <% } %>
-        Lundberg Ancestry
-    </title>
+  <title>
+    <% if (locals.title) { %>
+      <%= title %> |
+    <% } %>
+    Lundberg Ancestry
+  </title>
 </head>
 <body>
-    <div id="page-header">
-        <ul id="main-navigation">
-            <li><a href="/">Home</a></li>
-            <li><a href="/person/AnnaPeterson">Anna</a></li>
-            <li><a href="/people">People</a></li>
-            <li><a href="/events">Events</a></li>
-            <li><a href="/sources">Sources</a></li>
-            <li><a href="/map">Map</a></li>
-            <li><a href="/checklist">Checklist</a></li>
-            <li><a href="/to-do">To-do</a></li>
-            <li><a href="/sharing">Sharing</a></li>
-            <li><a href="/database">Database</a></li>
-        </ul>
-    </div>
+  <div id="page-header">
+    <ul id="main-navigation">
+      <li><a href="/">Home</a></li>
+      <li><a href="/person/AnnaPeterson">Anna</a></li>
+      <li><a href="/people">People</a></li>
+      <li><a href="/events">Events</a></li>
+      <li><a href="/sources">Sources</a></li>
+      <li><a href="/map">Map</a></li>
+      <li><a href="/checklist">Checklist</a></li>
+      <li><a href="/to-do">To-do</a></li>
+      <li><a href="/sharing">Sharing</a></li>
+      <li><a href="/database">Database</a></li>
+    </ul>
+  </div>
 
-    <div id="page-content">
-        <%- include('./' + view) %>
-    </div>
+  <div id="page-content">
+    <%- include('./' + view) %>
+  </div>
 </body>
 </html>
