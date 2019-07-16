@@ -1,6 +1,6 @@
-<% if (params.format == 'bullet') { %>
+<% if (locals.format == 'bullet') { %>
   <ul class="bullet-list">
-    <% params.people.forEach(person => { %>
+    <% people.forEach(person => { %>
       <li>
         <%- include('../partials/linkToPerson', {
           person: person,
@@ -8,9 +8,9 @@
       </li>
     <% }); %>
   </ul>
-<% } else if (params.format == 'list') { %>
+<% } else if (locals.format == 'list') { %>
   <ul class="no-bullet-list">
-    <% params.people.forEach(person => { %>
+    <% people.forEach(person => { %>
       <li>
         <%- include('../partials/linkToPerson', {
           person: person,

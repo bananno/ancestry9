@@ -1,24 +1,24 @@
-<h2> Chart </h2>
+<h2>Chart</h2>
 
 <table border="1">
-    <% for (var country in nationality) { %>
-        <tr>
-            <td>
-                <%= nationality[country] %>
-            </td>
-            <td>
-                <%= country %>
-            </td>
-        </tr>
-    <% } %>
+  <% for (let country in nationality) { %>
+    <tr>
+      <td>
+        <%= nationality[country] %>
+      </td>
+      <td>
+        <%= country %>
+      </td>
+    </tr>
+  <% } %>
 </table>
 
-<h2> Tree </h2>
+<h2>Tree</h2>
 
 <div class="scrollbox">
-    <%- include('../partials/personTree', { params: {
-        person: person,
-        people: people,
-        showCountry: true,
-    }}) %>
+  <%- include('./tree', {
+    person: person,
+    people: people,
+    showCountry: true,
+  }) %>
 </div>

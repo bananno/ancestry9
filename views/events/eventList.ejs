@@ -62,10 +62,10 @@
         }}) %>
       </td>
       <td>
-        <%- include('../partials/peopleList', { params: {
+        <%- include('../people/peopleList', {
           people: event.people,
           format: 'list',
-        }}) %>
+        }) %>
       </td>
       <td style="max-width: 400px;">
         <%= event.notes %>

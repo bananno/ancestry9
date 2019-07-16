@@ -1,70 +1,64 @@
 <%
-    var person = params.person;
-    var people = params.people;
-    var safety = params.safety || 0;
-    var showCountry = params.showCountry == true;
-    var foundNationality = params.foundNationality || false;
+  const safety = locals.safety || 0;
+  const showCountry = locals.showCountry == true;
+  let foundNationality = locals.foundNationality || false;
+  let cellClass = 'treecell';
 
-    if (person.name == null) {
-        person = people.filter((thisPerson) => {
-            return thisPerson.id == person;
-        })[0];
+  if (person.name == null) {
+    person = people.filter(p => p._id == person)[0];
+  }
+
+  if (showCountry && person.birthCountry != null) {
+    if (person.birthCountry == 'United States') {
+      if (person.parents.length < 2) {
+        cellClass += ' dead-end';
+      } else {
+        cellClass += ' usa';
+      }
+    } else if (person.birthCountry == 'unknown') {
+      if (!foundNationality) {
+        cellClass += ' dead-end';
+        foundNationality = true;
+      } else {
+        cellClass += ' unknown';
+      }
+    } else {
+      if (foundNationality) {
+        cellClass += ' old-country';
+      } else {
+        cellClass += ' first-generation';
+        foundNationality = true;
+      }
     }
-
-    var cellClass = 'treecell';
-
-    if (showCountry && person.birthCountry != null) {
-        if (person.birthCountry == 'United States') {
-            if (person.parents.length < 2) {
-                cellClass += ' dead-end';
-            } else {
-                cellClass += ' usa';
-            }
-        } else if (person.birthCountry == 'unknown') {
-            if (!foundNationality) {
-                cellClass += ' dead-end';
-                foundNationality = true;
-            } else {
-                cellClass += ' unknown';
-            }
-        } else {
-            if (foundNationality) {
-                cellClass += ' old-country';
-            } else {
-                cellClass += ' first-generation';
-                foundNationality = true;
-            }
-        }
-    }
+  }
 %>
 
 <% if (person != null && safety < 50) { %>
-    <table>
-        <tr>
-            <% for (var p = 0; p < person.parents.length; p++) { %>
-                <% var parent = person.parents[p]; %>
-                <td valign="bottom" align="center">
-                    <%- include('../partials/personTree', { params: {
-                        person: parent,
-                        people: people,
-                        safety: safety + 1,
-                        showCountry: showCountry,
-                        foundNationality: foundNationality,
-                    }}) %>
-                </td>
-            <% } %>
-        </tr>
-        <tr>
-            <td colspan="<%= person.parents.length || 1 %>" class="<%= cellClass %>">
-                <div>
-                    <%- include('../partials/linkToPerson', {
-                        person: person
-                    }) %>
-                    <% if (showCountry && person.birthCountry != 'United States') { %>
-                        <%= person.birthCountry %>
-                    <% } %>
-                </div>
-            </td>
-        </tr>
-    </table>
+  <table>
+    <tr>
+      <% person.parents.forEach(parent => { %>
+        <td valign="bottom" align="center">
+          <%- include('./tree', {
+            person: parent,
+            people: people,
+            safety: safety + 1,
+            showCountry: showCountry,
+            foundNationality: foundNationality,
+          }) %>
+        </td>
+      <% }); %>
+    </tr>
+    <tr>
+      <td colspan="<%= person.parents.length || 1 %>" class="<%= cellClass %>">
+        <div>
+          <%- include('../partials/linkToPerson', {
+            person: person
+          }) %>
+          <% if (showCountry && person.birthCountry != 'United States') { %>
+            <%= person.birthCountry %>
+          <% } %>
+        </div>
+      </td>
+    </tr>
+  </table>
 <% } %>
