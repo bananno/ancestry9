@@ -1,12 +1,11 @@
-<% if (params.person == null) { %>
-    ________
+<% if (locals.person) { %>
+  <%
+    let personId = person.customId;
+    if (personId == null || locals.useRealId) {
+      personId = person._id;
+    }
+  %>
+  <a href="/person/<%= personId %>"><%= person.name %></a>
 <% } else { %>
-    <%
-        let person = params.person;
-        let personId = person.customId;
-        if (personId == null || params.useRealId) {
-            personId = person._id;
-        }
-    %>
-    <a href="/person/<%= personId %>"><%= person.name %></a>
+  ________
 <% } %>

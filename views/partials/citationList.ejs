@@ -115,9 +115,9 @@
       <tr data-citation-id="<%= citation._id %>" class="<%= classShow %>">
         <% if (showPerson) { %>
           <td class="citation-cell">
-            <%- include('../partials/linkToPerson', { params: {
+            <%- include('../partials/linkToPerson', {
               person: citation.person
-            }}) %>
+            }) %>
           </td>
         <% } %>
         <td class="<%= itemCellClass1 %>">

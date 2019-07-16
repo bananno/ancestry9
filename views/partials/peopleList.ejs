@@ -1,23 +1,23 @@
 <% if (params.format == 'bullet') { %>
-    <ul class="bullet-list">
-        <% params.people.forEach(person => { %>
-            <li>
-                <%- include('../partials/linkToPerson', { params: {
-                    person: person,
-                }}) %>
-            </li>
-        <% }); %>
-    </ul>
+  <ul class="bullet-list">
+    <% params.people.forEach(person => { %>
+      <li>
+        <%- include('../partials/linkToPerson', {
+          person: person,
+        }) %>
+      </li>
+    <% }); %>
+  </ul>
 <% } else if (params.format == 'list') { %>
-    <ul class="no-bullet-list">
-        <% params.people.forEach(person => { %>
-            <li>
-                <%- include('../partials/linkToPerson', { params: {
-                    person: person,
-                }}) %>
-            </li>
-        <% }); %>
-    </ul>
+  <ul class="no-bullet-list">
+    <% params.people.forEach(person => { %>
+      <li>
+        <%- include('../partials/linkToPerson', {
+          person: person,
+        }) %>
+      </li>
+    <% }); %>
+  </ul>
 <% } else { %>
-    (specify peopleList format)
+  (specify peopleList format)
 <% } %>

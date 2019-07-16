@@ -1,16 +1,16 @@
 <h1> Person: <%= personId %> </h1>
 
 <p style="color: red">
-    DUPLICATES
+  DUPLICATES
 </p>
 
 <ul class="list_of_items">
-    <% people.forEach(person => { %>
-        <li class="person_row">
-            <%- include('../partials/linkToPerson', { params: {
-                person: person,
-                useRealId: true,
-            }}) %>
-        </li>
-    <% }); %>
+  <% people.forEach(person => { %>
+    <li class="person_row">
+      <%- include('../partials/linkToPerson', {
+        person: person,
+        useRealId: true,
+      }) %>
+    </li>
+  <% }); %>
 </ul>

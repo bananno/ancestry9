@@ -57,9 +57,9 @@
         <tr>
             <td colspan="<%= person.parents.length || 1 %>" class="<%= cellClass %>">
                 <div>
-                    <%- include('../partials/linkToPerson', { params: {
+                    <%- include('../partials/linkToPerson', {
                         person: person
-                    }}) %>
+                    }) %>
                     <% if (showCountry && person.birthCountry != 'United States') { %>
                         <%= person.birthCountry %>
                     <% } %>
