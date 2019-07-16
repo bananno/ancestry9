@@ -1,103 +1,103 @@
 <%
-    const linksList = person.links;
+  const linksList = person.links;
 
-    if (person.sharing.level == 2) {
-        linksList.push('https://ancestry.annacpeterson.com/?person/' + person.customId
-            + ' CustomSite');
-    } else if (person.sharing.level == 1) {
-        linksList.push('https://ancestry.annacpeterson.com/?person/' + person._id
-            + ' CustomSite');
-    }
+  if (person.sharing.level == 2) {
+    linksList.push('https://ancestry.annacpeterson.com/?person/' + person.customId
+      + ' CustomSite');
+  } else if (person.sharing.level == 1) {
+    linksList.push('https://ancestry.annacpeterson.com/?person/' + person._id
+      + ' CustomSite');
+  }
 %>
 
 <h2>Sharing</h2>
 
 <div>
-    <% if (person.sharing.level == 2) { %>
-        <img class="checkmark-inline" src="/images/check-true.png"> everything
-    <% } else if (person.sharing.level == 1) { %>
-        <img class="checkmark-inline" src="/images/check-false.png"> restricted
-        <% if (person.sharing.name && person.sharing.name != person.name) { %>
-            (name: "<%= person.sharing.name %>")
-        <% } %>
-    <% } else { %>
-        <img class="checkmark-inline" src="/images/check-false.png"> none
+  <% if (person.sharing.level == 2) { %>
+    <img class="checkmark-inline" src="/images/check-true.png"> everything
+  <% } else if (person.sharing.level == 1) { %>
+    <img class="checkmark-inline" src="/images/check-false.png"> restricted
+    <% if (person.sharing.name && person.sharing.name != person.name) { %>
+      (name: "<%= person.sharing.name %>")
     <% } %>
+  <% } else { %>
+    <img class="checkmark-inline" src="/images/check-false.png"> none
+  <% } %>
 </div>
 
 <% if (person.tags.length) { %>
-    <h2>Tags</h2>
-    <ul class="bullet-list">
-        <% person.tags.forEach(text => { %>
-            <li><%= text %></li>
-        <% }); %>
-    </ul>
+  <h2>Tags</h2>
+  <ul class="bullet-list">
+    <% person.tags.forEach(text => { %>
+      <li><%= text %></li>
+    <% }); %>
+  </ul>
 <% } %>
 
 <h2>Family</h2>
 
 <div>
-    <% if (person.parents.length) { %>
-        <div class="family-list-block">
-            <h3>parents</h3>
-            <%- include('../partials/peopleList', { params: {
-                people: person.parents,
-                format: 'bullet',
-            }}) %>
-        </div>
-    <% } %>
+  <% if (person.parents.length) { %>
+    <div class="family-list-block">
+      <h3>parents</h3>
+      <%- include('../people/peopleList', {
+        people: person.parents,
+        format: 'bullet',
+      }) %>
+    </div>
+  <% } %>
 
-    <% if (siblings.length) { %>
-        <div class="family-list-block">
-            <h3>siblings</h3>
-            <%- include('../partials/peopleList', { params: {
-                people: siblings,
-                format: 'bullet',
-            }}) %>
-        </div>
-    <% } %>
+  <% if (siblings.length) { %>
+    <div class="family-list-block">
+      <h3>siblings</h3>
+      <%- include('../people/peopleList', {
+        people: siblings,
+        format: 'bullet',
+      }) %>
+    </div>
+  <% } %>
 </div>
 
 <div>
-    <% if (person.spouses.length) { %>
-        <div class="family-list-block">
-            <h3>spouses</h3>
-            <%- include('../partials/peopleList', { params: {
-                people: person.spouses,
-                format: 'bullet',
-            }}) %>
-        </div>
-    <% } %>
+  <% if (person.spouses.length) { %>
+    <div class="family-list-block">
+      <h3>spouses</h3>
+      <%- include('../people/peopleList', {
+        people: person.spouses,
+        format: 'bullet',
+      }) %>
+    </div>
+  <% } %>
 
-    <% if (person.children.length) { %>
-        <div class="family-list-block">
-            <h3>children</h3>
-            <%- include('../partials/peopleList', { params: {
-                people: person.children,
-                format: 'bullet',
-            }}) %>
-        </div>
-    <% } %>
+  <% if (person.children.length) { %>
+    <div class="family-list-block">
+      <h3>children</h3>
+      <%- include('../people/peopleList', {
+        people: person.children,
+        format: 'bullet',
+      }) %>
+    </div>
+  <% } %>
 </div>
 
 <% if (linksList.length) { %>
-    <h2>Links</h2>
-    <ul class="bullet-list">
-        <% linksList.forEach(linkUrl => { %>
-            <li>
-                <%- include('../format/externalLink', { url: linkUrl }) %>
-            </li>
-        <% }); %>
-    </ul>
+  <h2>Links</h2>
+  <ul class="bullet-list">
+    <% linksList.forEach(linkUrl => { %>
+      <li>
+        <%- include('../format/externalLink', { url: linkUrl }) %>
+      </li>
+    <% }); %>
+  </ul>
 <% } %>
 
 <h2> Tree </h2>
 
 <div class="scrollbox">
-    <%- include('../partials/personTree', { params: {
-        person: person,
-        people: people,
-    }}) %>
+  <%- include('./tree', {
+    person: person,
+    people: people,
+  }) %>
 </div>
 
 <h2> Timeline </h2>
@@ -109,9 +109,9 @@
 <h2> Citations </h2>
 
 <%- include('../partials/citationList', {
-    citations: citations,
-    showDelete: false,
-    showSource: true,
-    showPerson: false,
-    groupBy: 'item',
+  citations: citations,
+  showDelete: false,
+  showSource: true,
+  showPerson: false,
+  groupBy: 'item',
 }) %>
