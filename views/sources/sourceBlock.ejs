@@ -39,10 +39,10 @@
     <% if (locals.includePeople && source.people.length) { %>
       <h3>people</h3>
 
-      <%- include('../partials/peopleList', { params: {
+      <%- include('../people/peopleList', {
         people: source.people,
         format: 'bullet',
-      }}); %>
+      }) %>
     <% } %>
 
     <% if (source.links.length) { %>

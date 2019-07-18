@@ -1,119 +1,118 @@
 <%
-    const rootPath = '/source/' + source._id;
+  const rootPath = '/source/' + source._id;
 
-    const linksList = source.links;
+  const linksList = source.links;
 
-    if (source.sharing) {
-        linksList.push('https://ancestry.annacpeterson.com/?source/' + source._id + ' CustomSite');
-    }
+  if (source.sharing) {
+    linksList.push('https://ancestry.annacpeterson.com/?source/' + source._id + ' CustomSite');
+  }
 %>
 
 <h2>sharing</h2>
 
 <p>
-    <% if (source.sharing) { %>
-        <img class="checkmark-inline" src="/images/check-true.png"> yes
-    <% } else { %>
-        <img class="checkmark-inline" src="/images/check-false.png"> no
-    <% } %>
+  <% if (source.sharing) { %>
+    <img class="checkmark-inline" src="/images/check-true.png"> yes
+  <% } else { %>
+    <img class="checkmark-inline" src="/images/check-false.png"> no
+  <% } %>
 </p>
 
 <% if (source.tags.length) { %>
-    <h2>tags</h2>
-    <ul class="bullet-list">
-        <% source.tags.forEach(text => { %>
-            <li><%= text %></li>
-        <% }); %>
-    </ul>
+  <h2>tags</h2>
+  <ul class="bullet-list">
+    <% source.tags.forEach(text => { %>
+      <li><%= text %></li>
+    <% }); %>
+  </ul>
 <% } %>
 
 <% if (source.summary) { %>
-    <%
-        const summaryItems = source.summary.split('\n');
-    %>
-    <h2>summary</h2>
-
-    <% summaryItems.forEach(str => { %>
-        <p style="max-width: 600px;">
-            <%= str %>
-        </p>
-    <% }); %>
+  <%
+    const summaryItems = source.summary.split('\n');
+  %>
+  <h2>summary</h2>
+  <% summaryItems.forEach(str => { %>
+    <p style="max-width: 600px;">
+      <%= str %>
+    </p>
+  <% }); %>
 <% } %>
 
 <h2>date</h2>
 
 <p>
-    <%- include('../format/date', { params: {
-        date: source.date,
-    }}) %>
+  <%- include('../format/date', { params: {
+    date: source.date,
+  }}) %>
 </p>
 
 <h2>location</h2>
 
 <p>
-    <%- include('../format/location', {  params: {
-        location: source.location,
-    }}) %>
+  <%- include('../format/location', { params: {
+    location: source.location,
+  }}) %>
 </p>
 
 <h2>people</h2>
 
-<%- include('../partials/peopleList', { params: {
-    people: source.people,
-    format: 'bullet',
-}}) %>
+<%- include('../people/peopleList', {
+  people: source.people,
+  format: 'bullet',
+}) %>
 
 <% if (linksList.length) { %>
-    <h2>links</h2>
-    <ul class="bullet-list">
-        <% linksList.forEach(linkUrl => { %>
-            <li>
-                <%- include('../format/externalLink', { url: linkUrl }) %>
-            </li>
-        <% }); %>
-    </ul>
+  <h2>links</h2>
+  <ul class="bullet-list">
+    <% linksList.forEach(linkUrl => { %>
+      <li>
+        <%- include('../format/externalLink', { url: linkUrl }) %>
+      </li>
+    <% }); %>
+  </ul>
 <% } %>
 
 <% if (source.images.length) { %>
-    <h2>images</h2>
+  <h2>images</h2>
 
-    <p>
-        <% source.images.forEach(imageUrl => { %>
-            <a href="<%= imageUrl %>" target="_blank"><img
-                src="<%= imageUrl %>" style="max-height: 100px; max-width: 800px;"></a>
-        <% }); %>
-    </p>
+  <p>
+    <% source.images.forEach(imageUrl => { %>
+      <a href="<%= imageUrl %>" target="_blank"><img
+        src="<%= imageUrl %>" style="max-height: 100px; max-width: 800px;"></a>
+    <% }); %>
+  </p>
 <% } %>
 
 <% if (source.notes) { %>
-    <%
-        const notesList = source.notes.split('\n');
-    %>
-    <h2>notes</h2>
+  <%
+    const notesList = source.notes.split('\n');
+  %>
+  <h2>notes</h2>
 
-    <ul class="bullet-list">
-        <% notesList.forEach(note => { %>
-            <li style="max-width: 600px;">
-                <%= note %>
-            </li>
-        <% }); %>
-    </ul>
+  <ul class="bullet-list">
+    <% notesList.forEach(note => { %>
+      <li style="max-width: 600px;">
+        <%= note %>
+      </li>
+    <% }); %>
+  </ul>
 <% } %>
 
 <h2>content</h2>
 
 <%- include('../format/content', {
-    content: source.content,
-    limit: false,
+  content: source.content,
+  limit: false,
 }) %>
 
 <h2>citations</h2>
 
 <%- include('../partials/citationList', {
-    citations: citations,
-    showDelete: false,
-    showSource: false,
-    showPerson: true,
-    rootPath: rootPath,
-    groupBy: 'person',
+  citations: citations,
+  showDelete: false,
+  showSource: false,
+  showPerson: true,
+  rootPath: rootPath,
+  groupBy: 'person',
 }) %>
