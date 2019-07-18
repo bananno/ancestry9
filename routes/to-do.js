@@ -15,6 +15,31 @@ router.post('/to-do/:id/edit', editToDoItem);
 function showChecklist(req, res, next) {
   getAllData(data => {
     data.people = populatePeopleDates(data.people, data.events);
+
+    data.personRef = {};
+    data.people.forEach(person => data.personRef['' + person._id] = person);
+
+    const anna = data.people.filter(person => person.name == 'Anna Peterson')[0];
+    anna.connection = 'start';
+    findAncestors(anna);
+
+    function findAncestors(person) {
+      (person.parents || []).forEach(parentId => {
+        const parent = data.personRef['' + parentId];
+        parent.connection = 'ancestor';
+        findAncestors(parent);
+        findDescendants(parent);
+      });
+    }
+
+    function findDescendants(person) {
+      (person.children || []).forEach(childId => {
+        const child = data.personRef['' + childId];
+        child.connection = child.connection || 'cousin';
+        findDescendants(child);
+      });
+    }
+
     res.render('layout', {
       view: 'checklist',
       title: 'Checklist',
