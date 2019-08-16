@@ -21,24 +21,34 @@ function showChecklist(req, res, next) {
 
     const anna = data.people.filter(person => person.name == 'Anna Peterson')[0];
     anna.connection = 'start';
-    findAncestors(anna);
+    anna.degree = 1;
+    findAncestors(anna, 2);
 
-    function findAncestors(person) {
+    function findAncestors(person, degree) {
       (person.parents || []).forEach(parentId => {
         const parent = data.personRef['' + parentId];
         parent.connection = 'ancestor';
-        findAncestors(parent);
-        findDescendants(parent);
+        parent.degree = degree;
+        findAncestors(parent, degree + 1);
+        findDescendants(parent, degree + 1);
       });
     }
 
-    function findDescendants(person) {
+    function findDescendants(person, degree) {
       (person.children || []).forEach(childId => {
         const child = data.personRef['' + childId];
         child.connection = child.connection || 'cousin';
-        findDescendants(child);
+        child.degree = child.degree || degree;
+        findDescendants(child, degree + 1);
       });
     }
+
+    const connOrder = ['cousin', 'ancestor', 'start'];
+    data.people.sort((a, b) => {
+      // order by connection type, then by degree of separation
+      let swap = connOrder.indexOf(b.connection) - connOrder.indexOf(a.connection);
+      return swap == 0 ? (a.degree || 100) - (b.degree || 100) : swap;
+    });
 
     res.render('layout', {
       view: 'checklist',

@@ -6,6 +6,7 @@
     <th> birth </th>
     <th> death </th>
     <th> connection </th>
+    <th> degree </th>
     <th> sharing </th>
   </tr>
   <% people.forEach(person => { %>
@@ -31,6 +32,9 @@
       </td>
       <td>
         <%= person.connection %>
+      </td>
+      <td>
+        <%= person.degree %>
       </td>
       <td>
         <% if (person.sharing.level == 2) { %>
