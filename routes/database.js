@@ -18,20 +18,64 @@ router.get('/database', showDatabaseEverything);
 router.get('/sharing', saveSharedDatabase);
 
 function showDatabaseEverything(req, res) {
-  mongoose.model('Person').find({}, (err, people) => {
-    mongoose.model('Source').find({}, (err, sources) => {
-      mongoose.model('Event').find({}, (err, events) => {
-        mongoose.model('Citation').find({}, (err, citations) => {
-          res.render('database', {
-            people: people,
-            sources: sources,
-            events: events,
-            citations: citations,
-          });
-        });
+  let data = {};
+  new Promise(resolve => {
+    mongoose.model('Person').find({}, (err, people) => {
+      data.people = people;
+      resolve();
+    });
+  }).then(() => {
+    return new Promise(resolve => {
+      mongoose.model('Source').find({}, (err, sources) => {
+        data.sources = sources;
+        resolve();
       });
     });
+  }).then(() => {
+    return new Promise(resolve => {
+      mongoose.model('Event').find({}, (err, events) => {
+        data.events = events;
+        resolve();
+      });
+    });
+  }).then(() => {
+    return new Promise(resolve => {
+      mongoose.model('Citation').find({}, (err, citations) => {
+        data.citations = citations;
+        resolve();
+      });
+    });
+  }).then(() => {
+    const filename = 'database-backup/database-people.json';
+    const content = stringifyData(data.people);
+    return new Promise(resolve => {
+      fs.writeFile(filename, content, resolve);
+    });
+  }).then(() => {
+    const filename = 'database-backup/database-sources.json';
+    const content = stringifyData(data.sources);
+    return new Promise(resolve => {
+      fs.writeFile(filename, content, resolve);
+    });
+  }).then(() => {
+    const filename = 'database-backup/database-events.json';
+    const content = stringifyData(data.events);
+    return new Promise(resolve => {
+      fs.writeFile(filename, content, resolve);
+    });
+  }).then(() => {
+    const filename = 'database-backup/database-citations.json';
+    const content = stringifyData(data.citations);
+    return new Promise(resolve => {
+      fs.writeFile(filename, content, resolve);
+    });
+  }).then(() => {
+    res.render('database', data);
   });
+}
+
+function stringifyData(array) {
+  return '[\n' + array.map(s => JSON.stringify(s)).join(',\n') + '\n]';
 }
 
 function saveSharedDatabase(req, res) {
@@ -76,7 +120,6 @@ function saveRawSharedDataFile(resolve, attr, arr, starter) {
     if (err) {
       throw err;
     }
-    console.log('Shared database saved: ' + attr);
     resolve();
   });
 }
