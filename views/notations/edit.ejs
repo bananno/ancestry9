@@ -1,13 +1,13 @@
 <%
-  const rootPath = '/notations/' + notation._id;
-  const rootEditPath = '/notations/' + notation._id + '/edit';
+  const rootPath = '/notation/' + notation._id;
+  const rootEditPath = '/notation/' + notation._id + '/edit';
 %>
 
 <h1>Notation</h1>
 <h2><%= notation.title %></h2>
 
 <p>
-  <a href="/notations/<%= notation._id %>">done</a>
+  <a href="<%= rootPath %>">done</a>
 </p>
 
 <table class="edit-form-frame">
@@ -40,9 +40,9 @@
   <!-- TEXT -->
 
   <%- include('../forms/tableRowSingle', { params: {
-    attr: 'notes',
-    editPath: rootEditPath + '/notes',
-    originalValue: notation.notes,
+    attr: 'text',
+    editPath: rootEditPath + '/text',
+    originalValue: notation.text,
     fieldType: 'textarea',
   }}) %>
 
