@@ -12,6 +12,7 @@ const routeFiles = [
   ['person/checklist', 'person'],
   ['event', 'event'],
   ['source', 'source'],
+  ['notation'],
   ['map'],
   ['to-do'],
   ['database'],
@@ -24,6 +25,7 @@ const modelFiles = [
   'source',
   'citation',
   'location',
+  'notation',
   'to-do',
 ];
 
