@@ -11,7 +11,7 @@ router.get('/notations/:id', showNotation);
 function showNotations(req, res, next) {
   Notation.find({}, (err, notations) => {
     res.render('layout', {
-      view: 'notations',
+      view: 'notations/index',
       title: 'Notations',
       notations: notations,
     });
@@ -32,5 +32,12 @@ function createNotation(req, res, next) {
 }
 
 function showNotation(req, res, next) {
-  res.redirect('/notations');
+  const notationId = req.params.id;
+  Notation.findById(notationId, (err, notation) => {
+    res.render('layout', {
+      view: 'notations/show',
+      title: 'Notation',
+      notation: notation,
+    });
+  });
 }
