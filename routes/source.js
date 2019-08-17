@@ -4,6 +4,7 @@ const router = express.Router();
 
 const Source = mongoose.model('Source');
 const Citation = mongoose.model('Citation');
+const createRoutes = require('../tools/createRoutes');
 const getDateValues = require('../tools/getDateValues');
 const getLocationValues = require('../tools/getLocationValues');
 const removePersonFromList = require('../tools/removePersonFromList');
@@ -13,8 +14,8 @@ const sortCitations = require('../tools/sortCitations');
 
 const stringArrayAttributes = ['links', 'images', 'tags'];
 
-router.get('/:sourceId', sourceShow);
-router.get('/:sourceId/edit', makeRouteEditGet('none'));
+router.get('/source/:sourceId', sourceShow);
+router.get('/source/:sourceId/edit', makeRouteEditGet('none'));
 
 makeSourcesRoutes('type');
 makeSourcesRoutes('group');
@@ -26,24 +27,26 @@ makeSourcesRoutes('content');
 makeSourcesRoutes('notes');
 makeSourcesRoutes('summary');
 makeSourcesRoutes('citations', true);
-makeSourcesRoutes('sharing');
+
+createRoutes.toggleAttribute(router, Source, 'source', 'sharing');
+
 stringArrayAttributes.forEach(attr => makeSourcesRoutes(attr, true));
 
-router.post('/:sourceId/edit/citations/:citationId', editCitation);
+router.post('/source/:sourceId/edit/citations/:citationId', editCitation);
 
 module.exports = router;
 
 function makeSourcesRoutes(fieldName, canAddDeleteReorder) {
   if (canAddDeleteReorder) {
-    const showOrEditPath = '/:sourceId/add/' + fieldName;
-    const deletePath = '/:sourceId/delete/' + fieldName + '/:deleteId';
-    const reorderPath = '/:sourceId/reorder/' + fieldName + '/:orderId';
+    const showOrEditPath = '/source/:sourceId/add/' + fieldName;
+    const deletePath = '/source/:sourceId/delete/' + fieldName + '/:deleteId';
+    const reorderPath = '/source/:sourceId/reorder/' + fieldName + '/:orderId';
     router.get(showOrEditPath, makeRouteEditGet(fieldName));
     router.post(showOrEditPath, makeRouteEditPost(fieldName));
     router.post(deletePath, makeRouteDelete(fieldName));
     router.post(reorderPath, makeRouteReorder(fieldName));
   } else {
-    const showOrEditPath = '/:sourceId/edit/' + fieldName;
+    const showOrEditPath = '/source/:sourceId/edit/' + fieldName;
     router.get(showOrEditPath, makeRouteEditGet(fieldName));
     router.post(showOrEditPath, makeRouteEditPost(fieldName));
   }

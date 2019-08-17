@@ -4,6 +4,7 @@ const router = express.Router();
 const Notation = mongoose.model('Notation');
 const Person = mongoose.model('Person');
 const removePersonFromList = require('../tools/removePersonFromList');
+const createRoutes = require('../tools/createRoutes');
 module.exports = router;
 
 router.get('/notations', showNotations);
@@ -11,7 +12,8 @@ router.post('/notations/new', createNotation);
 router.get('/notation/:notationId', showNotation);
 router.get('/notation/:notationId/edit', editNotation);
 
-makeNotationsRoutes('sharing');
+createRoutes.toggleAttribute(router, Notation, 'notation', 'sharing');
+
 makeNotationsRoutes('title');
 makeNotationsRoutes('people', true);
 makeNotationsRoutes('text');

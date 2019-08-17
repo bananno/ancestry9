@@ -11,7 +11,7 @@ const routeFiles = [
   ['person/timeline', 'person'],
   ['person/checklist', 'person'],
   ['event', 'event'],
-  ['source', 'source'],
+  ['source'],
   ['notation'],
   ['map'],
   ['to-do'],
