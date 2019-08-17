@@ -13,10 +13,10 @@ router.get('/notation/:notationId', showNotation);
 router.get('/notation/:notationId/edit', editNotation);
 
 createRoutes.toggleAttribute(router, Notation, 'notation', 'sharing');
+createRoutes.textAttribute(router, Notation, 'notation', 'title');
+createRoutes.textAttribute(router, Notation, 'notation', 'text');
 
-makeNotationsRoutes('title');
 makeNotationsRoutes('people', true);
-makeNotationsRoutes('text');
 makeNotationsRoutes('tags', true);
 
 function showNotations(req, res, next) {

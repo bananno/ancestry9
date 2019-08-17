@@ -17,18 +17,16 @@ const stringArrayAttributes = ['links', 'images', 'tags'];
 router.get('/source/:sourceId', sourceShow);
 router.get('/source/:sourceId/edit', makeRouteEditGet('none'));
 
-makeSourcesRoutes('type');
-makeSourcesRoutes('group');
-makeSourcesRoutes('title');
 makeSourcesRoutes('date');
 makeSourcesRoutes('location');
 makeSourcesRoutes('people', true);
-makeSourcesRoutes('content');
-makeSourcesRoutes('notes');
-makeSourcesRoutes('summary');
 makeSourcesRoutes('citations', true);
 
 createRoutes.toggleAttribute(router, Source, 'source', 'sharing');
+
+['type', 'group', 'title', 'content', 'notes', 'summary'].forEach(textAttribute => {
+  createRoutes.textAttribute(router, Source, 'source', textAttribute);
+});
 
 stringArrayAttributes.forEach(attr => makeSourcesRoutes(attr, true));
 
