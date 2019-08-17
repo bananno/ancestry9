@@ -1,17 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
+module.exports = router;
+
 const Source = mongoose.model('Source');
 const Citation = mongoose.model('Citation');
-const createModelRoutes = require('../tools/createModelRoutes');
-const getDateValues = require('../tools/getDateValues');
-const getLocationValues = require('../tools/getLocationValues');
-const removePersonFromList = require('../tools/removePersonFromList');
-const reorderList = require('../tools/reorderList');
-const sortPeople = require('../tools/sortPeople');
-const sortCitations = require('../tools/sortCitations');
-const sortSources = require('../tools/sortSources');
-module.exports = router;
+
+const getTools = (path) => { return require('../../tools/' + path) };
+const createModelRoutes = getTools('createModelRoutes');
+const getDateValues = getTools('getDateValues');
+const getLocationValues = getTools('getLocationValues');
+const removePersonFromList = getTools('removePersonFromList');
+const reorderList = getTools('reorderList');
+const sortPeople = getTools('sortPeople');
+const sortCitations = getTools('sortCitations');
+const sortSources = getTools('sortSources');
 
 const mainSourceTypes = ['documents', 'index', 'graves', 'newspapers',
   'photos', 'articles', 'other'];
