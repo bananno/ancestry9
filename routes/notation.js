@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const Notation = mongoose.model('Notation');
 const Person = mongoose.model('Person');
-const removePersonFromList = require('../tools/removePersonFromList');
 const createModelRoutes = require('../tools/createModelRoutes');
 module.exports = router;
 
@@ -15,16 +14,10 @@ createModelRoutes({
   create: createNotation,
   show: showNotation,
   edit: editNotation,
-  updateAttributes: {
-    people: true,
-    toggle: ['sharing'],
-    text: ['title', 'text'],
-    list: ['tags'],
-  },
+  toggleAttributes: ['sharing'],
+  singleAttributes: ['title', 'text'],
+  listAttributes: ['people', 'tags'],
 });
-
-makeNotationsRoutes('people', true);
-makeNotationsRoutes('tags', true);
 
 function notationsIndex(req, res, next) {
   Notation.find({}, (err, notations) => {
@@ -71,47 +64,4 @@ function editNotation(req, res, next) {
       });
     });
   });
-}
-
-function makeNotationsRoutes(fieldName, canAddDeleteReorder) {
-  const deletePath = '/notation/:notationId/delete/' + fieldName + '/:deleteId';
-  const reorderPath = '/notation/:notationId/reorder/' + fieldName + '/:orderId';
-  router.post(deletePath, makeRouteDelete(fieldName));
-  router.post(reorderPath, makeRouteReorder(fieldName));
-}
-
-function makeRouteDelete(editField) {
-  return (req, res) => {
-    const notationId = req.params.notationId;
-    Notation.findById(notationId, (err, notation) => {
-      const updatedObj = {};
-      const deleteId = req.params.deleteId;
-
-      if (editField == 'people') {
-        updatedObj[editField] = removePersonFromList(notation[editField], deleteId);
-      } else if (editField == 'tags') {
-        updatedObj[editField] = notation[editField].filter((url, i) => {
-          return i != deleteId;
-        });
-      }
-
-      notation.update(updatedObj, err => {
-        res.redirect('/notation/' + notationId + '/edit');
-      });
-    });
-  };
-}
-
-function makeRouteReorder(editField) {
-  return (req, res) => {
-    const notationId = req.params.notationId;
-    Notation.findById(notationId, (err, notation) => {
-      const updatedObj = {};
-      const orderId = req.params.orderId;
-      updatedObj[editField] = reorderList(notation[editField], orderId, editField);
-      notation.update(updatedObj, err => {
-        res.redirect('/notation/' + notationId + '/edit');
-      });
-    });
-  };
 }

@@ -30,9 +30,7 @@ createModelRoutes({
   modelName: 'event',
   router: router,
   editView: false,
-  attributes: {
-    text: ['title', 'notes'],
-  },
+  singleAttributes: ['title', 'notes'],
 });
 
 function withEvent(req, callback) {

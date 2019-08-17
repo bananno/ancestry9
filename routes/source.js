@@ -13,39 +13,27 @@ const sortCitations = require('../tools/sortCitations');
 const sortSources = require('../tools/sortSources');
 module.exports = router;
 
-const stringArrayAttributes = ['links', 'images', 'tags'];
-
-router.get('/source/:sourceId', sourceShow);
-router.get('/source/:sourceId/edit', makeRouteEditGet('none'));
+const mainSourceTypes = ['documents', 'index', 'graves', 'newspapers',
+  'photos', 'articles', 'other'];
 
 createModelRoutes({
   Model: Source,
   modelName: 'source',
   router: router,
-  attributes: {
-    people: true,
-    date: true,
-    location: true,
-    toggle: ['sharing'],
-    text: ['type', 'group', 'title', 'content', 'notes', 'summary'],
-    list: ['links', 'images', 'tags'],
-  },
+  index: makeSourcesIndexRoute('none'),
+  new: makeSourcesIndexRoute('new'),
+  create: createSource,
+  show: showSource,
+  edit: makeRouteEditGet('none'),
+  toggleAttributes: ['sharing'],
+  singleAttributes: ['type', 'group', 'title', 'content', 'notes', 'summary',
+    'date', 'location'],
+  listAttributes: ['people', 'links', 'images', 'tags'],
 });
 
-makeSourcesRoutes('date');
-makeSourcesRoutes('location');
-makeSourcesRoutes('people', true);
 makeSourcesRoutes('citations', true);
 
-stringArrayAttributes.forEach(attr => makeSourcesRoutes(attr, true));
-
 router.post('/source/:sourceId/edit/citations/:citationId', editCitation);
-
-const mainSourceTypes = ['documents', 'index', 'graves', 'newspapers', 'photos', 'articles', 'other'];
-
-router.get('/sources', makeSourcesIndexRoute('none'));
-router.get('/sources/new', makeSourcesIndexRoute('new'));
-router.post('/sources/new', createNewSource);
 
 mainSourceTypes.forEach(sourceType => {
   router.get('/sources/' + sourceType, makeSourcesIndexRoute(sourceType));
@@ -69,8 +57,8 @@ function makeSourcesRoutes(fieldName, canAddDeleteReorder) {
   }
 }
 
-function sourceShow(req, res) {
-  const sourceId = req.params.sourceId;
+function showSource(req, res) {
+  const sourceId = req.params.id;
   mongoose.model('Source')
   .findById(sourceId)
   .populate('people')
@@ -93,7 +81,7 @@ function sourceShow(req, res) {
 
 function makeRouteEditGet(editField) {
   return (req, res, next) => {
-    const sourceId = req.params.sourceId;
+    const sourceId = req.params.id;
     mongoose.model('Source')
     .findById(sourceId)
     .populate('people')
@@ -135,21 +123,7 @@ function makeRouteEditPost(editField) {
     mongoose.model('Source').findById(sourceId, (err, source) => {
       const updatedObj = {};
 
-      if (editField == 'date') {
-        updatedObj[editField] = getDateValues(req);
-      } else if (editField == 'location') {
-        updatedObj[editField] = getLocationValues(req);
-      } else if (editField == 'people') {
-        const personId = req.body[editField];
-        updatedObj[editField] = source.people;
-        updatedObj[editField].push(personId);
-      } else if (stringArrayAttributes.includes(editField)) {
-        const newValue = req.body[editField].trim();
-        if (newValue == '') {
-          return;
-        }
-        updatedObj[editField] = (source[editField] || []).concat(newValue);
-      } else if (editField == 'citations') {
+      if (editField == 'citations') {
         const newItem = {
           item: req.body.item.trim(),
           information: req.body.information.trim(),
@@ -161,16 +135,10 @@ function makeRouteEditPost(editField) {
           return;
         }
 
-        mongoose.model('Citation').create(newItem, () => { });
-      } else if (editField === 'sharing') {
-        updatedObj.sharing = !(source.sharing || false);
-      } else {
-        updatedObj[editField] = req.body[editField];
+        mongoose.model('Citation').create(newItem, () => {
+          res.redirect('/source/' + sourceId + '/edit');
+        });
       }
-
-      source.update(updatedObj, err => {
-        res.redirect('/source/' + sourceId + '/edit');
-      });
     });
   };
 }
@@ -182,13 +150,7 @@ function makeRouteDelete(editField) {
       const updatedObj = {};
       const deleteId = req.params.deleteId;
 
-      if (editField == 'people') {
-        updatedObj[editField] = removePersonFromList(source[editField], deleteId);
-      } else if (stringArrayAttributes.includes(editField)) {
-        updatedObj[editField] = source[editField].filter((url, i) => {
-          return i != deleteId;
-        });
-      } else if (editField == 'citations') {
+      if (editField == 'citations') {
         const citationId = req.params.deleteId;
          mongoose.model('Citation').findById(citationId, (err, citation) => {
           citation.remove(() => { });
@@ -285,7 +247,7 @@ function filterSourcesByType(sources, type) {
   });
 }
 
-function createNewSource(req, res) {
+function createSource(req, res) {
   const newItem = {
     type: req.body.type.trim(),
     group: req.body.group.trim(),
