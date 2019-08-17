@@ -5,7 +5,7 @@ const personTools = require('./tools');
 personTools.convertParamPersonId(router);
 module.exports = router;
 
-router.get('/:personId/checklist', personChecklist);
+router.get('/person/:personId/checklist', personChecklist);
 
 function personChecklist(req, res) {
   mongoose.model('Person')

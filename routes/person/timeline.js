@@ -7,7 +7,7 @@ const sortEvents = require('../../tools/sortEvents');
 
 personTools.convertParamPersonId(router);
 
-router.get('/:personId/timeline', personTimeline);
+router.get('/person/:personId/timeline', personTimeline);
 
 module.exports = router;
 

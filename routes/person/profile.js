@@ -13,25 +13,25 @@ const reorderList = require('../../tools/reorderList');
 
 personTools.convertParamPersonId(router);
 
-router.get('/:personId', personSummary);
-router.get('/:personId/edit', personEdit);
-router.get('/:personId/sources', personSources);
-router.get('/:personId/nationality', personNationality);
-router.get('/:personId/relatives', personRelatives);
-router.get('/:personId/connection', personConnection);
+router.get('/person/:personId', personSummary);
+router.get('/person/:personId/edit', personEdit);
+router.get('/person/:personId/sources', personSources);
+router.get('/person/:personId/nationality', personNationality);
+router.get('/person/:personId/relatives', personRelatives);
+router.get('/person/:personId/connection', personConnection);
 
-router.post('/:personId/edit/name', makeRouteEditPost('name'));
-router.post('/:personId/edit/id', makeRouteEditPost('customId'));
-router.post('/:personId/edit/profileImage', makeRouteEditPost('profileImage'));
-router.post('/:personId/edit/shareName', makeRouteEditPost('shareName'));
-router.post('/:personId/add/links', makeRouteEditPost('links'));
-router.post('/:personId/delete/links/:deleteId', makeRouteDelete('links'));
-router.post('/:personId/reorder/links/:orderId', makeRouteReorder('links'));
-router.post('/:personId/add/tags', makeRouteEditPost('tags'));
-router.post('/:personId/delete/tags/:deleteId', makeRouteDelete('tags'));
-router.post('/:personId/reorder/tags/:orderId', makeRouteReorder('tags'));
-router.post('/:personId/add/events', makeRouteEditPost('events'));
-router.post('/:personId/toggle/shareLevel', makeRouteTogglePost('shareLevel'));
+router.post('/person/:personId/edit/name', makeRouteEditPost('name'));
+router.post('/person/:personId/edit/id', makeRouteEditPost('customId'));
+router.post('/person/:personId/edit/profileImage', makeRouteEditPost('profileImage'));
+router.post('/person/:personId/edit/shareName', makeRouteEditPost('shareName'));
+router.post('/person/:personId/add/links', makeRouteEditPost('links'));
+router.post('/person/:personId/delete/links/:deleteId', makeRouteDelete('links'));
+router.post('/person/:personId/reorder/links/:orderId', makeRouteReorder('links'));
+router.post('/person/:personId/add/tags', makeRouteEditPost('tags'));
+router.post('/person/:personId/delete/tags/:deleteId', makeRouteDelete('tags'));
+router.post('/person/:personId/reorder/tags/:orderId', makeRouteReorder('tags'));
+router.post('/person/:personId/add/events', makeRouteEditPost('events'));
+router.post('/person/:personId/toggle/shareLevel', makeRouteTogglePost('shareLevel'));
 
 createRelationshipRoutes('parents', 'children');
 createRelationshipRoutes('spouses', 'spouses');
@@ -40,9 +40,9 @@ createRelationshipRoutes('children', 'parents');
 module.exports = router;
 
 function createRelationshipRoutes(relationship, corresponding) {
-  var addPath = '/:personId/add/' + relationship;
-  var deletePath = '/:personId/delete/' + relationship + '/:deleteId';
-  var reorderPath = '/:personId/reorder/' + relationship + '/:orderId';
+  const addPath = '/person/:personId/add/' + relationship;
+  const deletePath = '/person/:personId/delete/' + relationship + '/:deleteId';
+  const reorderPath = '/person/:personId/reorder/' + relationship + '/:orderId';
 
   router.post(addPath, makeRouteEditPost(relationship, corresponding));
   router.post(deletePath, makeRouteDelete(relationship, corresponding));

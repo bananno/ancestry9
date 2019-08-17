@@ -7,10 +7,10 @@ const mongoose = require('mongoose');
 
 const routeFiles = [
   ['index'],
-  ['person/profile', 'person'],
-  ['person/timeline', 'person'],
-  ['person/checklist', 'person'],
-  ['event', 'event'],
+  ['person/profile'],
+  ['person/timeline'],
+  ['person/checklist'],
+  ['event'],
   ['source'],
   ['notation'],
   ['map'],
@@ -45,10 +45,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-routeFiles.forEach(([filename, addlPath]) => {
-  const routePath = '/' + (addlPath ? addlPath + '/' : '');
+routeFiles.forEach(filename => {
   const router = require('./routes/' + filename);
-  app.use(routePath, router);
+  app.use('/', router);
 });
 
 app.use((req, res, next) => {

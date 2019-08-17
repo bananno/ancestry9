@@ -7,24 +7,24 @@ const getLocationValues = require('../tools/getLocationValues');
 const removePersonFromList = require('../tools/removePersonFromList');
 const reorderList = require('../tools/reorderList');
 
-router.get('/:eventId', makeRouteEditGet('none'));
-router.post('/:eventId/delete', deleteEvent);
+router.get('/event/:eventId', makeRouteEditGet('none'));
+router.post('/event/:eventId/delete', deleteEvent);
 
-router.post('/:eventId/edit/title', makeRouteEditPost('title'));
-router.post('/:eventId/edit/notes', makeRouteEditPost('notes'));
+router.post('/event/:eventId/edit/title', makeRouteEditPost('title'));
+router.post('/event/:eventId/edit/notes', makeRouteEditPost('notes'));
 
-router.get('/:eventId/edit/date', makeRouteEditGet('date'));
-router.post('/:eventId/edit/date', makeRouteEditPost('date'));
-router.get('/:eventId/edit/location', makeRouteEditGet('location'));
-router.post('/:eventId/edit/location', makeRouteEditPost('location'));
+router.get('/event/:eventId/edit/date', makeRouteEditGet('date'));
+router.post('/event/:eventId/edit/date', makeRouteEditPost('date'));
+router.get('/event/:eventId/edit/location', makeRouteEditGet('location'));
+router.post('/event/:eventId/edit/location', makeRouteEditPost('location'));
 
-router.post('/:eventId/add/people', makeRouteEditPost('people', true));
-router.post('/:eventId/delete/people/:deleteId', makeRouteDelete('people'));
-router.post('/:eventId/reorder/people/:orderId', makeRouteReorder('people'));
+router.post('/event/:eventId/add/people', makeRouteEditPost('people', true));
+router.post('/event/:eventId/delete/people/:deleteId', makeRouteDelete('people'));
+router.post('/event/:eventId/reorder/people/:orderId', makeRouteReorder('people'));
 
-router.post('/:eventId/add/tags', makeRouteEditPost('tags', true));
-router.post('/:eventId/delete/tags/:deleteId', makeRouteDelete('tags'));
-router.post('/:eventId/reorder/tags/:orderId', makeRouteReorder('tags'));
+router.post('/event/:eventId/add/tags', makeRouteEditPost('tags', true));
+router.post('/event/:eventId/delete/tags/:deleteId', makeRouteDelete('tags'));
+router.post('/event/:eventId/reorder/tags/:orderId', makeRouteReorder('tags'));
 
 module.exports = router;
 
