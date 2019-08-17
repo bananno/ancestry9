@@ -1,9 +1,23 @@
-const mongoose = require('mongoose');
-const createRoutes = {};
 
-module.exports = createRoutes;
+function createModelRoutes(specs) {
+  const router = specs.router;
+  const Model = specs.Model;
+  const modelName = specs.modelName;
 
-createRoutes.toggleAttribute = (router, Model, modelName, fieldName) => {
+  if (specs.attributes.toggle) {
+    specs.attributes.toggle.forEach(fieldName => {
+      toggleAttribute(router, Model, modelName, fieldName);
+    });
+  }
+
+  if (specs.attributes.text) {
+    specs.attributes.text.forEach(fieldName => {
+      textAttribute(router, Model, modelName, fieldName);
+    });
+  }
+}
+
+function toggleAttribute(router, Model, modelName, fieldName) {
   const postPath = '/' + modelName + '/:id/edit/' + fieldName;
 
   router.post(postPath, (req, res, next) => {
@@ -19,9 +33,9 @@ createRoutes.toggleAttribute = (router, Model, modelName, fieldName) => {
       });
     });
   });
-};
+}
 
-createRoutes.textAttribute = (router, Model, modelName, fieldName) => {
+function textAttribute(router, Model, modelName, fieldName) {
   const postPath = '/' + modelName + '/:id/edit/' + fieldName;
 
   router.post(postPath, (req, res, next) => {
@@ -36,4 +50,6 @@ createRoutes.textAttribute = (router, Model, modelName, fieldName) => {
       });
     });
   });
-};
+}
+
+module.exports = createModelRoutes;

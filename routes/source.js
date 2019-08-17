@@ -4,7 +4,7 @@ const router = express.Router();
 
 const Source = mongoose.model('Source');
 const Citation = mongoose.model('Citation');
-const createRoutes = require('../tools/createRoutes');
+const createModelRoutes = require('../tools/createModelRoutes');
 const getDateValues = require('../tools/getDateValues');
 const getLocationValues = require('../tools/getLocationValues');
 const removePersonFromList = require('../tools/removePersonFromList');
@@ -17,16 +17,24 @@ const stringArrayAttributes = ['links', 'images', 'tags'];
 router.get('/source/:sourceId', sourceShow);
 router.get('/source/:sourceId/edit', makeRouteEditGet('none'));
 
+createModelRoutes({
+  Model: Source,
+  modelName: 'source',
+  router: router,
+  attributes: {
+    people: true,
+    date: true,
+    location: true,
+    toggle: ['sharing'],
+    text: ['type', 'group', 'title', 'content', 'notes', 'summary'],
+    list: ['links', 'images', 'tags'],
+  },
+});
+
 makeSourcesRoutes('date');
 makeSourcesRoutes('location');
 makeSourcesRoutes('people', true);
 makeSourcesRoutes('citations', true);
-
-createRoutes.toggleAttribute(router, Source, 'source', 'sharing');
-
-['type', 'group', 'title', 'content', 'notes', 'summary'].forEach(textAttribute => {
-  createRoutes.textAttribute(router, Source, 'source', textAttribute);
-});
 
 stringArrayAttributes.forEach(attr => makeSourcesRoutes(attr, true));
 

@@ -4,22 +4,30 @@ const router = express.Router();
 const Notation = mongoose.model('Notation');
 const Person = mongoose.model('Person');
 const removePersonFromList = require('../tools/removePersonFromList');
-const createRoutes = require('../tools/createRoutes');
+const createModelRoutes = require('../tools/createModelRoutes');
 module.exports = router;
 
-router.get('/notations', showNotations);
+router.get('/notations', notationsIndex);
 router.post('/notations/new', createNotation);
 router.get('/notation/:notationId', showNotation);
 router.get('/notation/:notationId/edit', editNotation);
 
-createRoutes.toggleAttribute(router, Notation, 'notation', 'sharing');
-createRoutes.textAttribute(router, Notation, 'notation', 'title');
-createRoutes.textAttribute(router, Notation, 'notation', 'text');
+createModelRoutes({
+  Model: Notation,
+  modelName: 'notation',
+  router: router,
+  attributes: {
+    people: true,
+    toggle: ['sharing'],
+    text: ['title', 'text'],
+    list: ['tags'],
+  },
+});
 
 makeNotationsRoutes('people', true);
 makeNotationsRoutes('tags', true);
 
-function showNotations(req, res, next) {
+function notationsIndex(req, res, next) {
   Notation.find({}, (err, notations) => {
     res.render('layout', {
       view: 'notations/index',
@@ -37,7 +45,7 @@ function createNotation(req, res, next) {
     if (err) {
       return res.send('There was a problem adding the information to the database.');
     }
-    res.redirect('notation/' + notation._id);
+    res.redirect('/notation/' + notation._id);
   });
 }
 
