@@ -1,1 +1,35 @@
 <h1>Notation</h1>
+<h2><%= notation.title %></h2>
+
+<p>
+  <a href="/notations/<%= notation._id %>/edit">edit</a>
+</p>
+
+<h2>sharing</h2>
+
+<p>
+  <% if (notation.sharing) { %>
+    <img class="checkmark-inline" src="/images/check-true.png"> yes
+  <% } else { %>
+    <img class="checkmark-inline" src="/images/check-false.png"> no
+  <% } %>
+</p>
+
+<h2>people</h2>
+
+<%- include('../people/peopleList', {
+  people: notation.people,
+  format: 'bullet',
+}) %>
+
+<h2>text</h2>
+
+<h2>tags</h2>
+
+<% if (notation.tags.length) { %>
+  <ul class="bullet-list">
+    <% notation.tags.forEach(text => { %>
+      <li><%= text %></li>
+    <% }); %>
+  </ul>
+<% } %>

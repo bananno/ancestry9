@@ -1,0 +1,61 @@
+<%
+  const rootPath = '/notations/' + notation._id;
+  const rootEditPath = '/notations/' + notation._id + '/edit';
+%>
+
+<h1>Notation</h1>
+<h2><%= notation.title %></h2>
+
+<p>
+  <a href="/notations/<%= notation._id %>">done</a>
+</p>
+
+<table class="edit-form-frame">
+
+  <!-- SHARING -->
+
+  <%- include('../forms/tableRowSingle', { params: {
+    attr: 'sharing',
+    editPath: rootEditPath + '/sharing',
+    originalValue: notation.sharing,
+    toggle: true,
+  }}) %>
+
+  <!-- TITLE -->
+
+  <%- include('../forms/tableRowSingle', { params: {
+    attr: 'title',
+    editPath: rootEditPath + '/title',
+    originalValue: notation.title,
+  }}) %>
+
+  <!-- PEOPLE -->
+
+  <%- include('../forms/tableRowMulti', {
+    attr: 'people',
+    rootPath: rootPath,
+    values: notation.people,
+  }) %>
+
+  <!-- TEXT -->
+
+  <%- include('../forms/tableRowSingle', { params: {
+    attr: 'notes',
+    editPath: rootEditPath + '/notes',
+    originalValue: notation.notes,
+    fieldType: 'textarea',
+  }}) %>
+
+  <!-- TAGS -->
+
+  <%- include('../forms/tableRowMulti', {
+    attr: 'tags',
+    rootPath: rootPath,
+    values: notation.tags,
+  }) %>
+
+</table>
+
+<script>
+  initializeEditForm();
+</script>

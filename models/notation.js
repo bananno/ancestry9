@@ -7,7 +7,7 @@ const notationSchema = new mongoose.Schema({
     ref: 'Person',
   }],
   tags: [String],
-  content: String,
+  text: String,
   sharing: { type: Boolean, default: false },
 });
 
