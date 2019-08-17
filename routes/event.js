@@ -1,17 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
-
+const Event = mongoose.model('Event');
 const getDateValues = require('../tools/getDateValues');
 const getLocationValues = require('../tools/getLocationValues');
 const removePersonFromList = require('../tools/removePersonFromList');
 const reorderList = require('../tools/reorderList');
+const createModelRoutes = require('../tools/createModelRoutes');
+module.exports = router;
 
 router.get('/event/:eventId', makeRouteEditGet('none'));
 router.post('/event/:eventId/delete', deleteEvent);
-
-router.post('/event/:eventId/edit/title', makeRouteEditPost('title'));
-router.post('/event/:eventId/edit/notes', makeRouteEditPost('notes'));
 
 router.get('/event/:eventId/edit/date', makeRouteEditGet('date'));
 router.post('/event/:eventId/edit/date', makeRouteEditPost('date'));
@@ -26,7 +25,15 @@ router.post('/event/:eventId/add/tags', makeRouteEditPost('tags', true));
 router.post('/event/:eventId/delete/tags/:deleteId', makeRouteDelete('tags'));
 router.post('/event/:eventId/reorder/tags/:orderId', makeRouteReorder('tags'));
 
-module.exports = router;
+createModelRoutes({
+  Model: Event,
+  modelName: 'event',
+  router: router,
+  editView: false,
+  attributes: {
+    text: ['title', 'notes'],
+  },
+});
 
 function withEvent(req, callback) {
   const eventId = req.params.eventId;

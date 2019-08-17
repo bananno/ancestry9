@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
-
 const Source = mongoose.model('Source');
 const Citation = mongoose.model('Citation');
 const createModelRoutes = require('../tools/createModelRoutes');
@@ -11,6 +10,7 @@ const removePersonFromList = require('../tools/removePersonFromList');
 const reorderList = require('../tools/reorderList');
 const sortPeople = require('../tools/sortPeople');
 const sortCitations = require('../tools/sortCitations');
+module.exports = router;
 
 const stringArrayAttributes = ['links', 'images', 'tags'];
 
@@ -39,8 +39,6 @@ makeSourcesRoutes('citations', true);
 stringArrayAttributes.forEach(attr => makeSourcesRoutes(attr, true));
 
 router.post('/source/:sourceId/edit/citations/:citationId', editCitation);
-
-module.exports = router;
 
 function makeSourcesRoutes(fieldName, canAddDeleteReorder) {
   if (canAddDeleteReorder) {

@@ -7,16 +7,15 @@ const removePersonFromList = require('../tools/removePersonFromList');
 const createModelRoutes = require('../tools/createModelRoutes');
 module.exports = router;
 
-router.get('/notations', notationsIndex);
-router.post('/notations/new', createNotation);
-router.get('/notation/:notationId', showNotation);
-router.get('/notation/:notationId/edit', editNotation);
-
 createModelRoutes({
   Model: Notation,
   modelName: 'notation',
   router: router,
-  attributes: {
+  index: notationsIndex,
+  create: createNotation,
+  show: showNotation,
+  edit: editNotation,
+  updateAttributes: {
     people: true,
     toggle: ['sharing'],
     text: ['title', 'text'],
@@ -50,8 +49,8 @@ function createNotation(req, res, next) {
 }
 
 function showNotation(req, res, next) {
-  const notationId = req.params.notationId;
-  Notation.findById(notationId, (err, notation) => {
+  const notationId = req.params.id;
+  Notation.findById(notationId).populate('people').exec((err, notation) => {
     res.render('layout', {
       view: 'notations/show',
       title: 'Notation',
@@ -61,8 +60,8 @@ function showNotation(req, res, next) {
 }
 
 function editNotation(req, res, next) {
-  const notationId = req.params.notationId;
-  Notation.findById(notationId, (err, notation) => {
+  const notationId = req.params.id;
+  Notation.findById(notationId).populate('people').exec((err, notation) => {
     Person.find({}, (err, people) => {
       res.render('layout', {
         view: 'notations/edit',
@@ -75,46 +74,10 @@ function editNotation(req, res, next) {
 }
 
 function makeNotationsRoutes(fieldName, canAddDeleteReorder) {
-  if (canAddDeleteReorder) {
-    const showOrEditPath = '/notation/:notationId/add/' + fieldName;
-    const deletePath = '/notation/:notationId/delete/' + fieldName + '/:deleteId';
-    const reorderPath = '/notation/:notationId/reorder/' + fieldName + '/:orderId';
-    router.post(showOrEditPath, makeRouteEditPost(fieldName));
-    router.post(deletePath, makeRouteDelete(fieldName));
-    router.post(reorderPath, makeRouteReorder(fieldName));
-  } else {
-    const showOrEditPath = '/notation/:notationId/edit/' + fieldName;
-    router.post(showOrEditPath, makeRouteEditPost(fieldName));
-  }
-}
-
-function makeRouteEditPost(editField) {
-  return (req, res) => {
-    const notationId = req.params.notationId;
-    Notation.findById(notationId, (err, notation) => {
-      const updatedObj = {};
-
-      if (editField == 'people') {
-        const personId = req.body[editField];
-        updatedObj[editField] = notation.people;
-        updatedObj[editField].push(personId);
-      } else if (editField == 'tags') {
-        const newValue = req.body[editField].trim();
-        if (newValue == '') {
-          return;
-        }
-        updatedObj[editField] = (notation[editField] || []).concat(newValue);
-      } else if (editField === 'sharing') {
-        updatedObj.sharing = !(notation.sharing || false);
-      } else {
-        updatedObj[editField] = req.body[editField];
-      }
-
-      notation.update(updatedObj, err => {
-        res.redirect('/notation/' + notationId + '/edit');
-      });
-    });
-  };
+  const deletePath = '/notation/:notationId/delete/' + fieldName + '/:deleteId';
+  const reorderPath = '/notation/:notationId/reorder/' + fieldName + '/:orderId';
+  router.post(deletePath, makeRouteDelete(fieldName));
+  router.post(reorderPath, makeRouteReorder(fieldName));
 }
 
 function makeRouteDelete(editField) {
@@ -126,14 +89,9 @@ function makeRouteDelete(editField) {
 
       if (editField == 'people') {
         updatedObj[editField] = removePersonFromList(notation[editField], deleteId);
-      } else if (stringArrayAttributes.includes(editField)) {
+      } else if (editField == 'tags') {
         updatedObj[editField] = notation[editField].filter((url, i) => {
           return i != deleteId;
-        });
-      } else if (editField == 'citations') {
-        const citationId = req.params.deleteId;
-         mongoose.model('Citation').findById(citationId, (err, citation) => {
-          citation.remove(() => { });
         });
       }
 
