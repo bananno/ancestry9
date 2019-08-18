@@ -1,0 +1,55 @@
+<%
+  const addCitationPath = rootPath + '/add/citations';
+  const deleteCitationPath = rootPath + '/delete/citations';
+  let defaultCitationPerson = null;
+
+  if (source.people.length == 1) {
+    defaultCitationPerson = source.people[0];
+  }
+%>
+
+<div class="value-edit" item="citations">
+  <form action="<%= addCitationPath %>" method="POST">
+    <table>
+      <tr>
+        <td>
+          <b>person</b>
+        </td>
+        <td>
+          <%- include('../forms/personDropdown', {
+            fieldName: 'person',
+            selectedPerson: defaultCitationPerson,
+          }) %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>item</b>
+        </td>
+        <td>
+          <input type="text" name="item" placeholder="e.g., birth - place">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>information</b>
+        </td>
+        <td>
+          <input type="text" name="information" placeholder="e.g., 1880">
+        </td>
+      </tr>
+    </table>
+    <p>
+      <button type="submit">create</button>
+    </p>
+  </form>
+  <p>
+    <span class="clickable-link link-cancel"
+      onClick="cancelEdit()" item="citations">cancel</span>
+  </p>
+</div>
+
+<p>
+  <span class="clickable-link main-link link-start"
+    onClick="startEdit('citations')">+ Add Citation</span>
+</p>

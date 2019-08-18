@@ -105,90 +105,38 @@
   }}) %>
 </table>
 
-<!-- CONTENT -->
+<div>
+  <h2>Content</h2>
 
-<%
-  var editContentPath = rootEditPath + '/content';
-%>
-
-<h2>Content</h2>
-
-<% if (editField == 'none') { %>
   <p>
-    <a href="<%= editContentPath %>" class="link-start">edit</a>
+    <span class="clickable-link main-link link-start"
+      onClick="startEdit('content')">edit</span>
   </p>
-<% } %>
 
-<form action="<%= editContentPath %>" method="POST">
-  <% if (editField == 'content') { %>
-    <textarea name="content" class="content-textarea"><%= source.content %></textarea>
-    <input type="hidden" value="PUT" name="_method">
-    <button type="submit">save</button>
-    <a href="<%= rootEditPath %>">cancel</a>
-  <% } else { %>
+  <div class="value-show" item="content">
     <%- include('../format/content', {
       content: source.content,
       limit: false,
     }) %>
-  <% } %>
-</form>
+  </div>
+
+  <div class="value-edit" item="content">
+    <form action="<%= rootEditPath %>/content" method="POST">
+      <textarea name="content" class="content-textarea"><%= source.content %></textarea>
+      <input type="hidden" value="PUT" name="_method">
+      <button type="submit">save</button>
+      <span class="clickable-link link-cancel"
+        onClick="cancelEdit()" item="content">cancel</span>
+    </form>
+  </div>
+</div>
 
 <h2>Citations</h2>
 
-<%
-  var addCitationPath = rootPath + '/add/citations';
-  var deleteCitationPath = rootPath + '/delete/citations';
-
-  var defaultPerson = null;
-
-  if (source.people.length == 1) {
-    defaultPerson = source.people[0];
-  }
-%>
-
-<% if (editField == 'citations') { %>
-  <form action="<%= addCitationPath %>" method="POST">
-    <table>
-      <tr>
-        <td>
-          <b>person</b>
-        </td>
-        <td>
-          <%- include('../forms/personDropdown', {
-            fieldName: 'person',
-            selectedPerson: defaultPerson,
-          }) %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <b>item</b>
-        </td>
-        <td>
-          <input type="text" name="item" placeholder="e.g., birth - place">
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <b>information</b>
-        </td>
-        <td>
-          <input type="text" name="information" placeholder="e.g., 1880">
-        </td>
-      </tr>
-    </table>
-    <p>
-      <button type="submit">create</button>
-    </p>
-  </form>
-  <p>
-    <a href="<%= rootEditPath %>">cancel</a>
-  </p>
-<% } else if (editField == 'none') { %>
-  <p>
-    <a href="<%= addCitationPath %>" class="main-link link-start">+ Add Citation</a>
-  </p>
-<% } %>
+<%- include('./citationForm', {
+  rootPath: rootPath,
+  rootEditPath: rootEditPath,
+}) %>
 
 <%- include('../partials/citationList', {
   citations: citations,
@@ -200,5 +148,5 @@
 }) %>
 
 <script>
-  initializeEditForm('<%= editField %>' != 'none');
+  initializeEditForm();
 </script>
