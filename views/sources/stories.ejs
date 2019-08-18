@@ -1,0 +1,49 @@
+<%
+%>
+
+<h1>Stories</h1>
+
+<p>
+  <span class="clickable-link main-link">+ New Story</span>
+</p>
+
+<table class="info-table">
+  <tr>
+    <th>type</th>
+    <th>group</th>
+    <th>title</th>
+    <th>date</th>
+    <th>location</th>
+    <th>sharing</th>
+  </tr>
+
+  <% stories.forEach(story => { %>
+    <tr>
+      <td>
+        <%= story.type %>
+      </td>
+      <td>
+        <%= story.group %>
+      </td>
+      <td>
+        <%- include('../partials/linkToSource', {
+          source: story,
+          showGroup: false,
+        }) %>
+      </td>
+      <td>
+        <%- include('../format/date', { params: {
+          date: story.date,
+        }}) %>
+      </td>
+      <td>
+        <%- include('../format/location', { params: {
+          location: story.location,
+        }}) %>
+      </td>
+      <td>
+        <img class="checkmark-inline" src="/images/check-<%= story.sharing %>.png">
+      </td>
+    </tr>
+  <% }); %>
+</table>

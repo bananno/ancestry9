@@ -37,7 +37,7 @@ function createNotation(req, res, next) {
     if (err) {
       return res.send('There was a problem adding the information to the database.');
     }
-    res.redirect('/notation/' + notation._id);
+    res.redirect('/notation/' + notation._id + '/edit');
   });
 }
 
