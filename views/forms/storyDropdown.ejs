@@ -1,0 +1,20 @@
+<%
+  const selectedId = locals.selectedStory ? ('' + (selectedStory._id || selectedStory)) : null;
+%>
+
+<select name="<%= fieldName %>">
+  <option value="0">
+    -- Select --
+  </option>
+  <% stories.forEach(story => { %>
+    <% if (selectedId == '' + story._id) { %>
+      <option value="<%= story.id %>" selected="selected">
+        <%= story.name %>
+      </option>
+    <% } else { %>
+      <option value="<%= story.id %>">
+        <%= story.title %>
+      </option>
+    <% } %>
+  <% }); %>
+</select>

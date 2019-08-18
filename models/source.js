@@ -6,6 +6,10 @@ const sourceSchema = new mongoose.Schema({
   type: String,
   group: String,
   title: String,
+  story: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Source',
+  },
   date: dateStructure,
   location: locationStructure,
   people: [{

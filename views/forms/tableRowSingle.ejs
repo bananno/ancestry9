@@ -28,6 +28,13 @@
             location: originalValue,
           }}) %>
 
+        <!-- story -->
+
+        <% } else if (attr == 'story') { %>
+          <div item="<%= attr %>" class="value-show">
+            <%= originalValue || 'none' %>
+          </div>
+
         <!-- textarea -->
 
         <% } else if (fieldType == 'textarea') { %>
@@ -81,6 +88,13 @@
       <% } else if (attr == 'location') { %>
         <div item="<%= attr %>" class="value-edit">
           <%- include('../forms/location', { location: originalValue }) %>
+        </div>
+      <% } else if (attr == 'story') { %>
+        <div item="<%= attr %>" class="value-edit">
+          <%- include('./storyDropdown', {
+            fieldName: attr,
+            selectedStory: originalValue,
+          }) %>
         </div>
       <% } else if (fieldType == 'textarea') { %>
         <textarea item="<%= attr %>" class="value-edit" name="<%= attr %>"><%= originalValue %></textarea>

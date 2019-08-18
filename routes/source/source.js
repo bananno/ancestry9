@@ -30,7 +30,7 @@ createModelRoutes({
   edit: editSource,
   toggleAttributes: ['sharing'],
   singleAttributes: ['type', 'group', 'title', 'content', 'notes', 'summary',
-    'date', 'location'],
+    'date', 'location', 'story'],
   listAttributes: ['people', 'links', 'images', 'tags'],
 });
 
@@ -111,22 +111,27 @@ function editSource(req, res, next) {
     Person.find({ }).exec((err, people) => {
       Citation.find({ source: source }).populate('person')
       .exec((err, citations) => {
-        people = sortPeople(people, 'name');
+        Source.find({ type: 'story' }).exec((err, stories) => {
+          people = sortPeople(people, 'name');
 
-        source.people.forEach(thisPerson => {
-          people = removePersonFromList(people, thisPerson);
-        });
+          source.people.forEach(thisPerson => {
+            people = removePersonFromList(people, thisPerson);
+          });
 
-        people = [...source.people, ...people];
+          people = [...source.people, ...people];
 
-        res.render('layout', {
-          view: 'sources/layout',
-          subview: 'edit',
-          title: 'Edit Source',
-          source: source,
-          people: people,
-          citations: sortCitations(citations, 'item', source.people),
-          citationsByPerson: sortCitations(citations, 'person', source.people),
+          stories.sort((a, b) => a.title < b.title ? -1 : 1)
+
+          res.render('layout', {
+            view: 'sources/layout',
+            subview: 'edit',
+            title: 'Edit Source',
+            source: source,
+            people: people,
+            stories: stories,
+            citations: sortCitations(citations, 'item', source.people),
+            citationsByPerson: sortCitations(citations, 'person', source.people),
+          });
         });
       });
     });
