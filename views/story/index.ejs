@@ -3,9 +3,19 @@
 
 <h1>Stories</h1>
 
-<p>
+<p id="story-links">
   <span class="clickable-link main-link">+ New Story</span>
+  <span class="clickable-link main-link" onClick="showConvertForm()">Convert Stories</span>
 </p>
+
+<div id="convert-form" style="display: none;">
+  <form method="POST" action="/stories/convert">
+    Toggle story/source
+    <input type="text" name="sourceId">
+    <button>convert</button>
+    <span class="clickable-link" onClick="cancelConvertForm()">cancel</span>
+  </form>
+</div>
 
 <table class="info-table">
   <tr>
@@ -54,3 +64,15 @@
     </tr>
   <% }); %>
 </table>
+
+<script>
+  function showConvertForm() {
+    $('#story-links').hide();
+    $('#convert-form').show();
+  }
+
+  function cancelConvertForm() {
+    $('#story-links').show();
+    $('#convert-form').hide();
+  }
+</script>

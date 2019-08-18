@@ -9,6 +9,8 @@ const Person = mongoose.model('Person');
 const getTools = (path) => { return require('../../tools/' + path) };
 const createModelRoutes = getTools('createModelRoutes');
 
+router.post('/stories/convert', convertStory);
+
 createModelRoutes({
   Model: Source,
   modelName: 'story',
@@ -60,6 +62,17 @@ function editStory(req, res) {
         story: story,
         people: people,
       });
+    });
+  });
+}
+
+function convertStory(req, res, next) {
+  const sourceId = req.body.sourceId;
+  Source.findById(sourceId, (err, story) => {
+    const updatedObj = {};
+    updatedObj.isStory = !story.isStory;
+    story.update(updatedObj, () => {
+      res.redirect('/stories');
     });
   });
 }
