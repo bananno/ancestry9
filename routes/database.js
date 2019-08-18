@@ -13,6 +13,7 @@ const sourceFields = [
 ];
 
 const eventFields = ['_id', 'title', 'date', 'location', 'people', 'notes'];
+const notationFields = ['_id', 'title', 'people', 'text', 'tags'];
 
 router.get('/database', showDatabaseEverything);
 router.get('/sharing', saveSharedDatabase);
@@ -20,57 +21,34 @@ router.get('/sharing', saveSharedDatabase);
 function showDatabaseEverything(req, res) {
   let data = {};
   new Promise(resolve => {
-    mongoose.model('Person').find({}, (err, people) => {
-      data.people = people;
-      resolve();
-    });
+    resolve();
   }).then(() => {
-    return new Promise(resolve => {
-      mongoose.model('Source').find({}, (err, sources) => {
-        data.sources = sources;
-        resolve();
-      });
-    });
+    return saveFullDataFile(data, 'Person', 'people');
   }).then(() => {
-    return new Promise(resolve => {
-      mongoose.model('Event').find({}, (err, events) => {
-        data.events = events;
-        resolve();
-      });
-    });
+    return saveFullDataFile(data, 'Source', 'sources');
   }).then(() => {
-    return new Promise(resolve => {
-      mongoose.model('Citation').find({}, (err, citations) => {
-        data.citations = citations;
-        resolve();
-      });
-    });
+    return saveFullDataFile(data, 'Event', 'events');
   }).then(() => {
-    const filename = 'database-backup/database-people.json';
-    const content = stringifyData(data.people);
-    return new Promise(resolve => {
-      fs.writeFile(filename, content, resolve);
-    });
+    return saveFullDataFile(data, 'Citation', 'citations');
   }).then(() => {
-    const filename = 'database-backup/database-sources.json';
-    const content = stringifyData(data.sources);
-    return new Promise(resolve => {
-      fs.writeFile(filename, content, resolve);
-    });
+    return saveFullDataFile(data, 'Notation', 'notations');
   }).then(() => {
-    const filename = 'database-backup/database-events.json';
-    const content = stringifyData(data.events);
-    return new Promise(resolve => {
-      fs.writeFile(filename, content, resolve);
-    });
-  }).then(() => {
-    const filename = 'database-backup/database-citations.json';
-    const content = stringifyData(data.citations);
-    return new Promise(resolve => {
-      fs.writeFile(filename, content, resolve);
-    });
+    return saveFullDataFile(data, 'To-do', 'tasks');
   }).then(() => {
     res.render('database', data);
+  });
+}
+
+function saveFullDataFile(data, modelName, itemName) {
+  return new Promise(resolve => {
+    mongoose.model(modelName).find({}, (err, results) => resolve(results));
+  }).then(results => {
+    data[itemName] = results;
+    const filename = 'database-backup/database-' + itemName + '.json';
+    const content = stringifyData(data[itemName]);
+    return new Promise(resolve => {
+      fs.writeFile(filename, content, resolve);
+    });
   });
 }
 
@@ -100,6 +78,10 @@ function saveSharedDatabase(req, res) {
   }).then(() => {
     new Promise(resolve => {
       saveRawSharedDataFile(resolve, 'citations', data.citations);
+    });
+  }).then(() => {
+    new Promise(resolve => {
+      saveRawSharedDataFile(resolve, 'notations', data.notations);
     });
   }).then(() => {
     res.redirect('/');
@@ -199,11 +181,20 @@ function getProcessedSharedData(req, res, callback) {
       items: [],
     };
 
+    data.notations = data.allNotations.map(rawInfo => {
+      const newObj = {};
+      notationFields.forEach(attr => newObj[attr] = rawInfo[attr]);
+      newObj.people = rawInfo.people.filter(personId => tempPersonRef['' + personId]);
+      newObj.tags = convertTags(rawInfo);
+      return newObj;
+    });
+
     [...data.events, ...data.sources].forEach(item => {
       if (item.location == null) {
         return;
       }
-      const places = [item.location.country || 'other', item.location.region1 || 'other',
+      const places = [
+        item.location.country || 'other', item.location.region1 || 'other',
         item.location.region2 || 'other', item.location.city || 'other'];
 
       let tempObj = data.places;
@@ -225,31 +216,35 @@ function getProcessedSharedData(req, res, callback) {
 }
 
 function getMainDatabase(callback) {
-  console.log('get shared data');
   mongoose.model('Person')
-    .find({})
-    .exec((err, people) => {
-      mongoose.model('Source')
-        .find({ sharing: true })
-        .exec((err, sources) => {
-          mongoose.model('Event')
-            .find({})
-            .exec((err, events) => {
-              mongoose.model('Citation')
-                .find({})
-                .populate('person')
-                .populate('source')
-                .exec((err, citations) => {
-                  callback({
-                    allPeople: people,
-                    allSources: sources,
-                    allEvents: events,
-                    citations: citations,
-                  });
-                });
+  .find({})
+  .exec((err, people) => {
+    mongoose.model('Source')
+    .find({ sharing: true })
+    .exec((err, sources) => {
+      mongoose.model('Event')
+      .find({})
+      .exec((err, events) => {
+        mongoose.model('Citation')
+        .find({})
+        .populate('person')
+        .populate('source')
+        .exec((err, citations) => {
+          mongoose.model('Notation')
+          .find({ sharing: true })
+          .exec((err, notations) => {
+            callback({
+              allPeople: people,
+              allSources: sources,
+              allEvents: events,
+              citations: citations,
+              allNotations: notations,
             });
+          });
         });
+      });
     });
+  });
 }
 
 function getSharedEvents(eventList, tempPersonRef) {
