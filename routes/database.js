@@ -7,9 +7,14 @@ const sortEvents = require('../tools/sortEvents');
 const allFields = ['_id', 'parents', 'spouses', 'children'];
 const nonRestrictedFields = ['name', 'customId', 'links', 'profileImage'];
 
+const storyFields = [
+  '_id', 'type', 'title', 'date', 'location', 'people',
+  'links', 'images', 'content', 'notes', 'summary',
+];
+
 const sourceFields = [
   '_id', 'type', 'group', 'title', 'date', 'location', 'people',
-  'links', 'images', 'content', 'notes', 'summary',
+  'links', 'images', 'content', 'notes', 'summary', 'story',
 ];
 
 const eventFields = ['_id', 'title', 'date', 'location', 'people', 'notes'];
@@ -69,6 +74,10 @@ function saveSharedDatabase(req, res) {
     });
   }).then(() => {
     new Promise(resolve => {
+      saveRawSharedDataFile(resolve, 'stories', data.stories);
+    });
+  }).then(() => {
+    new Promise(resolve => {
       saveRawSharedDataFile(resolve, 'sources', data.sources);
     });
   }).then(() => {
@@ -107,24 +116,24 @@ function saveRawSharedDataFile(resolve, attr, arr, starter) {
 }
 
 function getProcessedSharedData(req, res, callback) {
-  getMainDatabase(data => {
-    console.log('process shared data');
+  getRawSharedData(raw => {
+    const data = {};
 
     const ancestors = {};
 
-    findAncestors(data.allPeople.filter(person => person.name == 'Anna Peterson')[0]);
+    findAncestors(raw.people.filter(person => person.name == 'Anna Peterson')[0]);
 
     function findAncestors(person) {
       (person.parents || []).forEach(parentId => {
         ancestors['' + parentId] = true;
-        const parent = data.allPeople.filter(person => person._id + '' == parentId + '')[0];
+        const parent = raw.people.filter(person => person._id + '' == parentId + '')[0];
         findAncestors(parent);
       });
     }
 
     const tempPersonRef = {};
 
-    data.people = data.allPeople.map(personInfo => {
+    data.people = raw.people.map(personInfo => {
       if (personInfo.sharing.level == 0) {
         return null;
       }
@@ -156,19 +165,27 @@ function getProcessedSharedData(req, res, callback) {
 
     data.people = data.people.filter(person => person != null);
 
-    data.events = getSharedEvents(data.allEvents, tempPersonRef);
+    data.events = getSharedEvents(raw.events, tempPersonRef);
 
-    data.citations = data.citations.filter(citation => {
+    raw.citations = raw.citations.filter(citation => {
       return citation.person.sharing.level == 2 && citation.source.sharing;
     });
 
-    data.citations = data.citations.map(citation => {
+    data.citations = raw.citations.map(citation => {
       citation.source = citation.source._id;
       citation.person = citation.person._id;
       return citation;
     });
 
-    data.sources = data.allSources.map(sourceInfo => {
+    data.stories = raw.stories.map(storyInfo => {
+      const story = {};
+      storyFields.forEach(attr => story[attr] = storyInfo[attr]);
+      story.tags = convertTags(storyInfo);
+      story.people = story.people.filter(personId => tempPersonRef['' + personId]);
+      return story;
+    });
+
+    data.sources = raw.sources.map(sourceInfo => {
       const source = {};
       sourceFields.forEach(attr => source[attr] = sourceInfo[attr]);
       source.tags = convertTags(sourceInfo);
@@ -181,7 +198,7 @@ function getProcessedSharedData(req, res, callback) {
       items: [],
     };
 
-    data.notations = data.allNotations.map(rawInfo => {
+    data.notations = raw.notations.map(rawInfo => {
       const newObj = {};
       notationFields.forEach(attr => newObj[attr] = rawInfo[attr]);
       newObj.people = rawInfo.people.filter(personId => tempPersonRef['' + personId]);
@@ -215,7 +232,7 @@ function getProcessedSharedData(req, res, callback) {
   });
 }
 
-function getMainDatabase(callback) {
+function getRawSharedData(callback) {
   mongoose.model('Person')
   .find({})
   .exec((err, people) => {
@@ -233,12 +250,17 @@ function getMainDatabase(callback) {
           mongoose.model('Notation')
           .find({ sharing: true })
           .exec((err, notations) => {
-            callback({
-              allPeople: people,
-              allSources: sources,
-              allEvents: events,
-              citations: citations,
-              allNotations: notations,
+            mongoose.model('Source')
+            .find({ sharing: true, isStory: true })
+            .exec((err, stories) => {
+              callback({
+                people: people,
+                stories: stories,
+                sources: sources.filter(source => !source.isStory),
+                events: events,
+                citations: citations,
+                notations: notations,
+              });
             });
           });
         });
