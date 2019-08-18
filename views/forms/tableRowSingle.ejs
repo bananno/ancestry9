@@ -32,7 +32,11 @@
 
         <% } else if (attr == 'story') { %>
           <div item="<%= attr %>" class="value-show">
-            <%= originalValue || 'none' %>
+            <% if (originalValue) { %>
+              <%- include('../partials/linkToStory', { story: originalValue }) %>
+            <% } else { %>
+              none
+            <% } %>
           </div>
 
         <!-- textarea -->

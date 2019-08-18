@@ -15,7 +15,7 @@ createModelRoutes({
   router: router,
   index: storiesIndex,
   create: null,
-  show: null,
+  show: showStory,
   edit: null,
   toggleAttributes: [],
   singleAttributes: [],
@@ -24,12 +24,26 @@ createModelRoutes({
 
 function storiesIndex(req, res, next) {
   mongoose.model('Source').find({ type: 'story' }, (err, stories) => {
+    stories.sort((a, b) => {
+      return a.group < b.group ? -1 : 1;
+    });
     res.render('layout', {
       view: 'sources/stories',
       title: 'Stories',
       stories: stories,
       showNew: false,
       mainSourceTypes: [],
+    });
+  });
+}
+
+function showStory(req, res) {
+  const storyId = req.params.id;
+  Source.findById(storyId, (err, story) => {
+    res.render('layout', {
+      view: 'sources/story',
+      title: story.title,
+      story: story,
     });
   });
 }

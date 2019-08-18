@@ -89,7 +89,7 @@ function createSource(req, res) {
 
 function showSource(req, res) {
   const sourceId = req.params.id;
-  mongoose.model('Source').findById(sourceId).populate('people')
+  Source.findById(sourceId).populate('people').populate('story')
   .exec((err, source) => {
     mongoose.model('Citation').find({ source: source }).populate('person')
     .exec((err, citations) => {
@@ -107,7 +107,8 @@ function showSource(req, res) {
 
 function editSource(req, res, next) {
   const sourceId = req.params.id;
-  Source.findById(sourceId).populate('people').exec((err, source) => {
+  Source.findById(sourceId).populate('people').populate('story')
+  .exec((err, source) => {
     Person.find({ }).exec((err, people) => {
       Citation.find({ source: source }).populate('person')
       .exec((err, citations) => {

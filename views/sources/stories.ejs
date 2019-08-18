@@ -14,10 +14,15 @@
     <th>title</th>
     <th>date</th>
     <th>location</th>
+    <th>notes</th>
     <th>sharing</th>
   </tr>
 
   <% stories.forEach(story => { %>
+    <%
+      const storyNotes = (story.notes || '').length ? story.notes.split('\n') : [];
+    %>
+
     <tr>
       <td>
         <%= story.type %>
@@ -26,10 +31,7 @@
         <%= story.group %>
       </td>
       <td>
-        <%- include('../partials/linkToSource', {
-          source: story,
-          showGroup: false,
-        }) %>
+        <%- include('../partials/linkToStory', { story: story }) %>
       </td>
       <td>
         <%- include('../format/date', { params: {
@@ -40,6 +42,11 @@
         <%- include('../format/location', { params: {
           location: story.location,
         }}) %>
+      </td>
+      <td>
+        <% storyNotes.forEach(str => { %>
+          <p><%= str %></p>
+        <% }); %>
       </td>
       <td>
         <img class="checkmark-inline" src="/images/check-<%= story.sharing %>.png">
