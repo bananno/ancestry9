@@ -6,17 +6,31 @@
   const toggle = locals.params ? params.toggle : locals.toggle;
 %>
 
-<tr>
-  <td>
-    <b><%= attr %></b>
-  </td>
+<form action="<%= editPath %>" method="POST">
+  <tr>
+    <td>
+      <b><%= attr %></b>
+    </td>
 
-  <form action="<%= editPath %>" method="POST">
     <td>
       <!-- DISPLAY VALUE -->
 
       <div item="<%= attr %>" class="value-show">
-        <% if (fieldType == 'textarea') { %>
+
+        <!-- date, location -->
+
+        <% if (attr == 'date') { %>
+          <%- include('../format/date', { params: {
+            date: originalValue,
+          }}) %>
+        <% } else if (attr == 'location') { %>
+          <%- include('../format/location', { params: {
+            location: originalValue,
+          }}) %>
+
+        <!-- textarea -->
+
+        <% } else if (fieldType == 'textarea') { %>
           <%
             let valueList = [];
             if (originalValue && originalValue != '') {
@@ -28,6 +42,9 @@
               <li><%= str %></li>
             <% }); %>
           </ul>
+
+        <!-- sharing -->
+
         <% } else if (attr == 'sharing' || attr == 'shareLevel') { %>
           <%
             let imageValue = originalValue === 2 || originalValue === true;
@@ -47,6 +64,9 @@
           %>
           <img class="checkmark-inline" src="/images/check-<%= imageValue %>.png">
           <%= shareText %>
+
+        <!-- everything else -->
+
         <% } else { %>
           <%= originalValue %>
         <% } %>
@@ -54,7 +74,15 @@
 
       <!-- EDITABLE FIELD -->
 
-      <% if (fieldType == 'textarea') { %>
+      <% if (attr == 'date') { %>
+        <div item="<%= attr %>" class="value-edit">
+          <%- include('../forms/date', { date: originalValue }) %>
+        </div>
+      <% } else if (attr == 'location') { %>
+        <div item="<%= attr %>" class="value-edit">
+          <%- include('../forms/location', { location: originalValue }) %>
+        </div>
+      <% } else if (fieldType == 'textarea') { %>
         <textarea item="<%= attr %>" class="value-edit" name="<%= attr %>"><%= originalValue %></textarea>
       <% } else { %>
         <input item="<%= attr %>" class="value-edit" type="text" value="<%= originalValue %>" name="<%= attr %>">
@@ -81,5 +109,5 @@
     <td>
       <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
     </td>
-  </form>
-</tr>
+  </tr>
+</form>

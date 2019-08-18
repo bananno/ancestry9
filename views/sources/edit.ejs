@@ -40,19 +40,19 @@
 
   <!-- DATE -->
 
-  <%- include('../forms/tableRowRoute', { params: {
+  <%- include('../forms/tableRowSingle', {
     attr: 'date',
-    rootEditPath: rootEditPath,
+    editPath: rootEditPath + '/date',
     originalValue: source.date,
-  }}) %>
+  }) %>
 
   <!-- LOCATION -->
 
-  <%- include('../forms/tableRowRoute', { params: {
+  <%- include('../forms/tableRowSingle', {
     attr: 'location',
-    rootEditPath: rootEditPath,
+    editPath: rootEditPath + '/location',
     originalValue: source.location,
-  }}) %>
+  }) %>
 
   <!-- PEOPLE -->
 
