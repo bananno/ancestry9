@@ -1,0 +1,27 @@
+<%
+%>
+
+<h1>story</h1>
+
+<p>
+  <%= story.title %>
+</p>
+
+<h2>sharing</h2>
+
+<p>
+  <% if (story.sharing) { %>
+    <img class="checkmark-inline" src="/images/check-true.png"> yes
+  <% } else { %>
+    <img class="checkmark-inline" src="/images/check-false.png"> no
+  <% } %>
+</p>
+
+<% if (story.tags.length) { %>
+  <h2>tags</h2>
+  <ul class="bullet-list">
+    <% story.tags.forEach(text => { %>
+      <li><%= text %></li>
+    <% }); %>
+  </ul>
+<% } %>

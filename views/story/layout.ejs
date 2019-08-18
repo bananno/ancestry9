@@ -1,0 +1,19 @@
+<%
+    const rootPath = '/story/' + story._id;
+%>
+
+<div class="column">
+  <h1><%= story.title %></h1>
+
+  <% if (subview == 'show') { %>
+    <p>
+      <a href="<%= rootPath %>/edit" class="main-link">edit story</a>
+    </p>
+  <% } else { %>
+    <p>
+      <a href="<%= rootPath %>" class="main-link">done</a>
+    </p>
+  <% } %>
+</div>
+
+<%- include('./' + subview) %>

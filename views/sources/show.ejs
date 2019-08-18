@@ -39,6 +39,11 @@
   <% }); %>
 <% } %>
 
+<% if (source.story) { %>
+  <h2>story</h2>
+  <%- include('../partials/linkToStory', { story: source.story }) %>
+<% } %>
+
 <h2>date</h2>
 
 <p>
