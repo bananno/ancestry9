@@ -1,1 +1,4 @@
+<%
+  const showGroup = locals.showGroup || false;
+%>
 <a href="/source/<%= source._id %>"><%= (showGroup ? source.group + ' - ' : '') + source.title %></a>

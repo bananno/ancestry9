@@ -22,14 +22,6 @@
     originalValue: story.type,
   }) %>
 
-  <!-- GROUP -->
-
-  <%- include('../forms/tableRowSingle', {
-    attr: 'group',
-    editPath: rootEditPath + '/group',
-    originalValue: story.group,
-  }) %>
-
   <!-- TITLE -->
 
   <%- include('../forms/tableRowSingle', {
@@ -40,11 +32,13 @@
 
   <!-- DATE -->
 
-  <%- include('../forms/tableRowSingle', {
-    attr: 'date',
-    editPath: rootEditPath + '/date',
-    originalValue: story.date,
-  }) %>
+  <% if (canHaveDate) { %>
+    <%- include('../forms/tableRowSingle', {
+      attr: 'date',
+      editPath: rootEditPath + '/date',
+      originalValue: story.date,
+    }) %>
+  <% } %>
 
   <!-- LOCATION -->
 

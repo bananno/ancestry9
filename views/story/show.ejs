@@ -1,12 +1,6 @@
 <%
 %>
 
-<h1>story</h1>
-
-<p>
-  <%= story.title %>
-</p>
-
 <h2>sharing</h2>
 
 <p>
@@ -17,11 +11,115 @@
   <% } %>
 </p>
 
+<h2>type</h2>
+<p>
+  <%= story.type %>
+</p>
+
 <% if (story.tags.length) { %>
   <h2>tags</h2>
   <ul class="bullet-list">
     <% story.tags.forEach(text => { %>
       <li><%= text %></li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<% if (story.tags.length) { %>
+  <h2>tags</h2>
+  <ul class="bullet-list">
+    <% story.tags.forEach(text => { %>
+      <li><%= text %></li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<% if (story.summary) { %>
+  <%
+    const summaryItems = story.summary.split('\n');
+  %>
+  <h2>summary</h2>
+  <% summaryItems.forEach(str => { %>
+    <p style="max-width: 600px;">
+      <%= str %>
+    </p>
+  <% }); %>
+<% } %>
+
+<% if (canHaveDate && story.date) { %>
+  <h2>date</h2>
+  <p>
+    <%- include('../format/date', { params: {
+      date: story.date,
+    }}) %>
+  </p>
+<% } %>
+
+<% if (story.location) { %>
+  <h2>location</h2>
+  <p>
+    <%- include('../format/location', { params: {
+      location: story.location,
+    }}) %>
+  </p>
+<% } %>
+
+<% if (story.people.length) { %>
+  <h2>people</h2>
+  <%- include('../people/peopleList', {
+    people: story.people,
+    format: 'bullet',
+  }) %>
+<% } %>
+
+<% if (story.links.length) { %>
+  <h2>links</h2>
+  <ul class="bullet-list">
+    <% story.links.forEach(linkUrl => { %>
+      <li>
+        <%- include('../format/externalLink', { url: linkUrl }) %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<% if (story.images.length) { %>
+  <h2>images</h2>
+  <p>
+    <% story.images.forEach(imageUrl => { %>
+      <a href="<%= imageUrl %>" target="_blank"><img
+        src="<%= imageUrl %>" style="max-height: 100px; max-width: 800px;"></a>
+    <% }); %>
+  </p>
+<% } %>
+
+<% if (story.notes) { %>
+  <% const notesList = story.notes.split('\n'); %>
+  <h2>notes</h2>
+  <ul class="bullet-list">
+    <% notesList.forEach(note => { %>
+      <li style="max-width: 600px;">
+        <%= note %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<% if (story.content) { %>
+  <h2>content</h2>
+  <%- include('../format/content', {
+    content: story.content,
+    limit: false,
+  }) %>
+<% } %>
+
+<% if (entries.length) { %>
+  <h2>entries</h2>
+  <ul class="bullet-list">
+    <% entries.forEach(entry => { %>
+      <li>
+        <%- include('../partials/linkToSource', { source: entry }) %>
+      </li>
     <% }); %>
   </ul>
 <% } %>

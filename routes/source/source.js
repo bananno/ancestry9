@@ -112,7 +112,7 @@ function editSource(req, res, next) {
     Person.find({ }).exec((err, people) => {
       Citation.find({ source: source }).populate('person')
       .exec((err, citations) => {
-        Source.find({ type: 'story' }).exec((err, stories) => {
+        Source.find({ isStory: true }).exec((err, stories) => {
           people = sortPeople(people, 'name');
 
           source.people.forEach(thisPerson => {
@@ -147,6 +147,7 @@ function getSourceGroup(req, res, next) {
     mongoose.model('Source')
     .find({ group: rootSource.group })
     .populate('people')
+    .populate('story')
     .exec((err, sources) => {
       sources = sortSources(sources, 'date');
       res.render('layout', {

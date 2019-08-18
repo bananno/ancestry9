@@ -27,10 +27,8 @@ createModelRoutes({
 });
 
 function storiesIndex(req, res, next) {
-  Source.find({ type: 'story' }, (err, stories) => {
-    stories.sort((a, b) => {
-      return a.group < b.group ? -1 : 1;
-    });
+  Source.find({ isStory: true }, (err, stories) => {
+    stories.sort((a, b) => a.type < b.type ? -1 : 1);
     res.render('layout', {
       view: 'story/index',
       title: 'Stories',
@@ -42,11 +40,16 @@ function storiesIndex(req, res, next) {
 function showStory(req, res) {
   const storyId = req.params.id;
   Source.findById(storyId).populate('people').exec((err, story) => {
-    res.render('layout', {
-      view: 'story/layout',
-      subview: 'show',
-      title: story.title,
-      story: story,
+    Source.find({ story: story }).exec((err, entries) => {
+      entries.sort((a, b) => a.title < b.title ? -1 : 1);
+      res.render('layout', {
+        view: 'story/layout',
+        subview: 'show',
+        title: story.title,
+        story: story,
+        entries: entries,
+        canHaveDate: story.type != 'cemetery',
+      });
     });
   });
 }
@@ -61,6 +64,7 @@ function editStory(req, res) {
         title: story.title,
         story: story,
         people: people,
+        canHaveDate: story.type != 'cemetery',
       });
     });
   });

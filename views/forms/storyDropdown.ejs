@@ -9,7 +9,7 @@
   <% stories.forEach(story => { %>
     <% if (selectedId == '' + story._id) { %>
       <option value="<%= story.id %>" selected="selected">
-        <%= story.name %>
+        <%= story.title %>
       </option>
     <% } else { %>
       <option value="<%= story.id %>">
