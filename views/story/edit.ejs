@@ -1,27 +1,110 @@
 <%
+  const rootPath = '/story/' + story._id;
+  const rootEditPath = '/story/' + story._id + '/edit';
 %>
 
-<h1>story</h1>
+<table class="edit-form-frame">
 
-<p>
-  <%= story.title %>
-</p>
+  <!-- SHARING -->
 
-<h2>sharing</h2>
+  <%- include('../forms/tableRowSingle', {
+    attr: 'sharing',
+    editPath: rootEditPath + '/sharing',
+    originalValue: story.sharing,
+    toggle: true,
+  }) %>
 
-<p>
-  <% if (story.sharing) { %>
-    <img class="checkmark-inline" src="/images/check-true.png"> yes
-  <% } else { %>
-    <img class="checkmark-inline" src="/images/check-false.png"> no
-  <% } %>
-</p>
+  <!-- TYPE -->
 
-<% if (story.tags.length) { %>
-  <h2>tags</h2>
-  <ul class="bullet-list">
-    <% story.tags.forEach(text => { %>
-      <li><%= text %></li>
-    <% }); %>
-  </ul>
-<% } %>
+  <%- include('../forms/tableRowSingle', {
+    attr: 'type',
+    editPath: rootEditPath + '/type',
+    originalValue: story.type,
+  }) %>
+
+  <!-- GROUP -->
+
+  <%- include('../forms/tableRowSingle', {
+    attr: 'group',
+    editPath: rootEditPath + '/group',
+    originalValue: story.group,
+  }) %>
+
+  <!-- TITLE -->
+
+  <%- include('../forms/tableRowSingle', {
+    attr: 'title',
+    editPath: rootEditPath + '/title',
+    originalValue: story.title,
+  }) %>
+
+  <!-- DATE -->
+
+  <%- include('../forms/tableRowSingle', {
+    attr: 'date',
+    editPath: rootEditPath + '/date',
+    originalValue: story.date,
+  }) %>
+
+  <!-- LOCATION -->
+
+  <%- include('../forms/tableRowSingle', {
+    attr: 'location',
+    editPath: rootEditPath + '/location',
+    originalValue: story.location,
+  }) %>
+
+  <!-- PEOPLE -->
+
+  <%- include('../forms/tableRowMulti', {
+    attr: 'people',
+    rootPath: rootPath,
+    values: story.people,
+  }) %>
+
+  <!-- LINKS -->
+
+  <%- include('../forms/tableRowMulti', {
+    attr: 'links',
+    rootPath: rootPath,
+    values: story.links,
+  }) %>
+
+  <!-- IMAGES -->
+
+  <%- include('../forms/tableRowMulti', {
+    attr: 'images',
+    rootPath: rootPath,
+    values: story.images,
+  }) %>
+
+  <!-- IMAGES -->
+
+  <%- include('../forms/tableRowMulti', {
+    attr: 'tags',
+    rootPath: rootPath,
+    values: story.tags,
+  }) %>
+
+  <!-- NOTES -->
+
+  <%- include('../forms/tableRowSingle', {
+    attr: 'notes',
+    editPath: rootEditPath + '/notes',
+    originalValue: story.notes,
+    fieldType: 'textarea',
+  }) %>
+
+  <!-- SUMMARY -->
+
+  <%- include('../forms/tableRowSingle', {
+    attr: 'summary',
+    editPath: rootEditPath + '/summary',
+    originalValue: story.summary,
+    fieldType: 'textarea',
+  }) %>
+</table>
+
+<script>
+  initializeEditForm();
+</script>

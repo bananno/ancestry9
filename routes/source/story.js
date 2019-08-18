@@ -4,6 +4,7 @@ const router = express.Router();
 module.exports = router;
 
 const Source = mongoose.model('Source');
+const Person = mongoose.model('Person');
 
 const getTools = (path) => { return require('../../tools/' + path) };
 const createModelRoutes = getTools('createModelRoutes');
@@ -17,9 +18,10 @@ createModelRoutes({
   create: null,
   show: showStory,
   edit: editStory,
-  toggleAttributes: [],
-  singleAttributes: [],
-  listAttributes: [],
+  toggleAttributes: ['sharing'],
+  singleAttributes: ['type', 'group', 'title', 'date', 'location',
+    'notes', 'summary'],
+  listAttributes: ['people', 'links', 'images', 'tags'],
 });
 
 function storiesIndex(req, res, next) {
@@ -37,7 +39,7 @@ function storiesIndex(req, res, next) {
 
 function showStory(req, res) {
   const storyId = req.params.id;
-  Source.findById(storyId, (err, story) => {
+  Source.findById(storyId).populate('people').exec((err, story) => {
     res.render('layout', {
       view: 'story/layout',
       subview: 'show',
@@ -49,12 +51,15 @@ function showStory(req, res) {
 
 function editStory(req, res) {
   const storyId = req.params.id;
-  Source.findById(storyId, (err, story) => {
-    res.render('layout', {
-      view: 'story/layout',
-      subview: 'edit',
-      title: story.title,
-      story: story,
+  Source.findById(storyId).populate('people').exec((err, story) => {
+    Person.find({}, (err, people) => {
+      res.render('layout', {
+        view: 'story/layout',
+        subview: 'edit',
+        title: story.title,
+        story: story,
+        people: people,
+      });
     });
   });
 }
