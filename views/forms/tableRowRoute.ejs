@@ -1,4 +1,6 @@
 <%
+  const editField = locals.editField || (params ? params.editField : null);
+
     var attr = params.attr;
     var rootEditPath = params.rootEditPath;
     var editPath = params.editPath || (rootEditPath + '/' + attr);

@@ -108,18 +108,25 @@ function showSource(req, res) {
 function editSource(req, res, next) {
   const sourceId = req.params.id;
   Source.findById(sourceId).populate('people').exec((err, source) => {
-    Citation.find({ source: source }).populate('person')
-    .exec((err, citations) => {
-      mongoose.model('Person').find({ }).exec((err, people) => {
+    Person.find({ }).exec((err, people) => {
+      Citation.find({ source: source }).populate('person')
+      .exec((err, citations) => {
+        people = sortPeople(people, 'name');
+
+        source.people.forEach(thisPerson => {
+          people = removePersonFromList(people, thisPerson);
+        });
+
+        people = [...source.people, ...people];
+
         res.render('layout', {
           view: 'sources/layout',
           subview: 'edit',
-          title: source.group + ' - ' + source.title,
+          title: 'Edit Source',
           source: source,
+          people: people,
           citations: sortCitations(citations, 'item', source.people),
           citationsByPerson: sortCitations(citations, 'person', source.people),
-          editField: 'none',
-          people: people,
         });
       });
     });
