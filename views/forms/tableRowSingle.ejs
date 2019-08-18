@@ -1,85 +1,85 @@
-
 <%
-    var attr = params.attr;
-    var editPath = params.editPath;
-    var originalValue = params.originalValue;
-    var fieldType = params.fieldType || 'text';
+  const attr = locals.params ? (params.attr || params.attrName) : locals.attr;
+  const editPath = locals.params ? params.editPath : locals.editPath;
+  const originalValue = locals.params ? params.originalValue : locals.originalValue;
+  const fieldType = (locals.params ? params.fieldType : locals.fieldType) || 'text';
+  const toggle = locals.params ? params.toggle : locals.toggle;
 %>
 
 <tr>
+  <td>
+    <b><%= attr %></b>
+  </td>
+
+  <form action="<%= editPath %>" method="POST">
     <td>
-        <b><%= params.attrName || attr %></b>
+      <!-- DISPLAY VALUE -->
+
+      <div item="<%= attr %>" class="value-show">
+        <% if (fieldType == 'textarea') { %>
+          <%
+            let valueList = [];
+            if (originalValue && originalValue != '') {
+              valueList = originalValue.split('\n');
+            }
+          %>
+          <ul class="bullet-list">
+            <% valueList.forEach(str => { %>
+              <li><%= str %></li>
+            <% }); %>
+          </ul>
+        <% } else if (attr == 'sharing' || attr == 'shareLevel') { %>
+          <%
+            let imageValue = originalValue === 2 || originalValue === true;
+            let shareText = '';
+
+            if (originalValue === 2) {
+              shareText = 'everything (2)';
+            } else if (originalValue === 1) {
+              shareText = 'restricted (1)';
+            } else if (originalValue === 0) {
+              shareText = 'none (0)';
+            } else if (originalValue === true) {
+              shareText = 'yes';
+            } else {
+              shareText = 'no';
+            }
+          %>
+          <img class="checkmark-inline" src="/images/check-<%= imageValue %>.png">
+          <%= shareText %>
+        <% } else { %>
+          <%= originalValue %>
+        <% } %>
+      </div>
+
+      <!-- EDITABLE FIELD -->
+
+      <% if (fieldType == 'textarea') { %>
+        <textarea item="<%= attr %>" class="value-edit" name="<%= attr %>"><%= originalValue %></textarea>
+      <% } else { %>
+        <input item="<%= attr %>" class="value-edit" type="text" value="<%= originalValue %>" name="<%= attr %>">
+      <% } %>
+
+      <!-- HIDDEN ORIGINAL VALUE -->
+
+      <input item="<%= attr %>" class="value-original" type="hidden" value="<%= originalValue %>">
     </td>
+    <td>
+      <!-- SUBMIT EDIT -->
 
-    <form action="<%= editPath %>" method="POST">
-        <td>
-            <!-- DISPLAY VALUE -->
+      <input type="hidden" value="PUT" name="_method">
+      <button item="<%= attr %>" class="button-submit" type="submit">save</button>
 
-            <div item="<%= attr %>" class="value-show">
-                <% if (fieldType == 'textarea') { %>
-                    <%
-                        var valueList = [];
-                        if (originalValue && originalValue != '') {
-                            valueList = originalValue.split('\n');
-                        }
-                    %>
-                    <ul class="bullet-list">
-                        <% valueList.forEach(str => { %>
-                            <li><%= str %></li>
-                        <% }); %>
-                    </ul>
-                <% } else if (attr == 'sharing' || attr == 'shareLevel') { %>
-                    <%
-                        let imageValue = originalValue === 2 || originalValue === true;
-                        let shareText = '';
+      <!-- TOGGLE SHOW/EDIT -->
 
-                        if (originalValue === 2) {
-                            shareText = 'everything (2)';
-                        } else if (originalValue === 1) {
-                            shareText = 'restricted (1)';
-                        } else if (originalValue === 0) {
-                            shareText = 'none (0)';
-                        } else if (originalValue === true) {
-                            shareText = 'yes';
-                        } else {
-                            shareText = 'no';
-                        }
-                    %>
-                    <img class="checkmark-inline" src="/images/check-<%= imageValue %>.png">
-                    <%= shareText %>
-                <% } else { %>
-                    <%= originalValue %>
-                <% } %>
-            </div>
-
-            <!-- EDITABLE FIELD -->
-
-            <% if (fieldType == 'textarea') { %>
-                <textarea item="<%= attr %>" class="value-edit" name="<%= attr %>"><%= originalValue %></textarea>
-            <% } else { %>
-                <input item="<%= attr %>" class="value-edit" type="text" value="<%= originalValue %>" name="<%= attr %>">
-            <% } %>
-
-            <!-- HIDDEN ORIGINAL VALUE -->
-
-            <input item="<%= attr %>" class="value-original" type="hidden" value="<%= originalValue %>">
-        </td>
-        <td>
-            <!-- SUBMIT EDIT -->
-
-            <input type="hidden" value="PUT" name="_method">
-            <button item="<%= attr %>" class="button-submit" type="submit">save</button>
-
-            <!-- TOGGLE SHOW/EDIT -->
-
-            <% if (params.toggle) { %>
-                <button item="<%= attr %>" class="link-start" type="submit">toggle</button>
-            <% } else { %>
-                <a item="<%= attr %>" class="link-start" onclick="startEdit('<%= attr %>')">edit</a>
-            <% } %>
-        </td>
-        <td>
-            <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
-        </td>
-    </form>
+      <% if (toggle) { %>
+        <button item="<%= attr %>" class="link-start" type="submit">toggle</button>
+      <% } else { %>
+        <a item="<%= attr %>" class="link-start" onclick="startEdit('<%= attr %>')">edit</a>
+      <% } %>
+    </td>
+    <td>
+      <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
+    </td>
+  </form>
 </tr>
