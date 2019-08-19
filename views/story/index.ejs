@@ -1,26 +1,59 @@
 <%
+  let lastType;
 %>
 
 <h1>Stories</h1>
 
 <p id="story-links">
-  <span class="clickable-link main-link">+ New Story</span>
+  <span class="clickable-link main-link" onClick="showNewStoryForm()">+ New Story</span>
   <span class="clickable-link main-link" onClick="showConvertForm()">Convert Stories</span>
 </p>
+
+<div id="new-story-form" style="display: none">
+  <form method="POST" action="/stories/new">
+    <b>type:</b>
+    <select name="type" id="story-type" onChange="toggleTypeChange()">
+      <option value="">select</option>
+      <option value="artifact">artifact</option>
+      <option value="book">book</option>
+      <option value="cemetery">cemetery</option>
+      <option value="event">event</option>
+      <option value="landmark">landmark</option>
+      <option value="newspaper">newspaper</option>
+      <option value="place">place</option>
+      <option value="other">other</option>
+    </select>
+    <input type="text" name="type-text" id="story-type-text" style="display: none">
+    <br>
+
+    <b>title:</b><input type="text" name="title"><br>
+
+    <div id="new-story-date" style="display: none;">
+      <b>date:</b><br>
+      <%- include('../forms/date', { date: null }) %>
+    </div>
+
+    <div id="new-story-location" style="display: none;">
+      <b>location:</b><br>
+      <%- include('../forms/location', { location: null }) %>
+    </div>
+
+    <button>create</button>
+    <span class="clickable-link" onClick="cancelForm()">cancel</span>
+  </form>
+</div>
 
 <div id="convert-form" style="display: none;">
   <form method="POST" action="/stories/convert">
     Toggle story/source
     <input type="text" name="sourceId">
     <button>convert</button>
-    <span class="clickable-link" onClick="cancelConvertForm()">cancel</span>
+    <span class="clickable-link" onClick="cancelForm()">cancel</span>
   </form>
 </div>
 
 <table class="info-table">
   <tr>
-    <th>type</th>
-    <th>group</th>
     <th>title</th>
     <th>date</th>
     <th>location</th>
@@ -33,13 +66,16 @@
       const storyNotes = (story.notes || '').length ? story.notes.split('\n') : [];
     %>
 
+    <% if (lastType != story.type) { %>
+      <% lastType = story.type; %>
+      <tr class="story-index-header">
+        <td>
+          <%= story.type %>
+        </td>
+      </tr>
+    <% } %>
+
     <tr>
-      <td>
-        <%= story.type %>
-      </td>
-      <td>
-        <%= story.group %>
-      </td>
       <td>
         <%- include('../partials/linkToStory', { story: story }) %>
       </td>
@@ -66,13 +102,60 @@
 </table>
 
 <script>
+  function showNewStoryForm() {
+    $('#story-links').hide();
+    $('#new-story-form').show();
+  }
+
   function showConvertForm() {
     $('#story-links').hide();
     $('#convert-form').show();
   }
 
-  function cancelConvertForm() {
+  function cancelForm() {
     $('#story-links').show();
-    $('#convert-form').hide();
+    $('#story-type-text').hide().val('');
+    $('#convert-form, #new-story-form').hide()
+      .find('input, #story-type').val('');
+    $('#new-story-date').hide();
+    $('#new-story-date').find('input').val('');
+    $('#new-story-date').find('select').val('0');
+    $('#new-story-location').hide();
+    $('#new-story-location').find('input, select').val('');
+  }
+
+  function toggleTypeChange() {
+    const typeValue = $('#story-type').val();
+
+    if (typeValue == 'other') {
+      $('#story-type-text').show();
+    } else {
+      $('#story-type-text').hide().val('');
+    }
+
+    if (['book', 'event', 'other'].includes(typeValue)) {
+      $('#new-story-date').show();
+    } else {
+      $('#new-story-date').hide();
+      $('#new-story-date').find('input').val('');
+      $('#new-story-date').find('select').val('0');
+    }
+
+    if (!['artifact', 'book'].includes(typeValue)) {
+      $('#new-story-location').show();
+    } else {
+      $('#new-story-location').hide();
+      $('#new-story-location').find('input, select').val('');
+    }
   }
 </script>
+
+<style>
+  .story-index-header td {
+    border-left: 0;
+    border-right: 0;
+    padding: 5px;
+    font-weight: bold;
+    font-size: 20px;
+  }
+</style>

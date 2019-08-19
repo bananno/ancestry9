@@ -8,6 +8,8 @@ const Person = mongoose.model('Person');
 
 const getTools = (path) => { return require('../../tools/' + path) };
 const createModelRoutes = getTools('createModelRoutes');
+const getDateValues = getTools('getDateValues');
+const getLocationValues = getTools('getLocationValues');
 
 router.post('/stories/convert', convertStory);
 
@@ -17,7 +19,7 @@ createModelRoutes({
   modelNamePlural: 'stories',
   router: router,
   index: storiesIndex,
-  create: null,
+  create: createStory,
   show: showStory,
   edit: editStory,
   toggleAttributes: ['sharing'],
@@ -28,12 +30,36 @@ createModelRoutes({
 
 function storiesIndex(req, res, next) {
   Source.find({ isStory: true }, (err, stories) => {
-    stories.sort((a, b) => a.type < b.type ? -1 : 1);
+    stories.sort((a, b) => {
+      return (a.type + a.title) < (b.type + b.title) ? -1 : 1;
+    });
     res.render('layout', {
       view: 'story/index',
       title: 'Stories',
       stories: stories,
     });
+  });
+}
+
+function createStory(req, res, next) {
+  const newStory = {
+    type: req.body.type,
+    title: req.body.title.trim(),
+    isStory: true,
+    date: getDateValues(req),
+    location: getLocationValues(req),
+  };
+
+  if (newStory.type == 'other') {
+    newStory.type = req.body['type-text'].trim();
+  }
+
+  if (newStory.type.length == 0 || newStory.title.length == 0) {
+    return res.send('Type and title are required.');
+  }
+
+  Source.create(newStory, (err, story) => {
+    res.redirect('/story/' + story._id + '/edit');
   });
 }
 

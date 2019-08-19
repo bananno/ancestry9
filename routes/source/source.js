@@ -45,6 +45,7 @@ function getSourcesIndex(subView) {
     mongoose.model('Source')
     .find({})
     .populate('people')
+    .populate('story')
     .exec((err, sources) => {
       if (err) {
         return console.error(err);
@@ -70,6 +71,7 @@ function createSource(req, res) {
     type: req.body.type.trim(),
     group: req.body.group.trim(),
     title: req.body.title.trim(),
+    isStory: false,
   };
 
   newItem.date = getDateValues(req);
@@ -162,6 +164,8 @@ function getSourceGroup(req, res, next) {
 }
 
 function filterSourcesByType(sources, type) {
+  sources = sources.filter(source => !source.isStory);
+
   if (type == 'none' || type == 'new') {
     return sources;
   }
