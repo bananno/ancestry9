@@ -52,7 +52,8 @@ function getSourcesIndex(subView) {
       }
 
       sources = filterSourcesByType(sources, subView);
-      sources = sortSources(sources, 'group');
+
+      sortSources(sources, 'story');
 
       res.render('layout', {
         view: 'sources/index',
