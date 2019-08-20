@@ -132,6 +132,7 @@ function getProcessedSharedData(req, res, callback) {
     }
 
     const tempPersonRef = {};
+    const tempStoryRef = {};
 
     data.people = raw.people.map(personInfo => {
       if (personInfo.sharing.level == 0) {
@@ -182,6 +183,7 @@ function getProcessedSharedData(req, res, callback) {
       storyFields.forEach(attr => story[attr] = storyInfo[attr]);
       story.tags = convertTags(storyInfo);
       story.people = story.people.filter(personId => tempPersonRef['' + personId]);
+      tempStoryRef[story._id] = story;
       return story;
     });
 
@@ -190,6 +192,18 @@ function getProcessedSharedData(req, res, callback) {
       sourceFields.forEach(attr => source[attr] = sourceInfo[attr]);
       source.tags = convertTags(sourceInfo);
       source.people = source.people.filter(personId => tempPersonRef['' + personId]);
+
+      if (source.story) {
+        let tempStory = tempStoryRef[source.story._id];
+        source.fullTitle = tempStory.title + ' - ' + source.title;
+      } else {
+        if (source.group) {
+          source.fullTitle = source.group + ' - ' + source.title;
+        } else {
+          source.fullTitle = source.title;
+        }
+      }
+
       return source;
     });
 
