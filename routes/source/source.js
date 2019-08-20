@@ -152,7 +152,7 @@ function getSourceGroup(req, res, next) {
     .populate('people')
     .populate('story')
     .exec((err, sources) => {
-      sources = sortSources(sources, 'date');
+      sortSources(sources, 'date');
       res.render('layout', {
         view: 'sources/group',
         title: rootSource.group,

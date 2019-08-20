@@ -34,6 +34,8 @@ function sortSources(sourceList, sortBy) {
       return sortA > sortB ? -1 : 1;
     });
   }
+
+  return sourceList;
 }
 
 module.exports = sortSources;
