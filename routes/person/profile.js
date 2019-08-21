@@ -120,6 +120,7 @@ function personSummary(req, res, next) {
             siblings: siblings,
             events: events,
             citations: citations,
+            findPersonInList: personTools.findPersonInList,
           });
         });
       });

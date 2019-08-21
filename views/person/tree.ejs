@@ -5,7 +5,7 @@
   let cellClass = 'treecell';
 
   if (person.name == null) {
-    person = people.filter(p => p._id == person)[0];
+    person = findPersonInList(people, person);
   }
 
   if (showCountry && person.birthCountry != null) {
