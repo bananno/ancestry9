@@ -22,6 +22,16 @@
     originalValue: story.type,
   }) %>
 
+  <!-- GROUP (can be removed but not added) -->
+
+  <% if (story.group) { %>
+    <%- include('../forms/tableRowSingle', {
+      attr: 'group',
+      editPath: rootEditPath + '/group',
+      originalValue: story.group,
+    }) %>
+  <% } %>
+
   <!-- TITLE -->
 
   <%- include('../forms/tableRowSingle', {
