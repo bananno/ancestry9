@@ -116,6 +116,9 @@
 
       <td>
         <img class="checkmark-inline" src="/images/check-<%= source.sharing %>.png">
+        <% if (source.sharing && source.story && !source.story.sharing) { %>
+          <span style="color: red">WARNING: story not shared</span>
+        <% } %>
       </td>
     </tr>
   <% }); %>

@@ -4,6 +4,8 @@
   const originalValue = locals.params ? params.originalValue : locals.originalValue;
   const fieldType = (locals.params ? params.fieldType : locals.fieldType) || 'text';
   const toggle = locals.params ? params.toggle : locals.toggle;
+  const preventSharing = locals.preventSharing || false;
+  const disableToggleButton = toggle && preventSharing && !originalValue;
 %>
 
 <form action="<%= editPath %>" method="POST">
@@ -76,6 +78,14 @@
           <img class="checkmark-inline" src="/images/check-<%= imageValue %>.png">
           <%= shareText %>
 
+          <% if (preventSharing) { %>
+            <% if (originalValue) { %>
+              <span style="color: red">WARNING: story is not shared</span>
+            <% } else { %>
+              (story is not shared)
+            <% } %>
+          <% } %>
+
         <!-- everything else -->
 
         <% } else { %>
@@ -119,7 +129,8 @@
       <!-- TOGGLE SHOW/EDIT -->
 
       <% if (toggle) { %>
-        <button item="<%= attr %>" class="link-start" type="submit">toggle</button>
+        <button item="<%= attr %>" class="link-start" type="submit"
+          <%= disableToggleButton ? " disabled" : "" %>>toggle</button>
       <% } else { %>
         <a item="<%= attr %>" class="link-start" onclick="startEdit('<%= attr %>')">edit</a>
       <% } %>
