@@ -40,6 +40,10 @@ class ModelRoutes {
       this.router.get('/' + this.modelName + '/:id/edit', specs.edit);
     }
 
+    if (specs.delete) {
+      this.router.post('/' + this.modelName + '/:id/delete', specs.delete);
+    }
+
     if (specs.toggleAttributes) {
       specs.toggleAttributes.forEach(fieldName => {
         this.toggleAttribute(fieldName);

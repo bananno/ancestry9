@@ -1,7 +1,23 @@
 <%
   const rootPath = '/source/' + source._id;
   const rootEditPath = '/source/' + source._id + '/edit';
+
+  let canDeleteSource = source.people.length == 0
+    && (source.links || []).length == 0
+    && (source.images || []).length == 0
+    && (source.tags || []).length == 0
+    && (source.citations || []).length == 0
+    && (source.notes || '').length == 0
+    && (source.summary || '').length == 0
+    && (source.content || '').length == 0;
 %>
+
+<% if (canDeleteSource) { %>
+  <form action="/source/<%= source._id %>/delete" method="POST"
+      onsubmit="return confirmDeletion('source')" style="margin: 20px;">
+    <button>delete source</button>
+  </form>
+<% } %>
 
 <table class="edit-form-frame">
 

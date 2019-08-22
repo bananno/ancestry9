@@ -28,6 +28,7 @@ createModelRoutes({
   create: createSource,
   show: showSource,
   edit: editSource,
+  delete: deleteSource,
   toggleAttributes: ['sharing'],
   singleAttributes: ['type', 'group', 'title', 'content', 'notes', 'summary',
     'date', 'location', 'story'],
@@ -38,7 +39,7 @@ mainSourceTypes.forEach(sourceType => {
   router.get('/sources/' + sourceType, getSourcesIndex(sourceType));
 });
 
-router.get('/source-group/:sourceId', getSourceGroup);
+router.get('/source-group/:id', getSourceGroup);
 
 function getSourcesIndex(subView) {
   return (req, res, next) => {
@@ -90,10 +91,19 @@ function createSource(req, res) {
   });
 }
 
-function showSource(req, res) {
+function withSource(req, res, callback) {
   const sourceId = req.params.id;
   Source.findById(sourceId).populate('people').populate('story')
   .exec((err, source) => {
+    if (source == null) {
+      return res.send('Source not found');
+    }
+    callback(source);
+  });
+}
+
+function showSource(req, res) {
+  withSource(req, res, source => {
     mongoose.model('Citation').find({ source: source }).populate('person')
     .exec((err, citations) => {
       res.render('layout', {
@@ -109,9 +119,7 @@ function showSource(req, res) {
 }
 
 function editSource(req, res, next) {
-  const sourceId = req.params.id;
-  Source.findById(sourceId).populate('people').populate('story')
-  .exec((err, source) => {
+  withSource(req, res, source => {
     Person.find({ }).exec((err, people) => {
       Citation.find({ source: source }).populate('person')
       .exec((err, citations) => {
@@ -145,10 +153,7 @@ function editSource(req, res, next) {
 }
 
 function getSourceGroup(req, res, next) {
-  const sourceId = req.params.sourceId;
-  mongoose.model('Source')
-  .findById(sourceId)
-  .exec((err, rootSource) => {
+  withSource(req, res, rootSource => {
     mongoose.model('Source')
     .find({ group: rootSource.group })
     .populate('people')
@@ -204,5 +209,13 @@ function getStoryOptionsForSource(source, stories) {
   return stories.filter(story => {
     return !['artifact', 'cemetery', 'event', 'landmark', 'newspaper',
       'place'].includes(story.type);
+  });
+}
+
+function deleteSource(req, res, next) {
+  withSource(req, res, source => {
+    source.delete(() => {
+      res.redirect('/sources');
+    });
   });
 }
