@@ -1,3 +1,21 @@
+<%
+  const textList = notation.text ? notation.text.split('\n') : [];
+
+  const siteLinks = [];
+
+  if (notation.tags.includes('brick wall')
+      || notation.tags.includes('broken brick wall')) {
+    siteLinks.push(['topic/brickwalls', 'topic: brick walls']);
+  }
+
+  if (notation.tags.includes('research notes')) {
+    notation.people.forEach(person => {
+      siteLinks.push(['person/' + person.customId, person.name
+        + ' profile (research notes section)']);
+    });
+  }
+%>
+
 <h1>Notation</h1>
 <h2><%= notation.title %></h2>
 
@@ -24,6 +42,12 @@
 
 <h2>text</h2>
 
+<% textList.forEach(text => { %>
+  <p>
+    <%= text %>
+  </p>
+<% }); %>
+
 <h2>tags</h2>
 
 <% if (notation.tags.length) { %>
@@ -33,3 +57,11 @@
     <% }); %>
   </ul>
 <% } %>
+
+<h1>Appearances</h1>
+
+<% siteLinks.forEach(([url, text]) => { %>
+  <p>
+    <a href="http://localhost:8000/?<%= url %>" target="_blank"><%= text %></a>
+  </p>
+<% }); %>
