@@ -10,6 +10,9 @@
     && (source.notes || '').length == 0
     && (source.summary || '').length == 0
     && (source.content || '').length == 0;
+
+  const canHaveGroup = source.group
+    || !['book', 'grave', 'newspaper'].includes(source.type);
 %>
 
 <% if (canDeleteSource) { %>
@@ -41,11 +44,13 @@
 
   <!-- GROUP -->
 
-  <%- include('../forms/tableRowSingle', {
-    attr: 'group',
-    editPath: rootEditPath + '/group',
-    originalValue: source.group,
-  }) %>
+  <% if (canHaveGroup) { %>
+    <%- include('../forms/tableRowSingle', {
+      attr: 'group',
+      editPath: rootEditPath + '/group',
+      originalValue: source.group,
+    }) %>
+  <% } %>
 
   <!-- STORY -->
 

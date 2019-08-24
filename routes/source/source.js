@@ -17,7 +17,7 @@ const sortCitations = getTools('sortCitations');
 const sortSources = getTools('sortSources');
 
 const mainSourceTypes = ['documents', 'index', 'graves', 'newspapers',
-  'photos', 'articles', 'other'];
+  'photos', 'articles', 'books', 'other'];
 
 createModelRoutes({
   Model: Source,
