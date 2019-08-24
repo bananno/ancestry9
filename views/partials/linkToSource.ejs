@@ -1,4 +1,16 @@
 <%
   const showGroup = locals.showGroup || false;
+  let linkText = '';
+
+  if (showGroup) {
+    if (source.story && source.story.title) {
+      linkText = source.story.title + ' - ';
+    } else if (source.group) {
+      linkText = source.group + ' - ';
+    }
+  }
+
+  linkText += source.title;
 %>
-<a href="/source/<%= source._id %>"><%= (showGroup ? source.group + ' - ' : '') + source.title %></a>
+
+<a href="/source/<%= source._id %>"><%= linkText %></a>
