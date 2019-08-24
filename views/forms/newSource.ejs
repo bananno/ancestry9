@@ -1,51 +1,51 @@
 <form method="POST" action="<%= actionPath %>">
-    <table>
-        <tr>
-            <td>
-                <b>type</b>
-            </td>
-            <td>
-                <input type="text" name="type">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <b>group</b>
-            </td>
-            <td>
-                <input type="text" name="group">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <b>title</b>
-            </td>
-            <td>
-                <input type="text" name="title">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <b>date</b>
-            </td>
-            <td>
-                <%- include('../forms/date', { date: null }) %>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <b>location</b>
-            </td>
-            <td>
-                <%- include('../forms/location', { location: null }) %>
-            </td>
-        </tr>
-    </table>
-    <p>
-        <button type="submit">create</button>
-    </p>
+  <table>
+    <tr>
+      <td>
+        <b>type</b>
+      </td>
+      <td>
+        <input type="text" name="type">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>group</b>
+      </td>
+      <td>
+        <input type="text" name="group">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>title</b>
+      </td>
+      <td>
+        <input type="text" name="title">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>date</b>
+      </td>
+      <td>
+        <%- include('../forms/date', { date: null }) %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>location</b>
+      </td>
+      <td>
+        <%- include('../forms/location', { location: null }) %>
+      </td>
+    </tr>
+  </table>
+  <p>
+    <button type="submit">create</button>
+  </p>
 </form>
 
 <p>
-    <a href="<%= cancelPath %>">cancel</a>
+  <a href="<%= cancelPath %>">cancel</a>
 </p>
