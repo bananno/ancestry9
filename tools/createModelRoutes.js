@@ -99,6 +99,9 @@ class ModelRoutes {
         } else {
           updatedObj[fieldName] = req.body[fieldName];
         }
+        if (fieldName == 'story' && updatedObj[fieldName] == '0') {
+          updatedObj[fieldName] = null;
+        }
         this.updateAndRedirect(res, item, itemId, updatedObj);
       });
     });
