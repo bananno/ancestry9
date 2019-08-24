@@ -5,7 +5,17 @@
         <b>type</b>
       </td>
       <td>
-        <input type="text" name="type">
+        <select name="type">
+          <option value="">type</option>
+          <option value="article">article</option>
+          <option value="book">book</option>
+          <option value="document">document</option>
+          <option value="grave">grave</option>
+          <option value="index">index</option>
+          <option value="newspaper">newspaper</option>
+          <option value="photo">photo</option>
+          <option value="other">other</option>
+        </select>
       </td>
     </tr>
     <tr>
@@ -14,6 +24,16 @@
       </td>
       <td>
         <input type="text" name="group">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>story</b>
+      </td>
+      <td>
+        <%- include('./storyDropdown', {
+          fieldName: 'story',
+        }) %>
       </td>
     </tr>
     <tr>

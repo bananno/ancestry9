@@ -43,10 +43,7 @@ router.get('/source-group/:id', getSourceGroup);
 
 function getSourcesIndex(subView) {
   return (req, res, next) => {
-    mongoose.model('Source')
-    .find({})
-    .populate('people')
-    .populate('story')
+    Source.find({}).populate('people').populate('story')
     .exec((err, sources) => {
       if (err) {
         return console.error(err);
@@ -56,14 +53,24 @@ function getSourcesIndex(subView) {
 
       sortSources(sources, 'story');
 
-      res.render('layout', {
+      const viewData = {
         view: 'sources/index',
         title: subView == 'new' ? 'New Source' : 'Sources',
         sources: sources,
         subView: subView,
         showNew: subView === 'new',
         mainSourceTypes: mainSourceTypes,
-      });
+        stories: [],
+      };
+
+      if (viewData.showNew) {
+        Source.find({ isStory: true }).exec((err, stories) => {
+          viewData.stories = stories;
+          res.render('layout', viewData);
+        });
+      } else {
+        res.render('layout', viewData);
+      }
     });
   };
 }
@@ -76,6 +83,10 @@ function createSource(req, res) {
     isStory: false,
   };
 
+  if (req.body.story != '0') {
+    newItem.story = req.body.story;
+  }
+
   newItem.date = getDateValues(req);
   newItem.location = getLocationValues(req);
 
@@ -85,7 +96,8 @@ function createSource(req, res) {
 
   mongoose.model('Source').create(newItem, (err, source) => {
     if (err) {
-      return res.send('There was a problem adding the information to the database.');
+      return res.send('There was a problem adding the information to the '
+        + 'database.<br>' + err);
     }
     res.redirect('/source/' + source._id + '/edit');
   });
