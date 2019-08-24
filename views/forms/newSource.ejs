@@ -1,12 +1,12 @@
-<form method="POST" action="<%= actionPath %>">
+<form method="POST" action="<%= actionPath %>" id="new-source-form">
   <table>
     <tr>
       <td>
         <b>type</b>
       </td>
       <td>
-        <select name="type">
-          <option value="">type</option>
+        <select name="type" onChange="toggleNewSourceType()">
+          <option value=""></option>
           <option value="article">article</option>
           <option value="book">book</option>
           <option value="document">document</option>
@@ -18,7 +18,7 @@
         </select>
       </td>
     </tr>
-    <tr>
+    <tr attr="group" style="display: none">
       <td>
         <b>group</b>
       </td>
@@ -26,7 +26,7 @@
         <input type="text" name="group">
       </td>
     </tr>
-    <tr>
+    <tr attr="story" style="display: none" class="always-allow">
       <td>
         <b>story</b>
       </td>
@@ -36,7 +36,7 @@
         }) %>
       </td>
     </tr>
-    <tr>
+    <tr attr="title" style="display: none" class="always-allow">
       <td>
         <b>title</b>
       </td>
@@ -44,7 +44,7 @@
         <input type="text" name="title">
       </td>
     </tr>
-    <tr>
+    <tr attr="date" style="display: none">
       <td>
         <b>date</b>
       </td>
@@ -52,7 +52,7 @@
         <%- include('../forms/date', { date: null }) %>
       </td>
     </tr>
-    <tr>
+    <tr attr="location" style="display: none">
       <td>
         <b>location</b>
       </td>
@@ -69,3 +69,18 @@
 <p>
   <a href="<%= cancelPath %>">cancel</a>
 </p>
+
+<script>
+  function toggleNewSourceType() {
+    const type = $('#new-source-form [name="type"]').val();
+
+    const allowGroup = !['', 'book', 'grave', 'newspaper'].includes(type);
+    const allowDate = !['', 'grave'].includes(type);
+    const allowLocation = !['', 'grave', 'newspaper'].includes(type);
+
+    $('#new-source-form tr.always-allow').toggle(type != '');
+    $('#new-source-form tr[attr="group"]').toggle(allowGroup);
+    $('#new-source-form tr[attr="date"]').toggle(allowDate);
+    $('#new-source-form tr[attr="location"]').toggle(allowLocation);
+  }
+</script>
