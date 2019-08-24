@@ -65,6 +65,12 @@ function getSourcesIndex(subView) {
 
       if (viewData.showNew) {
         Source.find({ isStory: true }).exec((err, stories) => {
+          stories = stories.filter(story => {
+            return !['artifact', 'event', 'landmark', 'place'].includes(story.type);
+          });
+
+          stories.sort((a, b) => a.title < b.title ? -1 : 1);
+
           viewData.stories = stories;
           res.render('layout', viewData);
         });

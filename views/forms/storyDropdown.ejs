@@ -8,11 +8,11 @@
   </option>
   <% stories.forEach(story => { %>
     <% if (selectedId == '' + story._id) { %>
-      <option value="<%= story.id %>" selected="selected">
+      <option value="<%= story.id %>" selected="selected" story-type="<%= story.type %>">
         <%= story.title %>
       </option>
     <% } else { %>
-      <option value="<%= story.id %>">
+      <option value="<%= story.id %>" story-type="<%= story.type %>">
         <%= story.title %>
       </option>
     <% } %>

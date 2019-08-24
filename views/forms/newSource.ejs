@@ -71,6 +71,11 @@
 </p>
 
 <script>
+  const $story = $('#new-source-form select[name="story"]');
+
+  const $storiesOther = $story.find('option')
+    .not('[story-type="book"], [story-type="cemetery"], [story-type="newspaper"]');
+
   function toggleNewSourceType() {
     const type = $('#new-source-form [name="type"]').val();
 
@@ -82,5 +87,11 @@
     $('#new-source-form tr[attr="group"]').toggle(allowGroup);
     $('#new-source-form tr[attr="date"]').toggle(allowDate);
     $('#new-source-form tr[attr="location"]').toggle(allowLocation);
+
+    $story.find('[story-type="book"]').toggle(type == 'book');
+    $story.find('[story-type="cemetery"]').toggle(type == 'grave');
+    $story.find('[story-type="newspaper"]').toggle(type == 'newspaper');
+
+    $storiesOther.toggle(!['book', 'grave', 'newspaper'].includes(type));
   }
 </script>
