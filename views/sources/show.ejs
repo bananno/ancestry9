@@ -6,6 +6,18 @@
   if (source.sharing) {
     linksList.push('https://ancestry.annacpeterson.com/?source/' + source._id + ' CustomSite');
   }
+
+  // Show the date & location if the source type allows it,
+  // OR if it already has one.
+
+  const canHaveDate = !['grave'].includes(source.type)
+    || (source.date && (source.date.year || source.date.month
+      || source.date.day || source.date.display));
+
+  const canHaveLocation = !['grave', 'newspaper'].includes(source.type)
+    || (source.location && (source.location.country || source.location.region1
+      || source.location.region2 || source.location.city
+      || source.location.notes));
 %>
 
 <h2>sharing</h2>
@@ -44,21 +56,19 @@
   <%- include('../partials/linkToStory', { story: source.story }) %>
 <% } %>
 
-<h2>date</h2>
+<% if (canHaveDate) { %>
+  <h2>date</h2>
+  <p>
+    <%- include('../format/date', { date: source.date }) %>
+  </p>
+<% } %>
 
-<p>
-  <%- include('../format/date', { params: {
-    date: source.date,
-  }}) %>
-</p>
-
-<h2>location</h2>
-
-<p>
-  <%- include('../format/location', { params: {
-    location: source.location,
-  }}) %>
-</p>
+<% if (canHaveLocation) { %>
+  <h2>location</h2>
+  <p>
+    <%- include('../format/location', { location: source.location }) %>
+  </p>
+<% } %>
 
 <h2>people</h2>
 

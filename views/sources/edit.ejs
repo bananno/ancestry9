@@ -13,6 +13,15 @@
 
   const canHaveGroup = source.group
     || !['book', 'grave', 'newspaper'].includes(source.type);
+
+  const canHaveDate = !['grave'].includes(source.type)
+    || (source.date && (source.date.year || source.date.month
+      || source.date.day || source.date.display));
+
+  const canHaveLocation = !['grave', 'newspaper'].includes(source.type)
+    || (source.location && (source.location.country || source.location.region1
+      || source.location.region2 || source.location.city
+      || source.location.notes));
 %>
 
 <% if (canDeleteSource) { %>
@@ -70,19 +79,23 @@
 
   <!-- DATE -->
 
-  <%- include('../forms/tableRowSingle', {
-    attr: 'date',
-    editPath: rootEditPath + '/date',
-    originalValue: source.date,
-  }) %>
+  <% if (canHaveDate) { %>
+    <%- include('../forms/tableRowSingle', {
+      attr: 'date',
+      editPath: rootEditPath + '/date',
+      originalValue: source.date,
+    }) %>
+  <% } %>
 
   <!-- LOCATION -->
 
-  <%- include('../forms/tableRowSingle', {
-    attr: 'location',
-    editPath: rootEditPath + '/location',
-    originalValue: source.location,
-  }) %>
+  <% if (canHaveLocation) { %>
+    <%- include('../forms/tableRowSingle', {
+      attr: 'location',
+      editPath: rootEditPath + '/location',
+      originalValue: source.location,
+    }) %>
+  <% } %>
 
   <!-- PEOPLE -->
 

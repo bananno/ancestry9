@@ -1,15 +1,14 @@
 <%
-    var date = params.date;
-    var format = params.format || '';
-    var dateString = '';
+  const date = locals.date || (locals.params ? params.date : null);
+  const format = locals.format || (locals.params ? params.format : null);
+  let dateString = '';
 
-    var monthNames = [
-        'January', 'February', 'March', 'April',
-        'May', 'June', 'July', 'August',
-        'September', 'October', 'November', 'December'
-    ];
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
-    if (date != null) {
+  if (date != null && (date.display || '') == '') {
         if (format == 'long') {
             if (date.month > 0 && date.month <= 12) {
                 dateString += monthNames[date.month - 1];

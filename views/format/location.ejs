@@ -1,5 +1,5 @@
 <%
-    var location = params.location;
+  const location = locals.location || (locals.params ? params.location : null);
 
     var usaStates = {
         AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California',
