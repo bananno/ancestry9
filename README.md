@@ -2,7 +2,7 @@
 
 Genealogy research is one of my favorite hobbies. There are many existing websites and services for research and organization. I built this tool to consolidate all of my research according to my own preferences.
 
-For privacy reasons, the full database is not available online. I am building a separate a separate app for sharing my data: [acpancestry](https://github.com/bananno/acpancestry), which is hosted at [elasticbeanstalk.com](http://ancestry.cp3msbrmnj.us-west-2.elasticbeanstalk.com/).
+For privacy reasons, the full database is not available online. I use this tool for organizing, then a separate website for sharing parts of the data: [github.com/bananno/acpancestry](https://github.com/bananno/acpancestry), online at [https://ancestry.annacpeterson.com/](https://ancestry.annacpeterson.com/).
 
 ## Run locally
 
