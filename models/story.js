@@ -4,7 +4,6 @@ const locationStructure = require('./locationStructure.js');
 
 const storySchema = new mongoose.Schema({
   type: String,
-  group: String,
   title: String,
   date: dateStructure,
   location: locationStructure,

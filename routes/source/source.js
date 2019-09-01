@@ -4,6 +4,7 @@ const router = express.Router();
 module.exports = router;
 
 const Source = mongoose.model('Source');
+const Story = mongoose.model('Story');
 const Citation = mongoose.model('Citation');
 const Person = mongoose.model('Person');
 
@@ -64,7 +65,7 @@ function getSourcesIndex(subView) {
       };
 
       if (viewData.showNew) {
-        Source.find({ isStory: true }).exec((err, stories) => {
+        Story.find({}, (err, stories) => {
           stories = stories.filter(story => {
             return !['artifact', 'event', 'landmark', 'place'].includes(story.type);
           });
@@ -86,7 +87,6 @@ function createSource(req, res) {
     type: req.body.type.trim(),
     group: req.body.group.trim(),
     title: req.body.title.trim(),
-    isStory: false,
   };
 
   if (req.body.story != '0') {
@@ -141,7 +141,7 @@ function editSource(req, res, next) {
     Person.find({ }).exec((err, people) => {
       Citation.find({ source: source }).populate('person')
       .exec((err, citations) => {
-        Source.find({ isStory: true }).exec((err, stories) => {
+        Story.find({}, (err, stories) => {
           people = sortPeople(people, 'name');
 
           source.people.forEach(thisPerson => {
@@ -190,8 +190,6 @@ function getSourceGroup(req, res, next) {
 }
 
 function filterSourcesByType(sources, type) {
-  sources = sources.filter(source => !source.isStory);
-
   if (type == 'none' || type == 'new') {
     return sources;
   }

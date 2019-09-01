@@ -12,8 +12,6 @@ const createModelRoutes = getTools('createModelRoutes');
 const getDateValues = getTools('getDateValues');
 const getLocationValues = getTools('getLocationValues');
 
-router.post('/stories/convert', convertStory);
-
 createModelRoutes({
   Model: Source,
   modelName: 'story',
@@ -30,7 +28,7 @@ createModelRoutes({
 });
 
 function storiesIndex(req, res, next) {
-  Source.find({ isStory: true }, (err, stories) => {
+  Story.find({}, (err, stories) => {
     stories.sort((a, b) => {
       return (a.type + a.title) < (b.type + b.title) ? -1 : 1;
     });
@@ -46,7 +44,6 @@ function createStory(req, res, next) {
   const newStory = {
     type: req.body.type,
     title: req.body.title.trim(),
-    isStory: true,
     date: getDateValues(req),
     location: getLocationValues(req),
   };
@@ -66,7 +63,10 @@ function createStory(req, res, next) {
 
 function showStory(req, res) {
   const storyId = req.params.id;
-  Source.findById(storyId).populate('people').exec((err, story) => {
+  Story.findById(storyId).populate('people').exec((err, story) => {
+    if (!story) {
+      return res.send('Story not found');
+    }
     Source.find({ story: story }).exec((err, entries) => {
       entries.sort((a, b) => a.title < b.title ? -1 : 1);
       res.render('layout', {
@@ -93,17 +93,6 @@ function editStory(req, res) {
         people: people,
         canHaveDate: story.type != 'cemetery',
       });
-    });
-  });
-}
-
-function convertStory(req, res, next) {
-  const sourceId = req.body.sourceId;
-  Source.findById(sourceId, (err, story) => {
-    const updatedObj = {};
-    updatedObj.isStory = !story.isStory;
-    story.update(updatedObj, () => {
-      res.redirect('/stories');
     });
   });
 }

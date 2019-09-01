@@ -6,10 +6,9 @@ const sourceSchema = new mongoose.Schema({
   type: String,
   group: String,
   title: String,
-  isStory: { type: Boolean, default: false },
   story: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Source',
+    ref: 'Story',
   },
   date: dateStructure,
   location: locationStructure,

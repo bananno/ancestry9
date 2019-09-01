@@ -6,7 +6,6 @@
 
 <p id="story-links">
   <span class="clickable-link main-link" onClick="showNewStoryForm()">+ New Story</span>
-  <span class="clickable-link main-link" onClick="showConvertForm()">Convert Stories</span>
 </p>
 
 <div id="new-story-form" style="display: none">
@@ -39,15 +38,6 @@
     </div>
 
     <button>create</button>
-    <span class="clickable-link" onClick="cancelForm()">cancel</span>
-  </form>
-</div>
-
-<div id="convert-form" style="display: none;">
-  <form method="POST" action="/stories/convert">
-    Toggle story/source
-    <input type="text" name="sourceId">
-    <button>convert</button>
     <span class="clickable-link" onClick="cancelForm()">cancel</span>
   </form>
 </div>
@@ -107,16 +97,11 @@
     $('#new-story-form').show();
   }
 
-  function showConvertForm() {
-    $('#story-links').hide();
-    $('#convert-form').show();
-  }
-
   function cancelForm() {
     $('#story-links').show();
     $('#story-type-text').hide().val('');
-    $('#convert-form, #new-story-form').hide()
-      .find('input, #story-type').val('');
+    $('#new-story-form').hide();
+    $('#new-story-form').find('input, #story-type').val('');
     $('#new-story-date').hide();
     $('#new-story-date').find('input').val('');
     $('#new-story-date').find('select').val('0');
