@@ -4,21 +4,28 @@ const fs = require('fs');
 const router = express.Router();
 const sortEvents = require('../tools/sortEvents');
 
-const allFields = ['_id', 'parents', 'spouses', 'children'];
-const nonRestrictedFields = ['name', 'customId', 'links', 'profileImage'];
-
-const storyFields = [
-  '_id', 'type', 'title', 'date', 'location', 'people',
-  'links', 'images', 'content', 'notes', 'summary',
-];
-
-const sourceFields = [
-  '_id', 'type', 'group', 'title', 'date', 'location', 'people',
-  'links', 'images', 'content', 'notes', 'summary', 'story',
-];
-
-const eventFields = ['_id', 'title', 'date', 'location', 'people', 'notes'];
-const notationFields = ['_id', 'title', 'people', 'text', 'tags'];
+const fields = {
+  personEveryone: [
+    '_id', 'parents', 'spouses', 'children',
+  ],
+  personShared: [
+    'name', 'customId', 'links', 'profileImage',
+  ],
+  story: [
+    '_id', 'type', 'title', 'date', 'location', 'people',
+    'links', 'images', 'content', 'notes', 'summary',
+  ],
+  source: [
+    '_id', 'type', 'group', 'title', 'date', 'location', 'people',
+    'links', 'images', 'content', 'notes', 'summary', 'story',
+  ],
+  event: [
+    '_id', 'title', 'date', 'location', 'people', 'notes'
+  ],
+  notation: [
+    '_id', 'title', 'people', 'text', 'tags',
+  ],
+};
 
 router.get('/database', showDatabaseEverything);
 router.get('/sharing', saveSharedDatabase);
@@ -29,6 +36,8 @@ function showDatabaseEverything(req, res) {
     resolve();
   }).then(() => {
     return saveFullDataFile(data, 'Person', 'people');
+  }).then(() => {
+    return saveFullDataFile(data, 'Story', 'stories');
   }).then(() => {
     return saveFullDataFile(data, 'Source', 'sources');
   }).then(() => {
@@ -141,7 +150,7 @@ function getProcessedSharedData(req, res, callback) {
 
       let person = {};
 
-      allFields.forEach(key => {
+      fields.personEveryone.forEach(key => {
         person[key] = personInfo[key];
       });
 
@@ -151,7 +160,7 @@ function getProcessedSharedData(req, res, callback) {
         person.customId = personInfo._id;
       } else {
         person.private = false;
-        nonRestrictedFields.forEach(key => {
+        fields.personShared.forEach(key => {
           person[key] = personInfo[key];
         });
         tempPersonRef['' + person._id] = true;
@@ -180,7 +189,7 @@ function getProcessedSharedData(req, res, callback) {
 
     data.stories = raw.stories.map(storyInfo => {
       const story = {};
-      storyFields.forEach(attr => story[attr] = storyInfo[attr]);
+      fields.story.forEach(attr => story[attr] = storyInfo[attr]);
       story.tags = convertTags(storyInfo);
       story.people = story.people.filter(personId => tempPersonRef['' + personId]);
       tempStoryRef[story._id] = story;
@@ -189,7 +198,7 @@ function getProcessedSharedData(req, res, callback) {
 
     data.sources = raw.sources.map(sourceInfo => {
       const source = {};
-      sourceFields.forEach(attr => source[attr] = sourceInfo[attr]);
+      fields.source.forEach(attr => source[attr] = sourceInfo[attr]);
       source.tags = convertTags(sourceInfo);
       source.people = source.people.filter(personId => tempPersonRef['' + personId]);
 
@@ -214,7 +223,7 @@ function getProcessedSharedData(req, res, callback) {
 
     data.notations = raw.notations.map(rawInfo => {
       const newObj = {};
-      notationFields.forEach(attr => newObj[attr] = rawInfo[attr]);
+      fields.notation.forEach(attr => newObj[attr] = rawInfo[attr]);
       newObj.people = rawInfo.people.filter(personId => tempPersonRef['' + personId]);
       newObj.tags = convertTags(rawInfo);
       return newObj;
@@ -264,13 +273,13 @@ function getRawSharedData(callback) {
           mongoose.model('Notation')
           .find({ sharing: true })
           .exec((err, notations) => {
-            mongoose.model('Source')
-            .find({ sharing: true, isStory: true })
+            mongoose.model('Story')
+            .find({ sharing: true })
             .exec((err, stories) => {
               callback({
                 people: people,
                 stories: stories,
-                sources: sources.filter(source => !source.isStory),
+                sources: sources,
                 events: events,
                 citations: citations,
                 notations: notations,
@@ -307,7 +316,7 @@ function getSharedEvents(eventList, tempPersonRef) {
 
   eventList = eventList.map(eventInfo => {
     const event = {};
-    eventFields.forEach(attr => event[attr] = eventInfo[attr]);
+    fields.event.forEach(attr => event[attr] = eventInfo[attr]);
     event.tags = convertTags(eventInfo);
     return event;
   });
