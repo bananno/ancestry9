@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 module.exports = router;
 
+const Story = mongoose.model('Story');
 const Source = mongoose.model('Source');
 const Person = mongoose.model('Person');
 
