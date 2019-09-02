@@ -13,7 +13,7 @@ const getDateValues = getTools('getDateValues');
 const getLocationValues = getTools('getLocationValues');
 
 createModelRoutes({
-  Model: Source,
+  Model: Story,
   modelName: 'story',
   modelNamePlural: 'stories',
   router: router,
@@ -56,17 +56,23 @@ function createStory(req, res, next) {
     return res.send('Type and title are required.');
   }
 
-  Source.create(newStory, (err, story) => {
+  Story.create(newStory, (err, story) => {
     res.redirect('/story/' + story._id + '/edit');
   });
 }
 
-function showStory(req, res) {
+function withStory(req, res, callback) {
   const storyId = req.params.id;
   Story.findById(storyId).populate('people').exec((err, story) => {
     if (!story) {
       return res.send('Story not found');
     }
+    callback(story, storyId);
+  });
+}
+
+function showStory(req, res) {
+  withStory(req, res, story => {
     Source.find({ story: story }).exec((err, entries) => {
       entries.sort((a, b) => a.title < b.title ? -1 : 1);
       res.render('layout', {
@@ -82,8 +88,7 @@ function showStory(req, res) {
 }
 
 function editStory(req, res) {
-  const storyId = req.params.id;
-  Source.findById(storyId).populate('people').exec((err, story) => {
+  withStory(req, res, story => {
     Person.find({}, (err, people) => {
       res.render('layout', {
         view: 'story/layout',
