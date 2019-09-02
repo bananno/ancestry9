@@ -1,0 +1,58 @@
+<%
+  const rootPath = '/person/' + paramPersonId;
+  const newNotationPath = rootPath + '/add/notations';
+%>
+
+<form method="post" action="<%= newNotationPath %>" style="margin-top: 30px;">
+  <p>
+    <b>New notation</b>
+  </p>
+  <input type="text" name="title" placeholder="title"></input>
+  <br>
+  <textarea name="text" placeholder="text"></textarea>
+  <br>
+  <textarea name="tags" placeholder="tags"></textarea>
+  <br>
+  <button>add</button>
+</form>
+
+<% notations.forEach((notation, i) => { %>
+  <%
+    const textList = notation.text ? notation.text.split('\n') : [];
+  %>
+
+  <hr style="margin: 30px 0;">
+
+  <p>
+    <b><%= notation.title %></b>
+  </p>
+
+  <% textList.forEach(text => { %>
+    <p style="margin-top: 5px;">
+      <%= notation.text %>
+    </p>
+  <% }); %>
+
+  <ul style="margin: 5px 0 0 20px;">
+    <% notation.tags.forEach(tag => { %>
+      <li>
+        <%= tag %>
+      </li>
+    <% }); %>
+  </ul>
+
+  <p style="margin-top: 5px;">
+    <% if (notation.sharing) { %>
+      <img class="checkmark-inline" src="/images/check-true.png"> shared
+    <% } else { %>
+      <img class="checkmark-inline" src="/images/check-false.png"> not shared
+    <% } %>
+  </p>
+
+  <p style="margin-top: 5px;">
+    <%- include('../partials/linkToNotation', {
+      notation: notation,
+      text: 'go to notation',
+    }) %>
+  </p>
+<% }); %>

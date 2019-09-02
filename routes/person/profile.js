@@ -16,6 +16,7 @@ personTools.convertParamPersonId(router);
 router.get('/person/:personId', personSummary);
 router.get('/person/:personId/edit', personEdit);
 router.get('/person/:personId/sources', personSources);
+router.get('/person/:personId/notations', personNotations);
 router.get('/person/:personId/nationality', personNationality);
 router.get('/person/:personId/relatives', personRelatives);
 router.get('/person/:personId/connection', personConnection);
@@ -32,6 +33,7 @@ router.post('/person/:personId/delete/tags/:deleteId', makeRouteDelete('tags'));
 router.post('/person/:personId/reorder/tags/:orderId', makeRouteReorder('tags'));
 router.post('/person/:personId/add/events', makeRouteEditPost('events'));
 router.post('/person/:personId/toggle/shareLevel', makeRouteTogglePost('shareLevel'));
+router.post('/person/:personId/add/notations', createPersonNotation);
 
 createRelationshipRoutes('parents', 'children');
 createRelationshipRoutes('spouses', 'spouses');
@@ -349,6 +351,37 @@ function personSources(req, res, next) {
       paramPersonId: req.paramPersonId,
       personId: req.personId,
     });
+  });
+}
+
+function personNotations(req, res, next) {
+  const person = req.person;
+  mongoose.model('Notation').find({ people: person }, (err, notations) => {
+    res.render('layout', {
+      view: 'person/layout',
+      subview: 'notations',
+      person: person,
+      title: person.name,
+      paramPersonId: req.paramPersonId,
+      personId: req.personId,
+      notations: notations,
+    });
+  });
+}
+
+function createPersonNotation(req, res, next) {
+  const person = req.person;
+  const newNotation = {
+    title: req.body.title.trim(),
+    text: req.body.text.trim(),
+    people: [person],
+  };
+  const tags = req.body.tags.trim();
+  if (tags) {
+    newNotation.tags = tags.split('\n');
+  }
+  mongoose.model('Notation').create(newNotation, (err, notation) => {
+    res.redirect('/person/' + req.paramPersonId + '/notations');
   });
 }
 
