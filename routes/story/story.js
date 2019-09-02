@@ -41,6 +41,7 @@ function getStoriesIndexRoute(storyType) {
         view: 'story/index',
         title: 'Stories',
         stories: stories,
+        subview: storyType,
       });
     });
   }

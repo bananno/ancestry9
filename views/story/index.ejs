@@ -1,5 +1,47 @@
 <%
-  let lastType;
+  let lastStorySection;
+  let groupByAttr = 'type';
+
+  if (subview == 'documents') {
+    groupByAttr = 'subtype';
+
+    const displayOrder = [
+      'census - USA',
+      'census - US states',
+      'census - other countries',
+      'certificates or cards',
+      'books of records',
+      'other',
+    ];
+
+    stories.forEach(story => {
+      story.subtype = ((title) => {
+        if (title.slice(0, 6) == 'census') {
+          if (title.match('usa')) {
+            return 'census - USA';
+          }
+          if (story.tags.includes('Census US States')) {
+            return 'census - US states';
+          }
+          return 'census - other countries';
+        }
+        if (title.match('draft') || title.match('burial card')
+            || title.match('certificate')) {
+          return 'certificates or cards';
+        }
+        if (title.match('book records')
+            || title.match('church records')
+            || story.tags.includes('book record')) {
+          return 'books of records';
+        }
+        return 'other';
+      })(story.title.toLowerCase());
+
+      story.sortBy = displayOrder.indexOf(story.subtype) + story.title;
+    });
+
+    stories.sort((a, b) => a.sortBy < b.sortBy ? -1 : 1);
+  }
 %>
 
 <h1>Stories</h1>
@@ -66,11 +108,11 @@
       const storyNotes = (story.notes || '').length ? story.notes.split('\n') : [];
     %>
 
-    <% if (lastType != story.type) { %>
-      <% lastType = story.type; %>
+    <% if (lastStorySection != story[groupByAttr]) { %>
+      <% lastStorySection = story[groupByAttr]; %>
       <tr class="story-index-header">
         <td>
-          <%= story.type %>
+          <%= story[groupByAttr] %>
         </td>
       </tr>
     <% } %>
