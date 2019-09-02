@@ -139,6 +139,7 @@ function personEdit(req, res, next) {
     .find({})
     .exec((err, allPeople) => {
       var people = removePersonFromList(allPeople, person);
+      people.sort((a, b) => a.name < b.name ? -1 : 1);
       res.render('layout', {
         view: 'person/layout',
         subview: 'edit',

@@ -47,6 +47,7 @@ function makeRouteEditGet(fieldName) {
   return (req, res, next) => {
     withEvent(req, (event, eventId) => {
       mongoose.model('Person').find({}, (err, people) => {
+        people.sort((a, b) => a.name < b.name ? -1 : 1);
         res.render('layout', {
           view: 'events/show',
           title: 'Edit Event',
