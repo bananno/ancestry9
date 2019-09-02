@@ -17,7 +17,7 @@ createModelRoutes({
   modelName: 'story',
   modelNamePlural: 'stories',
   router: router,
-  index: storiesIndex,
+  index: getStoriesIndexRoute('all'),
   create: createStory,
   show: showStory,
   edit: editStory,
@@ -27,17 +27,51 @@ createModelRoutes({
   listAttributes: ['people', 'links', 'images', 'tags'],
 });
 
-function storiesIndex(req, res, next) {
-  Story.find({}, (err, stories) => {
-    stories.sort((a, b) => {
-      return (a.type + a.title) < (b.type + b.title) ? -1 : 1;
+['books', 'cemeteries', 'documents', 'newspapers', 'other'].forEach(type => {
+  router.get('/stories/' + type, getStoriesIndexRoute(type));
+});
+
+function getStoriesIndexRoute(storyType) {
+  return function(req, res, next) {
+    withAllStories(storyType, stories => {
+      stories.sort((a, b) => {
+        return (a.type + a.title) < (b.type + b.title) ? -1 : 1;
+      });
+      res.render('layout', {
+        view: 'story/index',
+        title: 'Stories',
+        stories: stories,
+      });
     });
-    res.render('layout', {
-      view: 'story/index',
-      title: 'Stories',
-      stories: stories,
+  }
+}
+
+function withAllStories(type, callback) {
+  const singular = {
+    'books': 'book',
+    'cemeteries': 'cemetery',
+    'documents': 'document',
+    'newspapers': 'newspaper',
+  };
+
+  const singularType = singular[type];
+
+  if (singularType) {
+    Story.find({ type: singularType }, (err, stories) => {
+      callback(stories);
     });
-  });
+  } else {
+    Story.find({}, (err, stories) => {
+      if (type == 'other') {
+        callback(stories.filter(story => {
+          return !['book', 'cemetery', 'document', 'newspaper']
+            .includes(story.type);
+        }));
+      } else {
+        callback(stories);
+      }
+    });
+  }
 }
 
 function createStory(req, res, next) {
