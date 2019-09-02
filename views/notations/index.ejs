@@ -13,7 +13,7 @@
   <% notations.forEach(notation => { %>
     <tr>
       <td>
-        <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
+        <%- include('../partials/linkToNotation', { notation: notation }) %>
       </td>
     </tr>
   <% }); %>

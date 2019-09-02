@@ -8,6 +8,13 @@
     siteLinks.push(['topic/brickwalls', 'topic: brick walls']);
   }
 
+  if (notation.title == 'profile summary') {
+    notation.people.forEach(person => {
+      siteLinks.push(['person/' + person.customId, person.name
+        + ' profile (summary)']);
+    });
+  }
+
   if (notation.tags.includes('research notes')) {
     notation.people.forEach(person => {
       siteLinks.push(['person/' + person.customId, person.name
