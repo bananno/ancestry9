@@ -12,6 +12,11 @@ const createModelRoutes = getTools('createModelRoutes');
 const getDateValues = getTools('getDateValues');
 const getLocationValues = getTools('getLocationValues');
 
+const mainStoryTypes = [
+  'books', 'cemeteries', 'documents', 'index',
+  'newspapers', 'websites', 'other',
+];
+
 createModelRoutes({
   Model: Story,
   modelName: 'story',
@@ -27,7 +32,7 @@ createModelRoutes({
   listAttributes: ['people', 'links', 'images', 'tags'],
 });
 
-['books', 'cemeteries', 'documents', 'newspapers', 'other'].forEach(type => {
+mainStoryTypes.forEach(type => {
   router.get('/stories/' + type, getStoriesIndexRoute(type));
 });
 
@@ -42,6 +47,7 @@ function getStoriesIndexRoute(storyType) {
         title: 'Stories',
         stories: stories,
         subview: storyType,
+        mainStoryTypes: mainStoryTypes,
       });
     });
   }
@@ -52,7 +58,9 @@ function withAllStories(type, callback) {
     'books': 'book',
     'cemeteries': 'cemetery',
     'documents': 'document',
+    'index': 'index',
     'newspapers': 'newspaper',
+    'websites': 'website',
   };
 
   const singularType = singular[type];
@@ -65,8 +73,10 @@ function withAllStories(type, callback) {
     Story.find({}, (err, stories) => {
       if (type == 'other') {
         callback(stories.filter(story => {
-          return !['book', 'cemetery', 'document', 'newspaper']
-            .includes(story.type);
+          return ![
+            'book', 'cemetery', 'document', 'index',
+            'newspaper', 'website',
+          ].includes(story.type);
         }));
       } else {
         callback(stories);
