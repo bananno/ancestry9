@@ -7,8 +7,12 @@
 </div>
 
 <div class="column">
+  <p>
+    <%- include('../partials/linkToStory', { story: source.story }) %>
+    - <%= source.story.type %>
+  </p>
+
   <h1>
-    <%= source.story.title %><br>
     <%= source.title %>
   </h1>
 

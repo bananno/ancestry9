@@ -2,34 +2,6 @@
   const rootPath = '/sources';
   const newSourcePath = rootPath + '/new';
   const showAllTypes = subView == 'none' || subView == 'new';
-
-  const showTableType = showAllTypes;
-  const showTableStory = subView != 'photos';
-  const showTableDate = subView != 'graves';
-  const headerRowTitles = [];
-
-  if (showTableType) {
-    headerRowTitles.push('type');
-  }
-
-  if (showTableStory) {
-    if (subView == 'graves') {
-      headerRowTitles.push('cemetery');
-    } else if (subView == 'newspapers') {
-      headerRowTitles.push('paper');
-    } else {
-      headerRowTitles.push('story');
-    }
-  }
-
-  headerRowTitles.push(title);
-
-  if (showTableDate) {
-    headerRowTitles.push('date');
-  }
-
-  headerRowTitles.push('location');
-  headerRowTitles.push('sharing');
 %>
 
 <h1>Sources</h1>
@@ -63,34 +35,37 @@
   <% }); %>
 </ul>
 
-<% if (!showAllTypes) { %>
-  <h2><%= subView %></h2>
-<% } %>
-
 <table class="info-table">
   <tr>
-    <% headerRowTitles.forEach(str => { %>
-      <th><%= str %></th>
-    <% }); %>
+    <th>t</th>
+    <th>story</th>
+    <th>title</th>
+    <th>date</th>
+    <th>location</th>
+    <th>sharing</th>
   </tr>
 
   <% sources.forEach(source => { %>
+    <%
+      const typeMatches = source.type == source.story.type
+        || (source.type == 'grave' && source.story.type == 'cemetery')
+        || (source.type == 'photo' && source.story.title == 'Photo')
+        || (source.type == 'article' && source.story.type == 'website');
+    %>
     <tr>
-      <% if (showTableType) { %>
-        <td>
+      <td>
+        <% if (!typeMatches) { %>
           <%= source.type %>
-        </td>
-      <% } %>
+        <% } %>
+      </td>
 
-      <% if (showTableStory) { %>
-        <td>
-          <% if (source.story) { %>
-            <%- include('../partials/linkToStory', {
-              story: source.story,
-            }) %><br>
-          <% } %>
-        </td>
-      <% } %>
+      <td>
+        <% if (source.story) { %>
+          <%- include('../partials/linkToStory', {
+            story: source.story,
+          }) %><br>
+        <% } %>
+      </td>
 
       <td>
         <%- include('../partials/linkToSource', {
@@ -99,13 +74,11 @@
         }) %>
       </td>
 
-      <% if (showTableDate) { %>
-        <td>
-          <%- include('../format/date', { params: {
-            date: source.date,
-          }}) %>
-        </td>
-      <% } %>
+      <td>
+        <%- include('../format/date', { params: {
+          date: source.date,
+        }}) %>
+      </td>
 
       <td>
         <%- include('../format/location', { params: {
