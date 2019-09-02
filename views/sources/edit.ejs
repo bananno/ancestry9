@@ -12,7 +12,7 @@
     && (source.content || '').length == 0;
 
   const canHaveGroup = source.group
-    || !['book', 'grave', 'newspaper'].includes(source.type);
+    || !['book', 'grave', 'newspaper', 'document'].includes(source.type);
 
   const canHaveDate = !['grave'].includes(source.type)
     || (source.date && (source.date.year || source.date.month

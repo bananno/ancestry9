@@ -218,13 +218,13 @@ function getStoryOptionsForSource(source, stories) {
     return stories.filter(story => story.type == 'cemetery');
   }
 
-  if (source.type == 'newspaper') {
-    return stories.filter(story => story.type == 'newspaper');
+  if (['newspaper', 'document'].includes(source.type)) {
+    return stories.filter(story => story.type == source.type);
   }
 
   return stories.filter(story => {
     return !['artifact', 'cemetery', 'event', 'landmark', 'newspaper',
-      'place'].includes(story.type);
+      'place', 'document'].includes(story.type);
   });
 }
 

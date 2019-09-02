@@ -16,6 +16,7 @@
       <option value="artifact">artifact</option>
       <option value="book">book</option>
       <option value="cemetery">cemetery</option>
+      <option value="document">document</option>
       <option value="event">event</option>
       <option value="landmark">landmark</option>
       <option value="newspaper">newspaper</option>
@@ -118,7 +119,7 @@
       $('#story-type-text').hide().val('');
     }
 
-    if (['book', 'event', 'other'].includes(typeValue)) {
+    if (['book', 'event', 'document', 'other'].includes(typeValue)) {
       $('#new-story-date').show();
     } else {
       $('#new-story-date').hide();
