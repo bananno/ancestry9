@@ -11,9 +11,6 @@
     && (source.summary || '').length == 0
     && (source.content || '').length == 0;
 
-  const canHaveGroup = source.group
-    || !['book', 'grave', 'newspaper', 'document'].includes(source.type);
-
   const canHaveDate = !['grave'].includes(source.type)
     || (source.date && (source.date.year || source.date.month
       || source.date.day || source.date.display));
@@ -50,16 +47,6 @@
     editPath: rootEditPath + '/type',
     originalValue: source.type,
   }) %>
-
-  <!-- GROUP -->
-
-  <% if (canHaveGroup) { %>
-    <%- include('../forms/tableRowSingle', {
-      attr: 'group',
-      editPath: rootEditPath + '/group',
-      originalValue: source.group,
-    }) %>
-  <% } %>
 
   <!-- STORY -->
 

@@ -31,7 +31,7 @@ createModelRoutes({
   edit: editSource,
   delete: deleteSource,
   toggleAttributes: ['sharing'],
-  singleAttributes: ['type', 'group', 'title', 'content', 'notes', 'summary',
+  singleAttributes: ['type', 'title', 'content', 'notes', 'summary',
     'date', 'location', 'story'],
   listAttributes: ['people', 'links', 'images', 'tags'],
 });
@@ -39,8 +39,6 @@ createModelRoutes({
 mainSourceTypes.forEach(sourceType => {
   router.get('/sources/' + sourceType, getSourcesIndex(sourceType));
 });
-
-router.get('/source-group/:id', getSourceGroup);
 
 function getSourcesIndex(subView) {
   return (req, res, next) => {
@@ -85,13 +83,9 @@ function getSourcesIndex(subView) {
 function createSource(req, res) {
   const newItem = {
     type: req.body.type.trim(),
-    group: req.body.group.trim(),
     title: req.body.title.trim(),
+    story: req.body.story,
   };
-
-  if (req.body.story != '0') {
-    newItem.story = req.body.story;
-  }
 
   newItem.date = getDateValues(req);
   newItem.location = getLocationValues(req);
@@ -127,7 +121,7 @@ function showSource(req, res) {
       res.render('layout', {
         view: 'sources/layout',
         subview: 'show',
-        title: source.group + ' - ' + source.title,
+        title: source.story.title + ' - ' + source.title,
         source: source,
         citations: sortCitations(citations, 'item', source.people),
         citationsByPerson: sortCitations(citations, 'person', source.people),
@@ -165,25 +159,6 @@ function editSource(req, res, next) {
             citationsByPerson: sortCitations(citations, 'person', source.people),
           });
         });
-      });
-    });
-  });
-}
-
-function getSourceGroup(req, res, next) {
-  withSource(req, res, rootSource => {
-    mongoose.model('Source')
-    .find({ group: rootSource.group })
-    .populate('people')
-    .populate('story')
-    .exec((err, sources) => {
-      sortSources(sources, 'date');
-      res.render('layout', {
-        view: 'sources/group',
-        title: rootSource.group,
-        rootSource: rootSource,
-        groupMain: sources.filter(source => source.title.toLowerCase() == 'source group')[0],
-        sources: sources.filter(source => source.title.toLowerCase() != 'source group'),
       });
     });
   });

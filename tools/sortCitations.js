@@ -92,7 +92,13 @@ function sortCitations(citationList, sortBy, peopleList) {
     }
 
     sortString += '-' + citation.information;
-    sortString += '-' + citation.source.group;
+
+    if (citation.source.story && citation.source.story.title) {
+      sortString += '-' + citation.source.story.title;
+    } else {
+      sortString += '-' + citation.source.story;
+    }
+
     sortString += '-' + citation.source.title;
 
     sortRef[citation._id] = sortString;

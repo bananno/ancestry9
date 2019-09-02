@@ -1,12 +1,10 @@
 <%
-  const showGroup = locals.showGroup || false;
+  const showStory = locals.showStory || locals.showGroup || false;
   let linkText = '';
 
-  if (showGroup) {
+  if (showStory) {
     if (source.story && source.story.title) {
       linkText = source.story.title + ' - ';
-    } else if (source.group) {
-      linkText = source.group + ' - ';
     }
   }
 

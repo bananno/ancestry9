@@ -1,1 +1,5 @@
-<a href="/story/<%= story._id %>"><%= story.title %></a>
+<%
+  let path = story._id || story;
+  let text = story.title || ('story ' + story);
+%>
+<a href="/story/<%= path %>"><%= text %></a>

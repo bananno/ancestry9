@@ -1,24 +1,13 @@
 
 <div class="source-item-box">
   <div class="column" style="width: 450px;">
-    <% if (source.story) { %>
-      <p>
-        <%- include('../partials/linkToStory', {
-          story: source.story
-        }) %>
-      </p>
-      <p>
-        <a href="/source/<%= source._id %>"><%= source.title %></a>
-      </p>
-    <% } else { %>
-      <p>
-        <a href="/source/<%= source._id %>"><%= source.group %>
-        <% if (source.group && source.title) { %>
-          -
-        <% } %>
-        <%= source.title %></a>
-      </p>
-    <% } %>
+    <p>
+      <%- include('../partials/linkToStory', { story: source.story }) %>
+    </p>
+
+    <p>
+      <%- include('../partials/linkToSource', { source: source }) %>
+    </p>
 
     <% if (source.images.length) { %>
       <p>

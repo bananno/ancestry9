@@ -4,7 +4,6 @@ const locationStructure = require('./locationStructure.js');
 
 const sourceSchema = new mongoose.Schema({
   type: String,
-  group: String,
   title: String,
   story: {
     type: mongoose.Schema.Types.ObjectId,

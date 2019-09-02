@@ -4,7 +4,7 @@
   const showAllTypes = subView == 'none' || subView == 'new';
 
   const showTableType = showAllTypes;
-  const showTableGroup = subView != 'photos';
+  const showTableStory = subView != 'photos';
   const showTableDate = subView != 'graves';
   const headerRowTitles = [];
 
@@ -12,13 +12,13 @@
     headerRowTitles.push('type');
   }
 
-  if (showTableGroup) {
+  if (showTableStory) {
     if (subView == 'graves') {
       headerRowTitles.push('cemetery');
     } else if (subView == 'newspapers') {
       headerRowTitles.push('paper');
     } else {
-      headerRowTitles.push('group');
+      headerRowTitles.push('story');
     }
   }
 
@@ -82,14 +82,13 @@
         </td>
       <% } %>
 
-      <% if (showTableGroup) { %>
+      <% if (showTableStory) { %>
         <td>
           <% if (source.story) { %>
             <%- include('../partials/linkToStory', {
               story: source.story,
             }) %><br>
           <% } %>
-          <%= source.group %>
         </td>
       <% } %>
 

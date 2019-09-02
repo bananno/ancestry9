@@ -16,6 +16,7 @@ function personChecklist(req, res) {
     .exec((err, events) => {
       mongoose.model('Source')
       .find({ people: person })
+      .populate('story')
       .exec((err, sources) => {
         var checklistLinks = {
           Ancestry: null,
@@ -81,7 +82,7 @@ function personChecklist(req, res) {
           var sourceName = 'Census USA ' + year;
           sourceChecklist[sourceName] = false;
           sources.forEach((thisSource) => {
-            if (thisSource.group == sourceName) {
+            if (thisSource.story.title == sourceName) {
               sourceChecklist[sourceName] = true;
             }
           });
@@ -92,7 +93,7 @@ function personChecklist(req, res) {
           var sourceName = 'World War I draft';
           sourceChecklist[sourceName] = false;
           sources.forEach((thisSource) => {
-            if (thisSource.group == sourceName) {
+            if (thisSource.story.title == sourceName) {
               sourceChecklist[sourceName] = true;
             }
           });
@@ -103,7 +104,7 @@ function personChecklist(req, res) {
           var sourceName = 'World War II draft';
           sourceChecklist[sourceName] = false;
           sources.forEach((thisSource) => {
-            if (thisSource.group == sourceName) {
+            if (thisSource.story.title == sourceName) {
               sourceChecklist[sourceName] = true;
             }
           });
@@ -132,16 +133,16 @@ function getIncompleteSources(sourceList) {
     const needsContent = source.content == null || source.content == '';
     const needsImage = source.images.length == 0;
     const needsSummary = (source.summary || '').length == 0;
-    const isCensus = source.type == 'document' && source.group.match('Census');
+    const isCensus = source.type == 'document' && source.story.title.match('Census');
 
     let text1, text2;
 
     if (source.type == 'newspaper') {
       text1 = 'newspaper article: ' + source.title;
     } else if (source.type == 'grave' || isCensus) {
-      text1 = source.group;
+      text1 = source.story.title;
     } else if (source.type == 'book') {
-      text1 = source.group + ' - ' + source.title;
+      text1 = source.story.title + ' - ' + source.title;
     } else {
       return;
     }

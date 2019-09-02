@@ -21,6 +21,7 @@ function personTimeline(req, res, next) {
     mongoose.model('Source')
     .find({ people: person })
     .populate('people')
+    .populate('story')
     .exec((err, sources) => {
       const sourceEvents = getSourceEvents(sources);
       events = sortEvents(events);
@@ -46,7 +47,7 @@ function getSourceEvents(sources) {
 
   sources.forEach(source => {
     const event = {
-      title: source.group + ' - ' + source.title,
+      title: source.story.title + ' - ' + source.title,
       date: { ...source.date },
       location: { ...source.location },
       people: [ ...source.people ],
@@ -55,7 +56,8 @@ function getSourceEvents(sources) {
 
     if (source.type == 'newspaper') {
       event.type = source.type;
-    } else if (source.type == 'document' && source.group.match('Census')) {
+    } else if (source.type == 'document'
+        && source.story.title.match('Census')) {
       event.type = 'census';
     } else {
       event.type = 'source';

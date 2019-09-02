@@ -16,7 +16,7 @@ const fields = {
     'links', 'images', 'content', 'notes', 'summary',
   ],
   source: [
-    '_id', 'type', 'group', 'title', 'date', 'location', 'people',
+    '_id', 'type', 'title', 'date', 'location', 'people',
     'links', 'images', 'content', 'notes', 'summary', 'story',
   ],
   event: [
@@ -202,16 +202,8 @@ function getProcessedSharedData(req, res, callback) {
       source.tags = convertTags(sourceInfo);
       source.people = source.people.filter(personId => tempPersonRef['' + personId]);
 
-      if (source.story) {
-        let tempStory = tempStoryRef[source.story._id];
-        source.fullTitle = tempStory.title + ' - ' + source.title;
-      } else {
-        if (source.group) {
-          source.fullTitle = source.group + ' - ' + source.title;
-        } else {
-          source.fullTitle = source.title;
-        }
-      }
+      const tempStory = tempStoryRef[source.story._id];
+      source.fullTitle = tempStory.title + ' - ' + source.title;
 
       return source;
     });
