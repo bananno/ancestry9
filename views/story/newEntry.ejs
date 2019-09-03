@@ -1,0 +1,22 @@
+<h2>new entry</h2>
+
+<form method="POST" action="<%= actionPath %>">
+  <input type="hidden" name="type" value="<%= sourceType %>">
+  <input type="hidden" name="story" value="<%= story._id %>">
+
+  <input type="text" name="title" placeholder="title">
+
+  <% if (entryCanHaveDate) { %>
+    <h3>date</h3>
+    <%- include('../forms/date', { date: null }) %>
+  <% } %>
+
+  <% if (entryCanHaveLocation) { %>
+    <h3>location</h3>
+    <%- include('../forms/location', { location: null }) %>
+  <% } %>
+
+  <p style="margin-top: 20px;">
+    <button type="submit">create</button>
+  </p>
+</form>

@@ -17,6 +17,8 @@ const mainStoryTypes = [
   'newspapers', 'websites', 'other',
 ];
 
+const noEntryStoryTypes = ['artifact', 'event', 'landmark', 'place'];
+
 createModelRoutes({
   Model: Story,
   modelName: 'story',
@@ -24,8 +26,8 @@ createModelRoutes({
   router: router,
   index: getStoriesIndexRoute('all'),
   create: createStory,
-  show: showStory,
-  edit: editStory,
+  show: storyShowMain,
+  edit: storyEdit,
   toggleAttributes: ['sharing'],
   singleAttributes: ['type', 'group', 'title', 'date', 'location',
     'notes', 'summary'],
@@ -36,7 +38,8 @@ mainStoryTypes.forEach(type => {
   router.get('/stories/' + type, getStoriesIndexRoute(type));
 });
 
-router.get('/story/:id/entries', showStoryEntries);
+router.get('/story/:id/entries', storyEntries);
+router.get('/story/:id/newEntry', storyNewEntry);
 
 function getStoriesIndexRoute(storyType) {
   return function(req, res, next) {
@@ -127,42 +130,68 @@ function withStoryAndEntries(req, res, callback) {
   });
 }
 
-function showStory(req, res) {
+function mainStoryView(res, story, params) {
+  res.render('layout', {
+    view: 'story/layout',
+    title: story.title,
+    story: story,
+    rootPath: '/story/' + story._id,
+    canHaveDate: story.type != 'cemetery',
+    canHaveEntries: !noEntryStoryTypes.includes(story.type),
+    ...params
+  });
+}
+
+function storyShowMain(req, res) {
   withStoryAndEntries(req, res, (story, entries) => {
-    res.render('layout', {
-      view: 'story/layout',
+    mainStoryView(res, story, {
       subview: 'show',
-      title: story.title,
-      story: story,
       entries: entries,
-      canHaveDate: story.type != 'cemetery',
     });
   });
 }
 
-function editStory(req, res) {
+function storyEdit(req, res) {
   withStory(req, res, story => {
     Person.find({}, (err, people) => {
-      res.render('layout', {
-        view: 'story/layout',
+      mainStoryView(res, story, {
         subview: 'edit',
-        title: story.title,
-        story: story,
         people: people,
-        canHaveDate: story.type != 'cemetery',
       });
     });
   });
 }
 
-function showStoryEntries(req, res, next) {
+function storyEntries(req, res, next) {
   withStoryAndEntries(req, res, (story, entries) => {
-    res.render('layout', {
-      view: 'story/layout',
+    mainStoryView(res, story, {
       subview: 'entries',
-      title: story.title,
-      story: story,
       entries: entries,
+    });
+  });
+}
+
+function storyNewEntry(req, res, next) {
+  withStoryAndEntries(req, res, (story, entries) => {
+    let sourceType = {
+      website: 'article',
+      book: 'book',
+      document: 'document',
+      cemetery: 'grave',
+      index: 'index',
+      newspaper: 'newspaper',
+    }[story.type] || 'other';
+
+    const entryCanHaveDate = !['cemetery'].includes(story.type);
+    const entryCanHaveLocation = !['cemetery', 'newspaper'].includes(story.type);
+
+    mainStoryView(res, story, {
+      subview: 'newEntry',
+      entries: entries,
+      actionPath: '/sources/new',
+      entryCanHaveDate: entryCanHaveDate,
+      entryCanHaveLocation: entryCanHaveLocation,
+      sourceType: sourceType,
     });
   });
 }

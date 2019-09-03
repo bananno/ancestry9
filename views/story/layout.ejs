@@ -11,6 +11,10 @@
     if (entries.length > 0) {
       navLinks.push(['entries', 'entries']);
     }
+
+    if (canHaveEntries) {
+      navLinks.push(['newEntry', 'new entry']);
+    }
   }
 %>
 
