@@ -1,37 +1,9 @@
-<%
-  const rootPath = '/sources';
-  const newSourcePath = rootPath + '/new';
-  const showAllTypes = subView == 'none' || subView == 'new';
-%>
-
 <h1>Sources</h1>
 
-<% if (showNew) { %>
-  <%- include('../forms/newSource', {
-    actionPath: newSourcePath,
-    cancelPath: rootPath,
-  }) %>
-<% } else { %>
-  <p>
-    <a href="/sources/new" class="main-link">+ New Source</a>
-  </p>
-<% } %>
-
 <ul class="bullet-list">
-  <li>
-    <a href="/sources">all</a>
-  </li>
+  <li><a href="/sources">all</a></li>
   <% mainSourceTypes.forEach(sourceType => { %>
-    <%
-      let sourceTypeText = sourceType;
-
-      if (sourceType == 'index') {
-        sourceTypeText = 'web index';
-      }
-    %>
-    <li>
-      <a href="/sources/<%= sourceType %>"><%= sourceTypeText %></a>
-    </li>
+    <li><a href="/sources/<%= sourceType %>"><%= sourceType %></a></li>
   <% }); %>
 </ul>
 

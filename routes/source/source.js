@@ -25,7 +25,7 @@ createModelRoutes({
   modelName: 'source',
   router: router,
   index: getSourcesIndex('none'),
-  new: getSourcesIndex('new'),
+  new: null,
   create: createSource,
   show: showSource,
   edit: editSource,
@@ -40,42 +40,27 @@ mainSourceTypes.forEach(sourceType => {
   router.get('/sources/' + sourceType, getSourcesIndex(sourceType));
 });
 
-function getSourcesIndex(subView) {
+function getSourcesIndex(subview) {
   return (req, res, next) => {
-    Source.find({}).populate('people').populate('story')
+    Source.find({})
+    .populate('people')
+    .populate('story')
     .exec((err, sources) => {
       if (err) {
         return console.error(err);
       }
 
-      sources = filterSourcesByType(sources, subView);
+      sources = filterSourcesByType(sources, subview);
 
       sortSources(sources, 'story');
 
-      const viewData = {
+      res.render('layout', {
         view: 'sources/index',
-        title: subView == 'new' ? 'New Source' : 'Sources',
+        title: 'Sources',
         sources: sources,
-        subView: subView,
-        showNew: subView === 'new',
+        subview: subview,
         mainSourceTypes: mainSourceTypes,
-        stories: [],
-      };
-
-      if (viewData.showNew) {
-        Story.find({}, (err, stories) => {
-          stories = stories.filter(story => {
-            return !['artifact', 'event', 'landmark', 'place'].includes(story.type);
-          });
-
-          stories.sort((a, b) => a.title < b.title ? -1 : 1);
-
-          viewData.stories = stories;
-          res.render('layout', viewData);
-        });
-      } else {
-        res.render('layout', viewData);
-      }
+      });
     });
   };
 }
