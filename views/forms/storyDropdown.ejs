@@ -1,10 +1,42 @@
 <%
-  const selectedId = locals.selectedStory ? ('' + (selectedStory._id || selectedStory)) : null;
+  let selectedId, selectedType;
+
+  if (locals.selectedStory) {
+    if (selectedStory._id) {
+      selectedId = '' + selectedStory._id;
+      selectedType = selectedStory.type;
+    } else {
+      selectedId = selectedStory;
+    }
+  }
+
+  let storyTypes = {};
+  stories.forEach(story => storyTypes[story.type] = true);
+  storyTypes = Object.keys(storyTypes).filter(storyType => {
+    return !['artifact', 'event', 'landmark', 'place'].includes(storyType);
+  });
 %>
 
-<select name="<%= fieldName %>">
+<select id="story-type-filter" onChange="toggleStoryType()">
+  <option value="">
+    -- select --
+  </option>
+  <% storyTypes.forEach(storyType => { %>
+    <% if (selectedType == storyType) { %>
+      <option value="<%= storyType %>" selected="selected">
+        <%= storyType %>
+      </option>
+    <% } else { %>
+      <option value="<%= storyType %>">
+        <%= storyType %>
+      </option>
+    <% } %>
+  <% }); %>
+</select>
+
+<select id="story-selector" name="<%= fieldName %>">
   <option value="0">
-    -- Select --
+    -- select --
   </option>
   <% stories.forEach(story => { %>
     <% if (selectedId == '' + story._id) { %>
@@ -18,3 +50,20 @@
     <% } %>
   <% }); %>
 </select>
+
+<script>
+  const $type = $('#story-type-filter');
+  const $story = $('#story-selector');
+
+  function toggleStoryType() {
+    $story.val('0');
+    const currentType = $type.val();
+    $story.find('option[story-type]').each((i, option) => {
+      const storyType = $(option).attr('story-type');
+      $(option).toggle(storyType == currentType);
+    });
+  }
+
+  $story.find('option[story-type]')
+    .not(':selected, [story-type="<%= selectedType %>"]').hide();
+</script>
