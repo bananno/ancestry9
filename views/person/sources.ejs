@@ -11,23 +11,19 @@
 
     const notesList = source.notes ? source.notes.split('\n') : null;
 
-    let pluralType;
+    let groupTitle;
 
-    if (source.type != previousSourceType) {
-      pluralType = source.type;
-
-      if (pluralType == 'index') {
-        pluralType = 'web index';
-      } else {
-        pluralType += 's';
-      }
-
-      previousSourceType = source.type;
+    if (source.story.type != previousSourceType) {
+      groupTitle = {
+        cemetery: 'grave',
+        index: 'web index',
+      }[source.story.type] || (source.story.type + 's');
+      previousSourceType = source.story.type;
     }
   %>
 
-  <% if (pluralType) { %>
-    <h2><%= pluralType %></h2>
+  <% if (groupTitle) { %>
+    <h2><%= groupTitle %></h2>
   <% } %>
 
   <%- include('../sources/sourceBlock', {

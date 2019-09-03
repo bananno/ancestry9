@@ -51,26 +51,6 @@ function createRelationshipRoutes(relationship, corresponding) {
   router.post(reorderPath, makeRouteReorder(relationship));
 }
 
-function collectData(list, callback) {
-  dataHelper({}, list[0]).then(data => {
-    return dataHelper(data, list[1]);
-  }).then(data => {
-    return dataHelper(data, list[2]);
-  }).then(callback);
-
-  function dataHelper(data, obj) {
-    const method = obj.method || 'find';
-    const finder = method == 'findById' ? obj.id : obj.getFinder(data);
-
-    return new Promise(resolve => {
-      mongoose.model(obj.model)[method](finder, (err, result) => {
-        data[obj.name] = result;
-        resolve(data);
-      });
-    });
-  }
-}
-
 function personSummary(req, res, next) {
   mongoose.model('Person').findById(req.personId)
   .populate('parents')
@@ -315,41 +295,33 @@ function makeRouteReorder(editField) {
 }
 
 function personSources(req, res, next) {
-  collectData([
-    {
-      model: 'Person',
-      name: 'person',
-      method: 'findById',
-      id: req.personId
-    },
-    {
-      model: 'Source',
-      name: 'sources',
-      getFinder: data => {
-        return { people: data.person };
-      }
-    },
-    {
-      model: 'Citation',
-      name: 'citations',
-      getFinder: data => {
-        return { person: data.person };
-      }
-    },
-  ], data => {
-    data.citations = sortCitations(data.citations, 'item');
-    data.sources.sort((a, b) => {
-      let sortA = a.type + ' - ' + a.group + ' - ' + a.title;
-      let sortB = b.type + ' - ' + b.group + ' - ' + b.title;
-      return sortA == sortB ? 0 : sortA > sortB ? 1 : -1;
-    });
+  const person = req.person;
 
-    res.render('layout', {...data,
-      view: 'person/layout',
-      subview: 'sources',
-      title: data.person.name,
-      paramPersonId: req.paramPersonId,
-      personId: req.personId,
+  mongoose.model('Source')
+  .find({ people: person })
+  .populate('story')
+  .exec((err, sources) => {
+    mongoose.model('Citation')
+    .find({ people: person })
+    .exec((err, citations) => {
+      citations = sortCitations(citations, 'item');
+
+      sources.sort((a, b) => {
+        let sortA = a.type + ' - ' + a.group + ' - ' + a.title;
+        let sortB = b.type + ' - ' + b.group + ' - ' + b.title;
+        return sortA == sortB ? 0 : sortA > sortB ? 1 : -1;
+      });
+
+      res.render('layout', {
+        view: 'person/layout',
+        subview: 'sources',
+        title: person.name,
+        paramPersonId: req.paramPersonId,
+        personId: req.personId,
+        person: person,
+        sources: sources,
+        citations: citations,
+      });
     });
   });
 }
