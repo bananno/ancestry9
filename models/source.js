@@ -3,7 +3,6 @@ const dateStructure = require('./dateStructure.js');
 const locationStructure = require('./locationStructure.js');
 
 const sourceSchema = new mongoose.Schema({
-  type: String,
   title: String,
   story: {
     type: mongoose.Schema.Types.ObjectId,

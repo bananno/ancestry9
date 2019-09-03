@@ -31,7 +31,7 @@ createModelRoutes({
   edit: editSource,
   delete: deleteSource,
   toggleAttributes: ['sharing'],
-  singleAttributes: ['type', 'title', 'content', 'notes', 'summary',
+  singleAttributes: ['title', 'content', 'notes', 'summary',
     'date', 'location', 'story'],
   listAttributes: ['people', 'links', 'images', 'tags'],
 });
