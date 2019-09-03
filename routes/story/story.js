@@ -36,6 +36,8 @@ mainStoryTypes.forEach(type => {
   router.get('/stories/' + type, getStoriesIndexRoute(type));
 });
 
+router.get('/story/:id/entries', showStoryEntries);
+
 function getStoriesIndexRoute(storyType) {
   return function(req, res, next) {
     withAllStories(storyType, stories => {
@@ -116,18 +118,24 @@ function withStory(req, res, callback) {
   });
 }
 
-function showStory(req, res) {
+function withStoryAndEntries(req, res, callback) {
   withStory(req, res, story => {
     Source.find({ story: story }).exec((err, entries) => {
       entries.sort((a, b) => a.title < b.title ? -1 : 1);
-      res.render('layout', {
-        view: 'story/layout',
-        subview: 'show',
-        title: story.title,
-        story: story,
-        entries: entries,
-        canHaveDate: story.type != 'cemetery',
-      });
+      callback(story, entries);
+    });
+  });
+}
+
+function showStory(req, res) {
+  withStoryAndEntries(req, res, (story, entries) => {
+    res.render('layout', {
+      view: 'story/layout',
+      subview: 'show',
+      title: story.title,
+      story: story,
+      entries: entries,
+      canHaveDate: story.type != 'cemetery',
     });
   });
 }
@@ -143,6 +151,18 @@ function editStory(req, res) {
         people: people,
         canHaveDate: story.type != 'cemetery',
       });
+    });
+  });
+}
+
+function showStoryEntries(req, res, next) {
+  withStoryAndEntries(req, res, (story, entries) => {
+    res.render('layout', {
+      view: 'story/layout',
+      subview: 'entries',
+      title: story.title,
+      story: story,
+      entries: entries,
     });
   });
 }

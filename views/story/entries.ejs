@@ -1,0 +1,7 @@
+<% entries.forEach(source => { %>
+  <%- include('../sources/sourceBlock', {
+    source: source,
+    showStory: false,
+    limitContent: true,
+  }); %>
+<% }); %>

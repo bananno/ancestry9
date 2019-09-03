@@ -1,19 +1,27 @@
 <%
-    const rootPath = '/story/' + story._id;
+  const rootPath = '/story/' + story._id;
+  const navLinks = [];
+
+  if (subview == 'edit') {
+    navLinks.push(['', 'done']);
+  } else {
+    navLinks.push(['', 'show']);
+    navLinks.push(['edit', 'edit']);
+
+    if (entries.length > 0) {
+      navLinks.push(['entries', 'entries']);
+    }
+  }
 %>
 
 <div class="column">
+  <p><%= story.type %></p>
   <h1><%= story.title %></h1>
-
-  <% if (subview == 'show') { %>
-    <p>
-      <a href="<%= rootPath %>/edit" class="main-link">edit story</a>
-    </p>
-  <% } else { %>
-    <p>
-      <a href="<%= rootPath %>" class="main-link">done</a>
-    </p>
-  <% } %>
+  <p>
+    <% navLinks.forEach(([path, text]) => { %>
+      <a href="<%= rootPath + '/' + path %>" class="main-link"><%= text %></a>
+    <% }); %>
+  </p>
 </div>
 
 <%- include('./' + subview) %>

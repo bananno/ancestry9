@@ -1,9 +1,11 @@
 
 <div class="source-item-box">
   <div class="column" style="width: 450px;">
-    <p>
-      <%- include('../partials/linkToStory', { story: source.story }) %>
-    </p>
+    <% if (showStory) { %>
+      <p>
+        <%- include('../partials/linkToStory', { story: source.story }) %>
+      </p>
+    <% } %>
 
     <p>
       <%- include('../partials/linkToSource', { source: source }) %>
