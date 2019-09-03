@@ -9,7 +9,7 @@
 
 <table class="info-table">
   <tr>
-    <th>t</th>
+    <th>type</th>
     <th>story</th>
     <th>title</th>
     <th>date</th>
@@ -18,17 +18,9 @@
   </tr>
 
   <% sources.forEach(source => { %>
-    <%
-      const typeMatches = source.type == source.story.type
-        || (source.type == 'grave' && source.story.type == 'cemetery')
-        || (source.type == 'photo' && source.story.title == 'Photo')
-        || (source.type == 'article' && source.story.type == 'website');
-    %>
     <tr>
       <td>
-        <% if (!typeMatches) { %>
-          <%= source.type %>
-        <% } %>
+        <%= source.story.type %>
       </td>
 
       <td>

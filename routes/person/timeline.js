@@ -54,9 +54,9 @@ function getSourceEvents(sources) {
       source: source,
     };
 
-    if (source.type == 'newspaper') {
-      event.type = source.type;
-    } else if (source.type == 'document'
+    if (source.story.type == 'newspaper') {
+      event.type = source.story.type;
+    } else if (source.story.type == 'document'
         && source.story.title.match('Census')) {
       event.type = 'census';
     } else {

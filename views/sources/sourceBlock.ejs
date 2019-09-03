@@ -8,7 +8,10 @@
     <% } %>
 
     <p>
-      <%- include('../partials/linkToSource', { source: source }) %>
+      <%- include('../partials/linkToSource', {
+        source: source,
+        showStory: false,
+      }) %>
     </p>
 
     <% if (source.images.length) { %>

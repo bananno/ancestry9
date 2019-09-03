@@ -7,14 +7,14 @@
     linksList.push('https://ancestry.annacpeterson.com/?source/' + source._id + ' CustomSite');
   }
 
-  // Show the date & location if the source type allows it,
+  // Show the date & location if the source/story type allows it,
   // OR if it already has one.
 
-  const canHaveDate = !['grave'].includes(source.type)
+  const canHaveDate = !['grave'].includes(source.story.type)
     || (source.date && (source.date.year || source.date.month
       || source.date.day || source.date.display));
 
-  const canHaveLocation = !['grave', 'newspaper'].includes(source.type)
+  const canHaveLocation = !['grave', 'newspaper'].includes(source.story.type)
     || (source.location && (source.location.country || source.location.region1
       || source.location.region2 || source.location.city
       || source.location.notes));

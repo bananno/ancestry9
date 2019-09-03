@@ -11,11 +11,11 @@
     && (source.summary || '').length == 0
     && (source.content || '').length == 0;
 
-  const canHaveDate = !['grave'].includes(source.type)
+  const canHaveDate = !['cemetery'].includes(source.story.type)
     || (source.date && (source.date.year || source.date.month
       || source.date.day || source.date.display));
 
-  const canHaveLocation = !['grave', 'newspaper'].includes(source.type)
+  const canHaveLocation = !['cemetery', 'newspaper'].includes(source.story.type)
     || (source.location && (source.location.country || source.location.region1
       || source.location.region2 || source.location.city
       || source.location.notes));

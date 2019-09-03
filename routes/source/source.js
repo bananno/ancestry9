@@ -129,8 +129,6 @@ function editSource(req, res, next) {
 
           people = [...source.people, ...people];
 
-          stories = getStoryOptionsForSource(source, stories);
-
           stories.sort((a, b) => a.title < b.title ? -1 : 1);
 
           res.render('layout', {
@@ -150,7 +148,7 @@ function editSource(req, res, next) {
 }
 
 function filterSourcesByType(sources, type) {
-  if (type == 'none' || type == 'new') {
+  if (type == 'none') {
     return sources;
   }
 
@@ -170,21 +168,6 @@ function filterSourcesByType(sources, type) {
       thisSourceType += 's';
     }
     return thisSourceType == type;
-  });
-}
-
-function getStoryOptionsForSource(source, stories) {
-  if (source.type == 'grave') {
-    return stories.filter(story => story.type == 'cemetery');
-  }
-
-  if (['newspaper', 'document'].includes(source.type)) {
-    return stories.filter(story => story.type == source.type);
-  }
-
-  return stories.filter(story => {
-    return !['artifact', 'cemetery', 'event', 'landmark', 'newspaper',
-      'place', 'document'].includes(story.type);
   });
 }
 
