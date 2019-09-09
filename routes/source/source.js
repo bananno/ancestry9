@@ -17,8 +17,8 @@ const sortPeople = getTools('sortPeople');
 const sortCitations = getTools('sortCitations');
 const sortSources = getTools('sortSources');
 
-const mainSourceTypes = ['documents', 'index', 'graves', 'newspapers',
-  'photos', 'articles', 'books', 'other'];
+const mainSourceTypes = ['document', 'index', 'cemetery', 'newspaper',
+  'photo', 'website', 'book', 'other'];
 
 createModelRoutes({
   Model: Source,
@@ -152,23 +152,19 @@ function filterSourcesByType(sources, type) {
     return sources;
   }
 
+  if (type == 'photo') {
+    return sources.filter(source => source.story.title == 'Photo');
+  }
+
   if (type == 'other') {
-    return sources.filter(thisSource => {
-      let thisSourceType = thisSource.type.toLowerCase();
-      if (thisSourceType != 'index') {
-        thisSourceType += 's';
-      }
-      return thisSourceType == 'others' || mainSourceTypes.indexOf(thisSourceType) == -1;
+    return sources.filter(source => {
+      let storyType = source.story.type.toLowerCase();
+      return source.story.title != 'Photo'
+        && storyType == 'other' || !mainSourceTypes.includes(storyType);
     });
   }
 
-  return sources.filter(thisSource => {
-    let thisSourceType = thisSource.type.toLowerCase();
-    if (thisSourceType != 'index') {
-      thisSourceType += 's';
-    }
-    return thisSourceType == type;
-  });
+  return sources.filter(source => source.story.type.toLowerCase() == type);
 }
 
 function deleteSource(req, res, next) {
