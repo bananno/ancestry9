@@ -125,6 +125,14 @@
     originalValue: source.summary,
     fieldType: 'textarea',
   }) %>
+
+  <!-- STORIES -->
+
+  <%- include('../forms/tableRowMulti', {
+    attr: 'stories',
+    rootPath: rootPath,
+    values: source.stories,
+  }) %>
 </table>
 
 <div>

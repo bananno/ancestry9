@@ -8,6 +8,10 @@ const sourceSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Story',
   },
+  stories: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Story',
+  }],
   date: dateStructure,
   location: locationStructure,
   people: [{

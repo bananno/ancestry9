@@ -131,10 +131,12 @@ class ModelRoutes {
         const updatedObj = {};
         const deleteId = req.params.deleteId;
 
-        if (fieldName == 'people') {
-          updatedObj[fieldName] = removePersonFromList(item[fieldName], deleteId);
+        if (['people', 'stories'].includes(fieldName)) {
+          updatedObj[fieldName] = item[fieldName].filter(item => {
+            return ('' + item._id) != deleteId;
+          });
         } else {
-          updatedObj[fieldName] = item[fieldName].filter((url, i) => {
+          updatedObj[fieldName] = item[fieldName].filter((item, i) => {
             return i != deleteId;
           });
         }

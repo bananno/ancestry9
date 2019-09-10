@@ -15,9 +15,12 @@
   storyTypes = Object.keys(storyTypes).filter(storyType => {
     return !['artifact', 'event', 'landmark', 'place'].includes(storyType);
   });
+
+  const storyFilterId = 'story-type-filter-' + fieldName;
+  const storySelectorId = 'story-selector-' + fieldName;
 %>
 
-<select id="story-type-filter" onChange="toggleStoryType()">
+<select id="<%= storyFilterId %>">
   <option value="">
     -- select --
   </option>
@@ -34,7 +37,7 @@
   <% }); %>
 </select>
 
-<select id="story-selector" name="<%= fieldName %>">
+<select id="<%= storySelectorId %>" name="<%= fieldName %>">
   <option value="0">
     -- select --
   </option>
@@ -52,18 +55,34 @@
 </select>
 
 <script>
-  const $type = $('#story-type-filter');
-  const $story = $('#story-selector');
+  (() => {
+    const $type = $('#<%= storyFilterId %>');
+    const $story = $('#<%= storySelectorId %>');
+    const storyTypeList = [
+      <% storyTypes.forEach(s => { %>
+        '<%= s %>',
+      <% }); %>
+    ];
 
-  function toggleStoryType() {
-    $story.val('0');
-    const currentType = $type.val();
-    $story.find('option[story-type]').each((i, option) => {
-      const storyType = $(option).attr('story-type');
-      $(option).toggle(storyType == currentType);
+    $type.change(() => {
+      $story.val('0');
+      const currentType = $type.val();
+
+      if (currentType == 'other') {
+        $story.find('option[story-type]').each((i, option) => {
+          const storyType = $(option).attr('story-type');
+          $(option).toggle(!storyTypeList.includes(storyType));
+        });
+        return;
+      }
+
+      $story.find('option[story-type]').each((i, option) => {
+        const storyType = $(option).attr('story-type');
+        $(option).toggle(storyType == currentType);
+      });
     });
-  }
 
-  $story.find('option[story-type]')
-    .not(':selected, [story-type="<%= selectedType %>"]').hide();
+    $story.find('option[story-type]')
+      .not(':selected, [story-type="<%= selectedType %>"]').hide();
+  })();
 </script>

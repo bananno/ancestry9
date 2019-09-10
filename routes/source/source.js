@@ -33,7 +33,7 @@ createModelRoutes({
   toggleAttributes: ['sharing'],
   singleAttributes: ['title', 'content', 'notes', 'summary',
     'date', 'location', 'story'],
-  listAttributes: ['people', 'links', 'images', 'tags'],
+  listAttributes: ['people', 'links', 'images', 'tags', 'stories'],
 });
 
 mainSourceTypes.forEach(sourceType => {
@@ -90,7 +90,10 @@ function createSource(req, res) {
 
 function withSource(req, res, callback) {
   const sourceId = req.params.id;
-  Source.findById(sourceId).populate('people').populate('story')
+  Source.findById(sourceId)
+  .populate('people')
+  .populate('story')
+  .populate('stories')
   .exec((err, source) => {
     if (source == null) {
       return res.send('Source not found');

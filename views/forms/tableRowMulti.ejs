@@ -37,6 +37,8 @@
         <%- include('../partials/linkToPerson', {
           person: thisItem
         }) %>
+      <% } else if (dataType == 'stories') { %>
+        <%- include('../partials/linkToStory', { story: thisItem }) %>
       <% } else { %>
         <%= thisItem %>
       <% } %>
@@ -89,6 +91,12 @@
             fieldName: attr,
             selectedPerson: null,
             people: peopleDropdownList,
+          }) %>
+        </div>
+      <% } else if (dataType == 'stories') { %>
+        <div item="<%= attr %>" class="value-new">
+          <%- include('./storyDropdown', {
+            fieldName: 'stories',
           }) %>
         </div>
       <% } else { %>
