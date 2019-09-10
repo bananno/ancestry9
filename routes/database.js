@@ -17,7 +17,7 @@ const fields = {
   ],
   source: [
     '_id', 'title', 'date', 'location', 'people',
-    'links', 'images', 'content', 'notes', 'summary', 'story',
+    'links', 'images', 'content', 'notes', 'summary', 'story', 'stories'
   ],
   event: [
     '_id', 'title', 'date', 'location', 'people', 'notes'

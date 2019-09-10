@@ -123,3 +123,14 @@
     <% }); %>
   </ul>
 <% } %>
+
+<% if (sources.length) { %>
+  <h2>sources</h2>
+  <ul class="bullet-list">
+    <% sources.forEach(source => { %>
+      <li>
+        <%- include('../partials/linkToSource', { source, showStory: true }) %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>

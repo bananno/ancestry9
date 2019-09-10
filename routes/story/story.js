@@ -111,22 +111,27 @@ function createStory(req, res, next) {
   });
 }
 
-function withStory(req, res, callback) {
+function withStory(req, res, options, callback) {
   const storyId = req.params.id;
   Story.findById(storyId).populate('people').exec((err, story) => {
     if (!story) {
       return res.send('Story not found');
     }
-    callback(story, storyId);
-  });
-}
-
-function withStoryAndEntries(req, res, callback) {
-  withStory(req, res, story => {
-    Source.find({ story: story }).exec((err, entries) => {
-      entries.sort((a, b) => a.title < b.title ? -1 : 1);
-      callback(story, entries);
-    });
+    if (options.entries) {
+      Source.find({ story: story }).exec((err, entries) => {
+        entries.sort((a, b) => a.title < b.title ? -1 : 1);
+        if (options.sources) {
+          Source.find({ stories: story }).populate('story')
+          .exec((err, sources) => {
+            callback({story, entries, sources});
+          });
+        } else {
+          callback({story, entries});
+        }
+      });
+    } else {
+      callback({story});
+    }
   });
 }
 
@@ -143,16 +148,19 @@ function mainStoryView(res, story, params) {
 }
 
 function storyShowMain(req, res) {
-  withStoryAndEntries(req, res, (story, entries) => {
+  withStory(req, res, {
+    entries: true, sources: true
+  }, ({story, entries, sources}) => {
     mainStoryView(res, story, {
       subview: 'show',
-      entries: entries,
+      entries,
+      sources,
     });
   });
 }
 
 function storyEdit(req, res) {
-  withStory(req, res, story => {
+  withStory(req, res, {}, story => {
     Person.find({}, (err, people) => {
       mainStoryView(res, story, {
         subview: 'edit',
@@ -163,7 +171,7 @@ function storyEdit(req, res) {
 }
 
 function storyEntries(req, res, next) {
-  withStoryAndEntries(req, res, (story, entries) => {
+  withStory(req, res, { entries: true }, ({story, entries}) => {
     mainStoryView(res, story, {
       subview: 'entries',
       entries: entries,
@@ -172,7 +180,7 @@ function storyEntries(req, res, next) {
 }
 
 function storyNewEntry(req, res, next) {
-  withStoryAndEntries(req, res, (story, entries) => {
+  withStory(req, res, { entries: true }, ({story, entries}) => {
     let sourceType = {
       website: 'article',
       book: 'book',
@@ -187,11 +195,11 @@ function storyNewEntry(req, res, next) {
 
     mainStoryView(res, story, {
       subview: 'newEntry',
-      entries: entries,
       actionPath: '/sources/new',
-      entryCanHaveDate: entryCanHaveDate,
-      entryCanHaveLocation: entryCanHaveLocation,
-      sourceType: sourceType,
+      entries,
+      entryCanHaveDate,
+      entryCanHaveLocation,
+      sourceType,
     });
   });
 }
