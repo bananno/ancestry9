@@ -1,49 +1,49 @@
 <%
-    const countryNames = [
-        'Czech Republic',
-        'Denmark',
-        'Holland',
-        'Ireland',
-        'Sweden',
-        'United States',
-        'other',
-    ];
+  const countryNames = [
+    'Czech Republic',
+    'Denmark',
+    'Holland',
+    'Ireland',
+    'Sweden',
+    'United States',
+    'other',
+  ];
 
-    const usaStates = [
-        'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
-        'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-        'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-        'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-        'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
-    ];
+  const usaStates = [
+    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
+  ];
 
-    let selectedCountry = 'United States';
-    let selectedRegion1 = '';
-    let selectedRegion2 = '';
-    let selectedCity = '';
-    let notesValue = '';
+  let selectedCountry = 'United States';
+  let selectedRegion1 = '';
+  let selectedRegion2 = '';
+  let selectedCity = '';
+  let notesValue = '';
 
-    if (locals.location) {
-        selectedCountry = location.country;
-        selectedRegion1 = location.region1;
-        selectedRegion2 = location.region2;
-        selectedCity = location.city;
-        notesValue = location.notes;
-    }
+  if (locals.location) {
+    selectedCountry = location.country;
+    selectedRegion1 = location.region1;
+    selectedRegion2 = location.region2;
+    selectedCity = location.city;
+    notesValue = location.notes;
+  }
 
-    let countryIsOther = selectedCountry && countryNames.indexOf(selectedCountry) < 0;
+  let countryIsOther = selectedCountry && countryNames.indexOf(selectedCountry) < 0;
 %>
 
 <select name="location-country">
-    <option value="">country</option>
-    <% for (let i = 0; i < countryNames.length; i++) { %>
-        <% const str = countryNames[i]; %>
-        <% if (str == selectedCountry || (str == 'other' && countryIsOther)) { %>
-            <option value="<%= str %>" selected="selected"><%= str %></option>
-        <% } else { %>
-            <option value="<%= str %>"><%= str %></option>
-        <% } %>
+  <option value="">country</option>
+  <% for (let i = 0; i < countryNames.length; i++) { %>
+    <% const str = countryNames[i]; %>
+    <% if (str == selectedCountry || (str == 'other' && countryIsOther)) { %>
+      <option value="<%= str %>" selected="selected"><%= str %></option>
+    <% } else { %>
+      <option value="<%= str %>"><%= str %></option>
     <% } %>
+  <% } %>
 </select>
 
 <input type="text" name="location-country-other" placeholder="country" value="<%= selectedCountry %>">
@@ -53,15 +53,15 @@
 <input type="text" name="location-region1" placeholder="region" value="<%= selectedRegion1 %>">
 
 <select name="location-region1-usa">
-    <option value="">state</option>
-    <% for (let i = 0; i < usaStates.length; i++) { %>
-        <% const str = usaStates[i]; %>
-        <% if (str == selectedRegion1) { %>
-            <option value="<%= str %>" selected="selected"><%= str %></option>
-        <% } else { %>
-            <option value="<%= str %>"><%= str %></option>
-        <% } %>
+  <option value="">state</option>
+  <% for (let i = 0; i < usaStates.length; i++) { %>
+    <% const str = usaStates[i]; %>
+    <% if (str == selectedRegion1) { %>
+      <option value="<%= str %>" selected="selected"><%= str %></option>
+    <% } else { %>
+      <option value="<%= str %>"><%= str %></option>
     <% } %>
+  <% } %>
 </select>
 
 <br>
@@ -73,8 +73,8 @@
 <input type="text" name="location-city" placeholder="city" value="<%= selectedCity %>">
 
 <% if (locals.includeNotes === true || locals.includeNotes === undefined) { %>
-    <br>
-    <input type="text" name="location-notes" placeholder="notes" value="<%= notesValue %>">
+  <br>
+  <input type="text" name="location-notes" placeholder="notes" value="<%= notesValue %>">
 <% } %>
 
 <script>

@@ -1,60 +1,59 @@
 <%
-    var monthNames = [
-        'January', 'February', 'March', 'April',
-        'May', 'June', 'July', 'August',
-        'September', 'October', 'November', 'December'
-    ];
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
-    var yearValue = '';
-    var monthValue = 0;
-    var dayValue = 0;
-    var displayValue = '';
+  let yearValue = '';
+  let monthValue = 0;
+  let dayValue = 0;
+  let displayValue = '';
 
-    if (date != null) {
-        if (date.year) {
-            yearValue = date.year;
-        }
-        monthValue = date.month;
-        dayValue = date.day;
-        displayValue = date.display;
+  if (date != null) {
+    if (date.year) {
+      yearValue = date.year;
     }
+    monthValue = date.month;
+    dayValue = date.day;
+    displayValue = date.display;
+  }
 %>
 
 <script>
-    var monthNames = '<%= monthNames.join(' ') %>'.split(' ');
+  const monthNames = '<%= monthNames.join(' ') %>'.split(' ');
 
-    function parseQuickDate() {
-        var str = $('#quick-date').val();
-        var arr = str
-            .replace(',', ' ')
-            .replace('.', ' ')
-            .replace('  ', ' ')
-            .replace('  ', ' ')
-            .replace('  ', ' ')
-            .split(' ');
+  function parseQuickDate() {
+    const str = $('#quick-date').val();
+    const arr = str
+      .replace(',', ' ')
+      .replace('.', ' ')
+      .replace('  ', ' ')
+      .replace('  ', ' ')
+      .replace('  ', ' ')
+      .split(' ');
 
-        arr.forEach((datePart) => {
-            var intValue = parseInt(datePart);
+    arr.forEach(datePart => {
+      const intValue = parseInt(datePart);
 
-            if (isNaN(intValue)) {
-                datePart = datePart.toLowerCase();
-                for (var i = 0; i < monthNames.length; i++) {
-                    if (monthNames[i].toLowerCase().match(datePart)) {
-                        $('[name="date_month"]').val(i + 1);
-                        return;
-                    }
-                }
-                return;
-            }
+      if (isNaN(intValue)) {
+        datePart = datePart.toLowerCase();
+        for (let i = 0; i < monthNames.length; i++) {
+          if (monthNames[i].toLowerCase().match(datePart)) {
+            $('[name="date_month"]').val(i + 1);
+            return;
+          }
+        }
+        return;
+      }
 
-            if (intValue >= 1 && intValue <= 31) {
-                $('[name="date_day"]').val(datePart);
-                return;
-            }
+      if (intValue >= 1 && intValue <= 31) {
+        $('[name="date_day"]').val(datePart);
+        return;
+      }
 
-            $('[name="date_year"]').val(datePart);
-        });
-    }
+      $('[name="date_year"]').val(datePart);
+    });
+  }
 </script>
 
 <input type="text" id="quick-date" placeholder="quick date" onChange="parseQuickDate()">
@@ -66,25 +65,25 @@
 <br>
 
 <select name="date_month">
-    <option value="0">month</option>
-    <% for (var m = 1; m <= 12; m++) { %>
-        <% if (m == monthValue) { %>
-            <option value="<%= m %>" selected="selected"><%= monthNames[m - 1] %></option>
-        <% } else { %>
-            <option value="<%= m %>"><%= monthNames[m - 1] %></option>
-        <% } %>
+  <option value="0">month</option>
+  <% for (let m = 1; m <= 12; m++) { %>
+    <% if (m == monthValue) { %>
+      <option value="<%= m %>" selected="selected"><%= monthNames[m - 1] %></option>
+    <% } else { %>
+      <option value="<%= m %>"><%= monthNames[m - 1] %></option>
     <% } %>
+  <% } %>
 </select>
 
 <select name="date_day">
-    <option value="0">day</option>
-    <% for (var d = 1; d <= 31; d++) { %>
-        <% if (d == dayValue) { %>
-            <option value="<%= d %>" selected="selected"><%= d %></option>
-        <% } else { %>
-            <option value="<%= d %>"><%= d %></option>
-        <% } %>
+  <option value="0">day</option>
+  <% for (let d = 1; d <= 31; d++) { %>
+    <% if (d == dayValue) { %>
+      <option value="<%= d %>" selected="selected"><%= d %></option>
+    <% } else { %>
+      <option value="<%= d %>"><%= d %></option>
     <% } %>
+  <% } %>
 </select>
 
 <br>
