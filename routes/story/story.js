@@ -160,7 +160,7 @@ function storyShowMain(req, res) {
 }
 
 function storyEdit(req, res) {
-  withStory(req, res, {}, story => {
+  withStory(req, res, {}, ({story}) => {
     Person.find({}, (err, people) => {
       mainStoryView(res, story, {
         subview: 'edit',
