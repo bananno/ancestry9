@@ -1,4 +1,10 @@
 <%
+  const linksList = story.links;
+
+  if (story.sharing) {
+    linksList.push('https://ancestry.annacpeterson.com/?' + story.type
+      + '/' + story._id + ' CustomSite');
+  }
 %>
 
 <h2>sharing</h2>
