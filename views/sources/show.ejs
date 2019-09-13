@@ -72,6 +72,17 @@
   format: 'bullet',
 }) %>
 
+<% if (source.stories.length) { %>
+  <h2>stories</h2>
+  <ul class="bullet-list">
+    <% source.stories.forEach(story => { %>
+      <li>
+        <%- include('../partials/linkToStory', { story }) %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
 <% if (linksList.length) { %>
   <h2>links</h2>
   <ul class="bullet-list">
