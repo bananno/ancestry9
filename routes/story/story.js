@@ -40,6 +40,7 @@ mainStoryTypes.forEach(type => {
 
 router.get('/story/:id/entries', storyEntries);
 router.get('/story/:id/newEntry', storyNewEntry);
+router.get('/stories/with-sources', storiesWithSources);
 
 function getStoriesIndexRoute(storyType) {
   return function(req, res, next) {
@@ -200,6 +201,34 @@ function storyNewEntry(req, res, next) {
       entryCanHaveDate,
       entryCanHaveLocation,
       sourceType,
+    });
+  });
+}
+
+function storiesWithSources(req, res, next) {
+  Source.find({})
+  .populate('story')
+  .populate('stories')
+  .exec((err, allSources) => {
+    const stories = [];
+    const sourcesByStory = {};
+
+    allSources.forEach(source => {
+      source.stories.forEach(story => {
+        const id = '' + story._id;
+        if (!sourcesByStory[id]) {
+          stories.push(story);
+          sourcesByStory[id] = [];
+        }
+        sourcesByStory[id].push(source);
+      });
+    });
+
+    res.render('layout', {
+      view: 'story/withSources',
+      title: 'Stories with Sources',
+      stories,
+      sourcesByStory,
     });
   });
 }

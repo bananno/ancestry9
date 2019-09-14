@@ -1,0 +1,27 @@
+<h1>Stories with non-entry sources</h1>
+
+<% stories.forEach(story => { %>
+  <hr>
+  <p>
+    <%- include('../partials/linkToStory', { story }) %>
+  </p>
+  <ul>
+    <% sourcesByStory[story._id].forEach(source => { %>
+      <li>
+        <%- include('../partials/linkToSource', { source, showStory: true }) %>
+      </li>
+    <% }); %>
+  </ul>
+<% }); %>
+
+<style>
+hr {
+  margin: 20px 0;
+}
+p {
+  margin-top: 20px;
+}
+li {
+  margin: 10px 0 0 30px;
+}
+</style>
