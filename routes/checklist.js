@@ -6,13 +6,22 @@ module.exports = router;
 const getAllData = require('./tools').getAllData;
 const populatePeopleDates = require('./tools').populatePeopleDates;
 
-router.get('/checklist', showChecklist);
+router.get('/checklist', checklistIndex);
+router.get('/checklist/vitals', checklistVitals);
+router.get('/checklist/wikitree', checklistWikiTree);
 
 router.get('/to-do', showToDoList);
 router.post('/to-do/new', newToDoItem);
 router.post('/to-do/:id/edit', editToDoItem);
 
-function showChecklist(req, res, next) {
+function checklistIndex(req, res, next) {
+  res.render('layout', {
+    view: 'checklist/index',
+    title: 'Checklist',
+  });
+}
+
+function checklistVitals(req, res, next) {
   getAllData(data => {
     data.people = populatePeopleDates(data.people, data.events);
 
@@ -54,6 +63,16 @@ function showChecklist(req, res, next) {
       view: 'checklist/vitals',
       title: 'Checklist',
       ...data
+    });
+  });
+}
+
+function checklistWikiTree(req, res, next) {
+  mongoose.model('Person').find({}, (err, people) => {
+    res.render('layout', {
+      view: 'checklist/wikitree',
+      title: 'Checklist',
+      people,
     });
   });
 }
