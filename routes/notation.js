@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const Notation = mongoose.model('Notation');
 const Person = mongoose.model('Person');
+const Story = mongoose.model('Story');
 const createModelRoutes = require('../tools/createModelRoutes');
 module.exports = router;
 
@@ -15,8 +16,8 @@ createModelRoutes({
   show: showNotation,
   edit: editNotation,
   toggleAttributes: ['sharing'],
-  singleAttributes: ['title', 'text'],
-  listAttributes: ['people', 'tags'],
+  singleAttributes: ['title', 'text', 'source'],
+  listAttributes: ['people', 'stories', 'tags'],
 });
 
 function notationsIndex(req, res, next) {
@@ -41,26 +42,43 @@ function createNotation(req, res, next) {
   });
 }
 
-function showNotation(req, res, next) {
+function withNotation(req, res, callback) {
   const notationId = req.params.id;
-  Notation.findById(notationId).populate('people').exec((err, notation) => {
+  Notation
+  .findById(notationId)
+  .populate('source')
+  .populate('people')
+  .populate('stories')
+  .exec((err, notation) => {
+    if (notation) {
+      callback(notation);
+    } else {
+      res.send('Notation not found.');
+    }
+  });
+}
+
+function showNotation(req, res, next) {
+  withNotation(req, res, notation => {
     res.render('layout', {
       view: 'notations/show',
       title: 'Notation',
-      notation: notation,
+      notation,
     });
   });
 }
 
 function editNotation(req, res, next) {
-  const notationId = req.params.id;
-  Notation.findById(notationId).populate('people').exec((err, notation) => {
+  withNotation(req, res, notation => {
     Person.find({}, (err, people) => {
-      res.render('layout', {
-        view: 'notations/edit',
-        title: 'Notation',
-        notation: notation,
-        people: people,
+      Story.find({}, (err, stories) => {
+        res.render('layout', {
+          view: 'notations/edit',
+          title: 'Notation',
+          notation,
+          people,
+          stories,
+        });
       });
     });
   });

@@ -44,6 +44,14 @@ class ModelRoutes {
       this.router.post('/' + this.modelName + '/:id/delete', specs.delete);
     }
 
+    if (specs.otherRoutes) {
+      let basePath = '/' + this.modelName + '/:id/';
+      for (let path in specs.otherRoutes) {
+        console.log(basePath + path);
+        this.router.get(basePath + path, specs.otherRoutes[path]);
+      }
+    }
+
     if (specs.toggleAttributes) {
       specs.toggleAttributes.forEach(fieldName => {
         this.toggleAttribute(fieldName);

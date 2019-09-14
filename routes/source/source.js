@@ -6,6 +6,7 @@ module.exports = router;
 const Source = mongoose.model('Source');
 const Story = mongoose.model('Story');
 const Citation = mongoose.model('Citation');
+const Notation = mongoose.model('Notation');
 const Person = mongoose.model('Person');
 
 const getTools = (path) => { return require('../../tools/' + path) };
@@ -30,6 +31,9 @@ createModelRoutes({
   show: showSource,
   edit: editSource,
   delete: deleteSource,
+  otherRoutes: {
+    'excerpts': showSourceExcerpts,
+  },
   toggleAttributes: ['sharing'],
   singleAttributes: ['title', 'content', 'notes', 'summary',
     'date', 'location', 'story'],
@@ -113,6 +117,24 @@ function showSource(req, res) {
         source: source,
         citations: sortCitations(citations, 'item', source.people),
         citationsByPerson: sortCitations(citations, 'person', source.people),
+      });
+    });
+  });
+}
+
+function showSourceExcerpts(req, res, next) {
+  withSource(req, res, source => {
+    Notation
+    .find({ title: 'excerpt', source: source })
+    .populate('people')
+    .populate('stories')
+    .exec((err, notations) => {
+      res.render('layout', {
+        view: 'sources/layout',
+        subview: 'excerpts',
+        title: source.story.title + ' - ' + source.title,
+        source,
+        notations,
       });
     });
   });

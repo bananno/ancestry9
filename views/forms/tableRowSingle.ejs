@@ -41,6 +41,17 @@
             <% } %>
           </div>
 
+        <!-- source -->
+
+        <% } else if (attr == 'source') { %>
+          <div item="<%= attr %>" class="value-show">
+            <% if (originalValue) { %>
+              <%- include('../partials/linkToSource', { source: originalValue }) %>
+            <% } else { %>
+              none
+            <% } %>
+          </div>
+
         <!-- textarea -->
 
         <% } else if (fieldType == 'textarea') { %>

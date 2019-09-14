@@ -16,13 +16,15 @@
     <%= source.title %>
   </h1>
 
-  <% if (subview == 'show') { %>
+  <% if (subview == 'edit') { %>
     <p>
-      <a href="<%= rootPath %>/edit" class="main-link">edit source</a>
+      <a href="<%= rootPath %>" class="main-link">done</a>
     </p>
   <% } else { %>
     <p>
-      <a href="<%= rootPath %>" class="main-link">done</a>
+      <a href="<%= rootPath %>/" class="main-link">show</a>
+      <a href="<%= rootPath %>/edit" class="main-link">edit</a>
+      <a href="<%= rootPath %>/excerpts" class="main-link">excerpts</a>
     </p>
   <% } %>
 </div>

@@ -29,12 +29,28 @@
     originalValue: notation.title,
   }}) %>
 
+  <!-- SOURCE -->
+
+  <%- include('../forms/tableRowSingle', { params: {
+    attr: 'source',
+    editPath: rootEditPath + '/source',
+    originalValue: notation.source,
+  }}) %>
+
   <!-- PEOPLE -->
 
   <%- include('../forms/tableRowMulti', {
     attr: 'people',
     rootPath: rootPath,
     values: notation.people,
+  }) %>
+
+  <!-- STORIES -->
+
+  <%- include('../forms/tableRowMulti', {
+    attr: 'stories',
+    rootPath: rootPath,
+    values: notation.stories,
   }) %>
 
   <!-- TEXT -->
