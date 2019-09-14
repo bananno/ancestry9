@@ -51,7 +51,7 @@ function showChecklist(req, res, next) {
     });
 
     res.render('layout', {
-      view: 'checklist',
+      view: 'checklist/vitals',
       title: 'Checklist',
       ...data
     });
@@ -61,7 +61,7 @@ function showChecklist(req, res, next) {
 function showToDoList(req, res, next) {
   mongoose.model('To-do').find({}, (err, todoItems) => {
     res.render('layout', {
-      view: 'to-do',
+      view: 'checklist/to-do',
       title: 'To-do List',
       todoItems: todoItems,
     });
