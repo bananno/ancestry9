@@ -23,7 +23,7 @@ const fields = {
     '_id', 'title', 'date', 'location', 'people', 'notes'
   ],
   notation: [
-    '_id', 'title', 'people', 'text', 'tags',
+    '_id', 'title', 'people', 'text', 'tags', 'source', 'stories'
   ],
 };
 
@@ -154,21 +154,24 @@ function getProcessedSharedData(req, res, callback) {
         person[key] = personInfo[key];
       });
 
+      person.star = ancestors[person._id + ''] == true;
+
       if (personInfo.sharing.level == 1) {
         person.private = true;
         person.name = personInfo.sharing.name || 'Person';
         person.customId = personInfo._id;
-      } else {
-        person.private = false;
-        fields.personShared.forEach(key => {
-          person[key] = personInfo[key];
-        });
-        tempPersonRef['' + person._id] = true;
-
-        person.tags = convertTags(personInfo);
+        return person;
       }
 
-      person.star = ancestors[person._id + ''] == true;
+      person.private = false;
+
+      fields.personShared.forEach(key => {
+        person[key] = personInfo[key];
+      });
+
+      tempPersonRef['' + person._id] = true;
+
+      person.tags = convertTags(personInfo);
 
       return person;
     });
