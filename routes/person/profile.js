@@ -25,6 +25,7 @@ router.post('/person/:personId/edit/name', makeRouteEditPost('name'));
 router.post('/person/:personId/edit/id', makeRouteEditPost('customId'));
 router.post('/person/:personId/edit/profileImage', makeRouteEditPost('profileImage'));
 router.post('/person/:personId/edit/shareName', makeRouteEditPost('shareName'));
+router.post('/person/:personId/edit/gender', makeRouteEditPost('gender'));
 router.post('/person/:personId/add/links', makeRouteEditPost('links'));
 router.post('/person/:personId/delete/links/:deleteId', makeRouteDelete('links'));
 router.post('/person/:personId/reorder/links/:orderId', makeRouteReorder('links'));

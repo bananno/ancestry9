@@ -50,6 +50,14 @@
         originalValue: person.profileImage,
     }}) %>
 
+    <!-- GENDER -->
+
+    <%- include('../forms/tableRowSingle', { params: {
+        attr: 'gender',
+        editPath: rootEditPath + '/gender',
+        originalValue: person.gender,
+    }}) %>
+
     <!-- PARENTS -->
 
     <%- include('../forms/tableRowMulti', {

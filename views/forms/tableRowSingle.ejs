@@ -52,6 +52,18 @@
             <% } %>
           </div>
 
+        <!-- gender -->
+
+        <% } else if (attr == 'gender') { %>
+          <div item="<%= attr %>" class="value-show">
+            <% if ([1, 2, 3].includes(originalValue)) { %>
+              <%= [null, 'female', 'male', 'unknown'][originalValue] %>
+            <% } else { %>
+              <span style="color: red">undefined or error</span>
+              <%= originalValue %>
+            <% } %>
+          </div>
+
         <!-- textarea -->
 
         <% } else if (fieldType == 'textarea') { %>
@@ -121,6 +133,16 @@
             selectedStory: originalValue,
           }) %>
         </div>
+      <% } else if (attr == 'gender') { %>
+        <select item="<%= attr %>" class="value-edit" name="<%= attr %>">
+          <% ['female', 'male', 'unknown'].forEach((text, i) => { %>
+            <% if (i == originalValue) { %>
+              <option value="<%= i + 1 %>" selected><%= text %></option>
+            <% } else { %>
+              <option value="<%= i + 1 %>"><%= text %></option>
+            <% } %>
+          <% }); %>
+        </select>
       <% } else if (fieldType == 'textarea') { %>
         <textarea item="<%= attr %>" class="value-edit" name="<%= attr %>"><%= originalValue %></textarea>
       <% } else { %>

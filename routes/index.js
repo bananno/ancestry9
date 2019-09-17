@@ -56,6 +56,7 @@ function createNewPerson(req, res, next) {
   const newPerson = {
     name: req.body.name,
     customId: req.body.name,
+    gender: req.body.gender,
   };
 
   if (newPerson.name.trim() == '') {

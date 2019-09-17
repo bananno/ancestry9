@@ -18,6 +18,7 @@ const personSchema = new mongoose.Schema({
   links: [String],
   tags: [String],
   profileImage: String,
+  gender: Number,
   sharing: {
     level: { type: Number, default: 0 },
     name: { type: String, default: '' },

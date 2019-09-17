@@ -9,7 +9,7 @@ const fields = {
     '_id', 'parents', 'spouses', 'children',
   ],
   personShared: [
-    'name', 'customId', 'links', 'profileImage',
+    'name', 'customId', 'links', 'profileImage', 'gender',
   ],
   story: [
     '_id', 'type', 'title', 'date', 'location', 'people',
