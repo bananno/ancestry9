@@ -1,42 +1,42 @@
 <h1>People</h1>
 
 <div id="create_person_box">
-    <% if (showNew) { %>
-        <form action="/people/new" method="POST">
-            <p>
-                <b>Name:</b>
-                <input type="text" name="name">
-            </p>
-            <p>
-                <button type="submit">submit</button>
-                <a href="/people">cancel</a>
-            </p>
-        </form>
-    <% } else { %>
-        <p>
-            <a href="/people/new">+ Create Person</a>
-        </p>
-        <br>
-        <p>
-            Filter: <input id="quickFilterPeople" type="text">
-        </p>
-    <% } %>
+  <% if (showNew) { %>
+    <form action="/people/new" method="POST">
+      <p>
+        <b>Name:</b>
+        <input type="text" name="name">
+      </p>
+      <p>
+        <button type="submit">submit</button>
+        <a href="/people">cancel</a>
+      </p>
+    </form>
+  <% } else { %>
+    <p>
+      <a href="/people/new">+ Create Person</a>
+    </p>
+    <br>
+    <p>
+      Filter: <input id="quickFilterPeople" type="text">
+    </p>
+  <% } %>
 </div>
 
 <ul id="listOfPeople" class="list_of_items">
-    <% for (var i = 0; i < people.length; i++) { %>
-        <%
-            var person = people[i];
-            var searchName = person.name.toLowerCase();
-        %>
-        <li person_name="<%= searchName %>" class="person_row">
-            <%- include('../partials/linkToPerson', {
-                person: person
-            }) %>
-        </li>
-    <% } %>
+  <% for (var i = 0; i < people.length; i++) { %>
+    <%
+      var person = people[i];
+      var searchName = person.name.toLowerCase();
+    %>
+    <li person_name="<%= searchName %>" class="person_row">
+      <%- include('../partials/linkToPerson', {
+        person: person
+      }) %>
+    </li>
+  <% } %>
 </ul>
 
 <script>
-    filterPersonList();
+  filterPersonList();
 </script>
