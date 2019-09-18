@@ -136,7 +136,7 @@
       <% } else if (attr == 'gender') { %>
         <select item="<%= attr %>" class="value-edit" name="<%= attr %>">
           <% ['female', 'male', 'unknown'].forEach((text, i) => { %>
-            <% if (i == originalValue) { %>
+            <% if (i + 1 == originalValue) { %>
               <option value="<%= i + 1 %>" selected><%= text %></option>
             <% } else { %>
               <option value="<%= i + 1 %>"><%= text %></option>
