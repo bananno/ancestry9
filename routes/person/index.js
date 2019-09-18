@@ -15,7 +15,7 @@ const getNewEventValues = getTools('getNewEventValues');
 const getPersonRelativesList = getTools('getPersonRelativesList');
 const reorderList = getTools('reorderList');
 
-const personProfileRoutes = require('./show');
+const personProfileRoutes = require('./profile');
 const personTimeline = require('./timeline');
 const personChecklist = require('./checklist');
 

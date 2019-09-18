@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 const Person = mongoose.model('Person');
 
+module.exports = {
+  isSamePerson: isSamePerson,
+  findPersonInList: findPersonInList,
+  populateParents: populateParents,
+  convertParamPersonId: convertParamPersonId,
+};
+
 function isSamePerson(person1, person2) {
   const id1 = '' + (person1 ? (person1._id || person1) : 'null');
   const id2 = '' + (person2 ? (person2._id || person2) : 'null');
@@ -70,10 +77,3 @@ function convertParamPersonId(router) {
     });
   });
 }
-
-module.exports = {
-  isSamePerson: isSamePerson,
-  findPersonInList: findPersonInList,
-  populateParents: populateParents,
-  convertParamPersonId: convertParamPersonId,
-};
