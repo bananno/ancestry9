@@ -14,11 +14,12 @@ class ModelRoutes {
     this.modelName = specs.modelName;
     this.modelNamePlural = specs.modelNamePlural || (specs.modelName + 's');
     this.redirectTo = '';
-    specs.updateAttributes = specs.updateAttributes || specs.attributes; // temp
 
     if (specs.editView || specs.editView === undefined) {
       this.redirectTo = '/edit';
     }
+
+    let basePathGet = '/' + this.modelName + '/:id/';
 
     if (specs.index) {
       this.router.get('/' + this.modelNamePlural, specs.index);
@@ -33,11 +34,11 @@ class ModelRoutes {
     }
 
     if (specs.show) {
-      this.router.get('/' + this.modelName + '/:id', specs.show);
+      this.router.get(basePathGet, specs.show);
     }
 
     if (specs.edit) {
-      this.router.get('/' + this.modelName + '/:id/edit', specs.edit);
+      this.router.get(basePathGet + 'edit', specs.edit);
     }
 
     if (specs.delete) {
@@ -45,10 +46,8 @@ class ModelRoutes {
     }
 
     if (specs.otherRoutes) {
-      let basePath = '/' + this.modelName + '/:id/';
       for (let path in specs.otherRoutes) {
-        console.log(basePath + path);
-        this.router.get(basePath + path, specs.otherRoutes[path]);
+        this.router.get(basePathGet + path, specs.otherRoutes[path]);
       }
     }
 

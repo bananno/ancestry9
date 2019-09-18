@@ -5,13 +5,7 @@ const router = express.Router();
 const personTools = require('./tools');
 const sortEvents = require('../../tools/sortEvents');
 
-personTools.convertParamPersonId(router);
-
-router.get('/person/:personId/timeline', personTimeline);
-
-module.exports = router;
-
-function personTimeline(req, res, next) {
+module.exports = function(req, res) {
   const person = req.person;
 
   mongoose.model('Event')
@@ -40,7 +34,7 @@ function personTimeline(req, res, next) {
       });
     });
   });
-}
+};
 
 function getSourceEvents(sources) {
   const events = [];

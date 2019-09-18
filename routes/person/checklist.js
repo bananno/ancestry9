@@ -2,12 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 const personTools = require('./tools');
-personTools.convertParamPersonId(router);
-module.exports = router;
 
-router.get('/person/:personId/checklist', personChecklist);
-
-function personChecklist(req, res) {
+module.exports = function(req, res) {
   const person = req.person;
 
   withData(person, data => {
@@ -36,7 +32,7 @@ function personChecklist(req, res) {
       ...checklistData
     });
   });
-}
+};
 
 function withData(person, callback) {
   mongoose.model('Event')

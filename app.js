@@ -7,9 +7,7 @@ const mongoose = require('mongoose');
 
 const routeFiles = [
   ['index'],
-  ['person/profile'],
-  ['person/timeline'],
-  ['person/checklist'],
+  ['person/people'],
   ['event'],
   ['story/story'],
   ['source/source'],

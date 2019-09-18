@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Person = mongoose.model('Person');
 
 function isSamePerson(person1, person2) {
   const id1 = '' + (person1 ? (person1._id || person1) : 'null');
@@ -29,11 +30,11 @@ function populateParents(person, people, safety) {
 }
 
 function convertParamPersonId(router) {
-  router.param('personId', (req, res, next, paramPersonId) => {
+  router.param('id', (req, res, next, paramPersonId) => {
     req.paramPersonId = paramPersonId;
-    mongoose.model('Person').findById(paramPersonId, (err, person) => {
+    Person.findById(paramPersonId, (err, person) => {
       if (err || person == null) {
-        mongoose.model('Person').find({}, (err, people) => {
+        Person.find({}, (err, people) => {
           const personWithId = people.filter(thisPerson => {
             return thisPerson.customId == paramPersonId
               || ('' + thisPerson._id) == ('' + paramPersonId);
