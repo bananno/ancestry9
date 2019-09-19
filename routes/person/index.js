@@ -38,16 +38,11 @@ createModelRoutes({
     ...personProfileRoutes.other,
   },
   toggleAttributes: ['shareLevel'],
-//   singleAttributes: ['title', 'content', 'notes', 'summary',
-//     'date', 'location', 'story'],
+  singleAttributes: ['name', 'customId', 'profileImage', 'shareName',
+    'gender'],
 //   listAttributes: ['people', 'links', 'images', 'tags', 'stories'],
 });
 
-router.post('/person/:id/edit/name', makeRouteEditPost('name'));
-router.post('/person/:id/edit/id', makeRouteEditPost('customId'));
-router.post('/person/:id/edit/profileImage', makeRouteEditPost('profileImage'));
-router.post('/person/:id/edit/shareName', makeRouteEditPost('shareName'));
-router.post('/person/:id/edit/gender', makeRouteEditPost('gender'));
 router.post('/person/:id/add/links', makeRouteEditPost('links'));
 router.post('/person/:id/delete/links/:deleteId', makeRouteDelete('links'));
 router.post('/person/:id/reorder/links/:orderId', makeRouteReorder('links'));

@@ -76,9 +76,21 @@ class ModelRoutes {
     this.router.post('/' + this.modelName + '/:id/edit/' + fieldName, callback);
   }
 
-  updateAndRedirect(res, item, itemId, updatedObj) {
+  updateAndRedirect(res, item, itemId, updatedObj, fieldName) {
     item.update(updatedObj, err => {
-      res.redirect('/' + this.modelName + '/' + itemId + this.redirectTo);
+      let redirectId;
+
+      if (this.modelName == 'person') {
+        if (fieldName == 'customId') {
+          redirectId = updatedObj.customId;
+        } else {
+          redirectId = req.paramPersonId;
+        }
+      } else {
+        redirectId = itemId;
+      }
+
+      res.redirect('/' + this.modelName + '/' + redirectId + this.redirectTo);
     });
   }
 
@@ -116,8 +128,7 @@ class ModelRoutes {
 
   updateAttribute(fieldName) {
     this.postEdit(fieldName, (req, res, next) => {
-      const itemId = req.params.id;
-      this.Model.findById(itemId, (err, item) => {
+      this.withItem(req, (item, itemId) => {
         const updatedObj = {};
         if (fieldName == 'date') {
           updatedObj[fieldName] = getDateValues(req);
@@ -129,7 +140,7 @@ class ModelRoutes {
         if (fieldName == 'story' && updatedObj[fieldName] == '0') {
           updatedObj[fieldName] = null;
         }
-        this.updateAndRedirect(res, item, itemId, updatedObj);
+        this.updateAndRedirect(res, item, itemId, updatedObj, fieldName);
       });
     });
   }
