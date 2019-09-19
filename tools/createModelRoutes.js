@@ -76,7 +76,7 @@ class ModelRoutes {
     this.router.post('/' + this.modelName + '/:id/edit/' + fieldName, callback);
   }
 
-  updateAndRedirect(res, item, itemId, updatedObj, fieldName) {
+  updateAndRedirect(req, res, item, itemId, updatedObj, fieldName) {
     item.update(updatedObj, err => {
       let redirectId;
 
@@ -121,7 +121,7 @@ class ModelRoutes {
           const currentValue = item[fieldName] || false;
           updatedObj[fieldName] = !currentValue;
         }
-        this.updateAndRedirect(res, item, itemId, updatedObj);
+        this.updateAndRedirect(req, res, item, itemId, updatedObj);
       });
     });
   }
@@ -140,7 +140,7 @@ class ModelRoutes {
         if (fieldName == 'story' && updatedObj[fieldName] == '0') {
           updatedObj[fieldName] = null;
         }
-        this.updateAndRedirect(res, item, itemId, updatedObj, fieldName);
+        this.updateAndRedirect(req, res, item, itemId, updatedObj, fieldName);
       });
     });
   }
@@ -148,15 +148,14 @@ class ModelRoutes {
   addListAttribute(fieldName) {
     const routePath = '/' + this.modelName + '/:id/add/' + fieldName;
     this.router.post(routePath, (req, res, next) => {
-      const itemId = req.params.id;
-      this.Model.findById(itemId, (err, item) => {
+      this.withItem(req, (item, itemId) => {
         const updatedObj = {};
         const newValue = req.body[fieldName].trim();
         if (newValue == '') {
           return;
         }
         updatedObj[fieldName] = (item[fieldName] || []).concat(newValue);
-        this.updateAndRedirect(res, item, itemId, updatedObj);
+        this.updateAndRedirect(req, res, item, itemId, updatedObj);
       });
     });
   }
@@ -164,8 +163,7 @@ class ModelRoutes {
   deleteListAttribute(fieldName) {
     const routePath = '/' + this.modelName + '/:id/delete/' + fieldName + '/:deleteId';
     this.router.post(routePath, (req, res, next) => {
-      const itemId = req.params.id;
-      this.Model.findById(itemId, (err, item) => {
+      this.withItem(req, (item, itemId) => {
         const updatedObj = {};
         const deleteId = req.params.deleteId;
 
@@ -179,7 +177,7 @@ class ModelRoutes {
           });
         }
 
-        this.updateAndRedirect(res, item, itemId, updatedObj);
+        this.updateAndRedirect(req, res, item, itemId, updatedObj);
       });
     });
   }
@@ -187,12 +185,11 @@ class ModelRoutes {
   reorderListAttribute(fieldName) {
     const routePath = '/' + this.modelName + '/:id/reorder/' + fieldName + '/:orderId';
     this.router.post(routePath, (req, res, next) => {
-      const itemId = req.params.id;
-      this.Model.findById(itemId, (err, item) => {
+      this.withItem(req, (item, itemId) => {
         const updatedObj = {};
         const orderId = req.params.orderId;
         updatedObj[fieldName] = reorderList(item[fieldName], orderId, fieldName);
-        this.updateAndRedirect(res, item, itemId, updatedObj);
+        this.updateAndRedirect(req, res, item, itemId, updatedObj);
       });
     });
   }

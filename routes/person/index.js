@@ -7,14 +7,9 @@ const Person = mongoose.model('Person');
 const getTools = (path) => { return require('../../tools/' + path) };
 const createModelRoutes = getTools('createModelRoutes');
 const personTools = require('./tools');
-const sortEvents = getTools('sortEvents');
-const sortCitations = getTools('sortCitations');
-const sortSources = getTools('sortSources');
 const removePersonFromList = getTools('removePersonFromList');
 const getNewEventValues = getTools('getNewEventValues');
-const getPersonRelativesList = getTools('getPersonRelativesList');
 const reorderList = getTools('reorderList');
-
 const personProfileRoutes = require('./profile');
 const personTimeline = require('./timeline');
 const personChecklist = require('./checklist');
@@ -40,15 +35,9 @@ createModelRoutes({
   toggleAttributes: ['shareLevel'],
   singleAttributes: ['name', 'customId', 'profileImage', 'shareName',
     'gender'],
-//   listAttributes: ['people', 'links', 'images', 'tags', 'stories'],
+  listAttributes: ['links', 'tags'],
 });
 
-router.post('/person/:id/add/links', makeRouteEditPost('links'));
-router.post('/person/:id/delete/links/:deleteId', makeRouteDelete('links'));
-router.post('/person/:id/reorder/links/:orderId', makeRouteReorder('links'));
-router.post('/person/:id/add/tags', makeRouteEditPost('tags'));
-router.post('/person/:id/delete/tags/:deleteId', makeRouteDelete('tags'));
-router.post('/person/:id/reorder/tags/:orderId', makeRouteReorder('tags'));
 router.post('/person/:id/add/events', makeRouteEditPost('events'));
 router.post('/person/:id/add/notations', createPersonNotation);
 
@@ -139,13 +128,6 @@ function makeRouteEditPost(editField, corresponding) {
       newEvent.people.push(person);
 
       mongoose.model('Event').create(newEvent, () => {});
-    } else if (['links', 'tags'].includes(editField)) {
-      if (newValue != '') {
-        updatedObj[editField] = (person[editField] || []).concat(newValue);
-      }
-    } else if (editField == 'shareName') {
-      updatedObj.sharing = person.sharing;
-      updatedObj.sharing.name = newValue;
     } else {
       updatedObj[editField] = newValue;
     }
@@ -174,33 +156,6 @@ function makeRouteEditPost(editField, corresponding) {
   };
 }
 
-function makeRouteTogglePost(editField) {
-  return function(req, res) {
-    let person = req.person;
-    let updatedObj = {};
-
-    if (editField == 'shareLevel') {
-      updatedObj.sharing = person.sharing;
-      updatedObj.sharing.level += 1;
-      if (updatedObj.sharing.level == 3) {
-        updatedObj.sharing.level = 0;
-      }
-    }
-
-    person.update(updatedObj, function(err) {
-      if (err) {
-        res.send('There was a problem updating the information to the database: ' + err);
-      } else {
-        res.format({
-          html: function() {
-            res.redirect('/person/' + req.paramPersonId + '/edit');
-          }
-        });
-       }
-    });
-  };
-}
-
 function makeRouteDelete(editField, corresponding) {
   return function(req, res, next) {
     var person = req.person;
@@ -221,10 +176,6 @@ function makeRouteDelete(editField, corresponding) {
 
           relative.update(updatedRelative, () => {});
         }
-      });
-    } else if (['links', 'tags'].includes(editField)) {
-      updatedObj[editField] = person[editField].filter((url, i) => {
-        return i != deleteId;
       });
     }
 
