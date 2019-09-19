@@ -21,8 +21,6 @@ const personChecklist = require('./checklist');
 
 personTools.convertParamPersonId(router);
 
-router.get('/person/:personId/timeline', personTimeline);
-
 createModelRoutes({
   Model: Person,
   modelName: 'person',
@@ -39,7 +37,7 @@ createModelRoutes({
     checklist: personChecklist,
     ...personProfileRoutes.other,
   },
-//   toggleAttributes: ['sharing'],
+  toggleAttributes: ['shareLevel'],
 //   singleAttributes: ['title', 'content', 'notes', 'summary',
 //     'date', 'location', 'story'],
 //   listAttributes: ['people', 'links', 'images', 'tags', 'stories'],
@@ -57,7 +55,6 @@ router.post('/person/:id/add/tags', makeRouteEditPost('tags'));
 router.post('/person/:id/delete/tags/:deleteId', makeRouteDelete('tags'));
 router.post('/person/:id/reorder/tags/:orderId', makeRouteReorder('tags'));
 router.post('/person/:id/add/events', makeRouteEditPost('events'));
-router.post('/person/:id/toggle/shareLevel', makeRouteTogglePost('shareLevel'));
 router.post('/person/:id/add/notations', createPersonNotation);
 
 createRelationshipRoutes('parents', 'children');

@@ -15,7 +15,7 @@ class ModelRoutes {
     this.modelNamePlural = specs.modelNamePlural || (specs.modelName + 's');
     this.redirectTo = '';
 
-    if (specs.editView || specs.editView === undefined) {
+    if (specs.editView !== false) {
       this.redirectTo = '/edit';
     }
 
@@ -82,13 +82,33 @@ class ModelRoutes {
     });
   }
 
+  withItem(req, callback) {
+    const itemId = req.params.id;
+    this.Model.findById(itemId, (err, item) => {
+      if (!item && this.modelName == 'person') {
+        this.Model.find({ customId: itemId }, (err, item) => {
+          callback(item[0], itemId);
+        });
+      } else {
+        callback(item, itemId);
+      }
+    });
+  }
+
   toggleAttribute(fieldName) {
     this.postEdit(fieldName, (req, res, next) => {
-      const itemId = req.params.id;
-      this.Model.findById(itemId, (err, item) => {
+      this.withItem(req, (item, itemId) => {
         const updatedObj = {};
-        const currentValue = item[fieldName] || false;
-        updatedObj[fieldName] = !currentValue;
+        if (fieldName == 'shareLevel') {
+          updatedObj.sharing = item.sharing;
+          updatedObj.sharing.level += 1;
+          if (updatedObj.sharing.level == 3) {
+            updatedObj.sharing.level = 0;
+          }
+        } else {
+          const currentValue = item[fieldName] || false;
+          updatedObj[fieldName] = !currentValue;
+        }
         this.updateAndRedirect(res, item, itemId, updatedObj);
       });
     });
