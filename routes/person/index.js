@@ -73,18 +73,15 @@ function createRelationshipRoutes(relationship, corresponding) {
 
 function createPerson(req, res, next) {
   const newPerson = {
-    name: req.body.name,
-    customId: req.body.name,
+    name: req.body.name.trim(),
     gender: req.body.gender,
   };
 
-  if (newPerson.name.trim() == '') {
+  if (newPerson.name == '') {
     return;
   }
 
-  while (newPerson.customId.match(' ')) {
-    newPerson.customId = newPerson.customId.replace(' ', '');
-  }
+  newPerson.customId = newPerson.name.replace(/ /g, '-').toLowerCase();
 
   mongoose.model('Person').create(newPerson, function(err, person) {
     if (err) {
