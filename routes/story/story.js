@@ -14,7 +14,7 @@ const getLocationValues = getTools('getLocationValues');
 
 const mainStoryTypes = [
   'books', 'cemeteries', 'documents', 'index',
-  'newspapers', 'websites', 'other',
+  'newspapers', 'websites', 'places', 'other',
 ];
 
 const noEntryStoryTypes = ['artifact', 'event', 'landmark', 'place'];
@@ -66,6 +66,7 @@ function withAllStories(type, callback) {
     'documents': 'document',
     'index': 'index',
     'newspapers': 'newspaper',
+    'places': 'place',
     'websites': 'website',
   };
 

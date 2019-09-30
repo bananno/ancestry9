@@ -2,12 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 module.exports = router;
+const Person = mongoose.model('Person');
 
 const getAllData = require('./tools').getAllData;
 const populatePeopleDates = require('./tools').populatePeopleDates;
 
 router.get('/checklist', checklistIndex);
 router.get('/checklist/vitals', checklistVitals);
+router.get('/checklist/children', checklistChildren);
 router.get('/checklist/wikitree', checklistWikiTree);
 
 router.get('/to-do', showToDoList);
@@ -18,6 +20,16 @@ function checklistIndex(req, res, next) {
   res.render('layout', {
     view: 'checklist/index',
     title: 'Checklist',
+  });
+}
+
+function checklistChildren(req, res, next) {
+  Person.find({}, (err, people) => {
+    res.render('layout', {
+      view: 'checklist/children',
+      title: 'Checklist',
+      people,
+    });
   });
 }
 

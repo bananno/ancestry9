@@ -1,0 +1,61 @@
+<%
+  const sections = {};
+
+  [
+    'STATUS NOT SPECIFIED',
+    'incomplete - children unknown',
+    'complete - all children added',
+    'complete - had no children',
+    'ignore - too distant',
+    'ignore - not shared',
+  ].forEach(status => {
+    sections[status] = [];
+  });
+
+  people.forEach(person => {
+    const status = (() => {
+      if (person.tags.includes('all children listed')) {
+        return 'complete - all children added';
+      }
+      if (person.tags.includes('no children')) {
+        return 'complete - had no children';
+      }
+      if (person.tags.includes('children unknown')) {
+        return 'incomplete - children unknown';
+      }
+      if (person.tags.includes('children=too distant')) {
+        return 'ignore - too distant';
+      }
+      if (person.sharing.level == 2) {
+        return 'STATUS NOT SPECIFIED';
+      }
+      return 'ignore - not shared';
+    })();
+
+    sections[status] = sections[status] || [];
+    sections[status].push(person);
+  });
+%>
+
+<h1>Checklist - children</h1>
+
+<% for (let status in sections) { %>
+  <% if (sections[status].length == 0) continue; %>
+  <h2><%= status %></h2>
+  <ul class="bullet-list checklist-section">
+    <% sections[status].forEach(person => { %>
+      <li>
+        <%- include('../partials/linkToPerson', {
+            person: person,
+        }) %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<style>
+.checklist-section li {
+  display: inline-block;
+  width: 350px;
+}
+</style>
