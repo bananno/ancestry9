@@ -105,13 +105,12 @@ function personEdit(req, res, next) {
 
 function personSources(req, res, next) {
   const person = req.person;
-
   mongoose.model('Source')
   .find({ people: person })
   .populate('story')
   .exec((err, sources) => {
     mongoose.model('Citation')
-    .find({ people: person })
+    .find({ person: person })
     .exec((err, citations) => {
       citations = sortCitations(citations, 'item');
 
