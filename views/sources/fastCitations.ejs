@@ -1,0 +1,84 @@
+<%
+  const rootPath = '/source/' + source._id;
+  const addCitationPath = rootPath + '/add/citations';
+
+  const existingCitations = {};
+  const toDoList = [];
+
+  citations.forEach(citation => {
+    let key = citation.person._id + citation.item;
+    existingCitations[key] = true;
+  });
+
+  ['name', 'birth - date', 'birth - place', 'residence'].forEach(item => {
+    source.people.forEach(person => {
+      let key = person._id + item;
+      if (!existingCitations[key]) {
+        toDoList.push([person, item]);
+      }
+    });
+  });
+%>
+
+<div>
+  <div class="column">
+    <h2>people</h2>
+    <%- include('../people/peopleList', {
+      people: source.people,
+      format: 'bullet',
+    }) %>
+  </div>
+  <div class="column">
+    <h2>content</h2>
+    <%- include('../format/content', {
+      content: source.content,
+      limit: false,
+    }) %>
+  </div>
+</div>
+
+<table class="citation-list">
+  <tr>
+    <th>person</th>
+    <th>item</th>
+    <th>information</th>
+  </tr>
+  <% toDoList.forEach(([person, item]) => { %>
+    <tr class="citation-row-show">
+      <td class="citation-cell">
+        <%= person.name %>
+      </td>
+      <td class="citation-cell">
+        <%= item %>
+      </td>
+      <td class="citation-cell">
+        <form action="<%= addCitationPath %>" method="POST">
+          <input type="hidden" name="person" value="<%= person._id %>">
+          <input type="hidden" name="item" value="<%= item %>">
+          <input type="hidden" name="fastCitations" value="true">
+          <div class="column">
+            <input type="text" name="information">
+          </div>
+          <div class="column">
+            <button type="submit">create</button>
+          </div>
+        </form>
+      </td>
+    </tr>
+  <% }); %>
+</table>
+
+<h2>citations</h2>
+
+<%- include('../partials/citationList', {
+  citations: citations,
+  showDelete: false,
+  showSource: false,
+  showPerson: true,
+  rootPath: rootPath,
+  groupBy: 'person',
+}) %>
+
+<script>
+  initializeEditForm();
+</script>

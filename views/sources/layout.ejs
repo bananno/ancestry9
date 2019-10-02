@@ -20,6 +20,11 @@
     <p>
       <a href="<%= rootPath %>" class="main-link">done</a>
     </p>
+  <% } else if (subview == 'fastCitations') { %>
+    <p>
+      <a href="<%= rootPath %>" class="main-link">done</a>
+      <a href="<%= rootPath %>/edit" class="main-link">back to edit</a>
+    </p>
   <% } else { %>
     <p>
       <a href="<%= rootPath %>/" class="main-link">show</a>

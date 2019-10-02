@@ -16,10 +16,18 @@ router.post('/source/:sourceId/delete/citations/:citationId', deleteCitation);
 function createCitation(req, res, next) {
   const sourceId = req.params.sourceId;
   const newItem = getCitationValues(req, sourceId);
+  const fastCitations = !!req.body.fastCitations;
+
+  let redirectTo = '/source/' + sourceId;
+  if (fastCitations) {
+    redirectTo += '/fastCitations';
+  } else {
+    redirectTo += '/edit';
+  }
 
   if (newItem) {
     Citation.create(newItem, () => {
-      res.redirect('/source/' + sourceId + '/edit');
+      res.redirect(redirectTo);
     });
   }
 }

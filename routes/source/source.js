@@ -33,6 +33,7 @@ createModelRoutes({
   delete: deleteSource,
   otherRoutes: {
     'excerpts': showSourceExcerpts,
+    'fastCitations': editSourceFastCitations,
   },
   toggleAttributes: ['sharing'],
   singleAttributes: ['title', 'content', 'notes', 'summary',
@@ -159,6 +160,38 @@ function editSource(req, res, next) {
           res.render('layout', {
             view: 'sources/layout',
             subview: 'edit',
+            title: 'Edit Source',
+            source: source,
+            people: people,
+            stories: stories,
+            citations: sortCitations(citations, 'item', source.people),
+            citationsByPerson: sortCitations(citations, 'person', source.people),
+          });
+        });
+      });
+    });
+  });
+}
+
+function editSourceFastCitations(req, res, next) {
+  withSource(req, res, source => {
+    Person.find({ }).exec((err, people) => {
+      Citation.find({ source: source }).populate('person')
+      .exec((err, citations) => {
+        Story.find({}, (err, stories) => {
+          people = sortPeople(people, 'name');
+
+          source.people.forEach(thisPerson => {
+            people = removePersonFromList(people, thisPerson);
+          });
+
+          people = [...source.people, ...people];
+
+          stories.sort((a, b) => a.title < b.title ? -1 : 1);
+
+          res.render('layout', {
+            view: 'sources/layout',
+            subview: 'fastCitations',
             title: 'Edit Source',
             source: source,
             people: people,
