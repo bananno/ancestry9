@@ -132,13 +132,13 @@ function getProcessedSharedData(req, res, callback) {
 
     const anna = raw.people.filter(person => person.name == 'Anna Peterson')[0];
 
-    anna.parents.forEach((person, i) => findAncestors(person, i + 1));
+    anna.parents.forEach((person, i) => findAncestors(person, i + 1, 1));
 
-    function findAncestors(personId, treeSide) {
+    function findAncestors(personId, treeSide, degree) {
       personId += '';
-      ancestors[personId] = treeSide;
+      ancestors[personId] = [treeSide, degree];
       const person = raw.people.filter(person => person._id + '' == personId)[0];
-      person.parents.forEach(parent => findAncestors(parent, treeSide));
+      person.parents.forEach(parent => findAncestors(parent, treeSide, degree + 1));
     }
 
     const tempPersonRef = {};
@@ -157,7 +157,10 @@ function getProcessedSharedData(req, res, callback) {
 
       person._id += '';
 
-      person.leaf = ancestors[person._id];
+      if (ancestors[person._id]) {
+        person.leaf = ancestors[person._id][0];
+        person.degree = ancestors[person._id][1];
+      }
 
       if (personInfo.sharing.level == 1) {
         person.private = true;
