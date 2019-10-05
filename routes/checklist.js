@@ -12,6 +12,7 @@ router.get('/checklist/vitals', checklistVitals);
 router.get('/checklist/children', checklistChildren);
 router.get('/checklist/wikitree', checklistWikiTree);
 router.get('/checklist/findagrave', checklistFindAGrave);
+router.get('/checklist/tags', checklistTags);
 
 router.get('/to-do', showToDoList);
 router.post('/to-do/new', newToDoItem);
@@ -98,6 +99,47 @@ function checklistFindAGrave(req, res, next) {
       title: 'Checklist',
       people,
       linkType: 'FindAGrave',
+    });
+  });
+}
+
+function checklistTags(req, res, next) {
+  const tags = {};
+
+  function getAllTags(modelName, resolve) {
+    mongoose.model(modelName).find({}, (err, items) => {
+      items.forEach(item => {
+        item.tags.forEach(tag => {
+          tags[tag] = (tags[tag] || 0) + 1;
+        });
+      });
+      resolve();
+    });
+  }
+
+  new Promise(resolve => {
+    getAllTags('Person', resolve);
+  }).then(() => {
+    return new Promise(resolve => {
+      getAllTags('Source', resolve);
+    });
+  }).then(() => {
+    return new Promise(resolve => {
+      getAllTags('Story', resolve);
+    });
+  }).then(() => {
+    return new Promise(resolve => {
+      getAllTags('Event', resolve);
+    });
+  }).then(() => {
+    return new Promise(resolve => {
+      getAllTags('Notation', resolve);
+    });
+  }).then(() => {
+    res.render('layout', {
+      view: 'checklist/tags',
+      title: 'Checklist',
+      tags,
     });
   });
 }

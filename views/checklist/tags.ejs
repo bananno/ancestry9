@@ -1,0 +1,39 @@
+<%
+  const meaning = {};
+
+  meaning['cropped'] = 'Enable a note about "the images has been cropped".';
+
+  meaning['special historical'] = 'A historical event that is only relevent ' +
+    'for certain people. It will appear in their profile timeline ' +
+    'designated as a historical and will show nowhere else.';
+%>
+<h1>Checklist - Tags</h1>
+
+<h3>total: <%= Object.keys(tags).length %> tags</h3>
+
+<h2>defined</h2>
+
+<ul class="bullet-list">
+  <% for (let tag in meaning) { %>
+    <li>
+      <b><%= tag %></b> - <%= tags[tag] || 0 %>
+      <% if (meaning[tag]) { %>
+        <br><%= meaning[tag] %>
+      <% } %>
+    </li>
+    <% delete tags[tag]; %>
+  <% } %>
+</ul>
+
+<h2>not defined</h2>
+
+<ul class="bullet-list">
+  <% for (let tag in tags) { %>
+    <li>
+      <b><%= tag %></b> - <%= tags[tag] %>
+      <% if (meaning[tag]) { %>
+        <br><%= meaning[tag] %>
+      <% } %>
+    </li>
+  <% } %>
+</ul>
