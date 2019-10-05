@@ -1,0 +1,25 @@
+<h1>Checklist - source links</h1>
+
+<table class="info-table">
+  <tr>
+    <th>source</th>
+    <th>shared</th>
+    <th>ancestry</th>
+    <th>familysearch</th>
+  </tr>
+  <% censusSources.forEach(source => { %>
+    <tr>
+      <td>
+        <%- include('../partials/linkToSource', {
+          showStory: true,
+          source,
+        }) %>
+      </td>
+      <% ['sharing', 'hasAncestry', 'hasFamilySearch'].forEach(attr => { %>
+        <td>
+          <img class="checkmark-inline" src="/images/check-<%= source[attr] || false %>.png">
+        </td>
+      <% }); %>
+    </tr>
+  <% }); %>
+</table>

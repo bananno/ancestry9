@@ -13,6 +13,7 @@ router.get('/checklist/children', checklistChildren);
 router.get('/checklist/wikitree', checklistWikiTree);
 router.get('/checklist/findagrave', checklistFindAGrave);
 router.get('/checklist/tags', checklistTags);
+router.get('/checklist/sourceCensus', checklistSourceCensus);
 
 router.get('/to-do', showToDoList);
 router.post('/to-do/new', newToDoItem);
@@ -99,6 +100,31 @@ function checklistFindAGrave(req, res, next) {
       title: 'Checklist',
       people,
       linkType: 'FindAGrave',
+    });
+  });
+}
+
+function checklistSourceCensus(req, res, next) {
+  mongoose.model('Source').find({}).populate('story').exec((err, sources) => {
+    const censusSources = sources.filter(source => {
+      return source.story.title.match('Census USA');
+    });
+
+    censusSources.forEach(source => {
+      source.hasAncestry = source.links.some(link => link.match(' Ancestry'));
+      source.hasFamilySearch = source.links.some(link => link.match(' FamilySearch'));
+      source.sort = (source.sharing ? '1' : '2')
+        + (source.hasAncestry || source.hasFamilySearch ? '2' : '1')
+        + (source.hasAncestry ? '2' : '1')
+        + (source.hasFamilySearch ? '2' : '1');
+    });
+
+    censusSources.sort((a, b) => a.sort < b.sort ? -1 : 1);
+
+    res.render('layout', {
+      view: 'checklist/sourceCensus',
+      title: 'Checklist',
+      censusSources,
     });
   });
 }
