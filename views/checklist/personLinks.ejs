@@ -1,0 +1,47 @@
+<%
+  const sections = [
+    ['Profile managed - good condition', 'manage-good'],
+    ['Profile managed - needs work', 'need-work'],
+    ['Have link but not managed', 'have'],
+    ['Need to add or find', 'missing'],
+    ['Ignore', 'ignore'],
+  ];
+
+  const linkTypeLower = linkType.toLowerCase();
+
+  people.forEach(person => {
+    [person.status, person.link] = (() => {
+      const link = person.links.filter(link => link.match(' ' + linkType))[0];
+      if (!link) {
+        if (person.tags.includes(linkTypeLower + '=ignore')) {
+          return ['ignore'];
+        }
+        return ['missing'];
+      }
+      if (person.tags.includes(linkTypeLower + '=good')) {
+        return ['manage-good', link];
+      }
+      if (person.tags.includes(linkTypeLower + '=managed')) {
+        return ['need-work', link];
+      }
+      return ['have', link];
+    })();
+  });
+%>
+
+<h1>Checklist - <%= linkType %></h1>
+
+<% sections.forEach(([title, status]) => { %>
+  <h2><%= title %></h2>
+  <ul class="bullet-list">
+    <% people.filter(person => person.status == status).forEach(person => { %>
+      <li>
+        <% if (person.link) { %>
+          <a href="<%= person.link.split(' ')[0] %>" target="_blank">link</a>
+          -
+        <% } %>
+        <%- include('../partials/linkToPerson', { person }) %>
+      </li>
+    <% }); %>
+  </ul>
+<% }); %>

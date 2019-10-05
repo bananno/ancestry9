@@ -11,6 +11,7 @@ router.get('/checklist', checklistIndex);
 router.get('/checklist/vitals', checklistVitals);
 router.get('/checklist/children', checklistChildren);
 router.get('/checklist/wikitree', checklistWikiTree);
+router.get('/checklist/findagrave', checklistFindAGrave);
 
 router.get('/to-do', showToDoList);
 router.post('/to-do/new', newToDoItem);
@@ -82,9 +83,21 @@ function checklistVitals(req, res, next) {
 function checklistWikiTree(req, res, next) {
   mongoose.model('Person').find({}, (err, people) => {
     res.render('layout', {
-      view: 'checklist/wikitree',
+      view: 'checklist/personLinks',
       title: 'Checklist',
       people,
+      linkType: 'WikiTree',
+    });
+  });
+}
+
+function checklistFindAGrave(req, res, next) {
+  mongoose.model('Person').find({}, (err, people) => {
+    res.render('layout', {
+      view: 'checklist/personLinks',
+      title: 'Checklist',
+      people,
+      linkType: 'FindAGrave',
     });
   });
 }
