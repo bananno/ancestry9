@@ -8,7 +8,8 @@
     siteLinks.push(['topic/brickwalls', 'topic: brick walls']);
   }
 
-  if (notation.title == 'profile summary') {
+  if (notation.title == 'profile summary'
+      || notation.tags.includes('profile summary')) {
     notation.people.forEach(person => {
       siteLinks.push(['person/' + person.customId, person.name
         + ' profile (summary)']);

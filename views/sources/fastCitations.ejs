@@ -10,7 +10,18 @@
     existingCitations[key] = true;
   });
 
-  ['name', 'birth - date', 'birth - place', 'residence'].forEach(item => {
+  const citationItems = ['name'];
+
+  if (source.title.match('Census')) {
+    citationItems.push('birth - date');
+    citationItems.push('birth - place');
+    citationItems.push('residence');
+  } else if (source.story.type == 'cemetery') {
+    citationItems.push('birth - date');
+    citationItems.push('death - date');
+  }
+
+  citationItems.forEach(item => {
     source.people.forEach(person => {
       let key = person._id + item;
       if (!existingCitations[key]) {
