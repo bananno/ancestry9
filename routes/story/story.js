@@ -30,7 +30,7 @@ createModelRoutes({
   edit: storyEdit,
   toggleAttributes: ['sharing'],
   singleAttributes: ['type', 'group', 'title', 'date', 'location',
-    'notes', 'summary'],
+    'notes', 'summary', 'content'],
   listAttributes: ['people', 'links', 'images', 'tags'],
 });
 

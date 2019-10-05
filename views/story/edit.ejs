@@ -109,6 +109,32 @@
   }) %>
 </table>
 
+<div>
+  <h2>Content</h2>
+
+  <p>
+    <span class="clickable-link main-link link-start"
+      onClick="startEdit('content')">edit</span>
+  </p>
+
+  <div class="value-show" item="content">
+    <%- include('../format/content', {
+      content: story.content,
+      limit: false,
+    }) %>
+  </div>
+
+  <div class="value-edit" item="content">
+    <form action="<%= rootEditPath %>/content" method="POST">
+      <textarea name="content" class="content-textarea"><%= story.content %></textarea>
+      <input type="hidden" value="PUT" name="_method">
+      <button type="submit">save</button>
+      <span class="clickable-link link-cancel"
+        onClick="cancelEdit()" item="content">cancel</span>
+    </form>
+  </div>
+</div>
+
 <script>
   initializeEditForm();
 </script>
