@@ -1,0 +1,89 @@
+<%
+  const citations = notations.filter(notation => notation.title == 'source citation');
+  const otherNotations = notations.filter(notation => {
+    return notation.title != 'source citation';
+  });
+%>
+
+<h2>story notations</h2>
+
+<p>
+  <span class="clickable-link" id="add-notation">+ add notation</span>
+</p>
+
+<div id="new-notation-form">
+  <h2>new notation</h2>
+  <form method="post" action="/story/<%= story._id %>/createNotation">
+    <b>title</b> <input name="title"/>
+    <br>
+    <b>text</b> <textarea name="text"></textarea>
+    <br>
+    <button>submit</button>
+    <span class="clickable-link" id="new-notation-cancel">cancel</span>
+  </form>
+</div>
+
+<hr>
+
+<h2>citation</h2>
+
+<% if (citations.length == 0) { %>
+  <p>
+    <i>(none)</i>
+  </p>
+<% } %>
+
+<% citations.forEach(notation => { %>
+  <div>
+    <p>
+      <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
+    </p>
+    <p>
+      <%= notation.text %>
+    </p>
+  </div>
+<% }); %>
+
+<% if (otherNotations.length) { %>
+  <hr>
+  <h2>other notations</h2>
+<% } %>
+
+<% otherNotations.forEach(notation => { %>
+  <hr>
+  <div>
+    <p>
+      <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
+    </p>
+    <p>
+      <%= notation.text %>
+    </p>
+  </div>
+<% }); %>
+
+<style>
+  hr {
+    margin: 20px 0;
+  }
+  .notation p {
+    margin-top: 10px;
+  }
+  .notation li {
+    margin-top: 5px;
+  }
+  #new-notation-form {
+    display: none;
+  }
+</style>
+
+<script>
+  $('#add-notation').click(() => {
+    $('#new-notation-form').show();
+    $('#add-notation').hide();
+  });
+  $('#new-notation-cancel').click(() => {
+    $('#new-notation-form').find('input, textarea').val('');
+    $('#new-notation-form').hide();
+    $('#add-notation').show();
+  });
+</script>

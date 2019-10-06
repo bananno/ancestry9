@@ -6,6 +6,7 @@ module.exports = router;
 const Story = mongoose.model('Story');
 const Source = mongoose.model('Source');
 const Person = mongoose.model('Person');
+const Notation = mongoose.model('Notation');
 
 const getTools = (path) => { return require('../../tools/' + path) };
 const createModelRoutes = getTools('createModelRoutes');
@@ -28,18 +29,23 @@ createModelRoutes({
   create: createStory,
   show: storyShowMain,
   edit: storyEdit,
+  otherRoutes: {
+    'entries': storyEntries,
+    'newEntry': storyNewEntry,
+    'notations': storyNotations,
+  },
   toggleAttributes: ['sharing'],
   singleAttributes: ['type', 'group', 'title', 'date', 'location',
     'notes', 'summary', 'content'],
   listAttributes: ['people', 'links', 'images', 'tags'],
 });
 
+router.post('/story/:id/createNotation', createStoryNotation);
+
 mainStoryTypes.forEach(type => {
   router.get('/stories/' + type, getStoriesIndexRoute(type));
 });
 
-router.get('/story/:id/entries', storyEntries);
-router.get('/story/:id/newEntry', storyNewEntry);
 router.get('/stories/with-sources', storiesWithSources);
 
 function getStoriesIndexRoute(storyType) {
@@ -146,21 +152,46 @@ function withStory(req, res, options, callback) {
           resolve();
         });
       });
-    // CITATION (offical text describing the origin)
+    // NOTATIONS
     }).then(() => {
-      if (!options.citationText) {
+      if (!options.notations && !options.citationText) {
         return;
       }
       return new Promise(resolve => {
-        mongoose.model('Notation')
-        .find({ title: 'source citation', stories: [story] })
+        Notation
+        .find({ stories: [story] })
         .exec((err, notations) => {
-          data.citationText = notations.map(notation => notation.text);
+          // all notations
+          if (options.notations) {
+            data.notations = notations;
+          }
+          // citation text: offical text describing the origin of story/sources
+          if (options.citationText) {
+            data.citationText = notations
+              .filter(notation => notation.title == 'source citation')
+              .map(notation => notation.text);
+          }
           resolve();
         });
       });
     }).then(() => {
       callback(data);
+    });
+  });
+}
+
+function createStoryNotation(req, res, next) {
+  withStory(req, res, {}, ({story}) => {
+    const newNotation = {
+      title: req.body.title.trim(),
+      text: req.body.text.trim(),
+      stories: [story],
+    };
+    Notation.create(newNotation, (err, notation) => {
+      if (err) {
+        return res.send('There was a problem adding the information to the database.');
+      }
+      res.redirect('/story/' + story._id + '/notations');
     });
   });
 }
@@ -231,6 +262,18 @@ function storyNewEntry(req, res, next) {
       entryCanHaveDate,
       entryCanHaveLocation,
       sourceType,
+    });
+  });
+}
+
+function storyNotations(req, res, next) {
+  withStory(req, res, {
+    entries: true, notations: true
+  }, ({ story, entries, notations }) => {
+    mainStoryView(res, story, {
+      subview: 'notations',
+      entries,
+      notations,
     });
   });
 }
