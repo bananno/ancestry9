@@ -1,6 +1,8 @@
 <%
   const textList = notation.text ? notation.text.split('\n') : [];
 
+  const isCitation = notation.title == 'source citation';
+
   const siteLinks = [];
 
   if (notation.tags.includes('brick wall')
@@ -22,6 +24,9 @@
         + ' profile (research notes section)']);
     });
   }
+
+  const showSharing = notation.sharing|| !isCitation;
+  const showAppearances = siteLinks.length > 0 || !isCitation;
 %>
 
 <h1>Notation</h1>
@@ -31,22 +36,57 @@
   <a href="/notation/<%= notation._id %>/edit">edit</a>
 </p>
 
-<h2>sharing</h2>
+<% if (showSharing) { %>
+  <h2>sharing</h2>
+  <p>
+    <% if (notation.sharing) { %>
+      <img class="checkmark-inline" src="/images/check-true.png"> yes
+    <% } else { %>
+      <img class="checkmark-inline" src="/images/check-false.png"> no
+    <% } %>
+  </p>
+<% } %>
 
-<p>
-  <% if (notation.sharing) { %>
-    <img class="checkmark-inline" src="/images/check-true.png"> yes
-  <% } else { %>
-    <img class="checkmark-inline" src="/images/check-false.png"> no
+<% if (notation.source) { %>
+  <h2>belongs to source</h2>
+  <%- include('../partials/linkToSource', {
+    source: notation.source,
+    showStory: true,
+  }) %>
+<% } %>
+
+<% if (isCitation && notation.stories.length == 1) { %>
+  <h2>belongs to story</h2>
+  <p>
+    <%- include('../partials/linkToStory', { story: notation.stories[0] }) %>
+  </p>
+<% } else if (notation.stories.length) { %>
+  <h2>pinned to stories</h2>
+  <% notation.stories.forEach(story => { %>
+    <p>
+      <%- include('../partials/linkToStory', { story }) %>
+    </p>
+  <% }); %>
+<% } %>
+
+<% if (!isCitation) { %>
+  <h2>people</h2>
+
+  <%- include('../people/peopleList', {
+    people: notation.people,
+    format: 'bullet',
+  }) %>
+
+  <h2>tags</h2>
+
+  <% if (notation.tags.length) { %>
+    <ul class="bullet-list">
+      <% notation.tags.forEach(text => { %>
+        <li><%= text %></li>
+      <% }); %>
+    </ul>
   <% } %>
-</p>
-
-<h2>people</h2>
-
-<%- include('../people/peopleList', {
-  people: notation.people,
-  format: 'bullet',
-}) %>
+<% } %>
 
 <h2>text</h2>
 
@@ -56,20 +96,12 @@
   </p>
 <% }); %>
 
-<h2>tags</h2>
+<% if (showAppearances) { %>
+  <h1>Appearances</h1>
 
-<% if (notation.tags.length) { %>
-  <ul class="bullet-list">
-    <% notation.tags.forEach(text => { %>
-      <li><%= text %></li>
-    <% }); %>
-  </ul>
+  <% siteLinks.forEach(([url, text]) => { %>
+    <p>
+      <a href="http://localhost:8000/?<%= url %>" target="_blank"><%= text %></a>
+    </p>
+  <% }); %>
 <% } %>
-
-<h1>Appearances</h1>
-
-<% siteLinks.forEach(([url, text]) => { %>
-  <p>
-    <a href="http://localhost:8000/?<%= url %>" target="_blank"><%= text %></a>
-  </p>
-<% }); %>

@@ -50,10 +50,18 @@ function withNotation(req, res, callback) {
   .populate('people')
   .populate('stories')
   .exec((err, notation) => {
-    if (notation) {
-      callback(notation);
+    if (!notation) {
+      return res.send('Notation not found.');
+    }
+    if (notation.source) {
+      Story.findById(notation.source.story, (err, story) => {
+        if (story) {
+          notation.source.story = story;
+        }
+        callback(notation);
+      });
     } else {
-      res.send('Notation not found.');
+      callback(notation);
     }
   });
 }

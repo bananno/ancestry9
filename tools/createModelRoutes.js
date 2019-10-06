@@ -137,7 +137,8 @@ class ModelRoutes {
         } else {
           updatedObj[fieldName] = req.body[fieldName];
         }
-        if (fieldName == 'story' && updatedObj[fieldName] == '0') {
+        if (['story', 'source'].includes(fieldName)
+            && ['0', ''].includes(updatedObj[fieldName])) {
           updatedObj[fieldName] = null;
         }
         this.updateAndRedirect(req, res, item, itemId, updatedObj, fieldName);

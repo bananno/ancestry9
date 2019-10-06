@@ -6,6 +6,8 @@
   const toggle = locals.params ? params.toggle : locals.toggle;
   const preventSharing = locals.preventSharing || false;
   const disableToggleButton = toggle && preventSharing && !originalValue;
+
+  const originalValueText = originalValue ? (originalValue._id || originalValue) : originalValue;
 %>
 
 <form action="<%= editPath %>" method="POST">
@@ -146,12 +148,12 @@
       <% } else if (fieldType == 'textarea') { %>
         <textarea item="<%= attr %>" class="value-edit" name="<%= attr %>"><%= originalValue %></textarea>
       <% } else { %>
-        <input item="<%= attr %>" class="value-edit" type="text" value="<%= originalValue %>" name="<%= attr %>">
+        <input item="<%= attr %>" class="value-edit" type="text" value="<%= originalValueText %>" name="<%= attr %>">
       <% } %>
 
       <!-- HIDDEN ORIGINAL VALUE -->
 
-      <input item="<%= attr %>" class="value-original" type="hidden" value="<%= originalValue %>">
+      <input item="<%= attr %>" class="value-original" type="hidden" value="<%= originalValueText %>">
     </td>
     <td>
       <!-- SUBMIT EDIT -->
