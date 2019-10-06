@@ -45,6 +45,8 @@ mainSourceTypes.forEach(sourceType => {
   router.get('/sources/' + sourceType, getSourcesIndex(sourceType));
 });
 
+router.post('/source/:id/createNotation', createSourceNotation);
+
 function getSourcesIndex(subview) {
   return (req, res, next) => {
     Source.find({})
@@ -227,6 +229,22 @@ function editSourceFastCitations(req, res, next) {
           });
         });
       });
+    });
+  });
+}
+
+function createSourceNotation(req, res, next) {
+  withSource(req, res, null, source => {
+    const newNotation = {
+      title: req.body.title.trim(),
+      text: req.body.text.trim(),
+      source,
+    };
+    Notation.create(newNotation, (err, notation) => {
+      if (err) {
+        return res.send('There was a problem adding the information to the database.');
+      }
+      res.redirect('/source/' + source._id + '/notations');
     });
   });
 }

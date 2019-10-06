@@ -1,16 +1,32 @@
 <%
   const citations = notations.filter(notation => notation.title == 'source citation');
   const excerpts = notations.filter(notation => notation.title == 'excerpt');
-  const other = notations.filter(notation => {
+  const otherNotations = notations.filter(notation => {
     return notation.title != 'source citation'
       && notation.title != 'excerpt';
   });
 %>
 
+<p>
+  <span class="clickable-link main-link" id="add-notation">+ add notation</span>
+</p>
+
+<div id="new-notation-form">
+  <h2>new notation</h2>
+  <form method="post" action="/source/<%= source._id %>/createNotation">
+    <b>title</b> <input name="title"/>
+    <br>
+    <b>text</b> <textarea name="text"></textarea>
+    <br>
+    <button>submit</button>
+    <span class="clickable-link" id="new-notation-cancel">cancel</span>
+  </form>
+  <hr>
+</div>
+
 <h2>Source Citation</h2>
 
 <% if (citations.length == 0) { %>
-  <hr>
   <p>
     <i>(none)</i>
   </p>
@@ -18,7 +34,6 @@
 
 <% citations.forEach(notation => { %>
   <div class="notation">
-    <hr>
     <p>
       <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
     </p>
@@ -66,12 +81,12 @@
   </div>
 <% }); %>
 
-<% if (other.length) { %>
+<% if (otherNotations.length) { %>
   <hr>
 
   <h2>Other</h2>
 
-  <% notations.forEach(notation => { %>
+  <% otherNotations.forEach(notation => { %>
     <div class="notation">
       <hr>
       <p>
@@ -94,4 +109,19 @@
   .notation li {
     margin-top: 5px;
   }
+  #new-notation-form {
+    display: none;
+  }
 </style>
+
+<script>
+  $('#add-notation').click(() => {
+    $('#new-notation-form').show();
+    $('#add-notation').hide();
+  });
+  $('#new-notation-cancel').click(() => {
+    $('#new-notation-form').find('input, textarea').val('');
+    $('#new-notation-form').hide();
+    $('#add-notation').show();
+  });
+</script>
