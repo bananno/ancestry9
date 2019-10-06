@@ -244,15 +244,15 @@ function personWikitree(req, res, next) {
       sources = sources.filter(source => source.story.title.match('Census USA'));
 
       sources.forEach(source => {
-        const storyNotations = notations.filter(notation => {
-          return notation.stories.includes('' + source.story._id);
-        }).map(notation => notation.text);
-
         const sourceNotations = notations.filter(notation => {
           return '' + notation.source == '' + source._id;
         }).map(notation => notation.text);
 
-        source.notations = [...storyNotations, ...sourceNotations];
+        const storyNotations = notations.filter(notation => {
+          return notation.stories.includes('' + source.story._id);
+        }).map(notation => notation.text);
+
+        source.notations = [...sourceNotations, ...storyNotations];
       });
 
       sources.sort((a, b) => a.story.title < b.story.title ? -1 : 1);

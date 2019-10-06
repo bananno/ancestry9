@@ -1,5 +1,9 @@
 <% sources.forEach(source => { %>
-  <p>
-    <b>'''<%= source.story.title %>.'''</b> <%= source.notations %>
+  <p style="margin: 10px 0; max-width: 800px;">
+    <b>'''<%= source.story.title %>.'''</b>
+    <% if (source.notations.length < 2) { %>
+      <span style="color: red;">(missing)</span>
+    <% } %>
+    <%= source.notations.join(' ') %>
   </p>
 <% }); %>

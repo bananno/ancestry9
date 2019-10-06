@@ -121,12 +121,12 @@ function withSource(req, res, options, callback) {
 
 function withCitationText(source, callback) {
   mongoose.model('Notation')
-  .find({ title: 'source citation', stories: [source.story]})
-  .exec((err, storyNotation) => {
+  .find({ title: 'source citation', source: source})
+  .exec((err, sourceNotation) => {
     mongoose.model('Notation')
-    .find({ title: 'source citation', source: source})
-    .exec((err, sourceNotation) => {
-      callback([...storyNotation, ...sourceNotation].map(notation => {
+    .find({ title: 'source citation', stories: [source.story]})
+    .exec((err, storyNotation) => {
+      callback([...sourceNotation, ...storyNotation].map(notation => {
         return notation.text;
       }));
     });
