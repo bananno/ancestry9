@@ -32,7 +32,7 @@ createModelRoutes({
   edit: editSource,
   delete: deleteSource,
   otherRoutes: {
-    'excerpts': showSourceExcerpts,
+    'notations': showSourceNotations,
     'fastCitations': editSourceFastCitations,
   },
   toggleAttributes: ['sharing'],
@@ -149,16 +149,16 @@ function showSource(req, res) {
   });
 }
 
-function showSourceExcerpts(req, res, next) {
+function showSourceNotations(req, res, next) {
   withSource(req, res, null, source => {
     Notation
-    .find({ title: 'excerpt', source: source })
+    .find({ source: source })
     .populate('people')
     .populate('stories')
     .exec((err, notations) => {
       res.render('layout', {
         view: 'sources/layout',
-        subview: 'excerpts',
+        subview: 'notations',
         title: source.story.title + ' - ' + source.title,
         source,
         notations,

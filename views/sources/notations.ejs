@@ -1,0 +1,97 @@
+<%
+  const citations = notations.filter(notation => notation.title == 'source citation');
+  const excerpts = notations.filter(notation => notation.title == 'excerpt');
+  const other = notations.filter(notation => {
+    return notation.title != 'source citation'
+      && notation.title != 'excerpt';
+  });
+%>
+
+<h2>Source Citation</h2>
+
+<% if (citations.length == 0) { %>
+  <hr>
+  <p>
+    <i>(none)</i>
+  </p>
+<% } %>
+
+<% citations.forEach(notation => { %>
+  <div class="notation">
+    <hr>
+    <p>
+      <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
+    </p>
+    <p>
+      <%= notation.text %>
+    </p>
+  </div>
+<% }); %>
+
+<hr>
+
+<h2>Excerpts</h2>
+
+<% if (excerpts.length == 0) { %>
+  <hr>
+  <p>
+    <i>(none)</i>
+  </p>
+<% } %>
+
+<% excerpts.forEach(notation => { %>
+  <div class="notation">
+    <hr>
+    <p>
+      <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
+    </p>
+    <p>
+      <%= notation.text %>
+    </p>
+    <p>
+      <i>Pinned to:</i>
+    </p>
+    <ul class="bullet-list">
+      <% notation.people.forEach(person => { %>
+        <li>
+          <%- include('../partials/linkToPerson', { person }) %>
+        </li>
+      <% }); %>
+      <% notation.stories.forEach(story => { %>
+        <li>
+          <%- include('../partials/linkToStory', { story }) %>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+<% }); %>
+
+<% if (other.length) { %>
+  <hr>
+
+  <h2>Other</h2>
+
+  <% notations.forEach(notation => { %>
+    <div class="notation">
+      <hr>
+      <p>
+        <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
+      </p>
+      <p>
+        <%= notation.text %>
+      </p>
+    </div>
+  <% }); %>
+<% } %>
+
+<style>
+  hr {
+    margin: 20px 0;
+  }
+  .notation p {
+    margin-top: 10px;
+  }
+  .notation li {
+    margin-top: 5px;
+  }
+</style>
