@@ -93,7 +93,7 @@ function createSource(req, res) {
   });
 }
 
-function withSource(req, res, callback) {
+function withSource(req, res, options, callback) {
   const sourceId = req.params.id;
   Source.findById(sourceId)
   .populate('people')
@@ -103,12 +103,37 @@ function withSource(req, res, callback) {
     if (source == null) {
       return res.send('Source not found');
     }
-    callback(source);
+    if (!options) {
+      return callback(source);
+    }
+    const data = { source };
+    if (options.citationText) {
+      return withCitationText(source, citationText => {
+        data.citationText = citationText;
+        callback(data);
+      });
+    }
+    callback(data);
+  });
+}
+
+function withCitationText(source, callback) {
+  mongoose.model('Notation')
+  .find({ title: 'source citation', stories: [source.story]})
+  .exec((err, storyNotation) => {
+    mongoose.model('Notation')
+    .find({ title: 'source citation', source: source})
+    .exec((err, sourceNotation) => {
+      callback([...storyNotation, ...sourceNotation].map(notation => {
+        return notation.text;
+      }));
+    });
   });
 }
 
 function showSource(req, res) {
-  withSource(req, res, source => {
+  withSource(req, res, { citationText: true }, data => {
+    const { source, citationText } = data;
     mongoose.model('Citation').find({ source: source }).populate('person')
     .exec((err, citations) => {
       res.render('layout', {
@@ -118,13 +143,14 @@ function showSource(req, res) {
         source: source,
         citations: sortCitations(citations, 'item', source.people),
         citationsByPerson: sortCitations(citations, 'person', source.people),
+        citationText,
       });
     });
   });
 }
 
 function showSourceExcerpts(req, res, next) {
-  withSource(req, res, source => {
+  withSource(req, res, null, source => {
     Notation
     .find({ title: 'excerpt', source: source })
     .populate('people')
@@ -142,7 +168,7 @@ function showSourceExcerpts(req, res, next) {
 }
 
 function editSource(req, res, next) {
-  withSource(req, res, source => {
+  withSource(req, res, null, source => {
     Person.find({ }).exec((err, people) => {
       Citation.find({ source: source }).populate('person')
       .exec((err, citations) => {
@@ -174,7 +200,7 @@ function editSource(req, res, next) {
 }
 
 function editSourceFastCitations(req, res, next) {
-  withSource(req, res, source => {
+  withSource(req, res, null, source => {
     Person.find({ }).exec((err, people) => {
       Citation.find({ source: source }).populate('person')
       .exec((err, citations) => {
@@ -226,7 +252,7 @@ function filterSourcesByType(sources, type) {
 }
 
 function deleteSource(req, res, next) {
-  withSource(req, res, source => {
+  withSource(req, res, null, source => {
     source.delete(() => {
       res.redirect('/sources');
     });

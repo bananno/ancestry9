@@ -127,6 +127,15 @@
   limit: false,
 }) %>
 
+<% if (citationText.length) { %>
+  <h2>citation text</h2>
+  <ul class="bullet-list">
+    <% citationText.forEach(text => { %>
+      <li><%= text %></li>
+    <% }); %>
+  </ul>
+<% } %>
+
 <h2>citations</h2>
 
 <%- include('../partials/citationList', {

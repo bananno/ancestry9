@@ -119,6 +119,15 @@
   }) %>
 <% } %>
 
+<% if (citationText.length) { %>
+  <h2>citation text</h2>
+  <ul class="bullet-list">
+    <% citationText.forEach(text => { %>
+      <li><%= text %></li>
+    <% }); %>
+  </ul>
+<% } %>
+
 <% if (entries.length) { %>
   <h2>entries</h2>
   <ul class="bullet-list">

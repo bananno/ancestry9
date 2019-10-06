@@ -115,25 +115,53 @@ function createStory(req, res, next) {
 
 function withStory(req, res, options, callback) {
   const storyId = req.params.id;
+
   Story.findById(storyId).populate('people').exec((err, story) => {
     if (!story) {
       return res.send('Story not found');
     }
-    if (options.entries) {
+
+    const data = { story };
+
+    // ENTRIES (sources that belong to the story)
+    new Promise(resolve => {
+      if (!options.entries) {
+        return resolve();
+      }
       Source.find({ story: story }).exec((err, entries) => {
         entries.sort((a, b) => a.title < b.title ? -1 : 1);
-        if (options.sources) {
-          Source.find({ stories: story }).populate('story')
-          .exec((err, sources) => {
-            callback({story, entries, sources});
-          });
-        } else {
-          callback({story, entries});
-        }
+        data.entries = entries;
+        resolve();
       });
-    } else {
-      callback({story});
-    }
+    // SOURCES (other pinned sources; don't belong to the story)
+    }).then(() => {
+      if (!options.sources) {
+        return;
+      }
+      return new Promise(resolve => {
+        Source.find({ stories: story })
+        .populate('story')
+        .exec((err, sources) => {
+          data.sources = sources;
+          resolve();
+        });
+      });
+    // CITATION (offical text describing the origin)
+    }).then(() => {
+      if (!options.citationText) {
+        return;
+      }
+      return new Promise(resolve => {
+        mongoose.model('Notation')
+        .find({ title: 'source citation', stories: [story] })
+        .exec((err, notations) => {
+          data.citationText = notations.map(notation => notation.text);
+          resolve();
+        });
+      });
+    }).then(() => {
+      callback(data);
+    });
   });
 }
 
@@ -151,12 +179,13 @@ function mainStoryView(res, story, params) {
 
 function storyShowMain(req, res) {
   withStory(req, res, {
-    entries: true, sources: true
-  }, ({story, entries, sources}) => {
+    entries: true, sources: true, citationText: true
+  }, ({story, entries, sources, citationText}) => {
     mainStoryView(res, story, {
       subview: 'show',
       entries,
       sources,
+      citationText
     });
   });
 }
