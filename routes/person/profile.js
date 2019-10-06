@@ -16,6 +16,7 @@ module.exports = {
     nationality: personNationality,
     relatives: personRelatives,
     connection: personConnection,
+    wikitree: personWikitree,
   }
 };
 
@@ -230,6 +231,41 @@ function personConnection(req, res) {
         return personTools.findPersonInList(people, person)
       },
       isSamePerson: personTools.isSamePerson,
+    });
+  });
+}
+
+function personWikitree(req, res, next) {
+  const person = req.person;
+
+  mongoose.model('Source').find({ people: person }).populate('story').exec((err, sources) => {
+    mongoose.model('Notation').find({ title: 'source citation' }, (err, notations) => {
+
+      sources = sources.filter(source => source.story.title.match('Census USA'));
+
+      sources.forEach(source => {
+        const storyNotations = notations.filter(notation => {
+          return notation.stories.includes('' + source.story._id);
+        }).map(notation => notation.text);
+
+        const sourceNotations = notations.filter(notation => {
+          return '' + notation.source == '' + source._id;
+        }).map(notation => notation.text);
+
+        source.notations = [...storyNotations, ...sourceNotations];
+      });
+
+      sources.sort((a, b) => a.story.title < b.story.title ? -1 : 1);
+
+      res.render('layout', {
+        view: 'person/layout',
+        subview: 'wikitree',
+        title: person.name,
+        personId: req.personId,
+        paramPersonId: req.paramPersonId,
+        person,
+        sources,
+      });
     });
   });
 }
