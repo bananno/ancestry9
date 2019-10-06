@@ -6,6 +6,7 @@
     <th>shared</th>
     <th>ancestry</th>
     <th>familysearch</th>
+    <th>citation</th>
   </tr>
   <% censusSources.forEach(source => { %>
     <tr>
@@ -15,7 +16,7 @@
           source,
         }) %>
       </td>
-      <% ['sharing', 'hasAncestry', 'hasFamilySearch'].forEach(attr => { %>
+      <% ['sharing', 'hasAncestry', 'hasFamilySearch', 'hasCitation'].forEach(attr => { %>
         <td>
           <img class="checkmark-inline" src="/images/check-<%= source[attr] || false %>.png">
         </td>

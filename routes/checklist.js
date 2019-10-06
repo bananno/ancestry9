@@ -106,25 +106,35 @@ function checklistFindAGrave(req, res, next) {
 
 function checklistSourceCensus(req, res, next) {
   mongoose.model('Source').find({}).populate('story').exec((err, sources) => {
-    const censusSources = sources.filter(source => {
-      return source.story.title.match('Census USA');
-    });
+    mongoose.model('Notation').find({title: 'source citation'}).exec((err, notations) => {
+      const censusSources = sources.filter(source => {
+        return source.story.title.match('Census USA');
+      });
 
-    censusSources.forEach(source => {
-      source.hasAncestry = source.links.some(link => link.match(' Ancestry'));
-      source.hasFamilySearch = source.links.some(link => link.match(' FamilySearch'));
-      source.sort = (source.sharing ? '1' : '2')
-        + (source.hasAncestry || source.hasFamilySearch ? '2' : '1')
-        + (source.hasAncestry ? '2' : '1')
-        + (source.hasFamilySearch ? '2' : '1');
-    });
+      const notationRef = {};
+      notations.forEach(notation => {
+        if (notation.source) {
+          notationRef['' + notation.source] = true;
+        }
+      });
 
-    censusSources.sort((a, b) => a.sort < b.sort ? -1 : 1);
+      censusSources.forEach(source => {
+        source.hasAncestry = source.links.some(link => link.match(' Ancestry'));
+        source.hasFamilySearch = source.links.some(link => link.match(' FamilySearch'));
+        source.hasCitation = !!notationRef['' + source._id];
+        source.sort = (source.sharing ? '1' : '2')
+          + (source.hasAncestry || source.hasFamilySearch ? '2' : '1')
+          + (source.hasAncestry ? '2' : '1')
+          + (source.hasFamilySearch ? '2' : '1');
+      });
 
-    res.render('layout', {
-      view: 'checklist/sourceCensus',
-      title: 'Checklist',
-      censusSources,
+      censusSources.sort((a, b) => a.sort < b.sort ? -1 : 1);
+
+      res.render('layout', {
+        view: 'checklist/sourceCensus',
+        title: 'Checklist',
+        censusSources,
+      });
     });
   });
 }
