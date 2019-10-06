@@ -241,8 +241,6 @@ function personWikitree(req, res, next) {
   mongoose.model('Source').find({ people: person }).populate('story').exec((err, sources) => {
     mongoose.model('Notation').find({ title: 'source citation' }, (err, notations) => {
 
-      sources = sources.filter(source => source.story.title.match('Census USA'));
-
       sources.forEach(source => {
         const sourceNotations = notations.filter(notation => {
           return '' + notation.source == '' + source._id;
@@ -253,6 +251,11 @@ function personWikitree(req, res, next) {
         }).map(notation => notation.text);
 
         source.notations = [...sourceNotations, ...storyNotations];
+      });
+
+      sources = sources.filter(source => {
+        return source.notations.length
+          || source.story.title.match('Census USA');
       });
 
       sources.sort((a, b) => a.story.title < b.story.title ? -1 : 1);
