@@ -1,0 +1,45 @@
+<h1>Checklist - profile summary</h1>
+
+<% if (peopleNeedSummary.length) { %>
+  <h2>need profile summary</h2>
+  <ul class="bullet-list">
+    <% peopleNeedSummary.forEach(person => { %>
+      <li>
+        <%- include('../partials/linkToPerson', { person }) %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<h2>people with summary</h2>
+
+<% peopleWithSummary.forEach(person => { %>
+  <p style="margin-top: 15px">
+    <%- include('../partials/linkToPerson', { person }) %>
+  </p>
+  <% person.notations.forEach(notation => { %>
+    <p style="margin-top: 5px">
+      <%= notation.text %>
+      <% if (notation.also.length) { %>
+        <i>(<b>also used for:</b> <%= notation.also.join(', ') %>)</i>
+      <% } %>
+    </p>
+  <% }); %>
+<% }); %>
+
+<h2>people without summary</h2>
+
+<ul class="bullet-list">
+  <% peopleWithoutSummary.forEach(person => { %>
+    <li>
+      <%- include('../partials/linkToPerson', { person }) %>
+    </li>
+  <% }); %>
+</ul>
+
+<style>
+  .bullet-list li {
+    display: inline-block;
+    width: 350px;
+  }
+</style>

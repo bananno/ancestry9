@@ -14,6 +14,7 @@ router.get('/checklist/wikitree', checklistWikiTree);
 router.get('/checklist/findagrave', checklistFindAGrave);
 router.get('/checklist/tags', checklistTags);
 router.get('/checklist/sourceCensus', checklistSourceCensus);
+router.get('/checklist/profileSummary', checklistProfileSummary);
 
 router.get('/to-do', showToDoList);
 router.post('/to-do/new', newToDoItem);
@@ -176,6 +177,52 @@ function checklistTags(req, res, next) {
       view: 'checklist/tags',
       title: 'Checklist',
       tags,
+    });
+  });
+}
+
+function checklistProfileSummary(req, res, next) {
+  mongoose.model('Person').find({}).exec((err, people) => {
+    mongoose.model('Notation').find({}).exec((err, notations) => {
+      const personNotations = {};
+
+      notations = notations.filter(notation => {
+        return notation.title == 'profile summary'
+          || notation.tags.includes('profile summary');
+      }).forEach(notation => {
+        notation.also = notation.tags.filter(tag => {
+          return tag.match('brick wall') || tag == 'research notes';
+        });
+        notation.people.forEach(person => {
+          personNotations['' + person] = personNotations['' + person] || [];
+          personNotations['' + person].push(notation);
+        });
+      });
+
+      const peopleNeedSummary = people.filter(person => {
+        return person.tags.includes('need profile summary')
+          || person.tags.includes('needs profile summary');
+      });
+
+      const peopleWithSummary = [];
+      const peopleWithoutSummary = [];
+
+      people.forEach(person => {
+        person.notations = personNotations['' + person._id];
+        if (person.notations) {
+          peopleWithSummary.push(person);
+        } else {
+          peopleWithoutSummary.push(person);
+        }
+      });
+
+      res.render('layout', {
+        view: 'checklist/profileSummary',
+        title: 'Checklist',
+        peopleNeedSummary,
+        peopleWithSummary,
+        peopleWithoutSummary,
+      });
     });
   });
 }
