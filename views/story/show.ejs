@@ -92,9 +92,9 @@
 <% if (story.images.length) { %>
   <h2>images</h2>
   <p>
-    <% story.images.forEach(imageUrl => { %>
-      <a href="<%= imageUrl %>" target="_blank"><img
-        src="<%= imageUrl %>" style="max-height: 100px; max-width: 800px;"></a>
+    <% story.images.forEach(image => { %>
+      <a href="<%= image.url %>" target="_blank"><img
+        src="<%= image.url %>" style="max-height: 100px; max-width: 800px;"></a>
     <% }); %>
   </p>
 <% } %>

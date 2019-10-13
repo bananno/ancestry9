@@ -12,7 +12,10 @@ const storySchema = new mongoose.Schema({
     ref: 'Person',
   }],
   links: [String],
-  images: [String],
+  images: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Image',
+  }],
   tags: [String],
   content: String,
   notes: String,

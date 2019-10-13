@@ -122,7 +122,10 @@ function createStory(req, res, next) {
 function withStory(req, res, options, callback) {
   const storyId = req.params.id;
 
-  Story.findById(storyId).populate('people').exec((err, story) => {
+  Story.findById(storyId)
+  .populate('people')
+  .populate('images')
+  .exec((err, story) => {
     if (!story) {
       return res.send('Story not found');
     }

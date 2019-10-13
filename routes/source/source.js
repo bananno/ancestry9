@@ -101,6 +101,7 @@ function withSource(req, res, options, callback) {
   .populate('people')
   .populate('story')
   .populate('stories')
+  .populate('images')
   .exec((err, source) => {
     if (source == null) {
       return res.send('Source not found');

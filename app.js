@@ -20,13 +20,14 @@ const routeFiles = [
 
 const modelFiles = [
   'db',
-  'person',
-  'event',
-  'story',
-  'source',
   'citation',
+  'event',
+  'image',
   'location',
   'notation',
+  'person',
+  'source',
+  'story',
   'to-do',
 ];
 
