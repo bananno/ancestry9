@@ -1,0 +1,69 @@
+<%
+  const rootPath = '/image/' + image._id;
+  const rootEditPath = rootPath + '/edit';
+%>
+
+<h1>Image</h1>
+
+<img src="<%= image.url %>" class="main-image">
+
+<% if (story) { %>
+  <h2>belongs to story</h2>
+  <%- include('../partials/linkToStory', { story }) %>
+<% } %>
+
+<% if (source) { %>
+  <h2>belongs to source</h2>
+  <%- include('../partials/linkToSource', { source, showStory: true }) %>
+<% } %>
+
+<% if (!source && !story) { %>
+  <h2>(orphan image - no story or source)</h2>
+<% } %>
+
+<% if (image.tags.length) { %>
+  <h2>tags</h2>
+  <ul class="bullet-list">
+    <% image.tags.forEach(tag => { %>
+      <li><%= tag %></li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<hr>
+
+<h2>edit</h2>
+
+<table class="edit-form-frame">
+
+  <!-- URL -->
+
+  <%- include('../forms/tableRowSingle', {
+    attr: 'url',
+    editPath: rootEditPath + '/url',
+    originalValue: image.url,
+  }) %>
+
+  <!-- TAGS -->
+
+  <%- include('../forms/tableRowMulti', {
+    attr: 'tags',
+    rootPath: rootPath,
+    values: image.tags,
+  }) %>
+
+</table>
+
+<style>
+  .main-image {
+    max-height: 500px;
+    max-width: 1000px;
+  }
+  hr {
+    margin: 30px 0;
+  }
+</style>
+
+<script>
+  initializeEditForm();
+</script>

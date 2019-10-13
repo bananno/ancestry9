@@ -16,6 +16,7 @@ const routeFiles = [
   ['map'],
   ['checklist'],
   ['database'],
+  ['image'],
 ];
 
 const modelFiles = [
