@@ -184,44 +184,64 @@ function checklistTags(req, res, next) {
 function checklistProfileSummary(req, res, next) {
   mongoose.model('Person').find({}).exec((err, people) => {
     mongoose.model('Notation').find({}).exec((err, notations) => {
-      const personNotations = {};
+      mongoose.model('Source').find({ tags: 'biography'}).exec((err, sources) => {
+        const personNotations = {};
+        const personBiographies = {};
 
-      notations = notations.filter(notation => {
-        return notation.title == 'profile summary'
-          || notation.tags.includes('profile summary');
-      }).forEach(notation => {
-        notation.also = notation.tags.filter(tag => {
-          return tag.match('brick wall') || tag == 'research notes';
+        sources.forEach(source => {
+          const person = source.people[0];
+          personBiographies['' + person] = personBiographies['' + person] || [];
+          personBiographies['' + person].push(source);
         });
-        notation.people.forEach(person => {
-          personNotations['' + person] = personNotations['' + person] || [];
-          personNotations['' + person].push(notation);
+
+        notations = notations.filter(notation => {
+          return notation.title == 'profile summary'
+            || notation.tags.includes('profile summary');
+        }).forEach(notation => {
+          notation.also = notation.tags.filter(tag => {
+            return tag.match('brick wall') || tag == 'research notes';
+          });
+          notation.people.forEach(person => {
+            personNotations['' + person] = personNotations['' + person] || [];
+            personNotations['' + person].push(notation);
+          });
         });
-      });
 
-      const peopleNeedSummary = people.filter(person => {
-        return person.tags.includes('need profile summary')
-          || person.tags.includes('needs profile summary');
-      });
+        const peopleNeedSummary = people.filter(person => {
+          return person.tags.includes('need profile summary')
+            || person.tags.includes('needs profile summary');
+        });
 
-      const peopleWithSummary = [];
-      const peopleWithoutSummary = [];
+        const peopleWithSummary = [];
+        const peopleWithBiography = [];
+        const peopleWithoutSummaryShared = [];
+        const peopleWithoutSummaryNotShared = [];
 
-      people.forEach(person => {
-        person.notations = personNotations['' + person._id];
-        if (person.notations) {
-          peopleWithSummary.push(person);
-        } else {
-          peopleWithoutSummary.push(person);
-        }
-      });
+        people.forEach(person => {
+          person.notations = personNotations['' + person._id];
+          person.biographies = personBiographies['' + person._id];
+          if (person.notations || person.biographies) {
+            if (person.notations) {
+              peopleWithSummary.push(person);
+            } else {
+              peopleWithBiography.push(person);
+            }
+          } else if (person.sharing.level == 2) {
+            peopleWithoutSummaryShared.push(person);
+          } else {
+            peopleWithoutSummaryNotShared.push(person);
+          }
+        });
 
-      res.render('layout', {
-        view: 'checklist/profileSummary',
-        title: 'Checklist',
-        peopleNeedSummary,
-        peopleWithSummary,
-        peopleWithoutSummary,
+        res.render('layout', {
+          view: 'checklist/profileSummary',
+          title: 'Checklist',
+          peopleNeedSummary,
+          peopleWithSummary,
+          peopleWithBiography,
+          peopleWithoutSummaryShared,
+          peopleWithoutSummaryNotShared,
+        });
       });
     });
   });

@@ -14,11 +14,11 @@
 <h2>people with summary</h2>
 
 <% peopleWithSummary.forEach(person => { %>
-  <p style="margin-top: 15px">
+  <p class="person-header">
     <%- include('../partials/linkToPerson', { person }) %>
   </p>
   <% person.notations.forEach(notation => { %>
-    <p style="margin-top: 5px">
+    <p class="person-text">
       <%= notation.text %>
       <% if (notation.also.length) { %>
         <i>(<b>also used for:</b> <%= notation.also.join(', ') %>)</i>
@@ -27,10 +27,39 @@
   <% }); %>
 <% }); %>
 
-<h2>people without summary</h2>
+<h2>people with biography</h2>
+
+<% peopleWithBiography.forEach(person => { %>
+  <p class="person-header">
+    <%- include('../partials/linkToPerson', { person }) %>
+  </p>
+  <% person.biographies.forEach(source => { %>
+    <%
+      let text = source.content;
+      if (text.length > 300) {
+        text = text.slice(0, 300) + '...';
+      }
+    %>
+    <p class="person-text">
+      <%= text %>
+    </p>
+  <% }); %>
+<% }); %>
+
+<h2>people without summary - shared</h2>
 
 <ul class="bullet-list">
-  <% peopleWithoutSummary.forEach(person => { %>
+  <% peopleWithoutSummaryShared.forEach(person => { %>
+    <li>
+      <%- include('../partials/linkToPerson', { person }) %>
+    </li>
+  <% }); %>
+</ul>
+
+<h2>people without summary - not shared</h2>
+
+<ul class="bullet-list">
+  <% peopleWithoutSummaryNotShared.forEach(person => { %>
     <li>
       <%- include('../partials/linkToPerson', { person }) %>
     </li>
@@ -41,5 +70,11 @@
   .bullet-list li {
     display: inline-block;
     width: 350px;
+  }
+  p.person-header {
+    margin-top: 15px;
+  }
+  p.person-text {
+    margin-top: 10px;
   }
 </style>
