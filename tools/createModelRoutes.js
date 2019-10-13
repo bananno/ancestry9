@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const reorderList = require('./reorderList');
 const removePersonFromList = require('./removePersonFromList');
 const getDateValues = require('./getDateValues');
@@ -149,14 +150,25 @@ class ModelRoutes {
   addListAttribute(fieldName) {
     const routePath = '/' + this.modelName + '/:id/add/' + fieldName;
     this.router.post(routePath, (req, res, next) => {
-      this.withItem(req, (item, itemId) => {
-        const updatedObj = {};
-        const newValue = req.body[fieldName].trim();
-        if (newValue == '') {
-          return;
+      const newValue = req.body[fieldName].trim();
+      if (newValue == '') {
+        return;
+      }
+      new Promise(resolve => {
+        if (fieldName == 'images') {
+          const newVals = { url: newValue };
+          mongoose.model('Image').create(newVals, (err, newObject) => {
+            resolve(newObject);
+          });
+        } else {
+          resolve(newValue);
         }
-        updatedObj[fieldName] = (item[fieldName] || []).concat(newValue);
-        this.updateAndRedirect(req, res, item, itemId, updatedObj);
+      }).then(newItem => {
+        this.withItem(req, (item, itemId) => {
+          const updatedObj = {};
+          updatedObj[fieldName] = (item[fieldName] || []).concat(newItem);
+          this.updateAndRedirect(req, res, item, itemId, updatedObj);
+        });
       });
     });
   }
@@ -168,9 +180,9 @@ class ModelRoutes {
         const updatedObj = {};
         const deleteId = req.params.deleteId;
 
-        if (['people', 'stories'].includes(fieldName)) {
+        if (['people', 'stories', 'images'].includes(fieldName)) {
           updatedObj[fieldName] = item[fieldName].filter(item => {
-            return ('' + item._id) != deleteId;
+            return ('' + (item._id || item)) != deleteId;
           });
         } else {
           updatedObj[fieldName] = item[fieldName].filter((item, i) => {
@@ -178,7 +190,17 @@ class ModelRoutes {
           });
         }
 
-        this.updateAndRedirect(req, res, item, itemId, updatedObj);
+        new Promise(resolve => {
+          if (fieldName == 'images') {
+            mongoose.model('Image').findById(deleteId).exec((err, image) => {
+              image.remove(resolve);
+            });
+          } else {
+            resolve();
+          }
+        }).then(() => {
+          this.updateAndRedirect(req, res, item, itemId, updatedObj);
+        });
       });
     });
   }

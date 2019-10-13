@@ -1,17 +1,17 @@
 
 function reorderList(valuelist, orderId, attr) {
-  if (attr == 'people') {
-    for (var i = 1; i < valuelist.length; i++) {
-      var thisPerson = valuelist[i];
-      if (isSamePerson(thisPerson, orderId)) {
+  if (['people', 'images'].includes(attr)) {
+    for (let i = 1; i < valuelist.length; i++) {
+      const nextItem = valuelist[i];
+      if (isSameItem(nextItem, orderId)) {
         valuelist[i] = valuelist[i - 1];
-        valuelist[i - 1] = thisPerson;
+        valuelist[i - 1] = nextItem;
         break;
       }
     }
   } else if (['links', 'images', 'tags'].includes(attr)) {
     if (orderId > 0 && valuelist.length > orderId) {
-      var temp = valuelist[orderId - 1];
+      const temp = valuelist[orderId - 1];
       valuelist[orderId - 1] = valuelist[orderId];
       valuelist[orderId] = temp;
     }
@@ -20,9 +20,9 @@ function reorderList(valuelist, orderId, attr) {
   return valuelist;
 }
 
-function isSamePerson(person1, person2) {
-  var id1 = person1._id ? person1._id : person1;
-  var id2 = person2._id ? person2._id : person2;
+function isSameItem(item1, item2) {
+  let id1 = item1._id ? item1._id : item1;
+  let id2 = item2._id ? item2._id : item2;
   id1 = '' + id1;
   id2 = '' + id2;
   return id1 == id2;
