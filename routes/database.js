@@ -49,6 +49,8 @@ function showDatabaseEverything(req, res) {
   }).then(() => {
     return saveFullDataFile(data, 'To-do', 'tasks');
   }).then(() => {
+    return saveFullDataFile(data, 'Image', 'images');
+  }).then(() => {
     res.render('database', data);
   });
 }
@@ -262,6 +264,7 @@ function getRawSharedData(callback) {
   .exec((err, people) => {
     mongoose.model('Source')
     .find({ sharing: true })
+    .populate('images')
     .exec((err, sources) => {
       mongoose.model('Event')
       .find({})
@@ -276,6 +279,7 @@ function getRawSharedData(callback) {
           .exec((err, notations) => {
             mongoose.model('Story')
             .find({ sharing: true })
+            .populate('images')
             .exec((err, stories) => {
               callback({
                 people: people,
