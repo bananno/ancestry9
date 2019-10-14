@@ -25,6 +25,9 @@ const fields = {
   notation: [
     '_id', 'title', 'people', 'text', 'tags', 'source', 'stories'
   ],
+  image: [
+    '_id', 'url', 'tags'
+  ],
 };
 
 router.get('/database', showDatabaseEverything);
@@ -203,6 +206,14 @@ function getProcessedSharedData(req, res, callback) {
       fields.story.forEach(attr => story[attr] = storyInfo[attr]);
       story.tags = convertTags(storyInfo);
       story.people = story.people.filter(personId => tempPersonRef['' + personId]);
+
+      story.images = storyInfo.images.map(imageRaw => {
+        const image = {};
+        fields.image.forEach(attr => image[attr] = imageRaw[attr]);
+        image.tags = convertTags(image);
+        return image;
+      });
+
       tempStoryRef[story._id] = story;
       return story;
     });
@@ -212,6 +223,13 @@ function getProcessedSharedData(req, res, callback) {
       fields.source.forEach(attr => source[attr] = sourceInfo[attr]);
       source.tags = convertTags(sourceInfo);
       source.people = source.people.filter(personId => tempPersonRef['' + personId]);
+
+      source.images = sourceInfo.images.map(imageRaw => {
+        const image = {};
+        fields.image.forEach(attr => image[attr] = imageRaw[attr]);
+        image.tags = convertTags(image);
+        return image;
+      });
 
       const tempStory = tempStoryRef[source.story._id];
       source.fullTitle = tempStory.title + ' - ' + source.title;
