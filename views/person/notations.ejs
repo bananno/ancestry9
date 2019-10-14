@@ -29,7 +29,13 @@
 
   <% textList.forEach(text => { %>
     <p style="margin-top: 5px;">
-      <%= notation.text %>
+      <% text.split(' ').forEach(word => { %>
+        <% if (word.slice(0, 4) == 'http') { %>
+          <a href="<%= word %>" target="_blank"><%= word %></a>
+        <% } else { %>
+          <%= word %>
+        <% } %>
+      <% }); %>
     </p>
   <% }); %>
 
