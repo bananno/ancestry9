@@ -16,9 +16,11 @@
 
     <% if (source.images.length) { %>
       <p>
-        <% source.images.forEach(imageUrl => { %>
-          <a href="<%= imageUrl %>" target="_blank"><img
-            src="<%= imageUrl %>" style="max-height: 100px; max-width: 100%;"></a>
+        <% source.images.forEach(image => { %>
+          <%- include('../partials/linkToImage', {
+            image,
+            css: 'max-height: 100px; max-width: 100%;'
+          }) %>
         <% }); %>
       </p>
     <% } %>

@@ -109,6 +109,7 @@ function personSources(req, res, next) {
   mongoose.model('Source')
   .find({ people: person })
   .populate('story')
+  .populate('images')
   .exec((err, sources) => {
     mongoose.model('Citation')
     .find({ person: person })
