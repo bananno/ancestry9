@@ -1,0 +1,16 @@
+<h1>Checklist - images</h1>
+
+<ul class="bullet-list">
+  <% images.forEach(image => { %>
+    <li>
+      <% if (image.story) { %>
+        story
+      <% } else { %>
+      <% } %>
+      <a href="/image/<%= image._id %>"><%= image._id %></a>
+      <% if (image.tags.length) { %>
+        (<%= image.tags.join(', ') %>)
+      <% } %>
+    </li>
+  <% }); %>
+</ul>

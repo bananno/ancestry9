@@ -15,6 +15,7 @@ router.get('/checklist/findagrave', checklistFindAGrave);
 router.get('/checklist/tags', checklistTags);
 router.get('/checklist/sourceCensus', checklistSourceCensus);
 router.get('/checklist/profileSummary', checklistProfileSummary);
+router.get('/checklist/images', checklistImages);
 
 router.get('/to-do', showToDoList);
 router.post('/to-do/new', newToDoItem);
@@ -177,6 +178,57 @@ function checklistTags(req, res, next) {
       view: 'checklist/tags',
       title: 'Checklist',
       tags,
+    });
+  });
+}
+
+function checklistImages(req, res, next) {
+  let images = [];
+
+  new Promise(resolve => {
+    mongoose.model('Source').find({})
+    .populate('story')
+    .populate('images')
+    .exec((err, sources) => {
+      sources.forEach(source => {
+        source.images.forEach(image => {
+          image.source = source;
+          images.push(image);
+        });
+      });
+      resolve();
+    });
+  }).then(() => {
+    return new Promise(resolve => {
+      mongoose.model('Story').find({})
+      .populate('images')
+      .exec((err, stories) => {
+        stories.forEach(story => {
+          story.images.forEach(image => {
+            image.story = story;
+            images.push(image);
+          });
+        });
+        resolve();
+      });
+    });
+  }).then(() => {
+    images.sort((a, b) => {
+      if (a.tags.length == b.tags.length) {
+        let sortA = a.tags.sort().join('-');
+        let sortB = b.tags.sort().join('-');
+        if (sortA == sortB) {
+          return 0;
+        }
+        return sortB < sortA ? -1 : 1;
+      }
+      return b.tags.length - a.tags.length;
+    });
+
+    res.render('layout', {
+      view: 'checklist/images',
+      title: 'Checklist',
+      images,
     });
   });
 }
