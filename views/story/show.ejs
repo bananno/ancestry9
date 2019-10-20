@@ -93,8 +93,7 @@
   <h2>images</h2>
   <p>
     <% story.images.forEach(image => { %>
-      <a href="<%= image.url %>" target="_blank"><img
-        src="<%= image.url %>" style="max-height: 100px; max-width: 800px;"></a>
+      <%- include('../format/linkToImage', { image }) %>
     <% }); %>
   </p>
 <% } %>

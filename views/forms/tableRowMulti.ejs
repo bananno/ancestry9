@@ -32,12 +32,9 @@
       <% if (dataType == 'links') { %>
         <%- include('../format/externalLink', { url: thisItem }) %>
       <% } else if (dataType == 'images') { %>
-        <a href="/image/<%= thisItem._id %>">
-          <img src="<%= thisItem.url %>" style="max-height: 100px;"></a>
+        <%- include('../format/linkToImage', { image: thisItem }) %>
       <% } else if (dataType == 'people') { %>
-        <%- include('../partials/linkToPerson', {
-          person: thisItem
-        }) %>
+        <%- include('../partials/linkToPerson', { person: thisItem }) %>
       <% } else if (dataType == 'stories') { %>
         <%- include('../partials/linkToStory', { story: thisItem }) %>
       <% } else { %>
