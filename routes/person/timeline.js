@@ -16,6 +16,7 @@ module.exports = function(req, res) {
     .find({ people: person })
     .populate('people')
     .populate('story')
+    .populate('images')
     .exec((err, sources) => {
       const sourceEvents = getSourceEvents(sources);
       events = sortEvents(events);

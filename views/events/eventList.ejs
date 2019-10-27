@@ -70,8 +70,8 @@
       <td style="max-width: 400px;">
         <%= event.notes %>
         <% if (event.source) { %>
-          <% event.source.images.forEach(url => { %>
-            <a href="<%= url %>" target="_blank"><img src="<%= url %>"
+          <% event.source.images.forEach(image => { %>
+            <a href="<%= image.url %>" target="_blank"><img src="<%= image.url %>"
               style="max-height: 100px; max-width: 350px;"></a>
           <% }); %>
         <% } %>
