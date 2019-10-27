@@ -6,7 +6,7 @@
     <% } %>
     <%= source.notations.join(' ') %>
     <%
-      const familySearch = source.links.filter(url => url.match('FamilySearch'));
+      const familySearch = source.links.filter(url => url.match('FamilySearch'))[0];
     %>
     <% if (familySearch) { %>
       (<a href="<%= familySearch %>" target="_blank"><%= familySearch %></a>)
