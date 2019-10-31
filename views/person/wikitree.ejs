@@ -1,12 +1,45 @@
+<h2>== Profiles ==</h2>
+
+<% person.links.forEach(link => { %>
+  <%
+    let url, text;
+
+    if (link.match(' FindAGrave')) {
+      url = link.split(' ')[0];
+      text = 'FindAGrave '
+        + url.replace('https://www.findagrave.com/memorial/', '');
+    } else if (link.match(' FamilySearch')) {
+      url = link.split(' ')[0];
+      text = 'FamilySearch '
+        + url.replace('https://www.familysearch.org/tree/person/details/', '');
+    }
+  %>
+  <% if (url) { %>
+    <p>
+      * <a href="<%= url %>" target="_blank">[<%= url %> <%= text %>]</a>
+    </p>
+  <% } %>
+<% }); %>
+
+<h2>== Sources ==</h2>
+
+<p>
+  &lt;references /&gt;
+</p>
+
 <% sources.forEach(source => { %>
   <p style="margin: 10px 0; max-width: 800px;">
+    *
     <b>'''<%= source.story.title %>.'''</b>
     <% if (source.story.title.match('Census') && source.notations.length < 2) { %>
       <span style="color: red;">(missing)</span>
     <% } %>
     <%= source.notations.join(' ') %>
     <%
-      const familySearch = source.links.filter(url => url.match('FamilySearch'))[0];
+      let familySearch = source.links.filter(url => url.match('FamilySearch'))[0];
+      if (familySearch) {
+        familySearch = familySearch.split(' ')[0];
+      }
     %>
     <% if (familySearch) { %>
       (<a href="<%= familySearch %>" target="_blank"><%= familySearch %></a>)
