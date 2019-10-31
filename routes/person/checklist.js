@@ -121,8 +121,7 @@ function getSourceChecklist(sources, person, birthYear, deathYear) {
     checkForStory('title', 'Census USA ' + year);
   }
 
-  if (birthYear != null && deathYear != null
-      && !person.tags.includes('gender=female')) {
+  if (birthYear != null && deathYear != null && person.gender != 1) {
     if (birthYear < 1900 && deathYear > 1917) {
       checkForStory('title', 'World War I draft');
     }
