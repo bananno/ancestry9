@@ -176,7 +176,7 @@ function editSource(req, res, next) {
       Citation.find({ source: source }).populate('person')
       .exec((err, citations) => {
         Story.find({}, (err, stories) => {
-          people = sortPeople(people, 'name');
+          sortPeople(people, 'name');
 
           source.people.forEach(thisPerson => {
             people = removePersonFromList(people, thisPerson);
@@ -208,7 +208,7 @@ function editSourceFastCitations(req, res, next) {
       Citation.find({ source: source }).populate('person')
       .exec((err, citations) => {
         Story.find({}, (err, stories) => {
-          people = sortPeople(people, 'name');
+          sortPeople(people, 'name');
 
           source.people.forEach(thisPerson => {
             people = removePersonFromList(people, thisPerson);

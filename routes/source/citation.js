@@ -6,7 +6,6 @@ module.exports = router;
 const Source = mongoose.model('Source');
 const Citation = mongoose.model('Citation');
 
-const sortPeople = require('../../tools/sortPeople');
 const sortCitations = require('../../tools/sortCitations');
 
 router.post('/source/:sourceId/add/citations', createCitation);
