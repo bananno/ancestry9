@@ -176,14 +176,6 @@ function editSource(req, res, next) {
       Citation.find({ source: source }).populate('person')
       .exec((err, citations) => {
         Story.find({}, (err, stories) => {
-          sortPeople(people, 'name');
-
-          source.people.forEach(thisPerson => {
-            people = removePersonFromList(people, thisPerson);
-          });
-
-          people = [...source.people, ...people];
-
           stories.sort((a, b) => a.title < b.title ? -1 : 1);
 
           res.render('layout', {
@@ -191,7 +183,7 @@ function editSource(req, res, next) {
             subview: 'edit',
             title: 'Edit Source',
             source: source,
-            people: people,
+            people: sortPeopleListForNewCitations(source, people, citations),
             stories: stories,
             citations: sortCitations(citations, 'item', source.people),
             citationsByPerson: sortCitations(citations, 'person', source.people),
@@ -200,6 +192,26 @@ function editSource(req, res, next) {
       });
     });
   });
+}
+
+function sortPeopleListForNewCitations(source, people, citations) {
+  source.people.forEach(thisPerson => {
+    people = removePersonFromList(people, thisPerson);
+  });
+
+  sortPeople(people, 'name');
+
+  const citationsPeople = [];
+  const tempPeople = source.people.map(person => '' + person._id);
+  citations.forEach(citation => {
+    if (!tempPeople.includes('' + citation.person._id)) {
+      tempPeople.push('' + citation.person._id);
+      citationsPeople.push(citation.person);
+      people = removePersonFromList(people, citation.person);
+    }
+  });
+
+  return [...source.people, ...citationsPeople, ...people];
 }
 
 function editSourceFastCitations(req, res, next) {
