@@ -1,6 +1,18 @@
+<%
+  let birthMissing = 0, deathMissing = 0;
+%>
+
 <h1>Checklist - vitals</h1>
 
-<table border="1">
+<div>
+  Total people: <b><%= people.length %></b>
+  <br>
+  Birth events missing: <b><span id="birth-event-result"></span></b>
+  <br>
+  Death events missing: <b><span id="death-event-result"></span></b>
+</div>
+
+<table border="1" style="margin-top: 15px;">
   <tr>
     <th> name </th>
     <th> birth </th>
@@ -20,6 +32,7 @@
         <% if (person.birth) { %>
           <img class="checkmark-inline" src="/images/check-true.png">
         <% } else { %>
+          <% birthMissing += 1; %>
           <img class="checkmark-inline" src="/images/check-false.png">
         <% } %>
       </td>
@@ -27,6 +40,7 @@
         <% if (person.death) { %>
           <img class="checkmark-inline" src="/images/check-true.png">
         <% } else { %>
+          <% deathMissing += 1; %>
           <img class="checkmark-inline" src="/images/check-false.png">
         <% } %>
       </td>
@@ -48,6 +62,11 @@
     </tr>
   <% }); %>
 </table>
+
+<script>
+  $('#birth-event-result').text('<%= birthMissing %>');
+  $('#death-event-result').text('<%= deathMissing %>');
+</script>
 
 <style>
   th, td {
