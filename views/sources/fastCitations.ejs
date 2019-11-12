@@ -5,10 +5,26 @@
   const existingCitations = {};
   const toDoList = [];
 
+  let year = '';
+  let residence = '';
+
+  if (source.date && source.date.year) {
+    year = source.date.year + ' - ';
+  }
+
   citations.forEach(citation => {
     let key = citation.person._id + citation.item;
     existingCitations[key] = true;
+
+    if (citation.item == 'residence') {
+      residence = citation.information;
+    }
   });
+
+  const censusItemsForParents = [
+    'number of children', 'father - birthplace', 'mother - birthplace',
+    'marriage - date',
+  ];
 
   const citationItems = ['name'];
 
@@ -16,17 +32,41 @@
     citationItems.push('birth - date');
     citationItems.push('birth - place');
     citationItems.push('residence');
+    citationItems.push('occupation');
+    censusItemsForParents.forEach(item => citationItems.push(item));
   } else if (source.story.type == 'cemetery') {
     citationItems.push('birth - date');
     citationItems.push('death - date');
+  } else {
+    citationItems.push('birth - date');
+    citationItems.push('birth - place');
+    citationItems.push('death - date');
+    citationItems.push('death - place');
   }
 
   citationItems.forEach(item => {
-    source.people.forEach(person => {
-      let key = person._id + item;
-      if (!existingCitations[key]) {
-        toDoList.push([person, item]);
+    source.people.forEach((person, i) => {
+      if (i > 0 && ['occupation'].includes(item)) {
+        return;
       }
+
+      if (i > 1 && censusItemsForParents.includes(item)) {
+        return;
+      }
+
+      let key = person._id + item;
+      if (existingCitations[key]) {
+        return;
+      }
+
+      let value = '';
+      if (item == 'residence') {
+        value = residence || year;
+      } else if (['occupation', 'number of children'].includes(item)) {
+        value = year;
+      }
+
+      toDoList.push([person, item, value]);
     });
   });
 %>
@@ -54,7 +94,7 @@
     <th>item</th>
     <th>information</th>
   </tr>
-  <% toDoList.forEach(([person, item]) => { %>
+  <% toDoList.forEach(([person, item, value]) => { %>
     <tr class="citation-row-show">
       <td class="citation-cell">
         <%= person.name %>
@@ -68,7 +108,7 @@
           <input type="hidden" name="item" value="<%= item %>">
           <input type="hidden" name="fastCitations" value="true">
           <div class="column">
-            <input type="text" name="information">
+            <input type="text" name="information" value="<%= value %>">
           </div>
           <div class="column">
             <button type="submit">create</button>
