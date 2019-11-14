@@ -1,4 +1,7 @@
 <style>
+  .content-box p {
+    margin: 10px 0;
+  }
     .text-content .full-view {
         display: none;
     }
@@ -52,7 +55,7 @@
                 divClass = r == 0 ? 'full-view' : 'cropped-view';
             }
         %>
-        <div class="<%= divClass %>">
+        <div class="content-box <%= divClass %>">
             <% for (var i = 0; i < contentList.length; i++) { %>
                 <%
                     var str = contentList[i];
