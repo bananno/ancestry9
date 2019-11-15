@@ -137,6 +137,13 @@ function withStory(req, res, options, callback) {
       if (!options.entries) {
         return resolve();
       }
+      if (options.entryImages) {
+        return Source.find({ story: story }).populate('images').exec((err, entries) => {
+          entries.sort((a, b) => a.title < b.title ? -1 : 1);
+          data.entries = entries;
+          resolve();
+        });
+      }
       Source.find({ story: story }).exec((err, entries) => {
         entries.sort((a, b) => a.title < b.title ? -1 : 1);
         data.entries = entries;
@@ -236,7 +243,10 @@ function storyEdit(req, res) {
 }
 
 function storyEntries(req, res, next) {
-  withStory(req, res, { entries: true }, ({story, entries}) => {
+  withStory(req, res, {
+    entries: true,
+    entryImages: true
+  }, ({story, entries}) => {
     mainStoryView(res, story, {
       subview: 'entries',
       entries: entries,
