@@ -1,4 +1,4 @@
 <%
-  const text = locals.text || notation.title;
+  const text = locals.text || notation.title || '(empty)';
 %>
 <a href="/notation/<%= notation._id %>"><%= text %></a>
