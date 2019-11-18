@@ -12,7 +12,6 @@ router.get('/checklist/vitals', checklistVitals);
 router.get('/checklist/children', checklistChildren);
 router.get('/checklist/wikitree', checklistWikiTree);
 router.get('/checklist/findagrave', checklistFindAGrave);
-router.get('/checklist/tags', checklistTags);
 router.get('/checklist/sourceCensus', checklistSourceCensus);
 router.get('/checklist/profileSummary', checklistProfileSummary);
 router.get('/checklist/images', checklistImages);
@@ -137,56 +136,6 @@ function checklistSourceCensus(req, res, next) {
         title: 'Checklist',
         censusSources,
       });
-    });
-  });
-}
-
-function checklistTags(req, res, next) {
-  const tags = {};
-  const definitions = {};
-
-  function getAllTags(modelName, resolve) {
-    mongoose.model(modelName).find({}, (err, items) => {
-      items.forEach(item => {
-        item.tags.forEach(tag => {
-          tags[tag] = (tags[tag] || 0) + 1;
-        });
-      });
-      resolve(items);
-    });
-  }
-
-  new Promise(resolve => {
-    getAllTags('Person', resolve);
-  }).then(() => {
-    return new Promise(resolve => {
-      getAllTags('Source', resolve);
-    });
-  }).then(() => {
-    return new Promise(resolve => {
-      getAllTags('Story', resolve);
-    });
-  }).then(() => {
-    return new Promise(resolve => {
-      getAllTags('Event', resolve);
-    });
-  }).then(() => {
-    return new Promise(resolve => {
-      getAllTags('Notation', notations => {
-        notations
-        .filter(notation => notation.tags.includes('tag definition'))
-        .forEach(notation => {
-          definitions[notation.title] = notation.text;
-        });
-        resolve();
-      });
-    });
-  }).then(() => {
-    res.render('layout', {
-      view: 'checklist/tags',
-      title: 'Checklist',
-      tags,
-      definitions,
     });
   });
 }

@@ -16,6 +16,7 @@
 
     if (!tagData[tag]) {
       tagData[tag] = {
+        path: tag.split(' ').join('_'),
         definition: definitions[tag],
         values: [],
         numItems: 0,
@@ -45,7 +46,8 @@
 <ul class="bullet-list">
   <% tagsDefined.forEach(tag => { %>
     <li>
-      <b><%= tag %></b> - <%= tagData[tag].numItems %>
+      <a href="/tag/<%= tagData[tag].path %>"><%= tag %></a>
+      - <%= tagData[tag].numItems %>
       <br><%= tagData[tag].definition %>
     </li>
   <% }); %>
@@ -56,7 +58,8 @@
 <ul class="bullet-list">
   <% tagsUndefined.forEach(tag => { %>
     <li>
-      <b><%= tag %></b> - <%= tagData[tag].numItems %>
+      <a href="/tag/<%= tagData[tag].path %>"><%= tag %></a>
+      - <%= tagData[tag].numItems %>
     </li>
   <% }); %>
 </ul>

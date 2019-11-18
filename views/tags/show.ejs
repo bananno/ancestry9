@@ -1,0 +1,78 @@
+<p>
+  <a href="/tags">tags</a>
+</p>
+
+<h1><%= tag%></h1>
+
+<h2>definition</h2>
+
+<% if (definition) { %>
+  <% definition.text.split('\n').forEach(text => { %>
+    <p>
+      <%= text %>
+    </p>
+  <% }); %>
+  <p>
+    <%- include('../partials/linkToNotation', {
+      notation: definition,
+      text: 'notation'
+    }) %>
+  </p>
+<% } else { %>
+<% } %>
+
+<% if (data.people.length > 0) { %>
+  <h2>people</h2>
+  <ul class="bullet-list">
+    <% data.people.forEach(person => { %>
+      <li>
+        <%- include('../partials/linkToPerson', {person}) %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<% if (data.stories.length > 0) { %>
+  <h2>stories</h2>
+  <ul class="bullet-list">
+    <% data.stories.forEach(story => { %>
+      <li>
+        <%- include('../partials/linkToStory', {story}) %>
+        (<%= story.type %>)
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<% if (data.sources.length > 0) { %>
+  <h2>sources</h2>
+  <ul class="bullet-list">
+    <% data.sources.forEach(source => { %>
+      <li>
+        <%- include('../partials/linkToSource', {showStory: true, source}) %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<% if (data.events.length > 0) { %>
+  <h2>events</h2>
+  <ul class="bullet-list">
+    <% data.events.forEach(event => { %>
+      <li>
+        <a href="/event/<%= event._id %>"><%= event.title %></a>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<% if (data.notations.length > 0) { %>
+  <h2>notations</h2>
+  <ul class="bullet-list">
+    <% data.notations.forEach(notation => { %>
+      <li>
+        <%- include('../partials/linkToNotation', {notation}) %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
