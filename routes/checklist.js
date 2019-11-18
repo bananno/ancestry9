@@ -143,6 +143,7 @@ function checklistSourceCensus(req, res, next) {
 
 function checklistTags(req, res, next) {
   const tags = {};
+  const definitions = {};
 
   function getAllTags(modelName, resolve) {
     mongoose.model(modelName).find({}, (err, items) => {
@@ -151,7 +152,7 @@ function checklistTags(req, res, next) {
           tags[tag] = (tags[tag] || 0) + 1;
         });
       });
-      resolve();
+      resolve(items);
     });
   }
 
@@ -171,13 +172,21 @@ function checklistTags(req, res, next) {
     });
   }).then(() => {
     return new Promise(resolve => {
-      getAllTags('Notation', resolve);
+      getAllTags('Notation', notations => {
+        notations
+        .filter(notation => notation.tags.includes('tag definition'))
+        .forEach(notation => {
+          definitions[notation.title] = notation.text;
+        });
+        resolve();
+      });
     });
   }).then(() => {
     res.render('layout', {
       view: 'checklist/tags',
       title: 'Checklist',
       tags,
+      definitions,
     });
   });
 }

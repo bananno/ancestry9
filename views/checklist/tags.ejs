@@ -1,44 +1,62 @@
 <%
-  const meaning = {};
+  const tagsDefined = [];
+  const tagsUndefined = [];
 
-  meaning['cropped'] = 'Enable a note about "the images has been cropped".';
+  const tagData = {};
 
-  meaning['historical'] = 'A historical event that is only relevent ' +
-    'for certain people. It will appear in their profile timeline ' +
-    'designated as historical but not their family members\' timelines. ' +
-    'It might appear in special timelines depending on its other tags. '+
-    'The list of tagged people is never visible.';
+  for (let tag in tags) {
+    const numItems = tags[tag];
+    tag = tag.trim();
+    let value = '';
 
-  meaning['special historical'] = 'Same as historical except that the list ' +
-    'tagged people IS visible when included in special timelines.';
+    if (tag.match('=')) {
+      value = tag.slice(tag.indexOf('=') + 1).trim();
+      tag = tag.slice(0, tag.indexOf('=')).trim();
+    }
+
+    if (!tagData[tag]) {
+      tagData[tag] = {
+        definition: definitions[tag],
+        values: [],
+        numItems: 0,
+      };
+
+      if (tagData[tag].definition) {
+        tagsDefined.push(tag);
+      } else {
+        tagsUndefined.push(tag);
+      }
+    }
+
+    tagData[tag].values.push(value);
+    tagData[tag].numItems += numItems;
+  }
+
+  tagsDefined.sort();
+  tagsUndefined.sort();
 %>
+
 <h1>Checklist - Tags</h1>
 
-<h3>total: <%= Object.keys(tags).length %> tags</h3>
+<h3>total: <%= (tagsDefined.length + tagsUndefined.length) %> tags</h3>
 
 <h2>defined</h2>
 
 <ul class="bullet-list">
-  <% for (let tag in meaning) { %>
+  <% tagsDefined.forEach(tag => { %>
     <li>
-      <b><%= tag %></b> - <%= tags[tag] || 0 %>
-      <% if (meaning[tag]) { %>
-        <br><%= meaning[tag] %>
-      <% } %>
+      <b><%= tag %></b> - <%= tagData[tag].numItems %>
+      <br><%= tagData[tag].definition %>
     </li>
-    <% delete tags[tag]; %>
-  <% } %>
+  <% }); %>
 </ul>
 
 <h2>not defined</h2>
 
 <ul class="bullet-list">
-  <% for (let tag in tags) { %>
+  <% tagsUndefined.forEach(tag => { %>
     <li>
-      <b><%= tag %></b> - <%= tags[tag] %>
-      <% if (meaning[tag]) { %>
-        <br><%= meaning[tag] %>
-      <% } %>
+      <b><%= tag %></b> - <%= tagData[tag].numItems %>
     </li>
-  <% } %>
+  <% }); %>
 </ul>
