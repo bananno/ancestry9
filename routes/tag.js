@@ -5,6 +5,7 @@ module.exports = router;
 
 router.get('/tags', tagIndex);
 router.get('/tag/:tag', tagShow);
+router.post('/tag/newDefinition', tagNewDefinition);
 
 function tagIndex(req, res, next) {
   const tags = {};
@@ -109,5 +110,17 @@ function tagShow(req, res) {
       data,
       definition,
     });
+  });
+}
+
+function tagNewDefinition(req, res) {
+  const tag = req.body.tag;
+  const newNotation = {
+    title: tag,
+    tags: ['tag definition'],
+    text: req.body.text
+  };
+  mongoose.model('Notation').create(newNotation, (err, notation) => {
+    return res.redirect('/tag/' + tag);
   });
 }

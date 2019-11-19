@@ -19,6 +19,11 @@
     }) %>
   </p>
 <% } else { %>
+  <form method="post" action="/tag/newDefinition">
+    <input type="hidden" name="tag" value="<%= tag %>">
+    <textarea name="text" style="height: 100px; width: 300px;"></textarea>
+    <br><button>create</button>
+  </form>
 <% } %>
 
 <% if (data.people.length > 0) { %>
