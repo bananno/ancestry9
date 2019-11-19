@@ -8,15 +8,28 @@
 
 <% if (definition) { %>
   <% definition.text.split('\n').forEach(text => { %>
-    <p>
+    <p id="show-notation">
       <%= text %>
     </p>
   <% }); %>
+  <div id="edit-notation-form">
+    <form method="post" action="/tag/updateDefinition">
+      <input type="hidden" name="tag" value="<%= tag %>">
+      <input type="hidden" name="notation" value="<%= definition._id %>">
+      <textarea name="text" style="height: 100px; width: 300px;"
+        ><%= definition.text %></textarea>
+      <br><button>save</button>
+      <span class="clickable-link" id="click-cancel-edit">cancel</span>
+    </form>
+  </div>
   <p>
-    <%- include('../partials/linkToNotation', {
-      notation: definition,
-      text: 'notation'
-    }) %>
+    <span id="click-start-edit" class="clickable-link">edit</span>
+    <span id="link-to-notation">
+      <%- include('../partials/linkToNotation', {
+        notation: definition,
+        text: 'go to notation'
+      }) %>
+    </span>
   </p>
 <% } else { %>
   <form method="post" action="/tag/newDefinition">
@@ -81,3 +94,20 @@
     <% }); %>
   </ul>
 <% } %>
+
+<style>
+  #edit-notation-form {
+    display: none;
+  }
+</style>
+
+<script>
+  $('#click-start-edit').click(() => {
+    $('#show-notation, #click-start-edit, #link-to-notation').hide();
+    $('#edit-notation-form').show();
+  });
+  $('#click-cancel-edit').click(() => {
+    $('#show-notation, #click-start-edit, #link-to-notation').show();
+    $('#edit-notation-form').hide();
+  });
+</script>

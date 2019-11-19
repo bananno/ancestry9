@@ -6,6 +6,7 @@ module.exports = router;
 router.get('/tags', tagIndex);
 router.get('/tag/:tag', tagShow);
 router.post('/tag/newDefinition', tagNewDefinition);
+router.post('/tag/updateDefinition', tagUpdateDefinition);
 
 function tagIndex(req, res, next) {
   const tags = {};
@@ -122,5 +123,18 @@ function tagNewDefinition(req, res) {
   };
   mongoose.model('Notation').create(newNotation, (err, notation) => {
     return res.redirect('/tag/' + tag);
+  });
+}
+
+function tagUpdateDefinition(req, res) {
+  const tag = req.body.tag;
+  const notationId = req.body.notation;
+  const updatedNotation = {
+    text: req.body.text
+  };
+  mongoose.model('Notation').findById(notationId, (err, notation) => {
+    notation.update(updatedNotation, err => {
+      return res.redirect('/tag/' + tag);
+    });
   });
 }
