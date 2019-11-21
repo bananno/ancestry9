@@ -84,7 +84,7 @@ function saveSharedDatabase(req, res) {
     });
   }).then(() => {
     new Promise(resolve => {
-      saveRawSharedDataFile(resolve, 'people', data.people, true);
+      saveRawSharedDataFile(resolve, 'people', data.people, data);
     });
   }).then(() => {
     new Promise(resolve => {
@@ -111,11 +111,11 @@ function saveSharedDatabase(req, res) {
   });
 }
 
-function saveRawSharedDataFile(resolve, attr, arr, starter) {
+function saveRawSharedDataFile(resolve, attr, arr, data) {
   const filename = 'shared/database/raw-' + attr + '.js';
 
   const content = (
-    (starter ? 'const DATABASE = {};\n\n' : '') +
+    (data ? getStarterContent(data) : '') +
     'DATABASE.' + attr + ' = [\n' +
       arr.map(item => '  ' + JSON.stringify(item) + ',').join('\n') +
     '\n];\n'
@@ -127,6 +127,13 @@ function saveRawSharedDataFile(resolve, attr, arr, starter) {
     }
     resolve();
   });
+}
+
+function getStarterContent(data) {
+  return (
+    'const DATABASE = {};\n\n' +
+    'DATABASE.countryList = ' + JSON.stringify(data.countryList) + ';\n\n'
+  );
 }
 
 function getProcessedSharedData(req, res, callback) {
@@ -171,6 +178,7 @@ function getProcessedSharedData(req, res, callback) {
         person.private = true;
         person.name = personInfo.sharing.name || 'Person';
         person.customId = personInfo._id;
+        person.tags = {};
         return person;
       }
 
@@ -271,6 +279,14 @@ function getProcessedSharedData(req, res, callback) {
         tempObj = tempObj[places[i]];
       }
     });
+
+    const countryList = {};
+    data.people.filter(person => person.tags.country).forEach(person => {
+      person.tags.country.split(',').forEach(country => {
+        countryList[country.trim()] = true;
+      });
+    });
+    data.countryList = Object.keys(countryList).sort();
 
     callback(data);
   });
