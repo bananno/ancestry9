@@ -197,6 +197,13 @@ function getProcessedSharedData(req, res, callback) {
 
     data.people = data.people.filter(person => person != null);
 
+    data.people.forEach(person => {
+      if (person.tags['number of children'] == 'done') {
+        // some children might not be shared and will be removed from list later
+        person.tags['number of children'] = person.children.length;
+      }
+    });
+
     data.events = getSharedEvents(raw.events, tempPersonRef);
 
     raw.citations = raw.citations.filter(citation => {
