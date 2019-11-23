@@ -77,15 +77,7 @@
     format: 'bullet',
   }) %>
 
-  <h2>tags</h2>
-
-  <% if (notation.tags.length) { %>
-    <ul class="bullet-list">
-      <% notation.tags.forEach(text => { %>
-        <li><%= text %></li>
-      <% }); %>
-    </ul>
-  <% } %>
+  <%- include('../partials/listTags', {tags: notation.tags}) %>
 <% } %>
 
 <h2>text</h2>

@@ -22,23 +22,7 @@
   <%= story.type %>
 </p>
 
-<% if (story.tags.length) { %>
-  <h2>tags</h2>
-  <ul class="bullet-list">
-    <% story.tags.forEach(text => { %>
-      <li><%= text %></li>
-    <% }); %>
-  </ul>
-<% } %>
-
-<% if (story.tags.length) { %>
-  <h2>tags</h2>
-  <ul class="bullet-list">
-    <% story.tags.forEach(text => { %>
-      <li><%= text %></li>
-    <% }); %>
-  </ul>
-<% } %>
+<%- include('../partials/listTags', {tags: story.tags}) %>
 
 <% if (story.summary) { %>
   <%

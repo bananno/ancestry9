@@ -30,14 +30,7 @@
   <% } %>
 </p>
 
-<% if (source.tags.length) { %>
-  <h2>tags</h2>
-  <ul class="bullet-list">
-    <% source.tags.forEach(text => { %>
-      <li><%= text %></li>
-    <% }); %>
-  </ul>
-<% } %>
+<%- include('../partials/listTags', {tags: source.tags}) %>
 
 <% if (source.summary) { %>
   <%

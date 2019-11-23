@@ -37,6 +37,8 @@
         <%- include('../partials/linkToPerson', { person: thisItem }) %>
       <% } else if (dataType == 'stories') { %>
         <%- include('../partials/linkToStory', { story: thisItem }) %>
+      <% } else if (dataType == 'tags') { %>
+        <%- include('../partials/linkToTag', {tag: thisItem}) %>
       <% } else { %>
         <%= thisItem %>
       <% } %>

@@ -21,14 +21,7 @@
   <h2>(orphan image - no story or source)</h2>
 <% } %>
 
-<% if (image.tags.length) { %>
-  <h2>tags</h2>
-  <ul class="bullet-list">
-    <% image.tags.forEach(tag => { %>
-      <li><%= tag %></li>
-    <% }); %>
-  </ul>
-<% } %>
+<%- include('../partials/listTags', {tags: image.tags}) %>
 
 <hr>
 

@@ -1,0 +1,10 @@
+<% if (tags.length) { %>
+  <h2>tags</h2>
+  <ul class="bullet-list">
+    <% tags.forEach(tag => { %>
+      <li>
+        <%- include('./linkToTag', {tag}) %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
