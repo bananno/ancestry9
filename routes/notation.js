@@ -16,7 +16,7 @@ createModelRoutes({
   show: showNotation,
   edit: editNotation,
   toggleAttributes: ['sharing'],
-  singleAttributes: ['title', 'text', 'source'],
+  singleAttributes: ['title', 'text', 'source', 'date', 'location'],
   listAttributes: ['people', 'stories', 'tags'],
 });
 

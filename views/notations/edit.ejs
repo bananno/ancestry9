@@ -37,6 +37,22 @@
     originalValue: notation.source,
   }}) %>
 
+  <!-- DATE -->
+
+  <%- include('../forms/tableRowSingle', { params: {
+    attr: 'date',
+    editPath: rootEditPath + '/date',
+    originalValue: notation.date,
+  }}) %>
+
+  <!-- LOCATION -->
+
+  <%- include('../forms/tableRowSingle', { params: {
+    attr: 'location',
+    editPath: rootEditPath + '/location',
+    originalValue: notation.location,
+  }}) %>
+
   <!-- PEOPLE -->
 
   <%- include('../forms/tableRowMulti', {

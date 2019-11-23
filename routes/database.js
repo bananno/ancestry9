@@ -23,7 +23,8 @@ const fields = {
     '_id', 'title', 'date', 'location', 'people', 'notes'
   ],
   notation: [
-    '_id', 'title', 'people', 'text', 'tags', 'source', 'stories'
+    '_id', 'title', 'people', 'text', 'tags', 'source', 'stories',
+    'date', 'location'
   ],
   image: [
     '_id', 'url', 'tags'
