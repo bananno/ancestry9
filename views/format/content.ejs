@@ -2,86 +2,86 @@
   .content-box p {
     margin: 10px 0;
   }
-    .text-content .full-view {
-        display: none;
-    }
+  .text-content .full-view {
+    display: none;
+  }
 </style>
 
 <script>
-    function showMore(clickedItem) {
-        var $link = $(clickedItem);
-        var $div = $link.closest('.text-content');
-        $div.find('.cropped-view').remove();
-        $div.find('.full-view').removeClass('full-view');
-    }
+  function showMore(clickedItem) {
+    var $link = $(clickedItem);
+    var $div = $link.closest('.text-content');
+    $div.find('.cropped-view').remove();
+    $div.find('.full-view').removeClass('full-view');
+  }
 </script>
 
 <%
-    var characterLimit = 500;
-    var fullArr = [];
-    var croppedArr = [];
-    var isCropped = false;
-    var tableArr = [];
+  var characterLimit = 500;
+  var fullArr = [];
+  var croppedArr = [];
+  var isCropped = false;
+  var tableArr = [];
 
-    if (content) {
-        fullArr = content.split('\n');
-        if (limit) {
-            if (content.length > characterLimit) {
-                isCropped = true;
-                var content2 = content.slice(0, characterLimit) + '...';
-                croppedArr = content2.split('\n');
-                if (croppedArr.length > 5) {
-                    croppedArr = croppedArr.slice(0, 5);
-                }
-            } else if (fullArr.length > 5) {
-                croppedArr = fullArr.slice(0, 5);
-                isCropped = true;
-            }
+  if (content) {
+    fullArr = content.split('\n');
+    if (limit) {
+      if (content.length > characterLimit) {
+        isCropped = true;
+        var content2 = content.slice(0, characterLimit) + '...';
+        croppedArr = content2.split('\n');
+        if (croppedArr.length > 5) {
+          croppedArr = croppedArr.slice(0, 5);
         }
+      } else if (fullArr.length > 5) {
+        croppedArr = fullArr.slice(0, 5);
+        isCropped = true;
+      }
     }
+  }
 
-    function lineIsPartOfTable(str) {
-        return str != null && str.length > 0 && str.slice(0, 1) == '\|';
-    }
+  function lineIsPartOfTable(str) {
+    return str != null && str.length > 0 && str.slice(0, 1) == '\|';
+  }
 %>
 
 <div class="text-content">
-    <% for (var r = 0; r < (isCropped ? 2 : 1); r++) { %>
+  <% for (var r = 0; r < (isCropped ? 2 : 1); r++) { %>
+    <%
+      var divClass = '';
+      var showLink = isCropped && r == 1;
+      var contentList = r == 0 ? fullArr : croppedArr;
+      if (isCropped) {
+        divClass = r == 0 ? 'full-view' : 'cropped-view';
+      }
+    %>
+    <div class="content-box <%= divClass %>">
+      <% for (var i = 0; i < contentList.length; i++) { %>
         <%
-            var divClass = '';
-            var showLink = isCropped && r == 1;
-            var contentList = r == 0 ? fullArr : croppedArr;
-            if (isCropped) {
-                divClass = r == 0 ? 'full-view' : 'cropped-view';
+          var str = contentList[i];
+          var tableArr = [];
+
+          if (lineIsPartOfTable(str)) {
+            tableArr.push(str);
+            while (lineIsPartOfTable(contentList[i + 1])) {
+              tableArr.push(contentList[i + 1]);
+              i += 1;
             }
+          }
         %>
-        <div class="content-box <%= divClass %>">
-            <% for (var i = 0; i < contentList.length; i++) { %>
-                <%
-                    var str = contentList[i];
-                    var tableArr = [];
 
-                    if (lineIsPartOfTable(str)) {
-                        tableArr.push(str);
-                        while (lineIsPartOfTable(contentList[i + 1])) {
-                            tableArr.push(contentList[i + 1]);
-                            i += 1;
-                        }
-                    }
-                %>
+        <% if (tableArr.length) { %>
+          <%- include('../format/contentTable', { content: tableArr }) %>
+        <% } else { %>
+          <p> <%= str %> </p>
+        <% } %>
+      <% } %>
 
-                <% if (tableArr.length) { %>
-                    <%- include('../format/contentTable', { content: tableArr }) %>
-                <% } else { %>
-                    <p> <%= str %> </p>
-                <% } %>
-            <% } %>
-
-            <% if (showLink) { %>
-                <p>
-                    <a class="clickable-link" onClick="showMore(this)">show more</a>
-                </p>
-            <% } %>
-        </div>
-    <% } %>
+      <% if (showLink) { %>
+        <p>
+          <a class="clickable-link" onClick="showMore(this)">show more</a>
+        </p>
+      <% } %>
+    </div>
+  <% } %>
 </div>
