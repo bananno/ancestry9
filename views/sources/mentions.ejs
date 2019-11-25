@@ -1,0 +1,60 @@
+<%
+  const mentions = [];
+
+  notations.forEach(notation => {
+    let personNumber = 0;
+    notation.text.split('\r\n').forEach(text => {
+      let [replaceText, skipNumber] = text.split('\|').map(s => s.trim());
+
+      if (skipNumber == 'skip') {
+        return;
+      }
+
+      if (skipNumber) {
+        skipNumber = parseInt(skipNumber);
+      } else {
+        skipNumber = 0;
+      }
+
+      let index = source.content.indexOf(replaceText);
+
+      while (skipNumber > 0) {
+        let tempContent = source.content.slice(index + 1);
+        index += tempContent.indexOf(replaceText) + 1;
+        skipNumber -= 1;
+      }
+
+      mentions.push({
+        replaceText,
+        index,
+        person: notation.people[personNumber]
+      });
+
+      personNumber += 1;
+    });
+  });
+
+  mentions.sort((a, b) => b.index - a.index);
+
+  let content = source.content;
+
+  mentions.forEach((mention, i) => {
+    content = content.slice(0, mention.index)
+      + 'INSERT-MENTION-' + (mentions.length - i)
+      + content.slice(mention.index + mention.replaceText.length);
+  });
+%>
+
+<h2>content</h2>
+
+<%- include('../format/content', {content, mentions}) %>
+
+<h2>mentions</h2>
+
+<% mentions.forEach(mention => { %>
+  <p>
+    <%= mention.index %>
+    <%= mention.replaceText %>
+    <%= (mention.person || { name:'NONE'}).name %>
+  </p>
+<% }); %>

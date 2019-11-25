@@ -33,6 +33,7 @@ createModelRoutes({
   delete: deleteSource,
   otherRoutes: {
     'notations': showSourceNotations,
+    'mentions': showSourceMentions,
     'fastCitations': editSourceFastCitations,
   },
   toggleAttributes: ['sharing'],
@@ -162,6 +163,23 @@ function showSourceNotations(req, res, next) {
       res.render('layout', {
         view: 'sources/layout',
         subview: 'notations',
+        title: source.story.title + ' - ' + source.title,
+        source,
+        notations,
+      });
+    });
+  });
+}
+
+function showSourceMentions(req, res, next) {
+  withSource(req, res, {mentions: true}, ({source}) => {
+    Notation
+    .find({source, tags: 'mentions'})
+    .populate('people')
+    .exec((err, notations) => {
+      res.render('layout', {
+        view: 'sources/layout',
+        subview: 'mentions',
         title: source.story.title + ' - ' + source.title,
         source,
         notations,
