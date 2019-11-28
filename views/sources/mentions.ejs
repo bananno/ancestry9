@@ -51,10 +51,25 @@
 
 <h2>mentions</h2>
 
-<% mentions.forEach(mention => { %>
-  <p>
-    <%= mention.index %>
-    <%= mention.replaceText %>
-    <%= (mention.person || { name:'NONE'}).name %>
-  </p>
-<% }); %>
+<table id="mention-list">
+  <tr>
+    <th>character index</th>
+    <th>actual text</th>
+    <th>person name</th>
+  </tr>
+  <% mentions.forEach(mention => { %>
+    <tr>
+      <td><%= mention.index %></td>
+      <td><%= mention.replaceText %></td>
+      <td><%= (mention.person || { name:'NONE'}).name %></td>
+    </tr>
+  <% }); %>
+</table>
+
+<style>
+  #mention-list td,
+  #mention-list th {
+    border: 1px solid black;
+    padding: 5px;
+  }
+</style>
