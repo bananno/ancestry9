@@ -149,8 +149,8 @@ function personSources(req, res, next) {
       citations = sortCitations(citations, 'item');
 
       sources.sort((a, b) => {
-        let sortA = a.type + ' - ' + a.group + ' - ' + a.title;
-        let sortB = b.type + ' - ' + b.group + ' - ' + b.title;
+        let sortA = a.story.type + ' - ' + a.story.title + ' - ' + a.title;
+        let sortB = b.story.type + ' - ' + b.story.title + ' - ' + b.title;
         return sortA == sortB ? 0 : sortA > sortB ? 1 : -1;
       });
 
