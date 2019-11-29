@@ -1,8 +1,10 @@
 <%
   const mentions = [];
 
-  notations.forEach(notation => {
+  notations.filter(notation => notation.text).forEach(notation => {
     let personNumber = 0;
+    const peopleList = notation.people.length ? notation.people : source.people;
+
     notation.text.split('\r\n').forEach(text => {
       let [replaceText, skipNumber] = text.split('\|').map(s => s.trim());
 
@@ -27,7 +29,7 @@
       mentions.push({
         replaceText,
         index,
-        person: notation.people[personNumber]
+        person: peopleList[personNumber]
       });
 
       personNumber += 1;

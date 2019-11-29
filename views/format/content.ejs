@@ -90,12 +90,15 @@
   <script>
     (() => {
       let html = $('.text-content').html();
+      let placeholderText, newHtml;
       <% mentions.reverse().forEach((mention, i) => { %>
-        console.log('INSERT-MENTION-<%= i + 1 %>');
-
-        html = html.replace('INSERT-MENTION-<%= i + 1 %>',
-          '<a href="/person/<%= mention.person._id %>"><%= mention.replaceText %></a>');
-
+        placeholderText = 'INSERT-MENTION-<%= i + 1 %>';
+        <% if (mention.person) { %>
+          newHtml = '<a href="/person/<%= mention.person._id %>"><%= mention.replaceText %></a>';
+        <% } else { %>
+          newHtml = '<span style="color: red"><%= mention.replaceText %></span>';
+        <% } %>
+        html = html.replace(placeholderText, newHtml);
       <% }); %>
       $('.text-content').html(html);
     })();
