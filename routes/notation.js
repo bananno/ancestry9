@@ -1,11 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
+module.exports = router;
+
 const Notation = mongoose.model('Notation');
 const Person = mongoose.model('Person');
 const Story = mongoose.model('Story');
-const createModelRoutes = require('../tools/createModelRoutes');
-module.exports = router;
+
+const getTools = (path) => { return require('../tools/' + path) };
+const createModelRoutes = getTools('createModelRoutes');
+const sortPeople = getTools('sortPeople');
 
 createModelRoutes({
   Model: Notation,
@@ -79,6 +83,7 @@ function showNotation(req, res, next) {
 function editNotation(req, res, next) {
   withNotation(req, res, notation => {
     Person.find({}, (err, people) => {
+      sortPeople(people, 'name');
       Story.find({}, (err, stories) => {
         res.render('layout', {
           view: 'notations/edit',
