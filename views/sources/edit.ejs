@@ -135,6 +135,19 @@
   }) %>
 </table>
 
+<% if (needCitationText) { %>
+  <h2>citation text</h2>
+  <p>
+    <span class="clickable-link main-link" id="add-citation-notation">+ add notation</span>
+  </p>
+  <form method="post" action="/source/<%= source._id %>/createCitationNotation"
+      id="new-citation-notation-form">
+    <textarea name="text"></textarea>
+    <button>submit</button>
+    <span class="clickable-link" id="new-citation-notation-cancel">cancel</span>
+  </form>
+<% } %>
+
 <div>
   <h2>Content</h2>
 
@@ -178,6 +191,26 @@
   groupBy: 'person',
 }) %>
 
+<style>
+  #new-citation-notation-form {
+    display: none;
+  }
+  #new-citation-notation-form textarea {
+    height: 100px;
+    width: 300px;
+  }
+</style>
+
 <script>
   initializeEditForm();
+
+  $('#add-citation-notation').click(() => {
+    $('#new-citation-notation-form').show();
+    $('#add-citation-notation').hide();
+  });
+  $('#new-citation-notation-cancel').click(() => {
+    $('#new-citation-notation-form').find('input, textarea').val('');
+    $('#new-citation-notation-form').hide();
+    $('#add-citation-notation').show();
+  });
 </script>

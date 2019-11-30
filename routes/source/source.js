@@ -47,6 +47,7 @@ mainSourceTypes.forEach(sourceType => {
 });
 
 router.post('/source/:id/createNotation', createSourceNotation);
+router.post('/source/:id/createCitationNotation', createSourceCitationTextNotation);
 
 function getSourcesIndex(subview) {
   return (req, res, next) => {
@@ -111,8 +112,14 @@ function withSource(req, res, options, callback) {
       return callback(source);
     }
     const data = { source };
+    if (options.citationText == 'source only') {
+      return withCitationText(source, false, citationText => {
+        data.citationText = citationText;
+        callback(data);
+      });
+    }
     if (options.citationText) {
-      return withCitationText(source, citationText => {
+      return withCitationText(source, true, citationText => {
         data.citationText = citationText;
         callback(data);
       });
@@ -121,10 +128,15 @@ function withSource(req, res, options, callback) {
   });
 }
 
-function withCitationText(source, callback) {
+function withCitationText(source, includeStory, callback) {
   mongoose.model('Notation')
   .find({ title: 'source citation', source: source})
   .exec((err, sourceNotation) => {
+    if (!includeStory) {
+      return callback(sourceNotation.map(notation => {
+        return notation.text;
+      }));
+    }
     mongoose.model('Notation')
     .find({ title: 'source citation', stories: [source.story]})
     .exec((err, storyNotation) => {
@@ -189,7 +201,8 @@ function showSourceMentions(req, res, next) {
 }
 
 function editSource(req, res, next) {
-  withSource(req, res, null, source => {
+  withSource(req, res, {citationText: 'source only'}, data => {
+    const {source, citationText} = data;
     Person.find({ }).exec((err, people) => {
       Citation.find({ source: source }).populate('person')
       .exec((err, citations) => {
@@ -205,6 +218,8 @@ function editSource(req, res, next) {
             stories: stories,
             citations: sortCitations(citations, 'item', source.people),
             citationsByPerson: sortCitations(citations, 'person', source.people),
+            needCitationText: source.story.title.match('Census')
+              && citationText.length == 0
           });
         });
       });
@@ -276,6 +291,22 @@ function createSourceNotation(req, res, next) {
         return res.send('There was a problem adding the information to the database.');
       }
       res.redirect('/source/' + source._id + '/notations');
+    });
+  });
+}
+
+function createSourceCitationTextNotation(req, res, next) {
+  withSource(req, res, null, source => {
+    const newNotation = {
+      title: 'source citation',
+      text: req.body.text.trim(),
+      source,
+    };
+    Notation.create(newNotation, (err, notation) => {
+      if (err) {
+        return res.send('There was a problem adding the information to the database.');
+      }
+      res.redirect('/source/' + source._id + '/edit');
     });
   });
 }

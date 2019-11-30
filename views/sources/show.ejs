@@ -18,6 +18,9 @@
     || (source.location && (source.location.country || source.location.region1
       || source.location.region2 || source.location.city
       || source.location.notes));
+
+  const missingCitation = source.story.title.match('Census USA')
+    && citationText.length < 2;
 %>
 
 <h2>sharing</h2>
@@ -121,6 +124,9 @@
 <% if (citationText.length) { %>
   <h2>citation text</h2>
   <ul class="bullet-list">
+    <% if (missingCitation) { %>
+      <li><span style="color: red;">missing</span></li>
+    <% } %>
     <% citationText.forEach(text => { %>
       <li><%= text %></li>
     <% }); %>
