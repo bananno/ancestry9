@@ -7,32 +7,41 @@
 
     notation.text.split('\r\n').forEach(text => {
       let [replaceText, skipNumber] = text.split('\|').map(s => s.trim());
+      const mention = {replaceText};
 
-      if (skipNumber == 'skip') {
-        return;
+      if (skipNumber && skipNumber.match('skip')) {
+        skipNumber = skipNumber.replace('skip', '').trim();
+        mention.skipTagging = true;
       }
 
-      if (skipNumber) {
+      if (skipNumber && skipNumber.length) {
         skipNumber = parseInt(skipNumber);
       } else {
         skipNumber = 0;
       }
 
-      let index = source.content.indexOf(replaceText);
+      mention.index = source.content.indexOf(replaceText);
 
       while (skipNumber > 0) {
-        let tempContent = source.content.slice(index + 1);
-        index += tempContent.indexOf(replaceText) + 1;
+        const tempContent = source.content.slice(mention.index + 1);
+        const newIndex = tempContent.indexOf(replaceText);
+
+        if (newIndex == -1) {
+          mention.index = -1;
+          mention.notFound = true;
+          break;
+        }
+
+        mention.index += newIndex + 1;
         skipNumber -= 1;
       }
 
-      mentions.push({
-        replaceText,
-        index,
-        person: peopleList[personNumber]
-      });
+      if (!mention.skipTagging) {
+        mention.person = peopleList[personNumber];
+        personNumber += 1;
+      }
 
-      personNumber += 1;
+      mentions.push(mention);
     });
   });
 
@@ -41,6 +50,9 @@
   let content = source.content;
 
   mentions.forEach((mention, i) => {
+    if (mention.index < 0) {
+      return;
+    }
     content = content.slice(0, mention.index)
       + 'INSERT-MENTION-' + (mentions.length - i)
       + content.slice(mention.index + mention.replaceText.length);
@@ -63,7 +75,18 @@
     <tr>
       <td><%= mention.index %></td>
       <td><%= mention.replaceText %></td>
-      <td><%= (mention.person || { name:'NONE'}).name %></td>
+      <td>
+        <% if (mention.person) { %>
+          <%= mention.person.name %>
+        <% } else if (mention.skipTagging) { %>
+          <span style="color: blue;">SKIP</span>
+        <% } else { %>
+          <span style="color: red;">NONE</span>
+        <% } %>
+        <% if (mention.notFound) { %>
+          <span style="color: red;">NOT FOUND</span>
+        <% } %>
+      </td>
     </tr>
   <% }); %>
 </table>

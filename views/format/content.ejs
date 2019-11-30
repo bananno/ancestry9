@@ -93,7 +93,9 @@
       let placeholderText, newHtml;
       <% mentions.reverse().forEach((mention, i) => { %>
         placeholderText = 'INSERT-MENTION-<%= i + 1 %>';
-        <% if (mention.person) { %>
+        <% if (mention.skipTagging) { %>
+          newHtml = '<span style="color: blue"><%= mention.replaceText %></span>';
+        <% } else if (mention.person) { %>
           newHtml = '<a href="/person/<%= mention.person._id %>"><%= mention.replaceText %></a>';
         <% } else { %>
           newHtml = '<span style="color: red"><%= mention.replaceText %></span>';
