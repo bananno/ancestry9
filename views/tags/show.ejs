@@ -43,8 +43,22 @@
   <h2>people</h2>
   <ul class="bullet-list">
     <% data.people.forEach(person => { %>
+      <%
+        let personTagValue = (() => {
+          for (let i in person.tags) {
+            if (person.tags[i].match('=')
+                && person.tags[i].split('=')[0].trim() == tag) {
+              return person.tags[i].slice(person.tags[i].indexOf('=') + 1).trim();
+            }
+          }
+        })();
+        if (personTagValue) {
+          personTagValue = '(' + personTagValue + ')';
+        }
+      %>
       <li>
         <%- include('../partials/linkToPerson', {person}) %>
+        <%= personTagValue %>
       </li>
     <% }); %>
   </ul>

@@ -41,6 +41,17 @@
 
 <h3>total: <%= (tagsDefined.length + tagsUndefined.length) %> tags</h3>
 
+<h2>not defined</h2>
+
+<ul class="bullet-list">
+  <% tagsUndefined.forEach(tag => { %>
+    <li>
+      <a href="/tag/<%= tagData[tag].path %>"><%= tag %></a>
+      - <%= tagData[tag].numItems %>
+    </li>
+  <% }); %>
+</ul>
+
 <h2>defined</h2>
 
 <ul class="bullet-list">
@@ -49,17 +60,6 @@
       <a href="/tag/<%= tagData[tag].path %>"><%= tag %></a>
       - <%= tagData[tag].numItems %>
       <br><%= tagData[tag].definition %>
-    </li>
-  <% }); %>
-</ul>
-
-<h2>not defined</h2>
-
-<ul class="bullet-list">
-  <% tagsUndefined.forEach(tag => { %>
-    <li>
-      <a href="/tag/<%= tagData[tag].path %>"><%= tag %></a>
-      - <%= tagData[tag].numItems %>
     </li>
   <% }); %>
 </ul>
