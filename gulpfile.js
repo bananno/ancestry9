@@ -45,7 +45,7 @@ gulp.task('inject-compressed-shared-app', () => {
   const jsFiles = gulp.src(paths.compressApp, { read: false });
 
   return indexFile
-  .pipe(inject(jsFiles, { ignorePath: 'shared', addRootSlash: false }))
+  .pipe(inject(jsFiles, { ignorePath: 'shared', addRootSlash: true }))
   .pipe(gulp.dest('shared/'));
 });
 
@@ -54,7 +54,7 @@ gulp.task('inject-compressed-shared-style', () => {
   const cssFiles = gulp.src(paths.compressStyle, { read: false });
 
   return indexFile
-  .pipe(inject(cssFiles, { ignorePath: 'shared', addRootSlash: false }))
+  .pipe(inject(cssFiles, { ignorePath: 'shared', addRootSlash: true }))
   .pipe(gulp.dest('shared/'));
 });
 
