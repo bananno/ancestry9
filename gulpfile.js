@@ -15,7 +15,7 @@ gulp.task('inject-all-shared-app-files', () => {
   const jsFiles = gulp.src([...paths.mainApp, ...paths.tests], { read: false });
 
   return indexFile
-  .pipe(inject(jsFiles, { ignorePath: 'shared', addRootSlash: false }))
+  .pipe(inject(jsFiles, { ignorePath: 'shared', addRootSlash: true }))
   .pipe(gulp.dest('shared/'));
 });
 
@@ -24,7 +24,7 @@ gulp.task('inject-all-shared-style-files', () => {
   const cssFiles = gulp.src(paths.style, { read: false });
 
   return indexFile
-  .pipe(inject(cssFiles, { ignorePath: 'shared', addRootSlash: false }))
+  .pipe(inject(cssFiles, { ignorePath: 'shared', addRootSlash: true }))
   .pipe(gulp.dest('shared/'));
 });
 
