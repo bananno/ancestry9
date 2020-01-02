@@ -39,6 +39,10 @@ function tagIndex(req, res, next) {
     });
   }).then(() => {
     return new Promise(resolve => {
+      getAllTags('Image', resolve);
+    });
+  }).then(() => {
+    return new Promise(resolve => {
       getAllTags('Notation', notations => {
         notations
         .filter(notation => notation.tags.includes('tag definition'))
@@ -94,6 +98,10 @@ function tagShow(req, res) {
   }).then(() => {
     return new Promise(resolve => {
       getItemsWithTag('Notation', 'notations', resolve);
+    });
+  }).then(() => {
+    return new Promise(resolve => {
+      getItemsWithTag('Image', 'images', resolve);
     });
   }).then(() => {
     return new Promise(resolve => {

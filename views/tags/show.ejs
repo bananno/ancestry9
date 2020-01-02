@@ -109,6 +109,15 @@
   </ul>
 <% } %>
 
+<% if (data.images.length > 0) { %>
+  <h2>images</h2>
+  <% data.images.forEach(image => { %>
+    <div style="display: inline-block; width: 200px;">
+      <%- include('../format/linkToImage', {image}) %>
+    </div>
+  <% }); %>
+<% } %>
+
 <style>
   #edit-notation-form {
     display: none;
