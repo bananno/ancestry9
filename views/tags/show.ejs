@@ -2,7 +2,7 @@
   <a href="/tags">tags</a>
 </p>
 
-<h1><%= tag%></h1>
+<h1><%= tag %></h1>
 
 <h2>definition</h2>
 
@@ -39,7 +39,9 @@
   </form>
 <% } %>
 
-<% if (data.people.length > 0) { %>
+<% if (tag == 'number of children') { %>
+  <%- include('./special-numChildren', {people: data.people}) %>
+<% } else if (data.people.length > 0) { %>
   <h2>people</h2>
   <ul class="bullet-list">
     <% data.people.forEach(person => { %>

@@ -1,0 +1,100 @@
+<%
+  data.people.forEach(person => {
+    person.tagValue = (() => {
+      for (let i in person.tags) {
+        if (person.tags[i].match('=')
+            && person.tags[i].split('=')[0].trim() == tag) {
+          return person.tags[i].slice(person.tags[i].indexOf('=') + 1).trim();
+        }
+      }
+    })();
+  });
+
+  const peopleUnknown = data.people.filter(person => person.tagValue == 'unknown');
+
+  const peopleDone = data.people.filter(person => person.tagValue == 'done'
+    && person.children.length > 0);
+
+  const peopleNone = data.people.filter(person => person.tagValue == 'done'
+    && person.children.length == 0);
+
+  const peopleDistant = data.people.filter(person => person.tagValue == 'too distant');
+
+  const peopleSpecified = data.people.filter(person => {
+    return !['unknown', 'done', 'too distant'].includes(person.tagValue);
+  });
+%>
+
+<h2>people</h2>
+
+<p class="tag-section-subtitle">
+  manually specified (number is known, but not all children are in database)
+</p>
+
+<ul class="bullet-list" id="tag-person-list">
+  <% peopleSpecified.forEach(person => { %>
+    <li>
+      <%- include('../partials/linkToPerson', {person}) %>
+      (value: <%= person.tagValue %>,
+      in database: <%= person.children.length %>)
+    </li>
+  <% }); %>
+</ul>
+
+<p class="tag-section-subtitle">
+  unknown (to-do: find the information and mark done)
+</p>
+
+<ul class="bullet-list">
+  <% peopleUnknown.forEach(person => { %>
+    <li>
+      <%- include('../partials/linkToPerson', {person}) %>
+      (in database: <%= person.children.length %>)
+    </li>
+  <% }); %>
+</ul>
+
+<p class="tag-section-subtitle">
+  done (all children in database)
+</p>
+
+<ul class="bullet-list">
+  <% peopleDone.forEach(person => { %>
+    <li>
+      <%- include('../partials/linkToPerson', {person}) %>
+      (in database: <%= person.children.length %>)
+    </li>
+  <% }); %>
+</ul>
+
+<p class="tag-section-subtitle">
+  done (never had any children)
+</p>
+
+<ul class="bullet-list">
+  <% peopleNone.forEach(person => { %>
+    <li>
+      <%- include('../partials/linkToPerson', {person}) %>
+    </li>
+  <% }); %>
+</ul>
+
+<p class="tag-section-subtitle">
+  too distant (no need to complete these)
+</p>
+
+<ul class="bullet-list">
+  <% peopleDistant.forEach(person => { %>
+    <li>
+      <%- include('../partials/linkToPerson', {person}) %>
+      (in database: <%= person.children.length %>)
+    </li>
+  <% }); %>
+</ul>
+
+<style>
+  .tag-section-subtitle {
+    font-weight: bold;
+    margin: 10px 0;
+  }
+</style>
