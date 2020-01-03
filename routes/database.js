@@ -202,6 +202,9 @@ function getProcessedSharedData(req, res, callback) {
       if (person.tags['number of children'] == 'done') {
         // some children might not be shared and will be removed from list later
         person.tags['number of children'] = person.children.length;
+      } else if (person.tags['number of children'] == 'too distant'
+          || person.tags['number of children'] == 'unknown') {
+        person.tags['number of children'] = null;
       }
     });
 
