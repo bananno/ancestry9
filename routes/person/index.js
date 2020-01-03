@@ -81,7 +81,10 @@ function createPerson(req, res, next) {
     return;
   }
 
-  newPerson.customId = newPerson.name.replace(/ /g, '-').toLowerCase();
+  newPerson.customId = newPerson.name
+    .toLowerCase()
+    .replace(/\[|\]|\(|\)|\.|\//g, '')
+    .replace(/ /g, '-');
 
   mongoose.model('Person').create(newPerson, function(err, person) {
     if (err) {
