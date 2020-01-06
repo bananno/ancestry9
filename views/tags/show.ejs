@@ -1,3 +1,20 @@
+<%
+  function getTagValue(item, parentheses = true) {
+    let tagValue = '';
+    for (let i in item.tags) {
+      if (item.tags[i].match('=')
+          && item.tags[i].split('=')[0].trim() == tag) {
+        tagValue = item.tags[i].slice(item.tags[i].indexOf('=') + 1).trim();
+        break;
+      }
+    }
+    if (tagValue.length && parentheses) {
+      return '(' + tagValue + ')';
+    }
+    return tagValue;
+  }
+%>
+
 <p>
   <a href="/tags">tags</a>
 </p>
@@ -45,22 +62,9 @@
   <h2>people</h2>
   <ul class="bullet-list">
     <% data.people.forEach(person => { %>
-      <%
-        let personTagValue = (() => {
-          for (let i in person.tags) {
-            if (person.tags[i].match('=')
-                && person.tags[i].split('=')[0].trim() == tag) {
-              return person.tags[i].slice(person.tags[i].indexOf('=') + 1).trim();
-            }
-          }
-        })();
-        if (personTagValue) {
-          personTagValue = '(' + personTagValue + ')';
-        }
-      %>
       <li>
         <%- include('../partials/linkToPerson', {person}) %>
-        <%= personTagValue %>
+        <%= getTagValue(person) %>
       </li>
     <% }); %>
   </ul>
@@ -72,7 +76,8 @@
     <% data.stories.forEach(story => { %>
       <li>
         <%- include('../partials/linkToStory', {story}) %>
-        (<%= story.type %>)
+        - <%= story.type %>
+        <%= getTagValue(story) %>
       </li>
     <% }); %>
   </ul>
@@ -84,6 +89,7 @@
     <% data.sources.forEach(source => { %>
       <li>
         <%- include('../partials/linkToSource', {showStory: true, source}) %>
+        <%= getTagValue(source) %>
       </li>
     <% }); %>
   </ul>
@@ -95,6 +101,7 @@
     <% data.events.forEach(event => { %>
       <li>
         <a href="/event/<%= event._id %>"><%= event.title %></a>
+        <%= getTagValue(event) %>
       </li>
     <% }); %>
   </ul>
@@ -106,6 +113,7 @@
     <% data.notations.forEach(notation => { %>
       <li>
         <%- include('../partials/linkToNotation', {notation}) %>
+        <%= getTagValue(notation) %>
       </li>
     <% }); %>
   </ul>
