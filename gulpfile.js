@@ -58,9 +58,11 @@ gulp.task('inject-compressed-shared-style', () => {
   .pipe(gulp.dest('shared/'));
 });
 
-gulp.task('dev', gulp.series(
+gulp.task('default', gulp.series(
   'inject-all-shared-app-files',
-  'inject-all-shared-style-files'
+  'inject-all-shared-style-files',
+  'compress-shared-app-files',
+  'compress-shared-style-files'
 ));
 
 gulp.task('prod', gulp.series(
