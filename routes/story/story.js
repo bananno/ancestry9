@@ -14,8 +14,8 @@ const getDateValues = getTools('getDateValues');
 const getLocationValues = getTools('getLocationValues');
 
 const mainStoryTypes = [
-  'books', 'cemeteries', 'documents', 'index',
-  'newspapers', 'websites', 'places', 'other',
+  'book', 'cemetery', 'document', 'index',
+  'newspaper', 'website', 'place', 'topic'
 ];
 
 const noEntryStoryTypes = ['artifact', 'event', 'landmark', 'place'];
@@ -25,7 +25,7 @@ createModelRoutes({
   modelName: 'story',
   modelNamePlural: 'stories',
   router: router,
-  index: getStoriesIndexRoute('all'),
+  index: storyIndex,
   create: createStory,
   show: storyShowMain,
   edit: storyEdit,
@@ -41,59 +41,42 @@ createModelRoutes({
 });
 
 router.post('/story/:id/createNotation', createStoryNotation);
-
-mainStoryTypes.forEach(type => {
-  router.get('/stories/' + type, getStoriesIndexRoute(type));
-});
-
 router.get('/stories/with-sources', storiesWithSources);
+router.get('/stories/:type', storyIndex);
 
-function getStoriesIndexRoute(storyType) {
-  return function(req, res, next) {
-    withAllStories(storyType, stories => {
-      stories.sort((a, b) => {
-        return (a.type + a.title) < (b.type + b.title) ? -1 : 1;
-      });
-      res.render('layout', {
-        view: 'story/index',
-        title: 'Stories',
-        stories: stories,
-        subview: storyType,
-        mainStoryTypes: mainStoryTypes,
-      });
+function storyIndex(req, res, next) {
+  const storyType = req.params.type;
+
+  withAllStories(storyType, stories => {
+    stories.sort((a, b) => {
+      return (a.type + a.title) < (b.type + b.title) ? -1 : 1;
     });
-  }
+
+    res.render('layout', {
+      view: 'story/index',
+      title: 'Stories',
+      stories: stories,
+      subview: storyType,
+      mainStoryTypes: [...mainStoryTypes, 'other'],
+    });
+  });
 }
 
 function withAllStories(type, callback) {
-  const singular = {
-    'books': 'book',
-    'cemeteries': 'cemetery',
-    'documents': 'document',
-    'index': 'index',
-    'newspapers': 'newspaper',
-    'places': 'place',
-    'websites': 'website',
-  };
-
-  const singularType = singular[type];
-
-  if (singularType) {
-    Story.find({ type: singularType }, (err, stories) => {
+  if (!type) {
+    Story.find({}, (err, stories) => {
+      callback(stories);
+    });
+  } else if (type == 'other') {
+    Story.find({}, (err, stories) => {
+      stories = stories.filter(story => {
+        return !mainStoryTypes.includes(story.type);
+      });
       callback(stories);
     });
   } else {
-    Story.find({}, (err, stories) => {
-      if (type == 'other') {
-        callback(stories.filter(story => {
-          return ![
-            'book', 'cemetery', 'document', 'index',
-            'newspaper', 'website',
-          ].includes(story.type);
-        }));
-      } else {
-        callback(stories);
-      }
+    Story.find({type}, (err, stories) => {
+      callback(stories);
     });
   }
 }
