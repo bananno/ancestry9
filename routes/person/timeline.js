@@ -23,15 +23,9 @@ module.exports = function(req, res) {
       events = filterEvents(events, person);
       events = events.concat(sourceEvents);
       events = sortEvents(events);
-
-      res.render('layout', {
-        view: 'person/layout',
-        subview: 'timeline',
-        title: person.name,
-        paramPersonId: req.paramPersonId,
-        personId: req.personId,
-        person: person,
-        events: events,
+      personTools.renderPersonProfile(req, res, 'timeline', {
+        person,
+        events,
       });
     });
   });

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Person = mongoose.model('Person');
 const getTools = (path) => { return require('../../tools/' + path) };
 const personTools = require('./tools');
+const renderPersonProfile = personTools.renderPersonProfile;
 const removePersonFromList = getTools('removePersonFromList');
 const sortEvents = getTools('sortEvents');
 const sortCitations = getTools('sortCitations');
@@ -95,12 +96,7 @@ function personSummary(req, res, next) {
       });
     }
 
-    res.render('layout', {
-      view: 'person/layout',
-      subview: 'show',
-      title: person.name,
-      paramPersonId: req.paramPersonId,
-      personId: req.personId,
+    renderPersonProfile(req, res, 'summary', {
       events: sortEvents(data.events),
       citations: sortCitations(data.citations, 'item'),
       findPersonInList: personTools.findPersonInList,
@@ -121,17 +117,9 @@ function personEdit(req, res, next) {
     Person
     .find({})
     .exec((err, allPeople) => {
-      var people = removePersonFromList(allPeople, person);
+      const people = removePersonFromList(allPeople, person);
       people.sort((a, b) => a.name < b.name ? -1 : 1);
-      res.render('layout', {
-        view: 'person/layout',
-        subview: 'edit',
-        title: person.name,
-        paramPersonId: req.paramPersonId,
-        personId: req.personId,
-        person: person,
-        people: people,
-      });
+      renderPersonProfile(req, res, 'edit', {person, people});
     });
   });
 }
@@ -154,16 +142,7 @@ function personSources(req, res, next) {
         return sortA == sortB ? 0 : sortA > sortB ? 1 : -1;
       });
 
-      res.render('layout', {
-        view: 'person/layout',
-        subview: 'sources',
-        title: person.name,
-        paramPersonId: req.paramPersonId,
-        personId: req.personId,
-        person: person,
-        sources: sources,
-        citations: citations,
-      });
+      renderPersonProfile(req, res, 'sources', {person, sources, citations});
     });
   });
 }
@@ -171,15 +150,7 @@ function personSources(req, res, next) {
 function personNotations(req, res, next) {
   const person = req.person;
   mongoose.model('Notation').find({ people: person }, (err, notations) => {
-    res.render('layout', {
-      view: 'person/layout',
-      subview: 'notations',
-      person: person,
-      title: person.name,
-      paramPersonId: req.paramPersonId,
-      personId: req.personId,
-      notations: notations,
-    });
+    renderPersonProfile(req, res, 'notations', {person, notations});
   });
 }
 
@@ -204,19 +175,10 @@ function personNationality(req, res) {
 
       var nationality = calculateNationality(person, people);
 
-      res.format({
-        html: function() {
-          res.render('layout', {
-            view: 'person/layout',
-            subview: 'nationality',
-            title: person.name,
-            paramPersonId: req.paramPersonId,
-            personId: req.personId,
-            person: person,
-            people: people,
-            nationality: nationality,
-          });
-        }
+      renderPersonProfile(req, res, 'nationality', {
+        person,
+        people,
+        nationality,
       });
     });
   });
@@ -231,14 +193,10 @@ function personRelatives(req, res) {
   .exec(function(err, people) {
     const person = personTools.findPersonInList(people, req.personId);
     const relativeList = getPersonRelativesList(people, person);
-    res.render('layout', {
-      view: 'person/layout',
-      subview: 'relatives',
-      title: person.name,
-      paramPersonId: req.paramPersonId,
-      person: person,
-      people: people,
-      relativeList: relativeList,
+    renderPersonProfile(req, res, 'relatives', {
+      person,
+      people,
+      relativeList,
     });
   });
 }
@@ -252,17 +210,11 @@ function personConnection(req, res) {
       return thisPerson.name == 'Anna Peterson';
     })[0];
 
-    res.render('layout', {
-      view: 'person/layout',
-      subview: 'connection',
-      title: person.name,
-      paramPersonId: req.paramPersonId,
-      person: person,
-      compare: compare,
-      people: people,
-      findPerson: person => {
-        return personTools.findPersonInList(people, person)
-      },
+    renderPersonProfile(req, res, 'connection', {
+      person,
+      compare,
+      people,
+      findPerson: person => personTools.findPersonInList(people, person),
       isSamePerson: personTools.isSamePerson,
     });
   });
@@ -293,15 +245,7 @@ function personWikitree(req, res, next) {
 
       sources.sort((a, b) => a.story.title < b.story.title ? -1 : 1);
 
-      res.render('layout', {
-        view: 'person/layout',
-        subview: 'wikitree',
-        title: person.name,
-        personId: req.personId,
-        paramPersonId: req.paramPersonId,
-        person,
-        sources,
-      });
+      renderPersonProfile(req, res, 'wikitree', {person, sources});
     });
   });
 }
