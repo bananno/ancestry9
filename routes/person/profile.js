@@ -7,6 +7,8 @@ const removePersonFromList = getTools('removePersonFromList');
 const sortEvents = getTools('sortEvents');
 const sortCitations = getTools('sortCitations');
 const getPersonRelativesList = getTools('getPersonRelativesList');
+const Notation = mongoose.model('Notation');
+const Event = mongoose.model('Event');
 
 module.exports = {
   show: personSummary,
@@ -21,7 +23,7 @@ module.exports = {
   }
 };
 
-function personSummary(req, res, next) {
+function personSummary(req, res) {
   const data = {};
   new Promise(resolve => {
     Person.findById(req.personId)
@@ -107,7 +109,7 @@ function personSummary(req, res, next) {
   });
 }
 
-function personEdit(req, res, next) {
+function personEdit(req, res) {
   Person
   .findById(req.personId)
   .populate('parents')
@@ -124,7 +126,7 @@ function personEdit(req, res, next) {
   });
 }
 
-function personSources(req, res, next) {
+function personSources(req, res) {
   const person = req.person;
   mongoose.model('Source')
   .find({ people: person })
@@ -147,41 +149,26 @@ function personSources(req, res, next) {
   });
 }
 
-function personNotations(req, res, next) {
+async function personNotations(req, res) {
   const person = req.person;
-  mongoose.model('Notation').find({ people: person }, (err, notations) => {
-    renderPersonProfile(req, res, 'notations', {person, notations});
-  });
+  const notations = await Notation.find({people: person});
+  renderPersonProfile(req, res, 'notations', {person, notations});
 }
 
-function personNationality(req, res) {
-  Person
-  .find({})
-  .populate('parents')
-  .populate('spouses')
-  .populate('children')
-  .exec(function(err, people) {
-    mongoose.model('Event')
-    .find({ title: 'birth' })
-    .exec(function(err, birthEvents) {
-      var birthCountries = mapPersonCountries(birthEvents);
+async function personNationality(req, res) {
+  const people = await Person.find({})
+    .populate('parents').populate('spouses').populate('children');
 
-      people = people.map((thisPerson) => {
-        thisPerson.birthCountry = birthCountries[thisPerson._id] || 'unknown';
-        return thisPerson;
-      });
+  for (let i in people) {
+    const person = people[i];
+    person.birthCountry = await getPersonBirthCountry(person);
+  }
 
-      var person = personTools.populateParents(req.personId, people);
+  const person = personTools.populateParents(req.personId, people);
 
-      var nationality = calculateNationality(person, people);
+  const nationality = calculateNationality(person, people);
 
-      renderPersonProfile(req, res, 'nationality', {
-        person,
-        people,
-        nationality,
-      });
-    });
-  });
+  renderPersonProfile(req, res, 'nationality', {person, people, nationality});
 }
 
 function personRelatives(req, res) {
@@ -220,7 +207,7 @@ function personConnection(req, res) {
   });
 }
 
-function personWikitree(req, res, next) {
+function personWikitree(req, res) {
   const person = req.person;
 
   mongoose.model('Source').find({ people: person }).populate('story').exec((err, sources) => {
@@ -250,18 +237,15 @@ function personWikitree(req, res, next) {
   });
 }
 
-function mapPersonCountries(events) {
-  const personBirthCountries = {};
+async function getPersonBirthCountry(person) {
+  const event = await Event.findOne({title: 'birth', people: person});
 
-  events.forEach((thisEvent) => {
-    if (thisEvent.location && thisEvent.location.country) {
-      thisEvent.people.forEach((thisPerson) => {
-        personBirthCountries[thisPerson] = thisEvent.location.country;
-      });
-    }
-  });
+  if (event && (event.people[0] + '' === person._id + '')
+      && event.location && event.location.country) {
+    return event.location.country;
+  }
 
-  return personBirthCountries;
+  return 'unknown';
 }
 
 function calculateNationality(person, people, nationality, percentage, safety) {

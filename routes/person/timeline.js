@@ -1,61 +1,50 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
-
 const personTools = require('./tools');
 const sortEvents = require('../../tools/sortEvents');
+const Event = mongoose.model('Event');
+const Source = mongoose.model('Source');
 
-module.exports = function(req, res) {
+module.exports = getPersonTimeline;
+
+async function getPersonTimeline(req, res) {
   const person = req.person;
 
-  mongoose.model('Event')
-  .find({ })
-  .populate('people')
-  .exec((err, events) => {
-    mongoose.model('Source')
-    .find({ people: person })
-    .populate('people')
-    .populate('story')
-    .populate('images')
-    .exec((err, sources) => {
-      const sourceEvents = getSourceEvents(sources);
-      events = sortEvents(events);
-      events = filterEvents(events, person);
-      events = events.concat(sourceEvents);
-      events = sortEvents(events);
-      personTools.renderPersonProfile(req, res, 'timeline', {
-        person,
-        events,
-      });
-    });
-  });
-};
+  let events = await Event.find({}).populate('people');
 
-function getSourceEvents(sources) {
-  const events = [];
+  const sources = await Source.find({people: person})
+    .populate('people').populate('story').populate('images');
 
-  sources.forEach(source => {
-    const event = {
-      title: source.story.title + ' - ' + source.title,
-      date: { ...source.date },
-      location: { ...source.location },
-      people: [ ...source.people ],
-      source: source,
-    };
+  const sourceEvents = sources.map(convertSourceToEvent);
 
-    if (source.story.type == 'newspaper') {
-      event.type = source.story.type;
-    } else if (source.story.type == 'document'
-        && source.story.title.match('Census')) {
-      event.type = 'census';
-    } else {
-      event.type = 'source';
-    }
+  events = sortEvents(events);
+  events = filterEvents(events, person);
+  events = events.concat(sourceEvents);
+  events = sortEvents(events);
 
-    events.push(event);
-  });
+  personTools.renderPersonProfile(req, res, 'timeline', {person, events});
+}
 
-  return events;
+function convertSourceToEvent(source) {
+  const event = {
+    title: source.story.title + ' - ' + source.title,
+    date: { ...source.date },
+    location: { ...source.location },
+    people: [ ...source.people ],
+    source: source,
+  };
+
+  if (source.story.type == 'newspaper') {
+    event.type = source.story.type;
+  } else if (source.story.type == 'document'
+      && source.story.title.match('Census')) {
+    event.type = 'census';
+  } else {
+    event.type = 'source';
+  }
+
+  return event;
 }
 
 function filterEvents(events, person) {
