@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+const modelFiles = require('./models/index');
 
 const routeFiles = [
   ['index'],
@@ -18,19 +19,6 @@ const routeFiles = [
   ['database'],
   ['image'],
   ['tag'],
-];
-
-const modelFiles = [
-  'db',
-  'citation',
-  'event',
-  'image',
-  'location',
-  'notation',
-  'person',
-  'source',
-  'story',
-  'to-do',
 ];
 
 modelFiles.forEach(model => {
