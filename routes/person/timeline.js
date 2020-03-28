@@ -1,6 +1,4 @@
-const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
 const personTools = require('./tools');
 const sortEvents = require('../../tools/sortEvents');
 const Event = mongoose.model('Event');

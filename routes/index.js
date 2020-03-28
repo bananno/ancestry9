@@ -21,6 +21,9 @@ checklistRouter(router);
 const eventRouter = require('./event');
 eventRouter(router);
 
+const personRouter = require('./person/index');
+personRouter(router);
+
 const notationRouter = require('./notation');
 notationRouter(router);
 

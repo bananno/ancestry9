@@ -1,7 +1,8 @@
-const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
 const personTools = require('./tools');
+const renderPersonProfile = personTools.renderPersonProfile;
+const Event = mongoose.model('Event');
+const Source = mongoose.model('Source');
 
 module.exports = function(req, res) {
   const person = req.person;
@@ -23,22 +24,18 @@ module.exports = function(req, res) {
 
     checklistData.incompleteSourceList = getIncompleteSources(data.sources);
 
-    res.render('layout', {
-      view: 'person/layout',
-      subview: 'checklist',
-      title: person.name,
-      paramPersonId: req.paramPersonId,
-      person: person,
+    renderPersonProfile(req, res, 'checklist', {
+      person,
       ...checklistData
     });
   });
 };
 
 function withData(person, callback) {
-  mongoose.model('Event')
+  Event
   .find({ people: person })
   .exec((err, events) => {
-    mongoose.model('Source')
+    Source
     .find({ people: person })
     .populate('story')
     .exec((err, sources) => {

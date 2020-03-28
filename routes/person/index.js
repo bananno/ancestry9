@@ -1,49 +1,50 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
-module.exports = router;
-
 const Person = mongoose.model('Person');
-const getTools = (path) => { return require('../../tools/' + path) };
-const createModelRoutes = getTools('createModelRoutes');
+const tool = path => require('../../tools/' + path);
+const createModelRoutes = tool('createModelRoutes');
 const personTools = require('./tools');
-const removePersonFromList = getTools('removePersonFromList');
-const getNewEventValues = getTools('getNewEventValues');
-const reorderList = getTools('reorderList');
+const removePersonFromList = tool('removePersonFromList');
+const getNewEventValues = tool('getNewEventValues');
+const reorderList = tool('reorderList');
 const personProfileRoutes = require('./profile');
 const personTimeline = require('./timeline');
 const personChecklist = require('./checklist');
 
-personTools.convertParamPersonId(router);
+module.exports = createRoutes;
 
-createModelRoutes({
-  Model: Person,
-  modelName: 'person',
-  modelNamePlural: 'people',
-  router: router,
-  index: peopleIndex(false),
-  new: peopleIndex(true),
-  create: createPerson,
-  show: personProfileRoutes.show,
-  edit: personProfileRoutes.edit,
-  delete: null,
-  otherRoutes: {
-    timeline: personTimeline,
-    checklist: personChecklist,
-    ...personProfileRoutes.other,
-  },
-  toggleAttributes: ['shareLevel'],
-  singleAttributes: ['name', 'customId', 'profileImage', 'shareName',
-    'gender'],
-  listAttributes: ['links', 'tags'],
-});
+function createRoutes(router) {
+  personTools.convertParamPersonId(router);
 
-router.post('/person/:id/add/events', makeRouteEditPost('events'));
-router.post('/person/:id/add/notations', createPersonNotation);
+  createModelRoutes({
+    Model: Person,
+    modelName: 'person',
+    modelNamePlural: 'people',
+    router,
+    index: peopleIndex(false),
+    new: peopleIndex(true),
+    create: createPerson,
+    show: personProfileRoutes.show,
+    edit: personProfileRoutes.edit,
+    delete: null,
+    otherRoutes: {
+      timeline: personTimeline,
+      checklist: personChecklist,
+      ...personProfileRoutes.other,
+    },
+    toggleAttributes: ['shareLevel'],
+    singleAttributes: ['name', 'customId', 'profileImage', 'shareName',
+      'gender'],
+    listAttributes: ['links', 'tags'],
+  });
 
-createRelationshipRoutes('parents', 'children');
-createRelationshipRoutes('spouses', 'spouses');
-createRelationshipRoutes('children', 'parents');
+  router.post('/person/:id/add/events', makeRouteEditPost('events'));
+  router.post('/person/:id/add/notations', createPersonNotation);
+
+  createRelationshipRoutes(router, 'parents', 'children');
+  createRelationshipRoutes(router, 'spouses', 'spouses');
+  createRelationshipRoutes(router, 'children', 'parents');
+}
 
 function peopleIndex(showNew) {
   return function(req, res, next) {
@@ -61,7 +62,7 @@ function peopleIndex(showNew) {
   };
 }
 
-function createRelationshipRoutes(relationship, corresponding) {
+function createRelationshipRoutes(router, relationship, corresponding) {
   const addPath = '/person/:id/add/' + relationship;
   const deletePath = '/person/:id/delete/' + relationship + '/:deleteId';
   const reorderPath = '/person/:id/reorder/' + relationship + '/:orderId';
