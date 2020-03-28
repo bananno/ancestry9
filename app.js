@@ -13,10 +13,8 @@ const routeFiles = [
   ['source/source'],
   ['source/citation'],
   ['map'],
-  ['checklist'],
   ['database'],
   ['image'],
-  ['tag'],
 ];
 
 modelFiles.forEach(model => {

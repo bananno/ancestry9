@@ -1,24 +1,23 @@
-const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
-module.exports = router;
 const Person = mongoose.model('Person');
+const {getAllData, populatePeopleDates} = require('./tools');
 
-const getAllData = require('./tools').getAllData;
-const populatePeopleDates = require('./tools').populatePeopleDates;
+module.exports = createRoutes;
 
-router.get('/checklist', checklistIndex);
-router.get('/checklist/vitals', checklistVitals);
-router.get('/checklist/children', checklistChildren);
-router.get('/checklist/wikitree', checklistWikiTree);
-router.get('/checklist/findagrave', checklistFindAGrave);
-router.get('/checklist/sourceCensus', checklistSourceCensus);
-router.get('/checklist/profileSummary', checklistProfileSummary);
-router.get('/checklist/images', checklistImages);
+function createRoutes(router) {
+  router.get('/checklist', checklistIndex);
+  router.get('/checklist/vitals', checklistVitals);
+  router.get('/checklist/children', checklistChildren);
+  router.get('/checklist/wikitree', checklistWikiTree);
+  router.get('/checklist/findagrave', checklistFindAGrave);
+  router.get('/checklist/sourceCensus', checklistSourceCensus);
+  router.get('/checklist/profileSummary', checklistProfileSummary);
+  router.get('/checklist/images', checklistImages);
 
-router.get('/to-do', showToDoList);
-router.post('/to-do/new', newToDoItem);
-router.post('/to-do/:id/edit', editToDoItem);
+  router.get('/to-do', showToDoList);
+  router.post('/to-do/new', newToDoItem);
+  router.post('/to-do/:id/edit', editToDoItem);
+}
 
 function checklistIndex(req, res, next) {
   res.render('layout', {

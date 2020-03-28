@@ -1,12 +1,12 @@
-const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
-module.exports = router;
+module.exports = createRoutes;
 
-router.get('/tags', tagIndex);
-router.get('/tag/:tag', tagShow);
-router.post('/tag/newDefinition', tagNewDefinition);
-router.post('/tag/updateDefinition', tagUpdateDefinition);
+function createRoutes(router) {
+  router.get('/tags', tagIndex);
+  router.get('/tag/:tag', tagShow);
+  router.post('/tag/newDefinition', tagNewDefinition);
+  router.post('/tag/updateDefinition', tagUpdateDefinition);
+}
 
 function tagIndex(req, res, next) {
   const tags = {};
