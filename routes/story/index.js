@@ -1,17 +1,12 @@
-const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
-module.exports = router;
-
 const Story = mongoose.model('Story');
 const Source = mongoose.model('Source');
 const Person = mongoose.model('Person');
 const Notation = mongoose.model('Notation');
-
-const getTools = (path) => { return require('../../tools/' + path) };
-const createModelRoutes = getTools('createModelRoutes');
-const getDateValues = getTools('getDateValues');
-const getLocationValues = getTools('getLocationValues');
+const tool = path => require('../../tools/' + path);
+const createModelRoutes = tool('createModelRoutes');
+const getDateValues = tool('getDateValues');
+const getLocationValues = tool('getLocationValues');
 
 const mainStoryTypes = [
   'book', 'cemetery', 'document', 'index',
@@ -20,29 +15,33 @@ const mainStoryTypes = [
 
 const noEntryStoryTypes = ['artifact', 'event', 'landmark', 'place'];
 
-createModelRoutes({
-  Model: Story,
-  modelName: 'story',
-  modelNamePlural: 'stories',
-  router: router,
-  index: storyIndex,
-  create: createStory,
-  show: storyShowMain,
-  edit: storyEdit,
-  otherRoutes: {
-    'entries': storyEntries,
-    'newEntry': storyNewEntry,
-    'notations': storyNotations,
-  },
-  toggleAttributes: ['sharing'],
-  singleAttributes: ['type', 'group', 'title', 'date', 'location',
-    'notes', 'summary', 'content'],
-  listAttributes: ['people', 'links', 'images', 'tags'],
-});
+module.exports = createRoutes;
 
-router.post('/story/:id/createNotation', createStoryNotation);
-router.get('/stories/with-sources', storiesWithSources);
-router.get('/stories/:type', storyIndex);
+function createRoutes(router) {
+  createModelRoutes({
+    Model: Story,
+    modelName: 'story',
+    modelNamePlural: 'stories',
+    router: router,
+    index: storyIndex,
+    create: createStory,
+    show: storyShowMain,
+    edit: storyEdit,
+    otherRoutes: {
+      'entries': storyEntries,
+      'newEntry': storyNewEntry,
+      'notations': storyNotations,
+    },
+    toggleAttributes: ['sharing'],
+    singleAttributes: ['type', 'group', 'title', 'date', 'location',
+      'notes', 'summary', 'content'],
+    listAttributes: ['people', 'links', 'images', 'tags'],
+  });
+
+  router.post('/story/:id/createNotation', createStoryNotation);
+  router.get('/stories/with-sources', storiesWithSources);
+  router.get('/stories/:type', storyIndex);
+}
 
 function storyIndex(req, res, next) {
   const storyType = req.params.type;

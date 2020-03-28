@@ -1,16 +1,15 @@
-const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
-module.exports = router;
-
 const Source = mongoose.model('Source');
 const Citation = mongoose.model('Citation');
-
 const sortCitations = require('../../tools/sortCitations');
 
-router.post('/source/:sourceId/add/citations', createCitation);
-router.post('/source/:sourceId/edit/citations/:citationId', updateCitation);
-router.post('/source/:sourceId/delete/citations/:citationId', deleteCitation);
+module.exports = createRoutes;
+
+function createRoutes(router) {
+  router.post('/source/:sourceId/add/citations', createCitation);
+  router.post('/source/:sourceId/edit/citations/:citationId', updateCitation);
+  router.post('/source/:sourceId/delete/citations/:citationId', deleteCitation);
+}
 
 function createCitation(req, res, next) {
   const sourceId = req.params.sourceId;

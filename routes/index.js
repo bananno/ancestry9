@@ -18,14 +18,23 @@ router.get('/shared', (req, res, next) => {
 const checklistRouter = require('./checklist');
 checklistRouter(router);
 
+const citationRouter = require('./citation');
+citationRouter(router);
+
 const eventRouter = require('./event');
 eventRouter(router);
 
-const personRouter = require('./person/index');
-personRouter(router);
-
 const notationRouter = require('./notation');
 notationRouter(router);
+
+const personRouter = require('./person');
+personRouter(router);
+
+const sourceRouter = require('./source');
+sourceRouter(router);
+
+const storyRouter = require('./story');
+storyRouter(router);
 
 const tagRouter = require('./tag');
 tagRouter(router);

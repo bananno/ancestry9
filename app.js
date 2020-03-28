@@ -8,9 +8,6 @@ const modelFiles = require('./models/index');
 
 const routeFiles = [
   ['index'],
-  ['story/story'],
-  ['source/source'],
-  ['source/citation'],
   ['map'],
   ['database'],
   ['image'],

@@ -1,53 +1,52 @@
-const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
-module.exports = router;
-
 const Source = mongoose.model('Source');
 const Story = mongoose.model('Story');
 const Citation = mongoose.model('Citation');
 const Notation = mongoose.model('Notation');
 const Person = mongoose.model('Person');
-
-const getTools = (path) => { return require('../../tools/' + path) };
-const createModelRoutes = getTools('createModelRoutes');
-const getDateValues = getTools('getDateValues');
-const getLocationValues = getTools('getLocationValues');
-const removePersonFromList = getTools('removePersonFromList');
-const sortPeople = getTools('sortPeople');
-const sortCitations = getTools('sortCitations');
-const sortSources = getTools('sortSources');
+const tool = path => require('../../tools/' + path);
+const createModelRoutes = tool('createModelRoutes');
+const getDateValues = tool('getDateValues');
+const getLocationValues = tool('getLocationValues');
+const removePersonFromList = tool('removePersonFromList');
+const sortPeople = tool('sortPeople');
+const sortCitations = tool('sortCitations');
+const sortSources = tool('sortSources');
 
 const mainSourceTypes = ['document', 'index', 'cemetery', 'newspaper',
   'photo', 'website', 'book', 'other'];
 
-createModelRoutes({
-  Model: Source,
-  modelName: 'source',
-  router: router,
-  index: getSourcesIndex('none'),
-  new: null,
-  create: createSource,
-  show: showSource,
-  edit: editSource,
-  delete: deleteSource,
-  otherRoutes: {
-    'notations': showSourceNotations,
-    'mentions': showSourceMentions,
-    'fastCitations': editSourceFastCitations,
-  },
-  toggleAttributes: ['sharing'],
-  singleAttributes: ['title', 'content', 'notes', 'summary',
-    'date', 'location', 'story'],
-  listAttributes: ['people', 'links', 'images', 'tags', 'stories'],
-});
+module.exports = createRoutes;
 
-mainSourceTypes.forEach(sourceType => {
-  router.get('/sources/' + sourceType, getSourcesIndex(sourceType));
-});
+function createRoutes(router) {
+  createModelRoutes({
+    Model: Source,
+    modelName: 'source',
+    router: router,
+    index: getSourcesIndex('none'),
+    new: null,
+    create: createSource,
+    show: showSource,
+    edit: editSource,
+    delete: deleteSource,
+    otherRoutes: {
+      'notations': showSourceNotations,
+      'mentions': showSourceMentions,
+      'fastCitations': editSourceFastCitations,
+    },
+    toggleAttributes: ['sharing'],
+    singleAttributes: ['title', 'content', 'notes', 'summary',
+      'date', 'location', 'story'],
+    listAttributes: ['people', 'links', 'images', 'tags', 'stories'],
+  });
 
-router.post('/source/:id/createNotation', createSourceNotation);
-router.post('/source/:id/createCitationNotation', createSourceCitationTextNotation);
+  mainSourceTypes.forEach(sourceType => {
+    router.get('/sources/' + sourceType, getSourcesIndex(sourceType));
+  });
+
+  router.post('/source/:id/createNotation', createSourceNotation);
+  router.post('/source/:id/createCitationNotation', createSourceCitationTextNotation);
+}
 
 function getSourcesIndex(subview) {
   return (req, res, next) => {
