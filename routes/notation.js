@@ -1,28 +1,28 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
-module.exports = router;
-
 const Notation = mongoose.model('Notation');
 const Person = mongoose.model('Person');
 const Story = mongoose.model('Story');
+const tool = filename => require('../tools/' + filename);
+const createModelRoutes = tool('createModelRoutes');
+const sortPeople = tool('sortPeople');
 
-const getTools = (path) => { return require('../tools/' + path) };
-const createModelRoutes = getTools('createModelRoutes');
-const sortPeople = getTools('sortPeople');
+module.exports = createRoutes;
 
-createModelRoutes({
-  Model: Notation,
-  modelName: 'notation',
-  router: router,
-  index: notationsIndex,
-  create: createNotation,
-  show: showNotation,
-  edit: editNotation,
-  toggleAttributes: ['sharing'],
-  singleAttributes: ['title', 'text', 'source', 'date', 'location'],
-  listAttributes: ['people', 'stories', 'tags'],
-});
+function createRoutes(router) {
+  createModelRoutes({
+    Model: Notation,
+    modelName: 'notation',
+    router,
+    index: notationsIndex,
+    create: createNotation,
+    show: showNotation,
+    edit: editNotation,
+    toggleAttributes: ['sharing'],
+    singleAttributes: ['title', 'text', 'source', 'date', 'location'],
+    listAttributes: ['people', 'stories', 'tags'],
+  });
+}
 
 function notationsIndex(req, res, next) {
   Notation.find({}, (err, notations) => {

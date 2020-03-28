@@ -15,7 +15,8 @@ router.get('/shared', (req, res, next) => {
   res.render('../shared/index.html');
 });
 
-// EVENTS - INDEX + NEW
-
 const eventRouter = require('./event');
 eventRouter(router);
+
+const notationRouter = require('./notation');
+notationRouter(router);

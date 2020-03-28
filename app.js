@@ -12,7 +12,6 @@ const routeFiles = [
   ['story/story'],
   ['source/source'],
   ['source/citation'],
-  ['notation'],
   ['map'],
   ['checklist'],
   ['database'],
