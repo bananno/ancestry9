@@ -1,37 +1,44 @@
-const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
 const Event = mongoose.model('Event');
 const getDateValues = require('../tools/getDateValues');
 const getLocationValues = require('../tools/getLocationValues');
 const removePersonFromList = require('../tools/removePersonFromList');
 const reorderList = require('../tools/reorderList');
 const createModelRoutes = require('../tools/createModelRoutes');
-module.exports = router;
+const getNewEventValues = require('../tools/getNewEventValues');
+const sortEvents = require('../tools/sortEvents');
 
-router.get('/event/:eventId', makeRouteEditGet('none'));
-router.post('/event/:eventId/delete', deleteEvent);
+module.exports = createEventRoutes;
 
-router.get('/event/:eventId/edit/date', makeRouteEditGet('date'));
-router.post('/event/:eventId/edit/date', makeRouteEditPost('date'));
-router.get('/event/:eventId/edit/location', makeRouteEditGet('location'));
-router.post('/event/:eventId/edit/location', makeRouteEditPost('location'));
+function createEventRoutes(router) {
+  router.get('/events', makeEventsIndexRoute(false));
+  router.get('/events/new', makeEventsIndexRoute(true));
+  router.post('/events/new', createNewEvent);
 
-router.post('/event/:eventId/add/people', makeRouteEditPost('people', true));
-router.post('/event/:eventId/delete/people/:deleteId', makeRouteDelete('people'));
-router.post('/event/:eventId/reorder/people/:orderId', makeRouteReorder('people'));
+  router.get('/event/:eventId', makeRouteEditGet('none'));
+  router.post('/event/:eventId/delete', deleteEvent);
 
-router.post('/event/:eventId/add/tags', makeRouteEditPost('tags', true));
-router.post('/event/:eventId/delete/tags/:deleteId', makeRouteDelete('tags'));
-router.post('/event/:eventId/reorder/tags/:orderId', makeRouteReorder('tags'));
+  router.get('/event/:eventId/edit/date', makeRouteEditGet('date'));
+  router.post('/event/:eventId/edit/date', makeRouteEditPost('date'));
+  router.get('/event/:eventId/edit/location', makeRouteEditGet('location'));
+  router.post('/event/:eventId/edit/location', makeRouteEditPost('location'));
 
-createModelRoutes({
-  Model: Event,
-  modelName: 'event',
-  router: router,
-  editView: false,
-  singleAttributes: ['title', 'notes'],
-});
+  router.post('/event/:eventId/add/people', makeRouteEditPost('people', true));
+  router.post('/event/:eventId/delete/people/:deleteId', makeRouteDelete('people'));
+  router.post('/event/:eventId/reorder/people/:orderId', makeRouteReorder('people'));
+
+  router.post('/event/:eventId/add/tags', makeRouteEditPost('tags', true));
+  router.post('/event/:eventId/delete/tags/:deleteId', makeRouteDelete('tags'));
+  router.post('/event/:eventId/reorder/tags/:orderId', makeRouteReorder('tags'));
+
+  createModelRoutes({
+    Model: Event,
+    modelName: 'event',
+    router: router,
+    editView: false,
+    singleAttributes: ['title', 'notes'],
+  });
+}
 
 function withEvent(req, callback) {
   const eventId = req.params.eventId;
@@ -40,6 +47,47 @@ function withEvent(req, callback) {
   .populate('people')
   .exec((err, event) => {
     callback(event, eventId);
+  });
+}
+
+function makeEventsIndexRoute(showNew) {
+  return function(req, res, next) {
+    mongoose.model('Event')
+    .find({})
+    .populate('people')
+    .exec(function (err, events) {
+      events = sortEvents(events);
+      if (err) {
+        return console.error(err);
+      } else {
+        res.render('layout', {
+          view: 'events/index',
+          title: 'All Events',
+          events: events,
+          showNew: showNew,
+        });
+      }
+    });
+  };
+}
+
+function createNewEvent(req, res) {
+  const newEvent = getNewEventValues(req);
+
+  if (newEvent == null) {
+    return;
+  }
+
+  mongoose.model('Event').create(newEvent, function(err, event) {
+    if (err) {
+      res.send('There was a problem adding the information to the database.');
+    } else {
+      res.format({
+        html: function() {
+          res.redirect('/event/' + event._id);
+        }
+      });
+    }
   });
 }
 
