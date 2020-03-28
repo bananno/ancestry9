@@ -1,4 +1,3 @@
-const express = require('express');
 const mongoose = require('mongoose');
 const Notation = mongoose.model('Notation');
 const Person = mongoose.model('Person');

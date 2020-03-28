@@ -1,4 +1,3 @@
-const express = require('express');
 const mongoose = require('mongoose');
 const Person = mongoose.model('Person');
 const tool = path => require('../../tools/' + path);

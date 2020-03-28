@@ -15,26 +15,16 @@ router.get('/shared', (req, res, next) => {
   res.render('../shared/index.html');
 });
 
-const checklistRouter = require('./checklist');
-checklistRouter(router);
-
-const citationRouter = require('./citation');
-citationRouter(router);
-
-const eventRouter = require('./event');
-eventRouter(router);
-
-const notationRouter = require('./notation');
-notationRouter(router);
-
-const personRouter = require('./person');
-personRouter(router);
-
-const sourceRouter = require('./source');
-sourceRouter(router);
-
-const storyRouter = require('./story');
-storyRouter(router);
-
-const tagRouter = require('./tag');
-tagRouter(router);
+[
+  'checklist',
+  'citation',
+  'database',
+  'event',
+  'image',
+  'map',
+  'notation',
+  'person',
+  'source',
+  'story',
+  'tag',
+].forEach(item => require('./' + item)(router));

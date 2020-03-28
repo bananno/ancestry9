@@ -6,13 +6,6 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const modelFiles = require('./models/index');
 
-const routeFiles = [
-  ['index'],
-  ['map'],
-  ['database'],
-  ['image'],
-];
-
 modelFiles.forEach(model => {
   require('./models/' + model);
 });
@@ -29,10 +22,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-routeFiles.forEach(filename => {
-  const router = require('./routes/' + filename);
-  app.use('/', router);
-});
+const router = require('./routes');
+app.use('/', router);
 
 app.use((req, res, next) => {
   next(createError(404));

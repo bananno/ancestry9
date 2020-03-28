@@ -1,12 +1,13 @@
-const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
 const getLocationValues = require('../tools/getLocationValues');
-module.exports = router;
 
-router.get('/map', showMap);
-router.post('/map/newPlace', addMapPlace);
-router.post('/map/:id/delete', deleteMapPlace);
+module.exports = createRoutes;
+
+function createRoutes(router) {
+  router.get('/map', showMap);
+  router.post('/map/newPlace', addMapPlace);
+  router.post('/map/:id/delete', deleteMapPlace);
+}
 
 function showMap(req, res, next) {
   getEventsAndSources((error, sources, events, places) => {

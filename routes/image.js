@@ -1,21 +1,22 @@
-const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
 const Image = mongoose.model('Image');
 const Source = mongoose.model('Source');
 const Story = mongoose.model('Story');
 const createModelRoutes = require('../tools/createModelRoutes');
-module.exports = router;
 
-createModelRoutes({
-  Model: Image,
-  modelName: 'image',
-  router: router,
-  show: showImage,
-  editView: false,
-  singleAttributes: ['url'],
-  listAttributes: ['tags'],
-});
+module.exports = createRoutes;
+
+function createRoutes(router) {
+  createModelRoutes({
+    Model: Image,
+    modelName: 'image',
+    router: router,
+    show: showImage,
+    editView: false,
+    singleAttributes: ['url'],
+    listAttributes: ['tags'],
+  });
+}
 
 function showImage(req, res, next) {
   const imageId = req.params.id;

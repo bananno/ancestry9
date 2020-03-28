@@ -1,7 +1,5 @@
-const express = require('express');
 const mongoose = require('mongoose');
 const fs = require('fs');
-const router = express.Router();
 const sortEvents = require('../tools/sortEvents');
 
 const fields = {
@@ -31,8 +29,12 @@ const fields = {
   ],
 };
 
-router.get('/database', showDatabaseEverything);
-router.get('/sharing', saveSharedDatabase);
+module.exports = createRoutes;
+
+function createRoutes(router) {
+  router.get('/database', showDatabaseEverything);
+  router.get('/sharing', saveSharedDatabase);
+}
 
 function showDatabaseEverything(req, res) {
   let data = {};
@@ -386,5 +388,3 @@ function convertTags(obj) {
   });
   return tags;
 }
-
-module.exports = router;
