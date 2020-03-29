@@ -4,7 +4,6 @@ const {
   Notation,
   Person,
   Source,
-  removePersonFromList,
   sortCitations,
   sortEvents,
 } = require('../import');
@@ -27,13 +26,12 @@ module.exports = {
 };
 
 async function personSummary(req, res) {
-  const person = await Person.findById(req.personId)
-    .populate('parents').populate('spouses').populate('children');
+  const person = await Person.findById(req.personId).populate('parents');
 
   req.person = person;
 
   const allPeople = await Person.find({});
-  const people = removePersonFromList(allPeople, person);
+  const people = Person.removeFromList(allPeople, person);
   const events = await Event.find({people: person}).populate('people');
   const citations = await Citation.find({person}).populate('source');
 
@@ -59,7 +57,7 @@ function personEdit(req, res) {
     Person
     .find({})
     .exec((err, allPeople) => {
-      const people = removePersonFromList(allPeople, person);
+      const people = Person.removeFromList(allPeople, person);
       people.sort((a, b) => a.name < b.name ? -1 : 1);
       res.renderPersonProfile('edit', {people});
     });

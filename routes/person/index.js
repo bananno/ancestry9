@@ -3,7 +3,6 @@ const Person = mongoose.model('Person');
 const tool = path => require('../../tools/' + path);
 const createModelRoutes = tool('createModelRoutes');
 const personTools = require('./tools');
-const removePersonFromList = tool('removePersonFromList');
 const getNewEventValues = tool('getNewEventValues');
 const reorderList = tool('reorderList');
 const personProfileRoutes = require('./profile');
@@ -154,14 +153,14 @@ function makeRouteDelete(editField, corresponding) {
     if (corresponding) {
       var relationship = editField;
 
-      updatedObj[relationship] = removePersonFromList(person[relationship], deleteId);
+      updatedObj[relationship] = Person.removeFromList(person[relationship], deleteId);
 
       Person.findById(deleteId, function(err, relative) {
         if (err) {
         } else {
           var updatedRelative = {};
 
-          updatedRelative[corresponding] = removePersonFromList(relative[corresponding], person.id);
+          updatedRelative[corresponding] = Person.removeFromList(relative[corresponding], person);
 
           relative.update(updatedRelative, () => {});
         }

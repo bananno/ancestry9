@@ -1,14 +1,15 @@
-const mongoose = require('mongoose');
-const Source = mongoose.model('Source');
-const Story = mongoose.model('Story');
-const Citation = mongoose.model('Citation');
-const Notation = mongoose.model('Notation');
-const Person = mongoose.model('Person');
+const {
+  Citation,
+  Notation,
+  Person,
+  Source,
+  Story,
+} = require('../import');
+
 const tool = path => require('../../tools/' + path);
 const createModelRoutes = tool('createModelRoutes');
 const getDateValues = tool('getDateValues');
 const getLocationValues = tool('getLocationValues');
-const removePersonFromList = tool('removePersonFromList');
 const sortPeople = tool('sortPeople');
 const sortCitations = tool('sortCitations');
 const sortSources = tool('sortSources');
@@ -87,7 +88,7 @@ function createSource(req, res) {
     return res.send('Title is required.');
   }
 
-  mongoose.model('Source').create(newItem, (err, source) => {
+  Source.create(newItem, (err, source) => {
     if (err) {
       return res.send('There was a problem adding the information to the '
         + 'database.<br>' + err);
@@ -128,7 +129,7 @@ function withSource(req, res, options, callback) {
 }
 
 function withCitationText(source, includeStory, callback) {
-  mongoose.model('Notation')
+  Notation
   .find({ title: 'source citation', source: source})
   .exec((err, sourceNotation) => {
     if (!includeStory) {
@@ -136,7 +137,7 @@ function withCitationText(source, includeStory, callback) {
         return notation.text;
       }));
     }
-    mongoose.model('Notation')
+    Notation
     .find({ title: 'source citation', stories: [source.story]})
     .exec((err, storyNotation) => {
       callback([...sourceNotation, ...storyNotation].map(notation => {
@@ -149,7 +150,7 @@ function withCitationText(source, includeStory, callback) {
 function showSource(req, res) {
   withSource(req, res, { citationText: true }, data => {
     const { source, citationText } = data;
-    mongoose.model('Citation').find({ source: source }).populate('person')
+    Citation.find({ source: source }).populate('person')
     .exec((err, citations) => {
       res.render('layout', {
         view: 'sources/layout',
@@ -228,7 +229,7 @@ function editSource(req, res, next) {
 
 function sortPeopleListForNewCitations(source, people, citations) {
   source.people.forEach(thisPerson => {
-    people = removePersonFromList(people, thisPerson);
+    people = Person.removeFromList(people, thisPerson);
   });
 
   sortPeople(people, 'name');
@@ -239,7 +240,7 @@ function sortPeopleListForNewCitations(source, people, citations) {
     if (!tempPeople.includes('' + citation.person._id)) {
       tempPeople.push('' + citation.person._id);
       citationsPeople.push(citation.person);
-      people = removePersonFromList(people, citation.person);
+      people = Person.removeFromList(people, citation.person);
     }
   });
 
@@ -255,7 +256,7 @@ function editSourceFastCitations(req, res, next) {
           sortPeople(people, 'name');
 
           source.people.forEach(thisPerson => {
-            people = removePersonFromList(people, thisPerson);
+            people = Person.removeFromList(people, thisPerson);
           });
 
           people = [...source.people, ...people];

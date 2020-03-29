@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const reorderList = require('./reorderList');
-const removePersonFromList = require('./removePersonFromList');
 const getDateValues = require('./getDateValues');
 const getLocationValues = require('./getLocationValues');
 

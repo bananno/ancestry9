@@ -25,9 +25,10 @@ const personSchema = new mongoose.Schema({
   },
 });
 
-personSchema.statics.findInList = findInList;
-personSchema.statics.isSame = isSame;
 personSchema.methods.populateSiblings = populateSiblings;
+personSchema.statics.findInList = findInList;
+personSchema.statics.removeFromList = removeFromList;
+personSchema.statics.isSame = isSame;
 
 const Person = mongoose.model('Person', personSchema);
 
@@ -56,6 +57,10 @@ async function populateSiblings() {
 
 function findInList(people, person) {
   return people.find(nextPerson => isSame(person, nextPerson));
+}
+
+function removeFromList(people, person) {
+  return people.filter(nextPerson => !isSame(person, nextPerson));
 }
 
 function isSame(person1, person2) {

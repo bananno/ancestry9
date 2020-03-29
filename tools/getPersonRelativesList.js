@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const Person = mongoose.model('Person');
 
-var removePersonFromList = require('./removePersonFromList');
-
 var relativeList;
 var nextGroupList;
 var personIsPlaced;

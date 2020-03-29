@@ -2,19 +2,34 @@ const tool = filename => require('../tools/' + filename);
 
 const mongoose = require('mongoose');
 
+const models = [
+  'Citation',
+  'Event',
+  'Notation',
+  'Person',
+  'Source',
+  'Story',
+];
+
+const tools = [
+  'createModelRoutes',
+  'getDateValues',
+  'getLocationValues',
+  'getNewEventValues',
+  'removeDuplicatesFromList',
+  'reorderList',
+  'sortCitations',
+  'sortEvents',
+];
+
 module.exports = {
   mongoose,
-
-  Citation: mongoose.model('Citation'),
-  Event: mongoose.model('Event'),
-  Notation: mongoose.model('Notation'),
-  Person: mongoose.model('Person'),
-  Source: mongoose.model('Source'),
-  Story: mongoose.model('Story'),
-
-  createModelRoutes: tool('createModelRoutes'),
-  removeDuplicatesFromList: tool('removeDuplicatesFromList'),
-  removePersonFromList: tool('removePersonFromList'),
-  sortCitations: tool('sortCitations'),
-  sortEvents: tool('sortEvents'),
 };
+
+models.forEach(model => {
+  module.exports[model] = mongoose.model(model);
+});
+
+tools.forEach(tool => {
+  module.exports[tool] = require('../tools/' + tool);
+});

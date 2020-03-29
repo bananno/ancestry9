@@ -1,12 +1,15 @@
-const mongoose = require('mongoose');
-const Event = mongoose.model('Event');
-const getDateValues = require('../tools/getDateValues');
-const getLocationValues = require('../tools/getLocationValues');
-const removePersonFromList = require('../tools/removePersonFromList');
-const reorderList = require('../tools/reorderList');
-const createModelRoutes = require('../tools/createModelRoutes');
-const getNewEventValues = require('../tools/getNewEventValues');
-const sortEvents = require('../tools/sortEvents');
+const {
+  Event,
+  Notation,
+  Person,
+  Source,
+  createModelRoutes,
+  getDateValues,
+  getLocationValues,
+  getNewEventValues,
+  reorderList,
+  sortEvents,
+} = require('./import');
 
 module.exports = createEventRoutes;
 
@@ -42,7 +45,7 @@ function createEventRoutes(router) {
 
 function withEvent(req, callback) {
   const eventId = req.params.eventId;
-  mongoose.model('Event')
+  Event
   .findById(eventId)
   .populate('people')
   .exec((err, event) => {
@@ -52,7 +55,7 @@ function withEvent(req, callback) {
 
 function makeEventsIndexRoute(showNew) {
   return function(req, res, next) {
-    mongoose.model('Event')
+    Event
     .find({})
     .populate('people')
     .exec(function (err, events) {
@@ -78,7 +81,7 @@ function createNewEvent(req, res) {
     return;
   }
 
-  mongoose.model('Event').create(newEvent, function(err, event) {
+  Event.create(newEvent, function(err, event) {
     if (err) {
       res.send('There was a problem adding the information to the database.');
     } else {
@@ -94,7 +97,7 @@ function createNewEvent(req, res) {
 function makeRouteEditGet(fieldName) {
   return (req, res, next) => {
     withEvent(req, (event, eventId) => {
-      mongoose.model('Person').find({}, (err, people) => {
+      Person.find({}, (err, people) => {
         people.sort((a, b) => a.name < b.name ? -1 : 1);
         res.render('layout', {
           view: 'events/show',
@@ -140,7 +143,7 @@ function makeRouteDelete(fieldName) {
       const deleteId = req.params.deleteId;
 
       if (fieldName == 'people') {
-        updatedObj[fieldName] = removePersonFromList(event.people, deleteId);
+        updatedObj[fieldName] = Person.removeFromList(event.people, deleteId);
       } else {
         updatedObj[fieldName] = event[fieldName].filter((value, index) => index != deleteId);
       }
