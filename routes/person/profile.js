@@ -101,7 +101,7 @@ function personSummary(req, res) {
     renderPersonProfile(req, res, 'summary', {
       events: sortEvents(data.events),
       citations: sortCitations(data.citations, 'item'),
-      findPersonInList: personTools.findPersonInList,
+      findPersonInList: Person.findInList,
       person,
       people,
       siblings,
@@ -178,7 +178,7 @@ function personRelatives(req, res) {
   .populate('spouses')
   .populate('children')
   .exec(function(err, people) {
-    const person = personTools.findPersonInList(people, req.personId);
+    const person = Person.findInList(people, req.personId);
     const relativeList = getPersonRelativesList(people, person);
     renderPersonProfile(req, res, 'relatives', {
       person,
@@ -188,22 +188,17 @@ function personRelatives(req, res) {
   });
 }
 
-function personConnection(req, res) {
-  Person
-  .find({})
-  .exec((err, people) => {
-    const person = personTools.findPersonInList(people, req.personId);
-    const compare = people.filter(thisPerson => {
-      return thisPerson.name == 'Anna Peterson';
-    })[0];
+async function personConnection(req, res) {
+  const people = await Person.find({});
+  const person = Person.findInList(people, req.personId);
+  const compare = people.find(nextPerson => nextPerson.name === 'Anna Peterson');
 
-    renderPersonProfile(req, res, 'connection', {
-      person,
-      compare,
-      people,
-      findPerson: person => personTools.findPersonInList(people, person),
-      isSamePerson: personTools.isSamePerson,
-    });
+  renderPersonProfile(req, res, 'connection', {
+    person,
+    compare,
+    people,
+    findPerson: person => Person.findInList(people, person),
+    isSamePerson: Person.isSame,
   });
 }
 

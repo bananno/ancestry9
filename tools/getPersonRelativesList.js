@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+const Person = mongoose.model('Person');
 
 var removePersonFromList = require('./removePersonFromList');
 
@@ -61,7 +63,7 @@ function processNextGenList(safety) {
 }
 
 function collectRelatives(person, generation, track) {
-  person = findPersonInList(people, person);
+  person = Person.findInList(people, person);
 
   person.spouses.forEach(thisPerson => {
     addPersonToGroup(thisPerson, generation, track + 's');
@@ -85,7 +87,7 @@ function addPersonToGroup(person, generation, track) {
     if (personIsPlaced[person]) {
       return;
     }
-    person = findPersonInList(people, person);
+    person = Person.findInList(people, person);
   }
 
   // change "parent, child" to "sibling" to count 1 degree of removal instead of 2
@@ -205,20 +207,6 @@ function shouldSwap(relative1, relative2) {
   }
 
   return dist1 > dist2;
-}
-
-function findPersonInList(people, person) {
-  return people.filter((thisPerson) => {
-    return isSamePerson(thisPerson, person);
-  })[0];
-}
-
-function isSamePerson(person1, person2) {
-  var id1 = person1._id ? person1._id : person1;
-  var id2 = person2._id ? person2._id : person2;
-  id1 = '' + id1;
-  id2 = '' + id2;
-  return id1 == id2;
 }
 
 function getRelationshipNameList() {

@@ -2,24 +2,10 @@ const mongoose = require('mongoose');
 const Person = mongoose.model('Person');
 
 module.exports = {
-  isSamePerson,
-  findPersonInList,
   populateParents,
   convertParamPersonId,
   renderPersonProfile,
 };
-
-function isSamePerson(person1, person2) {
-  const id1 = '' + (person1 ? (person1._id || person1) : 'null');
-  const id2 = '' + (person2 ? (person2._id || person2) : 'null');
-  return id1 == id2;
-}
-
-function findPersonInList(people, person) {
-  return people.filter((thisPerson) => {
-    return isSamePerson(thisPerson, person);
-  })[0];
-}
 
 function populateParents(person, people, safety) {
   safety = safety || 0;
@@ -28,7 +14,7 @@ function populateParents(person, people, safety) {
     return person;
   }
 
-  person = findPersonInList(people, person);
+  person = Person.findInList(people, person);
 
   person.parents = person.parents.map((thisPerson) => {
     return populateParents(thisPerson, people, safety + 1);

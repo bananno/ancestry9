@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Person = mongoose.model('Person');
 const personTools = require('./tools');
 const sortEvents = require('../../tools/sortEvents');
 const Event = mongoose.model('Event');
@@ -66,7 +67,7 @@ function filterEvents(events, person) {
     }
 
     for (let i = 0; i < thisEvent.people.length; i++) {
-      if (personTools.isSamePerson(thisEvent.people[i], person)) {
+      if (Person.isSame(thisEvent.people[i], person)) {
         thisEvent.type = 'personal';
         if (thisEvent.title == 'birth' || thisEvent.title == 'birth and death') {
           birthYear = thisEvent.date ? thisEvent.date.year : null;
@@ -80,7 +81,7 @@ function filterEvents(events, person) {
 
     for (let i = 0; i < thisEvent.people.length; i++) {
       for (let j = 0; j < spouses.length; j++) {
-        if (personTools.isSamePerson(thisEvent.people[i], spouses[j])) {
+        if (Person.isSame(thisEvent.people[i], spouses[j])) {
           thisEvent.type = 'spouse';
           return thisEvent;
         }
@@ -97,7 +98,7 @@ function filterEvents(events, person) {
 
     for (let i = 0; i < thisEvent.people.length; i++) {
       for (let j = 0; j < children.length; j++) {
-        if (personTools.isSamePerson(thisEvent.people[i], children[j])) {
+        if (Person.isSame(thisEvent.people[i], children[j])) {
           thisEvent.type = 'child';
           return thisEvent;
         }
