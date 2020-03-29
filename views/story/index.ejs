@@ -151,9 +151,22 @@
 </table>
 
 <script>
-  $('#story-quick-filter').focus();
-  $('#story-quick-filter').keydown(filterStoryTable);
-  $('#story-quick-filter').keyup(filterStoryTable);
+  createQuickFilter({
+    input: '#story-quick-filter',
+    items: 'tr.story-item',
+    getItemText: $item => $item.attr('search-words'),
+    startFocus: true,
+    then: fixHeadersAfterFilter
+  });
+
+  function fixHeadersAfterFilter(searchWords) {
+    $('tr.story-index-header').each((i, element) => {
+      const sectionType = $(element).attr('section-type');
+      const number = $('tr.story-item')
+        .filter('[section-type="' + sectionType + '"]:visible').length;
+      $(element).toggle(number > 0);
+    });
+  }
 
   function showNewStoryForm() {
     $('#story-links').hide();
@@ -195,39 +208,6 @@
       $('#new-story-location').hide();
       $('#new-story-location').find('input, select').val('');
     }
-  }
-
-  function filterStoryTable() {
-    const searchStr = $('#story-quick-filter').val().trim().toLowerCase();
-
-    if (searchStr == '') {
-      $('tr.story-item, tr.story-index-header').show();
-      return;
-    }
-
-    const searchWords = searchStr.split(' ');
-
-    $('tr.story-item').each((i, element) => {
-      const rowSearchWords = $(element).attr('search-words');
-
-      const showRow = (() => {
-        for (let i = 0; i < searchWords.length; i++) {
-          if (!rowSearchWords.match(searchWords[i])) {
-            return false;
-          }
-        }
-        return true;
-      })();
-
-      $(element).toggle(showRow);
-    });
-
-    $('tr.story-index-header').each((i, element) => {
-      const sectionType = $(element).attr('section-type');
-      const number = $('tr.story-item')
-        .filter('[section-type="' + sectionType + '"]:visible').length;
-      $(element).toggle(number > 0);
-    });
   }
 </script>
 

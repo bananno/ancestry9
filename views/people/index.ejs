@@ -9,6 +9,10 @@
     padding: 10px;
   }
 
+  input {
+    padding: 3px;
+  }
+
   #create-person-box {
     display: none;
     padding: 10px;
@@ -63,6 +67,7 @@
   $('#create-person-start').click(() => {
     $('#not-creating-person').hide();
     $('#create-person-box').show();
+    $('#create-person-box [name="name"]').focus();
   });
 
   $('#create-person-cancel').click(() => {
@@ -70,14 +75,10 @@
     $('#create-person-box').hide();
   });
 
-  const $filter = $('#people-list-filter');
-
-  $filter.keyup(() => {
-    const searchWords = $filter.val().toLowerCase().trim().split(' ');
-    $('#listOfPeople .person_row').each((i, row) => {
-      const personName = $(row).attr('person_name');
-      const keepRow = !searchWords.some(word => !personName.match(word));
-      $(row).toggle(keepRow);
-    });
+  createQuickFilter({
+    input: '#people-list-filter',
+    items: '#listOfPeople .person_row',
+    getItemText: $item => $item.attr('person_name'),
+    startFocus: true,
   });
 </script>

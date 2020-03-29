@@ -52,18 +52,10 @@
 <% }); %>
 
 <script>
-  $('#to-do-list-searchbox').keyup(() => {
-    const searchTerms = $('#to-do-list-searchbox')
-      .val().trim().toLowerCase().split(' ');
-
-    $('.to-do-list-item').each((i, item) => {
-      const itemText = $(item).text().toLowerCase();
-
-      const isMatch = !searchTerms.some(word => {
-        return !itemText.match(word);
-      });
-
-      $(item).toggle(isMatch);
-    });
+  createQuickFilter({
+    input: '#to-do-list-searchbox',
+    items: '.to-do-list-item',
+    startFocus: true,
+    getItemText: $item => $item.text(),
   });
 </script>
