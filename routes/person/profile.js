@@ -3,6 +3,7 @@ const {
   Event,
   Notation,
   Person,
+  Source,
   removePersonFromList,
   sortCitations,
   sortEvents,
@@ -140,34 +141,20 @@ async function personConnection(req, res) {
   });
 }
 
-function personWikitree(req, res) {
+async function personWikitree(req, res) {
   const person = req.person;
 
-  Source.find({ people: person }).populate('story').exec((err, sources) => {
-    Notation.find({ title: 'source citation' }, (err, notations) => {
+  const personSources = await Source.find({people: person}).populate('story');
 
-      sources.forEach(source => {
-        const sourceNotations = notations.filter(notation => {
-          return '' + notation.source == '' + source._id;
-        }).map(notation => notation.text);
+  await Source.populateCiteText(personSources);
 
-        const storyNotations = notations.filter(notation => {
-          return notation.stories.includes('' + source.story._id);
-        }).map(notation => notation.text);
-
-        source.notations = [...sourceNotations, ...storyNotations];
-      });
-
-      sources = sources.filter(source => {
-        return source.notations.length
-          || source.story.title.match('Census USA');
-      });
-
-      sources.sort((a, b) => a.story.title < b.story.title ? -1 : 1);
-
-      res.renderPersonProfile('wikitree', {sources});
-    });
+  const sources = personSources.filter(source => {
+    return source.citeText.length || source.story.title.match('Census USA');
   });
+
+  Source.sortByStory(sources);
+
+  res.renderPersonProfile('wikitree', {sources});
 }
 
 async function getPersonBirthCountry(person) {

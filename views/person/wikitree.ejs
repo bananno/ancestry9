@@ -31,10 +31,10 @@
   <p style="margin: 10px 0; max-width: 800px;">
     *
     <b>'''<%= source.story.title %>.'''</b>
-    <% if (source.story.title.match('Census') && source.notations.length < 2) { %>
+    <% if (source.story.title.match('Census') && source.citeText.length < 2) { %>
       <span style="color: red;">(missing)</span>
     <% } %>
-    <%= source.notations.join(' ') %>
+    <%= source.citeText.join(' ') %>
     <%
       let familySearch = source.links.filter(url => url.match('FamilySearch'))[0];
       if (familySearch) {

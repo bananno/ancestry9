@@ -23,4 +23,18 @@ const notationSchema = new mongoose.Schema({
   sharing: { type: Boolean, default: false },
 });
 
+notationSchema.statics.getCitesForSource = async function(source) {
+  return await mongoose.model('Notation').find({
+    title: 'source citation',
+    source
+  });
+};
+
+notationSchema.statics.getCitesForStory = async function(story) {
+  return await mongoose.model('Notation').find({
+    title: 'source citation',
+    stories: story
+  });
+};
+
 mongoose.model('Notation', notationSchema);

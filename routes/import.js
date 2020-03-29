@@ -9,6 +9,7 @@ module.exports = {
   Event: mongoose.model('Event'),
   Notation: mongoose.model('Notation'),
   Person: mongoose.model('Person'),
+  Source: mongoose.model('Source'),
   Story: mongoose.model('Story'),
 
   createModelRoutes: tool('createModelRoutes'),
