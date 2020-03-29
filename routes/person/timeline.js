@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Person = mongoose.model('Person');
-const personTools = require('./tools');
 const sortEvents = require('../../tools/sortEvents');
 const Event = mongoose.model('Event');
 const Source = mongoose.model('Source');
@@ -22,7 +21,7 @@ async function getPersonTimeline(req, res) {
   events = events.concat(sourceEvents);
   events = sortEvents(events);
 
-  personTools.renderPersonProfile(req, res, 'timeline', {person, events});
+  res.renderPersonProfile('timeline', {events});
 }
 
 function convertSourceToEvent(source) {

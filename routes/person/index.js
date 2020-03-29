@@ -14,6 +14,7 @@ module.exports = createRoutes;
 
 function createRoutes(router) {
   router.param('id', personTools.convertParamPersonId);
+  router.use(personTools.createRenderPersonProfile);
 
   createModelRoutes({
     Model: Person,

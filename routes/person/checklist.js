@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Event = mongoose.model('Event');
 const Source = mongoose.model('Source');
-const renderPersonProfile = require('./tools').renderPersonProfile;
 
 module.exports = renderPersonChecklist;
 
@@ -25,8 +24,7 @@ async function renderPersonChecklist(req, res) {
 
   const incompleteSourceList = createIncompleteSourceList(sources);
 
-  renderPersonProfile(req, res, 'checklist', {
-    person,
+  res.renderPersonProfile('checklist', {
     checklistLinks,
     checklistLife,
     sourceChecklist,

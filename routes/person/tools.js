@@ -4,7 +4,7 @@ const Person = mongoose.model('Person');
 module.exports = {
   populateParents,
   convertParamPersonId,
-  renderPersonProfile,
+  createRenderPersonProfile,
 };
 
 function populateParents(person, people, safety) {
@@ -53,14 +53,19 @@ function convertParamPersonId(req, res, next, paramPersonId) {
   });
 }
 
-function renderPersonProfile(req, res, subview, options) {
-  res.render('person/_layout', {
-    subview,
-    title: options.person.name,
-    personId: req.personId,
-    paramPersonId: req.paramPersonId,
-    ...options
-  });
+function createRenderPersonProfile(req, res, next) {
+  res.renderPersonProfile = function(subview, options = {}) {
+    const person = req.person;
+    res.render('person/_layout', {
+      subview,
+      person,
+      title: person.name,
+      personId: req.personId,
+      paramPersonId: req.paramPersonId,
+      ...options
+    });
+  }
+  next();
 }
 
 function renderPersonNotFound(res, personId) {

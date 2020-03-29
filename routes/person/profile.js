@@ -1,14 +1,16 @@
-const mongoose = require('mongoose');
-const Person = mongoose.model('Person');
+const {
+  Citation,
+  Event,
+  Notation,
+  Person,
+  removePersonFromList,
+  sortCitations,
+  sortEvents,
+} = require('../import');
+
 const getTools = (path) => { return require('../../tools/' + path) };
 const personTools = require('./tools');
-const renderPersonProfile = personTools.renderPersonProfile;
-const removePersonFromList = getTools('removePersonFromList');
-const sortEvents = getTools('sortEvents');
-const sortCitations = getTools('sortCitations');
 const getPersonRelativesList = getTools('getPersonRelativesList');
-const Notation = mongoose.model('Notation');
-const Event = mongoose.model('Event');
 
 module.exports = {
   show: personSummary,
@@ -121,19 +123,19 @@ function personEdit(req, res) {
     .exec((err, allPeople) => {
       const people = removePersonFromList(allPeople, person);
       people.sort((a, b) => a.name < b.name ? -1 : 1);
-      renderPersonProfile(req, res, 'edit', {person, people});
+      res.renderPersonProfile('edit', {people});
     });
   });
 }
 
 function personSources(req, res) {
   const person = req.person;
-  mongoose.model('Source')
+  Source
   .find({ people: person })
   .populate('story')
   .populate('images')
   .exec((err, sources) => {
-    mongoose.model('Citation')
+    Citation
     .find({ person: person })
     .exec((err, citations) => {
       citations = sortCitations(citations, 'item');
@@ -144,7 +146,7 @@ function personSources(req, res) {
         return sortA == sortB ? 0 : sortA > sortB ? 1 : -1;
       });
 
-      renderPersonProfile(req, res, 'sources', {person, sources, citations});
+      res.renderPersonProfile('sources', {sources, citations});
     });
   });
 }
@@ -152,7 +154,7 @@ function personSources(req, res) {
 async function personNotations(req, res) {
   const person = req.person;
   const notations = await Notation.find({people: person});
-  renderPersonProfile(req, res, 'notations', {person, notations});
+  res.renderPersonProfile('notations', {notations});
 }
 
 async function personNationality(req, res) {
@@ -168,7 +170,7 @@ async function personNationality(req, res) {
 
   const nationality = calculateNationality(person, people);
 
-  renderPersonProfile(req, res, 'nationality', {person, people, nationality});
+  res.renderPersonProfile('nationality', {people, nationality});
 }
 
 function personRelatives(req, res) {
@@ -180,11 +182,7 @@ function personRelatives(req, res) {
   .exec(function(err, people) {
     const person = Person.findInList(people, req.personId);
     const relativeList = getPersonRelativesList(people, person);
-    renderPersonProfile(req, res, 'relatives', {
-      person,
-      people,
-      relativeList,
-    });
+    res.renderPersonProfile('relatives', {people, relativeList});
   });
 }
 
@@ -193,8 +191,7 @@ async function personConnection(req, res) {
   const person = Person.findInList(people, req.personId);
   const compare = people.find(nextPerson => nextPerson.name === 'Anna Peterson');
 
-  renderPersonProfile(req, res, 'connection', {
-    person,
+  res.renderPersonProfile('connection', {
     compare,
     people,
     findPerson: person => Person.findInList(people, person),
@@ -205,8 +202,8 @@ async function personConnection(req, res) {
 function personWikitree(req, res) {
   const person = req.person;
 
-  mongoose.model('Source').find({ people: person }).populate('story').exec((err, sources) => {
-    mongoose.model('Notation').find({ title: 'source citation' }, (err, notations) => {
+  Source.find({ people: person }).populate('story').exec((err, sources) => {
+    Notation.find({ title: 'source citation' }, (err, notations) => {
 
       sources.forEach(source => {
         const sourceNotations = notations.filter(notation => {
@@ -227,7 +224,7 @@ function personWikitree(req, res) {
 
       sources.sort((a, b) => a.story.title < b.story.title ? -1 : 1);
 
-      renderPersonProfile(req, res, 'wikitree', {person, sources});
+      res.renderPersonProfile('wikitree', {sources});
     });
   });
 }
