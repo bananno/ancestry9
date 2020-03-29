@@ -2,13 +2,23 @@ const express = require('express');
 const router = express.Router();
 module.exports = router;
 
+router.use((req, res, next) => {
+  res.renderOriginal = res.render;
+
+  res.render = (view, options) => {
+    if (view === 'layout') { // phase out
+      return res.renderOriginal(view, options);
+    }
+    return res.renderOriginal('layout', {view, ...options});
+  };
+
+  next();
+});
+
 // HOME
 
 router.get('/', (req, res, next) => {
-  res.render('layout', {
-    view: 'index',
-    title: null,
-  });
+  res.render('index', {title: null});
 });
 
 router.get('/shared', (req, res, next) => {
