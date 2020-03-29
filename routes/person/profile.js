@@ -25,89 +25,26 @@ module.exports = {
   }
 };
 
-function personSummary(req, res) {
-  const data = {};
-  new Promise(resolve => {
-    Person.findById(req.personId)
-    .populate('parents')
-    .populate('spouses')
-    .populate('children')
-    .exec((err, person) => {
-      data.person = person;
-      resolve();
-    });
-  }).then(() => {
-    return new Promise(resolve => {
-      Person.find({}, (err, allPeople) => {
-        data.people = removePersonFromList(allPeople, data.person);
-        resolve();
-      });
-    });
-  }).then(() => {
-    return new Promise(resolve => {
-      mongoose.model('Event')
-      .find({ people: data.person })
-      .populate('people')
-      .exec((err, events) => {
-        data.events = events;
-        resolve();
-      });
-    });
-  }).then(() => {
-    return new Promise(resolve => {
-      mongoose.model('Citation')
-      .find({ person: data.person })
-      .populate('source')
-      .exec((err, citations) => {
-        data.citations = citations;
-        resolve();
-      });
-    });
-  }).then(() => {
-    return new Promise(resolve => {
-      mongoose.model('Story').find({}, (err, allStories) => {
-        const storyRef = {};
+async function personSummary(req, res) {
+  const person = await Person.findById(req.personId)
+    .populate('parents').populate('spouses').populate('children');
 
-        allStories.forEach(story => storyRef['' + story._id] = story);
+  req.person = person;
 
-        data.citations.forEach(citation => {
-          if (!citation.source.story.title) {
-            citation.source.story = storyRef['' + citation.source.story];
-          }
-        });
+  const allPeople = await Person.find({});
+  const people = removePersonFromList(allPeople, person);
+  const events = await Event.find({people: person}).populate('people');
+  const citations = await Citation.find({person}).populate('source');
 
-        resolve();
-      });
-    });
-  }).then(() => {
-    const people = data.people;
-    const person = data.person;
+  await person.populateSiblings(person);
 
-    let siblings = [];
+  await Citation.populateStories(citations);
 
-    if (person.parents.length > 0) {
-      siblings = people.filter(thisPerson => {
-        for (let i = 0; i < thisPerson.parents.length; i++) {
-          let thisParent1 = thisPerson.parents[i];
-          for (let j = 0; j < person.parents.length; j++) {
-            let thisParent2 = person.parents[j];
-            if (thisParent1 == thisParent2.id) {
-              return true;
-            }
-          }
-        }
-        return false;
-      });
-    }
-
-    renderPersonProfile(req, res, 'summary', {
-      events: sortEvents(data.events),
-      citations: sortCitations(data.citations, 'item'),
-      findPersonInList: Person.findInList,
-      person,
-      people,
-      siblings,
-    });
+  res.renderPersonProfile('summary', {
+    events: sortEvents(events),
+    citations: sortCitations(citations, 'item'),
+    findPersonInList: Person.findInList,
+    people,
   });
 }
 
@@ -170,7 +107,11 @@ async function personNationality(req, res) {
 
   const nationality = calculateNationality(person, people);
 
-  res.renderPersonProfile('nationality', {people, nationality});
+  res.renderPersonProfile('nationality', {
+    people,
+    nationality,
+    findPersonInList: Person.findInList,
+  });
 }
 
 function personRelatives(req, res) {

@@ -47,11 +47,11 @@
     </div>
   <% } %>
 
-  <% if (siblings.length) { %>
+  <% if (person.siblings.length) { %>
     <div class="family-list-block">
       <h3>siblings</h3>
       <%- include('../people/peopleList', {
-        people: siblings,
+        people: person.siblings,
         format: 'bullet',
       }) %>
     </div>

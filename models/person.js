@@ -27,8 +27,32 @@ const personSchema = new mongoose.Schema({
 
 personSchema.statics.findInList = findInList;
 personSchema.statics.isSame = isSame;
+personSchema.methods.populateSiblings = populateSiblings;
 
-mongoose.model('Person', personSchema);
+const Person = mongoose.model('Person', personSchema);
+
+async function populateSiblings() {
+  const done = {};
+  done[this._id] = true;
+
+  this.siblings = [];
+
+  for (let parentIndex in this.parents) {
+    const parent = this.parents[parentIndex];
+
+    for (let childIndex in parent.children) {
+      const childId = parent.children[childIndex];
+
+      if (done[childId]) {
+        continue;
+      }
+
+      done[childId] = true;
+      const sibling = await Person.findById(childId);
+      this.siblings.push(sibling);
+    }
+  }
+}
 
 function findInList(people, person) {
   return people.find(nextPerson => isSame(person, nextPerson));
