@@ -13,7 +13,7 @@ const personChecklist = require('./checklist');
 module.exports = createRoutes;
 
 function createRoutes(router) {
-  personTools.convertParamPersonId(router);
+  router.param('id', personTools.convertParamPersonId);
 
   createModelRoutes({
     Model: Person,

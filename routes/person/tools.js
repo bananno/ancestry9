@@ -37,55 +37,60 @@ function populateParents(person, people, safety) {
   return person;
 }
 
-function convertParamPersonId(router) {
-  router.param('id', (req, res, next, paramPersonId) => {
-    req.paramPersonId = paramPersonId;
-    Person.findById(paramPersonId, (err, person) => {
-      if (err || person == null) {
-        Person.find({}, (err, people) => {
-          const personWithId = people.filter(thisPerson => {
-            return thisPerson.customId == paramPersonId
-              || ('' + thisPerson._id) == ('' + paramPersonId);
-          });
+function convertParamPersonId(req, res, next, paramPersonId) {
+  if (req.originalUrl.slice(0, 7) !== '/person') {
+    return next();
+  }
 
-          if (personWithId.length == 0) {
-            console.log('Person with ID "' + paramPersonId + '" was not found.');
-            res.status(404);
-            res.render('layout', {
-              view: 'people/notFound',
-              title: 'Not Found',
-              personId: paramPersonId,
-            });
-          } else if (personWithId.length > 1) {
-            console.log('Found more than one person with ID "' + paramPersonId + '".');
-            res.render('layout', {
-              view: 'people/duplicateIDs',
-              title: paramPersonId,
-              personId: paramPersonId,
-              people: personWithId,
-            });
-          } else {
-            req.personId = personWithId[0]._id;
-            req.person = personWithId[0];
-            next();
-          }
-        });
-      } else {
-        req.personId = paramPersonId;
-        req.person = person;
-        next();
+  req.paramPersonId = paramPersonId;
+
+  Person.findById(paramPersonId, (err, person) => {
+    if (!err && person) {
+      req.personId = person._id;
+      req.person = person;
+      return next();
+    }
+
+    Person.find({customId: paramPersonId}, (err, people) => {
+      if (err || people.length === 0) {
+        return renderPersonNotFound(res, paramPersonId);
       }
+
+      if (people.length > 1) {
+        return renderPersonDuplicateId(res, paramPersonId, people);
+      }
+
+      req.personId = people[0]._id;
+      req.person = people[0];
+      next();
     });
   });
 }
 
 function renderPersonProfile(req, res, subview, options) {
-  res.render('layout', {
-    view: 'person/_layout',
+  res.render('person/_layout', {
     subview,
     title: options.person.name,
     personId: req.personId,
     paramPersonId: req.paramPersonId,
     ...options
+  });
+}
+
+function renderPersonNotFound(res, personId) {
+  console.log('Found zero people with ID:' + personId);
+  res.status(404);
+  res.render('people/notFound', {
+    title: 'Not Found',
+    personId: personId,
+  });
+}
+
+function renderPersonDuplicateId(res, personId, peopleWithId) {
+  console.log('Found multiple people with ID:' + personId);
+  res.render('people/duplicateIDs', {
+    title: personId,
+    personId: personId,
+    people: peopleWithId,
   });
 }
