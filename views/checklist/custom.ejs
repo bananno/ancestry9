@@ -1,13 +1,41 @@
+<style>
+  textarea {
+    height: 100px;
+    width: 300px;
+    padding: 5px;
+  }
+
+  input {
+    width: 300px;
+    padding: 5px;
+    margin-bottom: 20px;
+  }
+
+  div.to-do-list-item {
+    border-top: 1px solid gray;
+    padding: 10px 0;
+  }
+
+  p {
+    margin: 10px 0;
+  }
+
+  a {
+    word-break: break-word;
+  }
+</style>
+
 <h1>Checklist</h1>
 
-<div id="checklist-to-do-list">
-  <form action="/checklist/new" method="post">
-    <textarea name="text" placeholder="add item"></textarea>
-    <button>submit</button>
-  </form>
+<form action="/checklist/new" method="post">
+  <textarea name="text" placeholder="add item"></textarea>
+  <button>create new item</button>
+</form>
 
-  <% notations.reverse().forEach(notation => { %>
-    <hr>
+<input placeholder="search" id="to-do-list-searchbox">
+
+<% notations.reverse().forEach(notation => { %>
+  <div class="to-do-list-item">
     <p>
       <%- include('../partials/linkToNotation', {notation, text: 'notation'}) %>
     </p>
@@ -20,5 +48,22 @@
         <% } %>
       </p>
     <% }); %>
-  <% }); %>
-</div>
+  </div>
+<% }); %>
+
+<script>
+  $('#to-do-list-searchbox').keyup(() => {
+    const searchTerms = $('#to-do-list-searchbox')
+      .val().trim().toLowerCase().split(' ');
+
+    $('.to-do-list-item').each((i, item) => {
+      const itemText = $(item).text().toLowerCase();
+
+      const isMatch = !searchTerms.some(word => {
+        return !itemText.match(word);
+      });
+
+      $(item).toggle(isMatch);
+    });
+  });
+</script>

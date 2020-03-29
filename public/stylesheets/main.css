@@ -52,26 +52,6 @@ ul.no-bullet-list {
   margin-left: 0;
 }
 
-/* TO-DO LIST */
-
-#checklist-to-do-list hr {
-  margin: 20px 0;
-}
-
-#checklist-to-do-list p {
-  margin: 10px 0;
-}
-
-#checklist-to-do-list a {
-  word-break: break-word;
-}
-
-#checklist-to-do-list textarea {
-  width: 300px;
-  height: 100px;
-  padding: 5px;
-}
-
 /* EVENT LIST TABLE */
 
 .event-list th,
