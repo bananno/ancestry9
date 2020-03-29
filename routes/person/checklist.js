@@ -1,53 +1,40 @@
 const mongoose = require('mongoose');
-const personTools = require('./tools');
-const renderPersonProfile = personTools.renderPersonProfile;
 const Event = mongoose.model('Event');
 const Source = mongoose.model('Source');
+const renderPersonProfile = require('./tools').renderPersonProfile;
 
-module.exports = function(req, res) {
+module.exports = renderPersonChecklist;
+
+async function renderPersonChecklist(req, res) {
   const person = req.person;
 
-  withData(person, data => {
-    const checklistData = {};
+  const events = await Event.find({people: person});
+  const sources = await Source.find({people: person}).populate('story');
 
-    checklistData.checklistLinks = getLinkChecklist(person.links);
+  const checklistLinks = createLinkChecklist(person.links);
 
-    let [birthYear, deathYear] = findBirthAndDeath(data.events);
+  let [birthYear, deathYear] = findBirthAndDeath(events);
 
-    checklistData.checklistLife = {
-      'Birth date': birthYear != null,
-      'Death date': deathYear != null,
-    };
+  const checklistLife = {
+    'Birth date': birthYear != null,
+    'Death date': deathYear != null,
+  };
 
-    checklistData.sourceChecklist = getSourceChecklist(data.sources,
-      person, birthYear, deathYear);
+  const sourceChecklist = createSourceChecklist(sources,
+    person, birthYear, deathYear);
 
-    checklistData.incompleteSourceList = getIncompleteSources(data.sources);
+  const incompleteSourceList = createIncompleteSourceList(sources);
 
-    renderPersonProfile(req, res, 'checklist', {
-      person,
-      ...checklistData
-    });
-  });
-};
-
-function withData(person, callback) {
-  Event
-  .find({ people: person })
-  .exec((err, events) => {
-    Source
-    .find({ people: person })
-    .populate('story')
-    .exec((err, sources) => {
-      callback({
-        events: events,
-        sources: sources,
-      });
-    });
+  renderPersonProfile(req, res, 'checklist', {
+    person,
+    checklistLinks,
+    checklistLife,
+    sourceChecklist,
+    incompleteSourceList,
   });
 }
 
-function getLinkChecklist(links) {
+function createLinkChecklist(links) {
   const checklistLinks = {
     Ancestry: null,
     FamilySearch: null,
@@ -91,7 +78,7 @@ function findBirthAndDeath(events) {
   return [birthYear, deathYear];
 }
 
-function getSourceChecklist(sources, person, birthYear, deathYear) {
+function createSourceChecklist(sources, person, birthYear, deathYear) {
   const sourceChecklist = {};
 
   const checkForStory = (attr, value) => {
@@ -130,7 +117,7 @@ function getSourceChecklist(sources, person, birthYear, deathYear) {
   return sourceChecklist;
 }
 
-function getIncompleteSources(sourceList) {
+function createIncompleteSourceList(sourceList) {
   const list = [];
 
   sourceList.forEach(source => {
