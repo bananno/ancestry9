@@ -20,8 +20,7 @@ function createRoutes(router) {
     modelName: 'person',
     modelNamePlural: 'people',
     router,
-    index: peopleIndex(false),
-    new: peopleIndex(true),
+    index: peopleIndex,
     create: createPerson,
     show: personProfileRoutes.show,
     edit: personProfileRoutes.edit,
@@ -45,20 +44,9 @@ function createRoutes(router) {
   createRelationshipRoutes(router, 'children', 'parents');
 }
 
-function peopleIndex(showNew) {
-  return function(req, res, next) {
-    Person.find({}, (error, people) => {
-      if (error) {
-        return console.error(error);
-      }
-      res.render('layout', {
-        view: 'people/index',
-        title: 'All People',
-        people: people,
-        showNew: showNew,
-      });
-    });
-  };
+async function peopleIndex(req, res) {
+  const people = await Person.find({});
+  res.render('people/index', {title: 'All People', people});
 }
 
 function createRelationshipRoutes(router, relationship, corresponding) {

@@ -116,12 +116,6 @@ ul.no-bullet-list {
   padding: 2px;
 }
 
-#create_person_box {
-  display: inline-block;
-  padding: 10px;
-  min-height: 80px;
-}
-
 /* CITATION TABLE */
 
 table.citation-list th {

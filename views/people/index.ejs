@@ -1,50 +1,83 @@
+<style>
+  #not-creating-person,
+  #create-person-box {
+    min-height: 100px;
+    box-sizing: border-box;
+  }
+
+  #not-creating-person p {
+    padding: 10px;
+  }
+
+  #create-person-box {
+    display: none;
+    padding: 10px;
+  }
+</style>
+
 <h1>People</h1>
 
-<div id="create_person_box">
-  <% if (showNew) { %>
-    <form action="/people/new" method="POST">
-      <p>
-        <b>Name:</b>
-        <input type="text" name="name">
-      </p>
-      <p>
-        <b>Gender:</b>
-        <select name="gender">
-          <option value="1">female</option>
-          <option value="2">male</option>
-          <option value="3">unknown</option>
-        </select>
-      </p>
-      <p>
-        <button type="submit">submit</button>
-        <a href="/people">cancel</a>
-      </p>
-    </form>
-  <% } else { %>
+<div id="not-creating-person">
+  <p>
+    <span id="create-person-start" class="clickable-link">+ new person</span>
+  </p>
+  <p>
+    filter: <input id="people-list-filter" type="text">
+  </p>
+</div>
+
+<div id="create-person-box">
+  <form action="/people/new" method="post">
     <p>
-      <a href="/people/new">+ Create Person</a>
+      <b>name:</b>
+      <input type="text" name="name">
     </p>
-    <br>
     <p>
-      Filter: <input id="quickFilterPeople" type="text">
+      <b>gender:</b>
+      <select name="gender">
+        <option value="1">female</option>
+        <option value="2">male</option>
+        <option value="3">unknown</option>
+      </select>
     </p>
-  <% } %>
+    <p>
+      <button>create</button>
+      <span id="create-person-cancel" class="clickable-link">cancel</span>
+    </p>
+  </form>
 </div>
 
 <ul id="listOfPeople" class="list_of_items">
-  <% for (var i = 0; i < people.length; i++) { %>
+  <% for (let i = 0; i < people.length; i++) { %>
     <%
-      var person = people[i];
-      var searchName = person.name.toLowerCase();
+      const person = people[i];
+      const searchName = person.name.toLowerCase();
     %>
     <li person_name="<%= searchName %>" class="person_row">
-      <%- include('../partials/linkToPerson', {
-        person: person
-      }) %>
+      <%- include('../partials/linkToPerson', {person}) %>
     </li>
   <% } %>
 </ul>
 
 <script>
-  filterPersonList();
+  $('#create-person-start').click(() => {
+    $('#not-creating-person').hide();
+    $('#create-person-box').show();
+  });
+
+  $('#create-person-cancel').click(() => {
+    $('#not-creating-person').show();
+    $('#create-person-box').hide();
+  });
+
+  const $filter = $('#people-list-filter');
+
+  $filter.keyup(() => {
+    const searchWords = $filter.val().toLowerCase().trim().split(' ');
+    $('#listOfPeople .person_row').each((i, row) => {
+      const personName = $(row).attr('person_name');
+      const keepRow = !searchWords.some(word => !personName.match(word));
+      $(row).toggle(keepRow);
+    });
+  });
 </script>
