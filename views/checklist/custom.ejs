@@ -1,0 +1,24 @@
+<h1>Checklist</h1>
+
+<div id="checklist-to-do-list">
+  <form action="/checklist/new" method="post">
+    <textarea name="text" placeholder="add item"></textarea>
+    <button>submit</button>
+  </form>
+
+  <% notations.reverse().forEach(notation => { %>
+    <hr>
+    <p>
+      <%- include('../partials/linkToNotation', {notation, text: 'notation'}) %>
+    </p>
+    <% notation.text.split('\n').forEach(text => { %>
+      <p>
+        <% if (text.match('http')) { %>
+          <a href="<%= text %>" target="_blank"><%= text %></a>
+        <% } else { %>
+          <%= text %>
+        <% } %>
+      </p>
+    <% }); %>
+  <% }); %>
+</div>

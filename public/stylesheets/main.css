@@ -54,23 +54,22 @@ ul.no-bullet-list {
 
 /* TO-DO LIST */
 
-.to-do-list td {
-  border: 1px solid gray;
-  padding: 5px;
+#checklist-to-do-list hr {
+  margin: 20px 0;
 }
 
-.to-do-list p {
-  margin-bottom: 5px;
+#checklist-to-do-list p {
+  margin: 10px 0;
 }
 
-.to-do-list .edit-todo,
-.to-do-list .button-cancel {
-  display: none;
+#checklist-to-do-list a {
+  word-break: break-word;
 }
 
-.edit-to-do-list textarea {
+#checklist-to-do-list textarea {
   width: 300px;
   height: 100px;
+  padding: 5px;
 }
 
 /* EVENT LIST TABLE */

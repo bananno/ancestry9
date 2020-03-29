@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Person = mongoose.model('Person');
+const Notation = mongoose.model('Notation');
 const {getAllData, populatePeopleDates} = require('./tools');
 
 module.exports = createRoutes;
@@ -13,10 +14,8 @@ function createRoutes(router) {
   router.get('/checklist/sourceCensus', checklistSourceCensus);
   router.get('/checklist/profileSummary', checklistProfileSummary);
   router.get('/checklist/images', checklistImages);
-
-  router.get('/to-do', showToDoList);
-  router.post('/to-do/new', newToDoItem);
-  router.post('/to-do/:id/edit', editToDoItem);
+  router.get('/checklist/custom', checklistCustom);
+  router.post('/checklist/new', checklistCreateNotation);
 }
 
 function checklistIndex(req, res, next) {
@@ -256,53 +255,19 @@ function checklistProfileSummary(req, res, next) {
   });
 }
 
-function showToDoList(req, res, next) {
-  mongoose.model('To-do').find({}, (err, todoItems) => {
-    res.render('layout', {
-      view: 'checklist/to-do',
-      title: 'To-do List',
-      todoItems: todoItems,
-    });
+async function checklistCustom(req, res) {
+  const notations = await Notation.find({title: 'checklist'});
+  res.render('layout', {
+    view: 'checklist/custom',
+    title: 'Checklist',
+    notations
   });
 }
 
-function newToDoItem(req, res, next) {
-  const items = req.body.items.split('\n')
-    .map(item => item.trim())
-    .filter(item => item);
-
-  const newTodo = {
-    items: items,
-  };
-
-  mongoose.model('To-do').create(newTodo, (err, todo) => {
-    if (err) {
-      return res.send('There was a problem adding the information to the database.');
-    }
-    res.redirect('/to-do');
+async function checklistCreateNotation(req, res) {
+  const notation = await Notation.create({
+    title: 'checklist',
+    text: req.body.text.trim()
   });
-}
-
-function editToDoItem(req, res, next) {
-  const todoId = req.params.id;
-
-  const items = req.body.items.split('\n')
-    .map(item => item.trim())
-    .filter(item => item);
-
-  const findTodo = {
-    _id: todoId,
-  };
-
-  const updatedTodo = {
-    items: items,
-  };
-
-  mongoose.model('To-do').update(findTodo, updatedTodo, err => {
-    if (err) {
-      return res.send('There was a problem updating the information to the database: ' + err);
-    }
-
-    res.redirect('/to-do');
-  });
+  res.redirect('/checklist/custom');
 }

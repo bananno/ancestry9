@@ -53,8 +53,6 @@ function showDatabaseEverything(req, res) {
   }).then(() => {
     return saveFullDataFile(data, 'Notation', 'notations');
   }).then(() => {
-    return saveFullDataFile(data, 'To-do', 'tasks');
-  }).then(() => {
     return saveFullDataFile(data, 'Image', 'images');
   }).then(() => {
     res.render('database', data);

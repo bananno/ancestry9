@@ -21,8 +21,8 @@
           || notation.tags.includes('broken brick wall')) {
         return 'person notes';
       }
-      if (notation.title == 'source citation') {
-        return 'source citation';
+      if (['source citation', 'checklist'].includes(notation.title)) {
+        return notation.title;
       }
       if (notation.tags.includes('tag definition')) {
         return 'tag definition';

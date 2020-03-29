@@ -8,5 +8,4 @@ module.exports = [
   "person",
   "source",
   "story",
-  "to-do"
 ];
