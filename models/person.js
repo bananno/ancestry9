@@ -25,12 +25,22 @@ const personSchema = new mongoose.Schema({
   },
 });
 
+personSchema.methods.getLifeEvents = getLifeEvents;
 personSchema.methods.populateSiblings = populateSiblings;
+personSchema.statics.populateAncestors = populateAncestors;
 personSchema.statics.findInList = findInList;
-personSchema.statics.removeFromList = removeFromList;
 personSchema.statics.isSame = isSame;
+personSchema.statics.removeFromList = removeFromList;
+personSchema.statics.sortByName = sortByName;
 
 const Person = mongoose.model('Person', personSchema);
+
+async function getLifeEvents() {
+  const Event = mongoose.model('Event');
+  const events = await Event.find({people: this}).populate('people');
+  Event.sortByDate(events);
+  return events;
+}
 
 async function populateSiblings() {
   const done = {};
@@ -55,16 +65,36 @@ async function populateSiblings() {
   }
 }
 
-function findInList(people, person) {
-  return people.find(nextPerson => isSame(person, nextPerson));
+async function populateAncestors(personId, people, safety) {
+  safety = safety || 0;
+
+  if (safety > 30) {
+    return personId;
+  }
+
+  const person = Person.findInList(people, personId);
+
+  for (let i in person.parents) {
+    person.parents[i] = await populateAncestors(person.parents[i], people, safety + 1);
+  }
+
+  return person;
 }
 
-function removeFromList(people, person) {
-  return people.filter(nextPerson => !isSame(person, nextPerson));
+function findInList(people, person) {
+  return people.find(nextPerson => isSame(person, nextPerson));
 }
 
 function isSame(person1, person2) {
   const id1 = '' + (person1 ? (person1._id || person1) : 'null');
   const id2 = '' + (person2 ? (person2._id || person2) : 'null');
   return id1 === id2;
+}
+
+function removeFromList(people, person) {
+  return people.filter(nextPerson => !isSame(person, nextPerson));
+}
+
+function sortByName(people) {
+  people.sort((a, b) => a.name < b.name ? -1 : 1);
 }

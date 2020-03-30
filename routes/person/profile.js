@@ -5,11 +5,9 @@ const {
   Person,
   Source,
   sortCitations,
-  sortEvents,
 } = require('../import');
 
 const getTools = (path) => { return require('../../tools/' + path) };
-const personTools = require('./tools');
 const getPersonRelativesList = getTools('getPersonRelativesList');
 
 module.exports = {
@@ -26,13 +24,15 @@ module.exports = {
 };
 
 async function personSummary(req, res) {
-  const person = await Person.findById(req.personId).populate('parents');
+  const person = await Person.findById(req.personId)
+    .populate('parents').populate('spouses').populate('children');
 
   req.person = person;
 
   const allPeople = await Person.find({});
   const people = Person.removeFromList(allPeople, person);
-  const events = await Event.find({people: person}).populate('people');
+  const events = await person.getLifeEvents();
+
   const citations = await Citation.find({person}).populate('source');
 
   await person.populateSiblings(person);
@@ -40,51 +40,39 @@ async function personSummary(req, res) {
   await Citation.populateStories(citations);
 
   res.renderPersonProfile('summary', {
-    events: sortEvents(events),
     citations: sortCitations(citations, 'item'),
+    events,
     findPersonInList: Person.findInList,
     people,
   });
 }
 
-function personEdit(req, res) {
-  Person
-  .findById(req.personId)
-  .populate('parents')
-  .populate('spouses')
-  .populate('children')
-  .exec((err, person) => {
-    Person
-    .find({})
-    .exec((err, allPeople) => {
-      const people = Person.removeFromList(allPeople, person);
-      people.sort((a, b) => a.name < b.name ? -1 : 1);
-      res.renderPersonProfile('edit', {people});
-    });
-  });
+async function personEdit(req, res) {
+  req.person = await Person.findById(req.personId)
+    .populate('parents').populate('spouses').populate('children');
+
+  const allPeople = await Person.find({});
+  const people = Person.removeFromList(allPeople, req.person);
+  Person.sortByName(people);
+
+  res.renderPersonProfile('edit', {people});
 }
 
-function personSources(req, res) {
+async function personSources(req, res) {
   const person = req.person;
-  Source
-  .find({ people: person })
-  .populate('story')
-  .populate('images')
-  .exec((err, sources) => {
-    Citation
-    .find({ person: person })
-    .exec((err, citations) => {
-      citations = sortCitations(citations, 'item');
 
-      sources.sort((a, b) => {
-        let sortA = a.story.type + ' - ' + a.story.title + ' - ' + a.title;
-        let sortB = b.story.type + ' - ' + b.story.title + ' - ' + b.title;
-        return sortA == sortB ? 0 : sortA > sortB ? 1 : -1;
-      });
+  const sources = await Source.find({people: person})
+    .populate('story').populate('images');
 
-      res.renderPersonProfile('sources', {sources, citations});
-    });
-  });
+  for (let i in sources) {
+    const source = sources[i];
+    await source.populatePersonCitations(person);
+    source.citations = sortCitations(source.citations, 'item');
+  }
+
+  Source.sortByStory(sources);
+
+  res.renderPersonProfile('sources', {sources});
 }
 
 async function personNotations(req, res) {
@@ -94,15 +82,14 @@ async function personNotations(req, res) {
 }
 
 async function personNationality(req, res) {
-  const people = await Person.find({})
-    .populate('parents').populate('spouses').populate('children');
+  const people = await Person.find({}).populate('parents');
+
+  const person = Person.populateAncestors(req.personId, people);
 
   for (let i in people) {
     const person = people[i];
     person.birthCountry = await getPersonBirthCountry(person);
   }
-
-  const person = personTools.populateParents(req.personId, people);
 
   const nationality = calculateNationality(person, people);
 
@@ -170,19 +157,19 @@ function calculateNationality(person, people, nationality, percentage, safety) {
   nationality = nationality || {};
   percentage = percentage || 100;
   safety = safety || 0;
-  var country = person.birthCountry;
+  const country = person.birthCountry;
 
   if (safety > 20) {
     return nationality;
   }
 
   if (country == 'United States') {
-    var parentPercentage = percentage / 2;
-    for (var i = 0; i < 2; i++) {
+    const parentPercentage = percentage / 2;
+    for (let i = 0; i < 2; i++) {
       if (i < person.parents.length) {
-        var thisPerson = person.parents[i];
-        nationality = calculateNationality(thisPerson, people, nationality, parentPercentage,
-          safety + 1);
+        const thisPerson = person.parents[i];
+        nationality = calculateNationality(thisPerson, people, nationality,
+          parentPercentage, safety + 1);
       } else {
         nationality['unknown'] = nationality['unknown'] || 0;
         nationality['unknown'] += parentPercentage;

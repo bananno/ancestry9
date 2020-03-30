@@ -1,3 +1,20 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<p><%= error.stack %></p>
+<style>
+  hr {
+    margin: 20px 0;
+  }
+  pre {
+  }
+</style>
+
+<h1>Error</h1>
+
+<hr>
+<pre><%= message %></pre>
+
+<% if (error.status) { %>
+  <hr>
+  <pre><%= error.status %></pre>
+<% } %>
+
+<hr>
+<pre><%= error.stack %></pre>

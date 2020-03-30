@@ -1,27 +1,28 @@
-const mongoose = require('mongoose');
-const Person = mongoose.model('Person');
-const sortEvents = require('../../tools/sortEvents');
-const Event = mongoose.model('Event');
-const Source = mongoose.model('Source');
+const {
+  Event,
+  Person,
+  Source,
+} = require('../import');
 
-module.exports = getPersonTimeline;
+module.exports = renderPersonTimeline;
 
-async function getPersonTimeline(req, res) {
-  const person = req.person;
+async function renderPersonTimeline(req, res) {
+  const allEvents = await Event.find({}).populate('people');
 
-  let events = await Event.find({}).populate('people');
+  Event.sortByDate(allEvents);
 
-  const sources = await Source.find({people: person})
+  const events = filterEvents(allEvents, req.person);
+
+  const sources = await Source.find({people: req.person})
     .populate('people').populate('story').populate('images');
 
   const sourceEvents = sources.map(convertSourceToEvent);
 
-  events = sortEvents(events);
-  events = filterEvents(events, person);
-  events = events.concat(sourceEvents);
-  events = sortEvents(events);
+  const timelineEvents = [...events, ...sourceEvents];
 
-  res.renderPersonProfile('timeline', {events});
+  Event.sortByDate(timelineEvents);
+
+  res.renderPersonProfile('timeline', {timelineEvents});
 }
 
 function convertSourceToEvent(source) {

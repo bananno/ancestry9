@@ -2,26 +2,9 @@ const mongoose = require('mongoose');
 const Person = mongoose.model('Person');
 
 module.exports = {
-  populateParents,
   convertParamPersonId,
   createRenderPersonProfile,
 };
-
-function populateParents(person, people, safety) {
-  safety = safety || 0;
-
-  if (safety > 30) {
-    return person;
-  }
-
-  person = Person.findInList(people, person);
-
-  person.parents = person.parents.map((thisPerson) => {
-    return populateParents(thisPerson, people, safety + 1);
-  });
-
-  return person;
-}
 
 function convertParamPersonId(req, res, next, paramPersonId) {
   if (req.originalUrl.slice(0, 7) !== '/person') {

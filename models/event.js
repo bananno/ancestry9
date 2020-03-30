@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const dateStructure = require('./dateStructure.js');
-const locationStructure = require('./locationStructure.js');
+const tools = require('./tools');
+const dateStructure = require('./dateStructure');
+const locationStructure = require('./locationStructure');
 
 const eventSchema = new mongoose.Schema({
   title: String,
@@ -13,5 +14,7 @@ const eventSchema = new mongoose.Schema({
   notes: String,
   tags: [String],
 });
+
+eventSchema.statics.sortByDate = tools.sortByDate;
 
 mongoose.model('Event', eventSchema);

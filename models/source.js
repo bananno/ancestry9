@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const dateStructure = require('./dateStructure.js');
-const locationStructure = require('./locationStructure.js');
+const tools = require('./tools');
+const dateStructure = require('./dateStructure');
+const locationStructure = require('./locationStructure');
 
 const sourceSchema = new mongoose.Schema({
   title: String,
@@ -30,13 +31,26 @@ const sourceSchema = new mongoose.Schema({
   sharing: { type: Boolean, default: false },
 });
 
+sourceSchema.methods.populateCitations = populateCitations;
+sourceSchema.methods.populatePersonCitations = populatePersonCitations;
+
 sourceSchema.statics.populateCiteText = populateCiteText;
 
 sourceSchema.statics.sortByStory = function(sources) {
-  sources.sort((a, b) => a.story.title < b.story.title ? -1 : 1);
+  tools.sortBy(sources, source => {
+    return [source.story.type, source.story.title, source.title].join(' - ');
+  });
 };
 
 mongoose.model('Source', sourceSchema);
+
+async function populateCitations(person) {
+  this.citations = await mongoose.model('Citation').find({source: this});
+}
+
+async function populatePersonCitations(person) {
+  this.citations = await mongoose.model('Citation').find({source: this, person});
+}
 
 // Get official text about source origin (e.g., MLA) NOT the citation model.
 async function populateCiteText(sources) {

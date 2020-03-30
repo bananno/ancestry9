@@ -5,10 +5,6 @@
 
 <% sources.forEach(source => { %>
   <%
-    const sourceCitations = citations.filter(citation => {
-      return ('' + citation.source) == ('' + source._id);
-    });
-
     const notesList = source.notes ? source.notes.split('\n') : null;
 
     let groupTitle;
@@ -31,7 +27,7 @@
     showStory: true,
     limitContent: true,
     citationParams: {
-      citations: sourceCitations,
+      citations: source.citations,
       showDelete: false,
       showSource: false,
       showPerson: false,
