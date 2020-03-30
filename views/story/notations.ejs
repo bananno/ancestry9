@@ -45,7 +45,7 @@
   <% citations.forEach(notation => { %>
     <div>
       <p>
-        <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
+        <%- include('../notation/_link', {notation}) %>
       </p>
       <p>
         <%= notation.text %>
@@ -63,7 +63,7 @@
   <hr>
   <div>
     <p>
-      <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
+      <%- include('../notation/_link', {notation}) %>
     </p>
     <p>
       <%= notation.text %>
@@ -80,7 +80,7 @@
   <hr>
   <div>
     <p>
-      <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
+      <%- include('../notation/_link', {notation}) %>
     </p>
     <p>
       <%= notation.text %>

@@ -49,7 +49,7 @@
 
 <% if (notation.source) { %>
   <h2>belongs to source</h2>
-  <%- include('../partials/linkToSource', {
+  <%- include('../source/_link', {
     source: notation.source,
     showStory: true,
   }) %>
@@ -58,13 +58,13 @@
 <% if (isCitation && notation.stories.length == 1) { %>
   <h2>belongs to story</h2>
   <p>
-    <%- include('../partials/linkToStory', { story: notation.stories[0] }) %>
+    <%- include('../story/_link', {story: notation.stories[0]}) %>
   </p>
 <% } else if (notation.stories.length) { %>
   <h2>pinned to stories</h2>
   <% notation.stories.forEach(story => { %>
     <p>
-      <%- include('../partials/linkToStory', { story }) %>
+      <%- include('../story/_link', {story}) %>
     </p>
   <% }); %>
 <% } %>
@@ -72,12 +72,12 @@
 <% if (!isCitation) { %>
   <h2>people</h2>
 
-  <%- include('../people/peopleList', {
+  <%- include('../person/_list', {
     people: notation.people,
     format: 'bullet',
   }) %>
 
-  <%- include('../partials/listTags', {tags: notation.tags}) %>
+  <%- include('../tag/_list', {tags: notation.tags}) %>
 <% } %>
 
 <h2>text</h2>

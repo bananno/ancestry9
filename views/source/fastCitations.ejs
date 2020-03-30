@@ -74,7 +74,7 @@
 <div>
   <div class="column">
     <h2>people</h2>
-    <%- include('../people/peopleList', {
+    <%- include('../person/_list', {
       people: source.people,
       format: 'bullet',
     }) %>
@@ -121,7 +121,7 @@
 
 <h2>citations</h2>
 
-<%- include('../partials/citationList', {
+<%- include('../citation/_list', {
   citations: citations,
   showDelete: false,
   showSource: false,

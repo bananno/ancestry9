@@ -24,30 +24,19 @@
       </td>
 
       <td>
-        <% if (source.story) { %>
-          <%- include('../partials/linkToStory', {
-            story: source.story,
-          }) %><br>
-        <% } %>
+        <%- include('../story/_link', {story: source.story}) %>
       </td>
 
       <td>
-        <%- include('../partials/linkToSource', {
-          source: source,
-          showGroup: false,
-        }) %>
+        <%- include('../source/_link', {source}) %>
       </td>
 
       <td>
-        <%- include('../format/date', { params: {
-          date: source.date,
-        }}) %>
+        <%- include('../format/date', {date: source.date}) %>
       </td>
 
       <td>
-        <%- include('../format/location', { params: {
-          location: source.location,
-        }}) %>
+        <%- include('../format/location', {location: source.location}) %>
       </td>
 
       <td>

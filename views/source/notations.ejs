@@ -61,7 +61,7 @@
   <div class="notation">
     <hr>
     <p>
-      <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
+      <%- include('../notation/_link', {notation}) %>
     </p>
     <p>
       <%= notation.text %>
@@ -72,12 +72,12 @@
     <ul class="bullet-list">
       <% notation.people.forEach(person => { %>
         <li>
-          <%- include('../partials/linkToPerson', { person }) %>
+          <%- include('../person/_link', {person}) %>
         </li>
       <% }); %>
       <% notation.stories.forEach(story => { %>
         <li>
-          <%- include('../partials/linkToStory', { story }) %>
+          <%- include('../story/_link', {story}) %>
         </li>
       <% }); %>
     </ul>
@@ -93,7 +93,7 @@
     <div class="notation">
       <hr>
       <p>
-        <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
+        <%- include('../notation/_link', {notation}) %>
       </p>
       <p>
         <%= notation.text %>

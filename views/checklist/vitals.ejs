@@ -24,9 +24,7 @@
   <% people.forEach(person => { %>
     <tr>
       <td>
-        <%- include('../partials/linkToPerson', {
-            person: person,
-        }) %>
+        <%- include('../person/_link', {person}) %>
       </td>
       <td>
         <% if (person.birth) { %>

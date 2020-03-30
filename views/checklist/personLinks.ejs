@@ -40,7 +40,7 @@
           <a href="<%= person.link.split(' ')[0] %>" target="_blank">link</a>
           -
         <% } %>
-        <%- include('../partials/linkToPerson', { person }) %>
+        <%- include('../person/_link', {person}) %>
       </li>
     <% }); %>
   </ul>

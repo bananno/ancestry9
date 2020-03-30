@@ -37,7 +37,7 @@
 <% notations.reverse().forEach(notation => { %>
   <div class="to-do-list-item">
     <p>
-      <%- include('../partials/linkToNotation', {notation, text: 'notation'}) %>
+      <%- include('../notation/_link', {notation, text: 'notation'}) %>
     </p>
     <% notation.text.split('\n').forEach(text => { %>
       <p>

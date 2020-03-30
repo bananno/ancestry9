@@ -11,10 +11,7 @@
   <% censusSources.forEach(source => { %>
     <tr>
       <td>
-        <%- include('../partials/linkToSource', {
-          showStory: true,
-          source,
-        }) %>
+        <%- include('../source/_link', {source, showStory: true}) %>
       </td>
       <% ['sharing', 'hasAncestry', 'hasFamilySearch', 'hasCitation'].forEach(attr => { %>
         <td>

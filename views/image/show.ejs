@@ -9,19 +9,19 @@
 
 <% if (story) { %>
   <h2>belongs to story</h2>
-  <%- include('../partials/linkToStory', { story }) %>
+  <%- include('../story/_link', {story}) %>
 <% } %>
 
 <% if (source) { %>
   <h2>belongs to source</h2>
-  <%- include('../partials/linkToSource', { source, showStory: true }) %>
+  <%- include('../source/_link', {source, showStory: true}) %>
 <% } %>
 
 <% if (!source && !story) { %>
   <h2>(orphan image - no story or source)</h2>
 <% } %>
 
-<%- include('../partials/listTags', {tags: image.tags}) %>
+<%- include('../tag/_list', {tags: image.tags}) %>
 
 <hr>
 

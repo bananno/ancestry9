@@ -1,8 +1,7 @@
 <%
-  const showStory = locals.showStory || locals.showGroup || false;
   let linkText = '';
 
-  if (showStory) {
+  if (locals.showStory) {
     if (source.story && source.story.title) {
       linkText = source.story.title + ' - ';
     }
@@ -10,5 +9,4 @@
 
   linkText += source.title;
 %>
-
 <a href="/source/<%= source._id %>"><%= linkText %></a>

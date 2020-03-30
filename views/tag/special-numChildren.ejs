@@ -34,7 +34,7 @@
 <ul class="bullet-list" id="tag-person-list">
   <% peopleSpecified.forEach(person => { %>
     <li>
-      <%- include('../partials/linkToPerson', {person}) %>
+      <%- include('../person/_link', {person}) %>
       (value: <%= person.tagValue %>,
       in database: <%= person.children.length %>)
     </li>
@@ -48,7 +48,7 @@
 <ul class="bullet-list">
   <% peopleUnknown.forEach(person => { %>
     <li>
-      <%- include('../partials/linkToPerson', {person}) %>
+      <%- include('../person/_link', {person}) %>
       (in database: <%= person.children.length %>)
     </li>
   <% }); %>
@@ -61,7 +61,7 @@
 <ul class="bullet-list">
   <% peopleDone.forEach(person => { %>
     <li>
-      <%- include('../partials/linkToPerson', {person}) %>
+      <%- include('../person/_link', {person}) %>
       (in database: <%= person.children.length %>)
     </li>
   <% }); %>
@@ -74,7 +74,7 @@
 <ul class="bullet-list">
   <% peopleNone.forEach(person => { %>
     <li>
-      <%- include('../partials/linkToPerson', {person}) %>
+      <%- include('../person/_link', {person}) %>
     </li>
   <% }); %>
 </ul>
@@ -86,7 +86,7 @@
 <ul class="bullet-list">
   <% peopleDistant.forEach(person => { %>
     <li>
-      <%- include('../partials/linkToPerson', {person}) %>
+      <%- include('../person/_link', {person}) %>
       (in database: <%= person.children.length %>)
     </li>
   <% }); %>

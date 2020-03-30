@@ -3,12 +3,12 @@
 <% stories.forEach(story => { %>
   <hr>
   <p>
-    <%- include('../partials/linkToStory', { story }) %>
+    <%- include('../story/_link', {story}) %>
   </p>
   <ul>
     <% sourcesByStory[story._id].forEach(source => { %>
       <li>
-        <%- include('../partials/linkToSource', { source, showStory: true }) %>
+        <%- include('../source/_link', {source, showStory: true}) %>
       </li>
     <% }); %>
   </ul>

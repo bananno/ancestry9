@@ -109,8 +109,7 @@
                                 <td>
                                     <% if (pin.pinType == 'source') { %>
                                         <%- include('../source/_link', {
-                                            source: pin,
-                                            showGroup: false,
+                                            source: pin
                                         }) %>
                                     <% } else if (pin.pinType == 'event') { %>
                                         <a href="/event/<%= pin._id %>"><%= pin.title %></a>

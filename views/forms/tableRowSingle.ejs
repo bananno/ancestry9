@@ -37,7 +37,7 @@
         <% } else if (attr == 'story') { %>
           <div item="<%= attr %>" class="value-show">
             <% if (originalValue) { %>
-              <%- include('../partials/linkToStory', { story: originalValue }) %>
+              <%- include('../story/_link', {story: originalValue}) %>
             <% } else { %>
               none
             <% } %>
@@ -48,7 +48,7 @@
         <% } else if (attr == 'source') { %>
           <div item="<%= attr %>" class="value-show">
             <% if (originalValue) { %>
-              <%- include('../partials/linkToSource', { source: originalValue }) %>
+              <%- include('../source/_link', {source: originalValue}) %>
             <% } else { %>
               <i>(none)</i>
             <% } %>

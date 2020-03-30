@@ -54,7 +54,7 @@ function storyIndex(req, res, next) {
     res.render('story/index', {
       title: 'Stories',
       stories,
-      subview,
+      subview: storyType,
       mainStoryTypes: [...mainStoryTypes, 'other'],
     });
   });
