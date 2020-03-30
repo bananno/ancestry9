@@ -46,7 +46,7 @@ function createRoutes(router) {
 
 async function peopleIndex(req, res) {
   const people = await Person.find({});
-  res.render('people/index', {title: 'All People', people});
+  res.render('person/index', {title: 'All People', people});
 }
 
 function createRelationshipRoutes(router, relationship, corresponding) {

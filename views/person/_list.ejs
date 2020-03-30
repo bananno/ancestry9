@@ -2,9 +2,7 @@
   <ul class="bullet-list">
     <% people.forEach(person => { %>
       <li>
-        <%- include('../partials/linkToPerson', {
-          person: person,
-        }) %>
+        <%- include('./_link', {person}) %>
       </li>
     <% }); %>
   </ul>
@@ -12,9 +10,7 @@
   <ul class="no-bullet-list">
     <% people.forEach(person => { %>
       <li>
-        <%- include('../partials/linkToPerson', {
-          person: person,
-        }) %>
+        <%- include('./_link', {person}) %>
       </li>
     <% }); %>
   </ul>

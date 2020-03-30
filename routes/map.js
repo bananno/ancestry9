@@ -43,13 +43,12 @@ function showMap(req, res, next) {
       pins[country][region1][region2][city].push(pin);
     });
 
-    res.render('layout', {
-      view: 'map/index',
+    res.render('map/index', {
       title: 'Map',
-      events: events,
-      sources: sources,
-      places: places,
-      pins: pins,
+      events,
+      sources,
+      places,
+      pins,
     });
   });
 }

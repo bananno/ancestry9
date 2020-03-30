@@ -45,9 +45,7 @@
   <ul class="bullet-list checklist-section">
     <% sections[status].forEach(person => { %>
       <li>
-        <%- include('../partials/linkToPerson', {
-            person: person,
-        }) %>
+        <%- include('../person/_link', {person}) %>
       </li>
     <% }); %>
   </ul>

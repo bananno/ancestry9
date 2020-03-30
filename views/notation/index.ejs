@@ -70,7 +70,7 @@
     <% categories[category].forEach(notation => { %>
       <tr>
         <td>
-          <%- include('../partials/linkToNotation', {notation}) %>
+          <%- include('../notation/_link', {notation}) %>
         </td>
         <td>
           <%= notation.tags.join(', ') %>

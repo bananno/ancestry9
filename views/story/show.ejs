@@ -22,7 +22,7 @@
   <%= story.type %>
 </p>
 
-<%- include('../partials/listTags', {tags: story.tags}) %>
+<%- include('../tag/_list', {tags: story.tags}) %>
 
 <% if (story.summary) { %>
   <%
@@ -56,7 +56,7 @@
 
 <% if (story.people.length) { %>
   <h2>people</h2>
-  <%- include('../people/peopleList', {
+  <%- include('../person/_list', {
     people: story.people,
     format: 'bullet',
   }) %>
@@ -114,9 +114,9 @@
 <% if (entries.length) { %>
   <h2>entries</h2>
   <ul class="bullet-list">
-    <% entries.forEach(entry => { %>
+    <% entries.forEach(source => { %>
       <li>
-        <%- include('../partials/linkToSource', { source: entry }) %>
+        <%- include('../source/_link', {source}) %>
       </li>
     <% }); %>
   </ul>
@@ -127,7 +127,7 @@
   <ul class="bullet-list">
     <% sources.forEach(source => { %>
       <li>
-        <%- include('../partials/linkToSource', { source, showStory: true }) %>
+        <%- include('../source/_link', {source, showStory: true}) %>
       </li>
     <% }); %>
   </ul>

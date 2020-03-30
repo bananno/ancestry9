@@ -39,7 +39,7 @@ function convertParamPersonId(req, res, next, paramPersonId) {
 function createRenderPersonProfile(req, res, next) {
   res.renderPersonProfile = function(subview, options = {}) {
     const person = req.person;
-    res.render('person/_layout', {
+    res.render('personProfile/_layout', {
       subview,
       person,
       title: person.name,
@@ -54,7 +54,7 @@ function createRenderPersonProfile(req, res, next) {
 function renderPersonNotFound(res, personId) {
   console.log('Found zero people with ID:' + personId);
   res.status(404);
-  res.render('people/notFound', {
+  res.render('person/notFound', {
     title: 'Not Found',
     personId: personId,
   });
@@ -62,7 +62,7 @@ function renderPersonNotFound(res, personId) {
 
 function renderPersonDuplicateId(res, personId, peopleWithId) {
   console.log('Found multiple people with ID:' + personId);
-  res.render('people/duplicateIDs', {
+  res.render('person/duplicateIDs', {
     title: personId,
     personId: personId,
     people: peopleWithId,

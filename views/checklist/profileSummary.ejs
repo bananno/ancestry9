@@ -5,7 +5,7 @@
   <ul class="bullet-list">
     <% peopleNeedSummary.forEach(person => { %>
       <li>
-        <%- include('../partials/linkToPerson', { person }) %>
+        <%- include('../person/_link', {person}) %>
       </li>
     <% }); %>
   </ul>
@@ -15,7 +15,7 @@
 
 <% peopleWithSummary.forEach(person => { %>
   <p class="person-header">
-    <%- include('../partials/linkToPerson', { person }) %>
+    <%- include('../person/_link', {person}) %>
   </p>
   <% person.notations.forEach(notation => { %>
     <p class="person-text">
@@ -31,7 +31,7 @@
 
 <% peopleWithBiography.forEach(person => { %>
   <p class="person-header">
-    <%- include('../partials/linkToPerson', { person }) %>
+    <%- include('../person/_link', {person}) %>
   </p>
   <% person.biographies.forEach(source => { %>
     <%
@@ -51,7 +51,7 @@
 <ul class="bullet-list">
   <% peopleWithoutSummaryShared.forEach(person => { %>
     <li>
-      <%- include('../partials/linkToPerson', { person }) %>
+      <%- include('../person/_link', {person}) %>
     </li>
   <% }); %>
 </ul>
@@ -61,7 +61,7 @@
 <ul class="bullet-list">
   <% peopleWithoutSummaryNotShared.forEach(person => { %>
     <li>
-      <%- include('../partials/linkToPerson', { person }) %>
+      <%- include('../person/_link', {person}) %>
     </li>
   <% }); %>
 </ul>

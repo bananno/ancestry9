@@ -115,9 +115,7 @@
       <tr data-citation-id="<%= citation._id %>" class="<%= classShow %>">
         <% if (showPerson) { %>
           <td class="citation-cell">
-            <%- include('../partials/linkToPerson', {
-              person: citation.person
-            }) %>
+            <%- include('../person/_link', {person: citation.person}) %>
           </td>
         <% } %>
         <td class="<%= itemCellClass1 %>">
@@ -131,7 +129,7 @@
         </td>
         <% if (showSource) { %>
           <td class="citation-cell">
-            <%- include('../partials/linkToSource', {
+            <%- include('../source/_link', {
               source: citation.source,
               showStory: true,
             }) %>
@@ -155,7 +153,7 @@
         <form action="<%= rootPath %>/edit/citations/<%= citation._id %>" method="POST">
           <tr data-citation-id="<%= citation._id %>" class="<%= classEdit %>">
             <td>
-              <%- include('../forms/personDropdown', {
+              <%- include('../person/_dropdown', {
                 fieldName: 'person',
                 selectedPerson: citation.person,
               }) %>

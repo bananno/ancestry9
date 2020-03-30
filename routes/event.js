@@ -63,11 +63,10 @@ function makeEventsIndexRoute(showNew) {
       if (err) {
         return console.error(err);
       } else {
-        res.render('layout', {
-          view: 'events/index',
+        res.render('event/index', {
           title: 'All Events',
-          events: events,
-          showNew: showNew,
+          events,
+          showNew,
         });
       }
     });

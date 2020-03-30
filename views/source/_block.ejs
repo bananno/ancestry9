@@ -3,15 +3,12 @@
   <div class="column" style="width: 450px;">
     <% if (showStory) { %>
       <p>
-        <%- include('../partials/linkToStory', { story: source.story }) %>
+        <%- include('../story/_link', {story: source.story}) %>
       </p>
     <% } %>
 
     <p>
-      <%- include('../partials/linkToSource', {
-        source: source,
-        showStory: false,
-      }) %>
+      <%- include('../source/_link', {source, showStory: false}) %>
     </p>
 
     <% if (source.images.length) { %>
@@ -46,7 +43,7 @@
     <% if (locals.includePeople && source.people.length) { %>
       <h3>people</h3>
 
-      <%- include('../people/peopleList', {
+      <%- include('../person/_list', {
         people: source.people,
         format: 'bullet',
       }) %>
@@ -96,7 +93,7 @@
 
     <% if (locals.citationParams && citationParams.citations.length) { %>
       <h3>citations</h3>
-      <%- include('../partials/citationList', citationParams) %>
+      <%- include('../citation/_list', citationParams) %>
     <% } %>
   </div>
 

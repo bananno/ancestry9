@@ -38,12 +38,12 @@
     <tr>
       <% person.parents.forEach(parent => { %>
         <td valign="bottom" align="center">
-          <%- include('./tree', {
+          <%- include('./_tree', {
             person: parent,
-            people: people,
+            people,
+            showCountry,
+            foundNationality,
             safety: safety + 1,
-            showCountry: showCountry,
-            foundNationality: foundNationality,
           }) %>
         </td>
       <% }); %>
@@ -51,9 +51,7 @@
     <tr>
       <td colspan="<%= person.parents.length || 1 %>" class="<%= cellClass %>">
         <div>
-          <%- include('../partials/linkToPerson', {
-            person: person
-          }) %>
+          <%- include('../person/_link', {person}) %>
           <% if (showCountry && person.birthCountry != 'United States') { %>
             <%= person.birthCountry %>
           <% } %>

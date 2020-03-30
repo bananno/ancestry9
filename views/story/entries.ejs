@@ -1,6 +1,5 @@
 <% entries.forEach(source => { %>
-  <%- include('../sources/sourceBlock', {
-    source: source,
+  <%- include('../source/_block', {source,
     showStory: false,
     limitContent: true,
   }); %>

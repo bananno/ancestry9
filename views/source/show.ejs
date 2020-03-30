@@ -63,7 +63,7 @@
 
 <h2>people</h2>
 
-<%- include('../people/peopleList', {
+<%- include('../person/_list', {
   people: source.people,
   format: 'bullet',
 }) %>
@@ -73,7 +73,7 @@
   <ul class="bullet-list">
     <% source.stories.forEach(story => { %>
       <li>
-        <%- include('../partials/linkToStory', { story }) %>
+        <%- include('../story/_link', {story}) %>
       </li>
     <% }); %>
   </ul>
@@ -135,7 +135,7 @@
 
 <h2>citations</h2>
 
-<%- include('../partials/citationList', {
+<%- include('../citation/_list', {
   citations: citations,
   showDelete: false,
   showSource: false,

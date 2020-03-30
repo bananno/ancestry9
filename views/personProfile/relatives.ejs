@@ -49,9 +49,7 @@
                 <%= thisRelationship %>
             </td>
             <td>
-                <%- include('../partials/linkToPerson', {
-                    person: obj.person
-                }) %>
+                <%- include('../person/_link', {person: obj.person}) %>
             </td>
             <td>
                 <%= obj.generation %>

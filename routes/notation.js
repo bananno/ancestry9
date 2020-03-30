@@ -25,8 +25,7 @@ function createRoutes(router) {
 
 function notationsIndex(req, res, next) {
   Notation.find({}, (err, notations) => {
-    res.render('layout', {
-      view: 'notations/index',
+    res.render('notation/index', {
       title: 'Notations',
       notations: notations,
     });
@@ -71,8 +70,7 @@ function withNotation(req, res, callback) {
 
 function showNotation(req, res, next) {
   withNotation(req, res, notation => {
-    res.render('layout', {
-      view: 'notations/show',
+    res.render('notation/show', {
       title: 'Notation',
       notation,
     });
@@ -84,8 +82,7 @@ function editNotation(req, res, next) {
     Person.find({}, (err, people) => {
       sortPeople(people, 'name');
       Story.find({}, (err, stories) => {
-        res.render('layout', {
-          view: 'notations/edit',
+        res.render('notation/edit', {
           title: 'Notation',
           notation,
           people,

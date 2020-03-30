@@ -42,7 +42,7 @@
   <p>
     <span id="click-start-edit" class="clickable-link">edit</span>
     <span id="link-to-notation">
-      <%- include('../partials/linkToNotation', {
+      <%- include('../notation/_link', {
         notation: definition,
         text: 'go to notation'
       }) %>
@@ -63,7 +63,7 @@
   <ul class="bullet-list">
     <% data.people.forEach(person => { %>
       <li>
-        <%- include('../partials/linkToPerson', {person}) %>
+        <%- include('../person/_link', {person}) %>
         <%= getTagValue(person) %>
       </li>
     <% }); %>
@@ -75,7 +75,7 @@
   <ul class="bullet-list">
     <% data.stories.forEach(story => { %>
       <li>
-        <%- include('../partials/linkToStory', {story}) %>
+        <%- include('../story/_link', {story}) %>
         - <%= story.type %>
         <%= getTagValue(story) %>
       </li>
@@ -88,7 +88,7 @@
   <ul class="bullet-list">
     <% data.sources.forEach(source => { %>
       <li>
-        <%- include('../partials/linkToSource', {showStory: true, source}) %>
+        <%- include('../source/_link', {showStory: true, source}) %>
         <%= getTagValue(source) %>
       </li>
     <% }); %>
@@ -100,7 +100,7 @@
   <ul class="bullet-list">
     <% data.events.forEach(event => { %>
       <li>
-        <a href="/event/<%= event._id %>"><%= event.title %></a>
+        <%- include('../event/_link', {event}) %>
         <%= getTagValue(event) %>
       </li>
     <% }); %>
@@ -112,7 +112,7 @@
   <ul class="bullet-list">
     <% data.notations.forEach(notation => { %>
       <li>
-        <%- include('../partials/linkToNotation', {notation}) %>
+        <%- include('../notation/_link', {notation}) %>
         <%= getTagValue(notation) %>
       </li>
     <% }); %>
@@ -123,7 +123,7 @@
   <h2>images</h2>
   <% data.images.forEach(image => { %>
     <div style="display: inline-block; width: 200px;">
-      <%- include('../format/linkToImage', {image}) %>
+      <%- include('../image/_link', {image}) %>
     </div>
   <% }); %>
 <% } %>

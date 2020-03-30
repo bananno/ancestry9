@@ -39,11 +39,11 @@
 <div id="map"></div>
 <div id="list"></div>
 
-<%- include('./embed') %>
+<%- include('./_embed') %>
 
 <br>
 
-<%- include('./locations') %>
+<%- include('./_locations') %>
 
 <h2>List</h2>
 
@@ -108,7 +108,7 @@
                                     region2="<%= region2 %>" city="<%= city %>">
                                 <td>
                                     <% if (pin.pinType == 'source') { %>
-                                        <%- include('../partials/linkToSource', {
+                                        <%- include('../source/_link', {
                                             source: pin,
                                             showGroup: false,
                                         }) %>
@@ -129,7 +129,7 @@
                                     }}) %>
                                 </td>
                                 <td>
-                                    <%- include('../partials/peopleList', { params: {
+                                    <%- include('../person/_list', { params: {
                                         people: pin.people,
                                         format: 'list',
                                     }}) %>

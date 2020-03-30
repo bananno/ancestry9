@@ -51,11 +51,10 @@ function storyIndex(req, res, next) {
       return (a.type + a.title) < (b.type + b.title) ? -1 : 1;
     });
 
-    res.render('layout', {
-      view: 'story/index',
+    res.render('story/index', {
       title: 'Stories',
-      stories: stories,
-      subview: storyType,
+      stories,
+      subview,
       mainStoryTypes: [...mainStoryTypes, 'other'],
     });
   });
@@ -189,10 +188,9 @@ function createStoryNotation(req, res, next) {
 }
 
 function mainStoryView(res, story, params) {
-  res.render('layout', {
-    view: 'story/layout',
+  res.render('story/_layout', {
     title: story.title,
-    story: story,
+    story,
     rootPath: '/story/' + story._id,
     canHaveDate: story.type != 'cemetery',
     canHaveEntries: !noEntryStoryTypes.includes(story.type),
@@ -292,8 +290,7 @@ function storiesWithSources(req, res, next) {
       });
     });
 
-    res.render('layout', {
-      view: 'story/withSources',
+    res.render('story/withSources', {
       title: 'Stories with Sources',
       stories,
       sourcesByStory,

@@ -40,7 +40,7 @@
   <% if (person.parents.length) { %>
     <div class="family-list-block">
       <h3>parents</h3>
-      <%- include('../people/peopleList', {
+      <%- include('../person/_list', {
         people: person.parents,
         format: 'bullet',
       }) %>
@@ -50,7 +50,7 @@
   <% if (person.siblings.length) { %>
     <div class="family-list-block">
       <h3>siblings</h3>
-      <%- include('../people/peopleList', {
+      <%- include('../person/_list', {
         people: person.siblings,
         format: 'bullet',
       }) %>
@@ -62,7 +62,7 @@
   <% if (person.spouses.length) { %>
     <div class="family-list-block">
       <h3>spouses</h3>
-      <%- include('../people/peopleList', {
+      <%- include('../person/_list', {
         people: person.spouses,
         format: 'bullet',
       }) %>
@@ -72,7 +72,7 @@
   <% if (person.children.length) { %>
     <div class="family-list-block">
       <h3>children</h3>
-      <%- include('../people/peopleList', {
+      <%- include('../person/_list', {
         people: person.children,
         format: 'bullet',
       }) %>
@@ -94,21 +94,16 @@
 <h2> Tree </h2>
 
 <div class="scrollbox">
-  <%- include('./tree', {
-    person: person,
-    people: people,
-  }) %>
+  <%- include('./_tree', {person, people}) %>
 </div>
 
 <h2> Timeline </h2>
 
-<%- include('../events/eventList', {
-  events: events,
-}) %>
+<%- include('../event/_list', {events}) %>
 
 <h2> Citations </h2>
 
-<%- include('../partials/citationList', {
+<%- include('../citation/_list', {
   citations: citations,
   showDelete: false,
   showSource: true,

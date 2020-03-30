@@ -130,7 +130,7 @@
         </div>
       <% } else if (attr == 'story') { %>
         <div item="<%= attr %>" class="value-edit">
-          <%- include('./storyDropdown', {
+          <%- include('../story/_dropdown', {
             fieldName: attr,
             selectedStory: originalValue,
           }) %>

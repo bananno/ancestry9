@@ -53,8 +53,7 @@ function tagIndex(req, res, next) {
       });
     });
   }).then(() => {
-    res.render('layout', {
-      view: 'tags/index',
+    res.render('tag/index', {
       title: 'Tags',
       tags,
       definitions,
@@ -112,8 +111,7 @@ function tagShow(req, res) {
       });
     });
   }).then(definition => {
-    res.render('layout', {
-      view: 'tags/show',
+    res.render('tag/show', {
       title: 'Tag: ' + tag,
       tag,
       data,

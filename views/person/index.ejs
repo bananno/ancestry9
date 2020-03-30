@@ -58,7 +58,7 @@
       const searchName = person.name.toLowerCase();
     %>
     <li person_name="<%= searchName %>" class="person_row">
-      <%- include('../partials/linkToPerson', {person}) %>
+      <%- include('./_link', {person}) %>
     </li>
   <% } %>
 </ul>

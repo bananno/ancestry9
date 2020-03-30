@@ -7,10 +7,7 @@
 <ul class="list_of_items">
   <% people.forEach(person => { %>
     <li class="person_row">
-      <%- include('../partials/linkToPerson', {
-        person: person,
-        useRealId: true,
-      }) %>
+      <%- include('./_link', {person, useRealId: true}) %>
     </li>
   <% }); %>
 </ul>

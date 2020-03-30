@@ -63,12 +63,11 @@ function getSourcesIndex(subview) {
 
       sortSources(sources, 'story');
 
-      res.render('layout', {
-        view: 'sources/index',
+      res.render('source/index', {
         title: 'Sources',
-        sources: sources,
-        subview: subview,
-        mainSourceTypes: mainSourceTypes,
+        sources,
+        subview,
+        mainSourceTypes,
       });
     });
   };
@@ -152,8 +151,7 @@ function showSource(req, res) {
     const { source, citationText } = data;
     Citation.find({ source: source }).populate('person')
     .exec((err, citations) => {
-      res.render('layout', {
-        view: 'sources/layout',
+      res.render('source/_layout', {
         subview: 'show',
         title: source.story.title + ' - ' + source.title,
         source: source,
@@ -172,8 +170,7 @@ function showSourceNotations(req, res, next) {
     .populate('people')
     .populate('stories')
     .exec((err, notations) => {
-      res.render('layout', {
-        view: 'sources/layout',
+      res.render('source/_layout', {
         subview: 'notations',
         title: source.story.title + ' - ' + source.title,
         source,
@@ -189,8 +186,7 @@ function showSourceMentions(req, res, next) {
     .find({source, tags: 'mentions'})
     .populate('people')
     .exec((err, notations) => {
-      res.render('layout', {
-        view: 'sources/layout',
+      res.render('source/_layout', {
         subview: 'mentions',
         title: source.story.title + ' - ' + source.title,
         source,
@@ -208,9 +204,7 @@ function editSource(req, res, next) {
       .exec((err, citations) => {
         Story.find({}, (err, stories) => {
           stories.sort((a, b) => a.title < b.title ? -1 : 1);
-
-          res.render('layout', {
-            view: 'sources/layout',
+          res.render('source/_layout', {
             subview: 'edit',
             title: 'Edit Source',
             source: source,
@@ -263,8 +257,7 @@ function editSourceFastCitations(req, res, next) {
 
           stories.sort((a, b) => a.title < b.title ? -1 : 1);
 
-          res.render('layout', {
-            view: 'sources/layout',
+          res.render('source/_layout', {
             subview: 'fastCitations',
             title: 'Edit Source',
             source: source,
