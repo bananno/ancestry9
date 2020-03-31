@@ -1,41 +1,45 @@
-const mongoose = require('mongoose');
-const Person = mongoose.model('Person');
-const Notation = mongoose.model('Notation');
-const {getAllData, populatePeopleDates} = require('./tools');
+const {
+  Image,
+  Notation,
+  Person,
+  Source,
+  Story,
+  getAllData,
+  populatePeopleDates,
+  sortBy,
+} = require('./import');
 
 module.exports = createRoutes;
 
 function createRoutes(router) {
+  router.use(createRenderChecklist);
+
   router.get('/checklist', checklistIndex);
   router.get('/checklist/vitals', checklistVitals);
-  router.get('/checklist/children', checklistChildren);
   router.get('/checklist/wikitree', checklistWikiTree);
   router.get('/checklist/findagrave', checklistFindAGrave);
   router.get('/checklist/sourceCensus', checklistSourceCensus);
   router.get('/checklist/profileSummary', checklistProfileSummary);
   router.get('/checklist/images', checklistImages);
   router.get('/checklist/custom', checklistCustom);
-  router.post('/checklist/new', checklistCreateNotation);
+  router.post('/checklist/custom/new', checklistCreateCustom);
 }
 
-function checklistIndex(req, res, next) {
-  res.render('layout', {
-    view: 'checklist/index',
-    title: 'Checklist',
-  });
-}
-
-function checklistChildren(req, res, next) {
-  Person.find({}, (err, people) => {
-    res.render('layout', {
-      view: 'checklist/children',
+function createRenderChecklist(req, res, next) {
+  res.renderChecklist = function(view, options = {}) {
+    res.render('checklist/' + view, {
       title: 'Checklist',
-      people,
+      ...options
     });
-  });
+  }
+  next();
 }
 
-function checklistVitals(req, res, next) {
+function checklistIndex(req, res) {
+  res.renderChecklist('index');
+}
+
+function checklistVitals(req, res) {
   getAllData(data => {
     data.people = populatePeopleDates(data.people, data.events);
 
@@ -73,198 +77,124 @@ function checklistVitals(req, res, next) {
       return swap == 0 ? (a.degree || 100) - (b.degree || 100) : swap;
     });
 
-    res.render('layout', {
-      view: 'checklist/vitals',
-      title: 'Checklist',
-      ...data
-    });
+    res.renderChecklist('vitals', data);
   });
 }
 
-function checklistWikiTree(req, res, next) {
-  mongoose.model('Person').find({}, (err, people) => {
-    res.render('layout', {
-      view: 'checklist/personLinks',
-      title: 'Checklist',
-      people,
-      linkType: 'WikiTree',
-    });
-  });
+async function checklistWikiTree(req, res) {
+  const people = await Person.find({});
+  res.renderChecklist('personLinks', {people, linkType: 'WikiTree'});
 }
 
-function checklistFindAGrave(req, res, next) {
-  mongoose.model('Person').find({}, (err, people) => {
-    res.render('layout', {
-      view: 'checklist/personLinks',
-      title: 'Checklist',
-      people,
-      linkType: 'FindAGrave',
-    });
-  });
+async function checklistFindAGrave(req, res) {
+  const people = await Person.find({});
+  res.renderChecklist('personLinks', {people, linkType: 'FindAGrave'});
 }
 
-function checklistSourceCensus(req, res, next) {
-  mongoose.model('Source').find({}).populate('story').exec((err, sources) => {
-    mongoose.model('Notation').find({title: 'source citation'}).exec((err, notations) => {
-      const censusSources = sources.filter(source => {
-        return source.story.title.match('Census USA');
-      });
+async function checklistSourceCensus(req, res) {
+  const stories = await Story.getAllCensusUSA();
+  const censusSources = await Story.getAllEntries(stories);
 
-      const notationRef = {};
-      notations.forEach(notation => {
-        if (notation.source) {
-          notationRef['' + notation.source] = true;
-        }
-      });
+  for (let i in censusSources) {
+    const source = censusSources[i];
+    const notation = await Notation.find({source, title: 'source citation'});
 
-      censusSources.forEach(source => {
-        source.hasAncestry = source.links.some(link => link.match(' Ancestry'));
-        source.hasFamilySearch = source.links.some(link => link.match(' FamilySearch'));
-        source.hasCitation = !!notationRef['' + source._id];
-        source.sort = (source.sharing ? '1' : '2')
-          + (source.hasAncestry || source.hasFamilySearch ? '2' : '1')
-          + (source.hasAncestry ? '2' : '1')
-          + (source.hasFamilySearch ? '2' : '1');
-      });
+    source.hasAncestry = source.links.some(link => link.match(' Ancestry'));
+    source.hasFamilySearch = source.links.some(link => link.match(' FamilySearch'));
+    source.hasCitation = notation.length > 0;
 
-      censusSources.sort((a, b) => a.sort < b.sort ? -1 : 1);
+    const hasEverything = source.hasAncestry && source.hasFamilySearch
+      && source.hasCitation;
 
-      res.render('layout', {
-        view: 'checklist/sourceCensus',
-        title: 'Checklist',
-        censusSources,
-      });
-    });
-  });
+    source.sortBy = [
+      !hasEverything,
+      source.sharing,
+      !source.hasAncestry || !source.hasFamilySearch,
+      !source.hasAncestry,
+      !source.hasFamilySearch
+    ].map(test => test ? '1' : '2').join('');
+  }
+
+  sortBy(censusSources, source => source.sortBy);
+
+  res.renderChecklist('sourceCensus', {censusSources});
 }
 
-function checklistImages(req, res, next) {
-  let images = [];
+async function checklistImages(req, res) {
+  const images = await Image.getAllByParent();
+  Image.sortByTags(images);
+  res.renderChecklist('images', {images});
+}
 
-  new Promise(resolve => {
-    mongoose.model('Source').find({})
-    .populate('story')
-    .populate('images')
-    .exec((err, sources) => {
-      sources.forEach(source => {
-        source.images.forEach(image => {
-          image.source = source;
-          images.push(image);
-        });
-      });
-      resolve();
+async function checklistProfileSummary(req, res) {
+  const people = await Person.find({});
+  const sources = await Source.find({tags: 'biography'});
+  const notations1 = await Notation.find({title: 'profile summary'});
+  const notations2 = await Notation.find({tags: 'profile summary'});
+  const notations = [...notations1, ...notations2];
+
+  const personNotations = {};
+  const personBiographies = {};
+
+  sources.forEach(source => {
+    const person = source.people[0];
+    personBiographies['' + person] = personBiographies['' + person] || [];
+    personBiographies['' + person].push(source);
+  });
+
+  notations.forEach(notation => {
+    notation.also = notation.tags.filter(tag => {
+      return tag.match('brick wall') || tag == 'research notes';
     });
-  }).then(() => {
-    return new Promise(resolve => {
-      mongoose.model('Story').find({})
-      .populate('images')
-      .exec((err, stories) => {
-        stories.forEach(story => {
-          story.images.forEach(image => {
-            image.story = story;
-            images.push(image);
-          });
-        });
-        resolve();
-      });
+    notation.people.forEach(person => {
+      personNotations['' + person] = personNotations['' + person] || [];
+      personNotations['' + person].push(notation);
     });
-  }).then(() => {
-    images.sort((a, b) => {
-      if (a.tags.length == b.tags.length) {
-        let sortA = a.tags.sort().join('-');
-        let sortB = b.tags.sort().join('-');
-        if (sortA == sortB) {
-          return 0;
-        }
-        return sortB < sortA ? -1 : 1;
+  });
+
+  const data = {
+    peopleNeedSummary: [],
+    peopleWithSummary: [],
+    peopleWithBiography: [],
+    peopleWithoutSummaryShared: [],
+    peopleWithoutSummaryNotShared: [],
+  };
+
+  people.forEach(person => {
+    person.notations = personNotations['' + person._id];
+    person.biographies = personBiographies['' + person._id];
+
+    if (person.tags.includes('need profile summary')) {
+      data.peopleNeedSummary.push(person);
+      return;
+    }
+
+    if (person.notations || person.biographies) { // could be both
+      if (person.notations) {
+        data.peopleWithSummary.push(person);
       }
-      return b.tags.length - a.tags.length;
-    });
+      if (person.biographies) {
+        data.peopleWithBiography.push(person);
+      }
+      return;
+    }
 
-    res.render('layout', {
-      view: 'checklist/images',
-      title: 'Checklist',
-      images,
-    });
+    if (person.sharing.level == 2) {
+      data.peopleWithoutSummaryShared.push(person);
+    } else {
+      data.peopleWithoutSummaryNotShared.push(person);
+    }
   });
-}
 
-function checklistProfileSummary(req, res, next) {
-  mongoose.model('Person').find({}).exec((err, people) => {
-    mongoose.model('Notation').find({}).exec((err, notations) => {
-      mongoose.model('Source').find({ tags: 'biography'}).exec((err, sources) => {
-        const personNotations = {};
-        const personBiographies = {};
-
-        sources.forEach(source => {
-          const person = source.people[0];
-          personBiographies['' + person] = personBiographies['' + person] || [];
-          personBiographies['' + person].push(source);
-        });
-
-        notations = notations.filter(notation => {
-          return notation.title == 'profile summary'
-            || notation.tags.includes('profile summary');
-        }).forEach(notation => {
-          notation.also = notation.tags.filter(tag => {
-            return tag.match('brick wall') || tag == 'research notes';
-          });
-          notation.people.forEach(person => {
-            personNotations['' + person] = personNotations['' + person] || [];
-            personNotations['' + person].push(notation);
-          });
-        });
-
-        const peopleNeedSummary = people.filter(person => {
-          return person.tags.includes('need profile summary')
-            || person.tags.includes('needs profile summary');
-        });
-
-        const peopleWithSummary = [];
-        const peopleWithBiography = [];
-        const peopleWithoutSummaryShared = [];
-        const peopleWithoutSummaryNotShared = [];
-
-        people.forEach(person => {
-          person.notations = personNotations['' + person._id];
-          person.biographies = personBiographies['' + person._id];
-          if (person.notations || person.biographies) {
-            if (person.notations) {
-              peopleWithSummary.push(person);
-            } else {
-              peopleWithBiography.push(person);
-            }
-          } else if (person.sharing.level == 2) {
-            peopleWithoutSummaryShared.push(person);
-          } else {
-            peopleWithoutSummaryNotShared.push(person);
-          }
-        });
-
-        res.render('layout', {
-          view: 'checklist/profileSummary',
-          title: 'Checklist',
-          peopleNeedSummary,
-          peopleWithSummary,
-          peopleWithBiography,
-          peopleWithoutSummaryShared,
-          peopleWithoutSummaryNotShared,
-        });
-      });
-    });
-  });
+  res.renderChecklist('profileSummary', data);
 }
 
 async function checklistCustom(req, res) {
   const notations = await Notation.find({title: 'checklist'});
-  res.render('layout', {
-    view: 'checklist/custom',
-    title: 'Checklist',
-    notations
-  });
+  res.renderChecklist('custom', {notations});
 }
 
-async function checklistCreateNotation(req, res) {
+async function checklistCreateCustom(req, res) {
   const notation = await Notation.create({
     title: 'checklist',
     text: req.body.text.trim()

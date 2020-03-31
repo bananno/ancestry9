@@ -4,7 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-const modelFiles = require('./models/index');
+const modelFiles = require('./models').files;
 
 modelFiles.forEach(model => {
   require('./models/' + model);
