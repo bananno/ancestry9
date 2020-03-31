@@ -1,7 +1,6 @@
 const tool = filename => require('../tools/' + filename);
 
 const mongoose = require('mongoose');
-const routeTools = require('./tools');
 const models = require('../models').models;
 const {sortBy} = require('../models/tools');
 
@@ -19,7 +18,6 @@ const tools = [
 module.exports = {
   mongoose,
   sortBy,
-  ...routeTools
 };
 
 models.forEach(model => {

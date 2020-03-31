@@ -2,6 +2,12 @@
   let birthMissing = 0, deathMissing = 0;
 %>
 
+<style>
+  td.center {
+    text-align: center;
+  }
+</style>
+
 <h1>Checklist - vitals</h1>
 
 <div>
@@ -14,19 +20,19 @@
 
 <table border="1" style="margin-top: 15px;">
   <tr>
-    <th> name </th>
-    <th> birth </th>
-    <th> death </th>
-    <th> connection </th>
-    <th> degree </th>
-    <th> sharing </th>
+    <th>name</th>
+    <th>birth</th>
+    <th>death</th>
+    <th>connection</th>
+    <th>degree</th>
+    <th>sharing</th>
   </tr>
   <% people.forEach(person => { %>
     <tr>
       <td>
         <%- include('../person/_link', {person}) %>
       </td>
-      <td>
+      <td class="center">
         <% if (person.birth) { %>
           <img class="checkmark-inline" src="/images/check-true.png">
         <% } else { %>
@@ -34,21 +40,23 @@
           <img class="checkmark-inline" src="/images/check-false.png">
         <% } %>
       </td>
-      <td>
+      <td class="center">
         <% if (person.death) { %>
           <img class="checkmark-inline" src="/images/check-true.png">
+        <% } else if (person.isLiving()) { %>
+          -
         <% } else { %>
           <% deathMissing += 1; %>
           <img class="checkmark-inline" src="/images/check-false.png">
         <% } %>
       </td>
-      <td>
+      <td class="center">
         <%= person.connection %>
       </td>
-      <td>
+      <td class="center">
         <%= person.degree %>
       </td>
-      <td>
+      <td class="center">
         <% if (person.sharing.level == 2) { %>
           <img class="checkmark-inline" src="/images/check-true.png">
         <% } else if (person.sharing.level == 1) { %>

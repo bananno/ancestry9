@@ -1,11 +1,5 @@
 const {
-  Image,
-  Notation,
-  Person,
-  Source,
-  Story,
-  getAllData,
-  populatePeopleDates,
+  Citation, Event, Image, Notation, Person, Source, Story,
   sortBy,
 } = require('./import');
 
@@ -26,7 +20,7 @@ function createRoutes(router) {
 }
 
 function createRenderChecklist(req, res, next) {
-  res.renderChecklist = function(view, options = {}) {
+  res.renderChecklist = (view, options = {}) => {
     res.render('checklist/' + view, {
       title: 'Checklist',
       ...options
@@ -39,46 +33,50 @@ function checklistIndex(req, res) {
   res.renderChecklist('index');
 }
 
-function checklistVitals(req, res) {
-  getAllData(data => {
-    data.people = populatePeopleDates(data.people, data.events);
+async function checklistVitals(req, res) {
+  const people = await Person.find({});
+  const sources = await Source.find({}).populate('people');
+  const citations = await Citation.find({}).populate('person').populate('source');
 
-    data.personRef = {};
-    data.people.forEach(person => data.personRef['' + person._id] = person);
+  await Person.populateBirthAndDeath(people);
 
-    const anna = data.people.filter(person => person.name == 'Anna Peterson')[0];
-    anna.connection = 'start';
-    anna.degree = 1;
-    findAncestors(anna, 2);
+  const personRef = {};
 
-    function findAncestors(person, degree) {
-      (person.parents || []).forEach(parentId => {
-        const parent = data.personRef['' + parentId];
-        parent.connection = 'ancestor';
-        parent.degree = degree;
-        findAncestors(parent, degree + 1);
-        findDescendants(parent, degree + 1);
-      });
-    }
+  people.forEach(person => personRef['' + person._id] = person);
 
-    function findDescendants(person, degree) {
-      (person.children || []).forEach(childId => {
-        const child = data.personRef['' + childId];
-        child.connection = child.connection || 'cousin';
-        child.degree = child.degree || degree;
-        findDescendants(child, degree + 1);
-      });
-    }
+  const anna = people.find(person => person.name == 'Anna Peterson');
+  anna.connection = 'start';
+  anna.degree = 1;
+  findAncestors(anna, 2);
 
-    const connOrder = ['cousin', 'ancestor', 'start'];
-    data.people.sort((a, b) => {
-      // order by connection type, then by degree of separation
-      let swap = connOrder.indexOf(b.connection) - connOrder.indexOf(a.connection);
-      return swap == 0 ? (a.degree || 100) - (b.degree || 100) : swap;
-    });
+  const connOrder = ['cousin', 'ancestor', 'start'];
 
-    res.renderChecklist('vitals', data);
+  people.sort((a, b) => {
+    // order by connection type, then by degree of separation
+    let swap = connOrder.indexOf(b.connection) - connOrder.indexOf(a.connection);
+    return swap == 0 ? (a.degree || 100) - (b.degree || 100) : swap;
   });
+
+  res.renderChecklist('vitals', {people});
+
+  function findAncestors(person, degree) {
+    (person.parents || []).forEach(parentId => {
+      const parent = personRef['' + parentId];
+      parent.connection = 'ancestor';
+      parent.degree = degree;
+      findAncestors(parent, degree + 1);
+      findDescendants(parent, degree + 1);
+    });
+  }
+
+  function findDescendants(person, degree) {
+    (person.children || []).forEach(childId => {
+      const child = personRef['' + childId];
+      child.connection = child.connection || 'cousin';
+      child.degree = child.degree || degree;
+      findDescendants(child, degree + 1);
+    });
+  }
 }
 
 async function checklistWikiTree(req, res) {

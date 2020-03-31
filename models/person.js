@@ -26,8 +26,12 @@ const personSchema = new mongoose.Schema({
 });
 
 personSchema.methods.getLifeEvents = getLifeEvents;
+personSchema.methods.isLiving = isLiving;
+personSchema.methods.populateBirthAndDeath = populateBirthAndDeathSingle;
 personSchema.methods.populateSiblings = populateSiblings;
+
 personSchema.statics.populateAncestors = populateAncestors;
+personSchema.statics.populateBirthAndDeath = populateBirthAndDeathList;
 personSchema.statics.findInList = findInList;
 personSchema.statics.isSame = isSame;
 personSchema.statics.removeFromList = removeFromList;
@@ -40,6 +44,25 @@ async function getLifeEvents() {
   const events = await Event.find({people: this}).populate('people');
   Event.sortByDate(events);
   return events;
+}
+
+function isLiving() {
+  return this.tags.includes('living');
+}
+
+async function populateBirthAndDeathSingle() {
+  const Event = mongoose.model('Event');
+
+  this.birth = await Event.findOne({title: 'birth', people: this});
+  this.death = await Event.findOne({title: 'death', people: this});
+
+  if (!this.birth && !this.death) {
+    const double = await Event.findOne({title: 'birth and death', people: this});
+    if (double) {
+      this.birth = double;
+      this.death = double;
+    }
+  }
 }
 
 async function populateSiblings() {
@@ -79,6 +102,13 @@ async function populateAncestors(personId, people, safety) {
   }
 
   return person;
+}
+
+// Given list of people, populate birth and death events for each.
+async function populateBirthAndDeathList(people) {
+  for (let i in people) {
+    await people[i].populateBirthAndDeath();
+  }
 }
 
 function findInList(people, person) {
