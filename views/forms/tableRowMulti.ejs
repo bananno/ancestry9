@@ -32,7 +32,7 @@
       <% if (dataType == 'links') { %>
         <%- include('../format/externalLink', {url: thisItem}) %>
       <% } else if (dataType == 'images') { %>
-        <%- include('../format/linkToImage', {image: thisItem}) %>
+        <%- include('../image/_link', {image: thisItem}) %>
       <% } else if (dataType == 'people') { %>
         <%- include('../person/_link', {person: thisItem}) %>
       <% } else if (dataType == 'stories') { %>

@@ -14,7 +14,7 @@
     <% if (source.images.length) { %>
       <p>
         <% source.images.forEach(image => { %>
-          <%- include('../partials/linkToImage', {
+          <%- include('../image/_link', {
             image,
             css: 'max-height: 100px; max-width: 100%;'
           }) %>

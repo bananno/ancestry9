@@ -94,7 +94,7 @@
   <h2>images</h2>
   <p>
     <% source.images.forEach(image => { %>
-      <%- include('../format/linkToImage', { image }) %>
+      <%- include('../image/_link', {image}) %>
     <% }); %>
   </p>
 <% } %>

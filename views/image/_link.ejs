@@ -1,3 +1,7 @@
-<a href="<%= image.url %>" target="_blank"><img src="<%= image.url %>" style="max-height: 100px;"></a>
+<%
+  const imageCSS = locals.css || 'max-height: 100px;';
+%>
+
+<a href="<%= image.url %>" target="_blank"><img src="<%= image.url %>" style="<%= imageCSS %>"></a>
 
 <a href="/image/<%= image._id %>"><img src="/images/info.png" style="height: 20px;"></a>

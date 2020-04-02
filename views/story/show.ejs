@@ -77,7 +77,7 @@
   <h2>images</h2>
   <p>
     <% story.images.forEach(image => { %>
-      <%- include('../format/linkToImage', { image }) %>
+      <%- include('../image/_link', {image}) %>
     <% }); %>
   </p>
 <% } %>
