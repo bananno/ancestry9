@@ -32,9 +32,10 @@ const sourceSchema = new mongoose.Schema({
 });
 
 sourceSchema.methods.populateCitations = populateCitations;
+sourceSchema.methods.populateCiteText = populateCiteTextSingle;
 sourceSchema.methods.populatePersonCitations = populatePersonCitations;
 
-sourceSchema.statics.populateCiteText = populateCiteText;
+sourceSchema.statics.populateCiteText = populateCiteTextList;
 
 sourceSchema.statics.sortByStory = function(sources) {
   tools.sortBy(sources, source => {
@@ -48,21 +49,33 @@ async function populateCitations(person) {
   this.citations = await mongoose.model('Citation').find({source: this});
 }
 
+// Get official text about source origin (e.g., MLA) NOT the citation model.
+async function populateCiteTextSingle(options = {}) {
+  const sourceNotations = await mongoose.model('Notation')
+    .getCitesForSource(this);
+
+  let notations = [...sourceNotations];
+
+  if (options.includeStory !== false) {
+    const storyNotations = await mongoose.model('Notation')
+      .getCitesForStory(this.story);
+
+    if (options.storyFirst) {
+      notations = [...storyNotations, ...notations];
+    } else {
+      notations = [...notations, ...storyNotations];
+    }
+  }
+
+  this.citeText = notations.map(notation => notation.text);
+}
+
 async function populatePersonCitations(person) {
   this.citations = await mongoose.model('Citation').find({source: this, person});
 }
 
-// Get official text about source origin (e.g., MLA) NOT the citation model.
-async function populateCiteText(sources) {
-  const Notation = mongoose.model('Notation');
-
+async function populateCiteTextList(sources) {
   for (let i in sources) {
-    const source = sources[i];
-
-    const sourceNotations = await Notation.getCitesForSource(source);
-    const storyNotations = await Notation.getCitesForStory(source.story);
-
-    source.citeText = [...sourceNotations, ...storyNotations]
-      .map(notation => notation.text);
+    await sources[i].populateCiteText();
   }
 }

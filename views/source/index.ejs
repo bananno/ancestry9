@@ -7,7 +7,11 @@
   <% }); %>
 </ul>
 
-<table class="info-table">
+<div style="margin: 20px 0;">
+  <input id="source-quick-filter" placeholder="filter">
+</div>
+
+<table class="nice-table">
   <tr>
     <th>type</th>
     <th>story</th>
@@ -18,28 +22,30 @@
   </tr>
 
   <% sources.forEach(source => { %>
-    <tr>
+    <%
+      const searchWords = [
+        source.story.type,
+        source.story.title,
+        source.title
+      ].join(' ');
+    %>
+    <tr class="source-item" search-words="<%= searchWords %>">
       <td>
         <%= source.story.type %>
       </td>
-
       <td>
         <%- include('../story/_link', {story: source.story}) %>
       </td>
-
       <td>
         <%- include('../source/_link', {source}) %>
       </td>
-
       <td>
         <%- include('../format/date', {date: source.date}) %>
       </td>
-
       <td>
         <%- include('../format/location', {location: source.location}) %>
       </td>
-
-      <td>
+      <td class="center">
         <img class="checkmark-inline" src="/images/check-<%= source.sharing %>.png">
         <% if (source.sharing && source.story && !source.story.sharing) { %>
           <span style="color: red">WARNING: story not shared</span>
@@ -48,3 +54,12 @@
     </tr>
   <% }); %>
 </table>
+
+<script>
+  createQuickFilter({
+    input: '#source-quick-filter',
+    items: 'tr.source-item',
+    getItemText: $item => $item.attr('search-words'),
+    startFocus: true,
+  });
+</script>

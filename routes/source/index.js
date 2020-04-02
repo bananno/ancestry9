@@ -1,38 +1,34 @@
 const {
-  Citation,
-  Notation,
-  Person,
   Source,
-  Story,
+  createModelRoutes,
+  getDateValues,
+  getLocationValues,
 } = require('../import');
 
-const tool = path => require('../../tools/' + path);
-const createModelRoutes = tool('createModelRoutes');
-const getDateValues = tool('getDateValues');
-const getLocationValues = tool('getLocationValues');
-const sortPeople = tool('sortPeople');
-const sortSources = tool('sortSources');
-
-const mainSourceTypes = ['document', 'index', 'cemetery', 'newspaper',
-  'photo', 'website', 'book', 'other'];
+const sourceTools = require('./tools');
+const sourceProfile = require('./show');
+const sourceUpdate = require('./update');
+const {mainSourceTypes} = sourceTools;
 
 module.exports = createRoutes;
 
 function createRoutes(router) {
+  router.param('id', sourceTools.convertParamSourceId1);
+  router.param('sourceId', sourceTools.convertParamSourceId2);
+
+  router.use(sourceTools.createRenderSource);
+
   createModelRoutes({
     Model: Source,
     modelName: 'source',
-    router: router,
+    router,
     index: getSourcesIndex('none'),
-    new: null,
     create: createSource,
-    show: showSource,
-    edit: editSource,
-    delete: deleteSource,
+    delete: sourceUpdate.deleteSource,
+    show: sourceProfile.summary,
+    edit: sourceProfile.edit,
     otherRoutes: {
-      'notations': showSourceNotations,
-      'mentions': showSourceMentions,
-      'fastCitations': editSourceFastCitations,
+      ...sourceProfile.other
     },
     toggleAttributes: ['sharing'],
     singleAttributes: ['title', 'content', 'notes', 'summary',
@@ -44,299 +40,42 @@ function createRoutes(router) {
     router.get('/sources/' + sourceType, getSourcesIndex(sourceType));
   });
 
-  router.post('/source/:id/createNotation', createSourceNotation);
-  router.post('/source/:id/createCitationNotation', createSourceCitationTextNotation);
+  router.post('/source/:id/createCitationNotation', sourceUpdate.createCiteText);
+  router.post('/source/:id/createNotation', sourceUpdate.createNotation);
 }
 
 function getSourcesIndex(subview) {
-  return (req, res, next) => {
-    Source.find({})
-    .populate('people')
-    .populate('story')
-    .exec((err, sources) => {
-      if (err) {
-        return console.error(err);
-      }
-
-      sources = filterSourcesByType(sources, subview);
-
-      sortSources(sources, 'story');
-
-      res.render('source/index', {
-        title: 'Sources',
-        sources,
-        subview,
-        mainSourceTypes,
-      });
+  return async function(req, res) {
+    const sources = await sourceTools.getSourcesByType(subview);
+    Source.sortByStory(sources);
+    res.render('source/index', {
+      title: 'Sources',
+      sources,
+      subview,
+      mainSourceTypes,
     });
   };
 }
 
 function createSource(req, res) {
-  const newItem = {
+  const newSource = {
     type: req.body.type.trim(),
     title: req.body.title.trim(),
     story: req.body.story,
   };
 
-  newItem.date = getDateValues(req);
-  newItem.location = getLocationValues(req);
-
-  if (newItem.title == '') {
+  if (!newSource.title) {
     return res.send('Title is required.');
   }
 
-  Source.create(newItem, (err, source) => {
+  newSource.date = getDateValues(req);
+  newSource.location = getLocationValues(req);
+
+  Source.create(newSource, (err, source) => {
     if (err) {
       return res.send('There was a problem adding the information to the '
         + 'database.<br>' + err);
     }
     res.redirect('/source/' + source._id + '/edit');
-  });
-}
-
-function withSource(req, res, options, callback) {
-  const sourceId = req.params.id;
-  Source.findById(sourceId)
-  .populate('people')
-  .populate('story')
-  .populate('stories')
-  .populate('images')
-  .exec((err, source) => {
-    if (source == null) {
-      return res.send('Source not found');
-    }
-    if (!options) {
-      return callback(source);
-    }
-    const data = { source };
-    if (options.citationText == 'source only') {
-      return withCitationText(source, false, citationText => {
-        data.citationText = citationText;
-        callback(data);
-      });
-    }
-    if (options.citationText) {
-      return withCitationText(source, true, citationText => {
-        data.citationText = citationText;
-        callback(data);
-      });
-    }
-    callback(data);
-  });
-}
-
-function withCitationText(source, includeStory, callback) {
-  Notation
-  .find({ title: 'source citation', source: source})
-  .exec((err, sourceNotation) => {
-    if (!includeStory) {
-      return callback(sourceNotation.map(notation => {
-        return notation.text;
-      }));
-    }
-    Notation
-    .find({ title: 'source citation', stories: [source.story]})
-    .exec((err, storyNotation) => {
-      callback([...sourceNotation, ...storyNotation].map(notation => {
-        return notation.text;
-      }));
-    });
-  });
-}
-
-function showSource(req, res) {
-  withSource(req, res, { citationText: true }, data => {
-    const { source, citationText } = data;
-    Citation.find({ source: source }).populate('person')
-    .exec((err, citations) => {
-      const citationsByPerson = [...citations];
-      Citation.sortByItem(citations, source.people);
-      Citation.sortByPerson(citationsByPerson, source.people);
-      res.render('source/_layout', {
-        subview: 'show',
-        title: source.story.title + ' - ' + source.title,
-        source: source,
-        citations,
-        citationsByPerson,
-        citationText,
-      });
-    });
-  });
-}
-
-function showSourceNotations(req, res, next) {
-  withSource(req, res, null, source => {
-    Notation
-    .find({ source: source })
-    .populate('people')
-    .populate('stories')
-    .exec((err, notations) => {
-      res.render('source/_layout', {
-        subview: 'notations',
-        title: source.story.title + ' - ' + source.title,
-        source,
-        notations,
-      });
-    });
-  });
-}
-
-function showSourceMentions(req, res, next) {
-  withSource(req, res, {mentions: true}, ({source}) => {
-    Notation
-    .find({source, tags: 'mentions'})
-    .populate('people')
-    .exec((err, notations) => {
-      res.render('source/_layout', {
-        subview: 'mentions',
-        title: source.story.title + ' - ' + source.title,
-        source,
-        notations,
-      });
-    });
-  });
-}
-
-function editSource(req, res, next) {
-  withSource(req, res, {citationText: 'source only'}, data => {
-    const {source, citationText} = data;
-    Person.find({ }).exec((err, people) => {
-      Citation.find({ source: source }).populate('person')
-      .exec((err, citations) => {
-        Story.find({}, (err, stories) => {
-          stories.sort((a, b) => a.title < b.title ? -1 : 1);
-          const citationsByPerson = [...citations];
-          Citation.sortByItem(citations, source.people);
-          Citation.sortByPerson(citationsByPerson, source.people);
-          res.render('source/_layout', {
-            subview: 'edit',
-            title: 'Edit Source',
-            source: source,
-            people: sortPeopleListForNewCitations(source, people, citations),
-            stories: stories,
-            citations,
-            citationsByPerson,
-            needCitationText: source.story.title.match('Census')
-              && citationText.length == 0
-          });
-        });
-      });
-    });
-  });
-}
-
-function sortPeopleListForNewCitations(source, people, citations) {
-  source.people.forEach(thisPerson => {
-    people = Person.removeFromList(people, thisPerson);
-  });
-
-  sortPeople(people, 'name');
-
-  const citationsPeople = [];
-  const tempPeople = source.people.map(person => '' + person._id);
-  citations.forEach(citation => {
-    if (!tempPeople.includes('' + citation.person._id)) {
-      tempPeople.push('' + citation.person._id);
-      citationsPeople.push(citation.person);
-      people = Person.removeFromList(people, citation.person);
-    }
-  });
-
-  return [...source.people, ...citationsPeople, ...people];
-}
-
-function editSourceFastCitations(req, res, next) {
-  withSource(req, res, null, source => {
-    Person.find({ }).exec((err, people) => {
-      Citation.find({ source: source }).populate('person')
-      .exec((err, citations) => {
-        Story.find({}, (err, stories) => {
-          sortPeople(people, 'name');
-
-          source.people.forEach(thisPerson => {
-            people = Person.removeFromList(people, thisPerson);
-          });
-
-          people = [...source.people, ...people];
-
-          stories.sort((a, b) => a.title < b.title ? -1 : 1);
-
-          const citationsByPerson = [...citations];
-          Citation.sortByItem(citations, source.people);
-          Citation.sortByPerson(citationsByPerson, source.people);
-
-          res.render('source/_layout', {
-            subview: 'fastCitations',
-            title: 'Edit Source',
-            source: source,
-            people: people,
-            stories: stories,
-            citations,
-            citationsByPerson,
-          });
-        });
-      });
-    });
-  });
-}
-
-function createSourceNotation(req, res, next) {
-  withSource(req, res, null, source => {
-    const newNotation = {
-      title: req.body.title.trim(),
-      text: req.body.text.trim(),
-      source,
-    };
-    Notation.create(newNotation, (err, notation) => {
-      if (err) {
-        return res.send('There was a problem adding the information to the database.');
-      }
-      res.redirect('/source/' + source._id + '/notations');
-    });
-  });
-}
-
-function createSourceCitationTextNotation(req, res, next) {
-  withSource(req, res, null, source => {
-    const newNotation = {
-      title: 'source citation',
-      text: req.body.text.trim(),
-      source,
-    };
-    Notation.create(newNotation, (err, notation) => {
-      if (err) {
-        return res.send('There was a problem adding the information to the database.');
-      }
-      res.redirect('/source/' + source._id + '/edit');
-    });
-  });
-}
-
-function filterSourcesByType(sources, type) {
-  if (type == 'none') {
-    return sources;
-  }
-
-  if (type == 'photo') {
-    return sources.filter(source => source.story.title == 'Photo');
-  }
-
-  if (type == 'other') {
-    return sources.filter(source => {
-      let storyType = source.story.type.toLowerCase();
-      return source.story.title != 'Photo'
-        && storyType == 'other' || !mainSourceTypes.includes(storyType);
-    });
-  }
-
-  return sources.filter(source => source.story.type.toLowerCase() == type);
-}
-
-function deleteSource(req, res, next) {
-  withSource(req, res, null, source => {
-    source.delete(() => {
-      res.redirect('/sources');
-    });
   });
 }
