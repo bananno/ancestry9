@@ -2,12 +2,6 @@
   let birthMissing = 0, deathMissing = 0;
 %>
 
-<style>
-  td.center {
-    text-align: center;
-  }
-</style>
-
 <h1>Checklist - vitals</h1>
 
 <div>
@@ -18,7 +12,7 @@
   Death events missing: <b><span id="death-event-result"></span></b>
 </div>
 
-<table border="1" style="margin-top: 15px;">
+<table class="nice-table" style="margin-top: 20px">
   <tr>
     <th>name</th>
     <th>birth</th>
@@ -51,7 +45,7 @@
         <% } %>
       </td>
       <td class="center">
-        <%= person.connection %>
+        <%= connectionTitle[person.connection] %>
       </td>
       <td class="center">
         <%= person.degree %>
@@ -73,9 +67,3 @@
   $('#birth-event-result').text('<%= birthMissing %>');
   $('#death-event-result').text('<%= deathMissing %>');
 </script>
-
-<style>
-  th, td {
-    padding: 5px;
-  }
-</style>

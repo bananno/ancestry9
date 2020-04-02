@@ -39,6 +39,12 @@ h1, h2, h3 {
 
 /* REUSABLE */
 
+table.nice-table th,
+table.nice-table td {
+  border: 1px solid gray;
+  padding: 5px;
+}
+
 ul.bullet-list {
   margin-left: 25px;
 }
@@ -50,6 +56,10 @@ ul.bullet-list li {
 ul.no-bullet-list {
   list-style: none;
   margin-left: 0;
+}
+
+.center {
+  text-align: center;
 }
 
 /* EVENT LIST TABLE */

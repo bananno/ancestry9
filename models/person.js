@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const tools = require('./tools');
 
 const personSchema = new mongoose.Schema({
   name: String,
@@ -30,7 +31,9 @@ personSchema.methods.isLiving = isLiving;
 personSchema.methods.populateBirthAndDeath = populateBirthAndDeathSingle;
 personSchema.methods.populateSiblings = populateSiblings;
 
+personSchema.statics.populateConnections = tools.personPopulateConnections;
 personSchema.statics.populateAncestors = populateAncestors;
+personSchema.statics.populateRelatives = populateRelatives;
 personSchema.statics.populateBirthAndDeath = populateBirthAndDeathList;
 personSchema.statics.findInList = findInList;
 personSchema.statics.isSame = isSame;
@@ -104,11 +107,53 @@ async function populateAncestors(personId, people, safety) {
   return person;
 }
 
+// Given list of people, populate all parents/spouses/children.
+function populateRelatives(people) {
+  const personRef = {};
+
+  people.forEach(person => personRef[person._id] = person);
+
+  people.forEach(person => {
+    ['parents', 'children', 'spouses'].forEach(rel => {
+      // .map() throws stack size error for some reason
+      for (let i in person[rel]) {
+        if (!person[rel][i].name) {
+          person[rel][i] = personRef[person[rel][i]];
+        }
+      }
+    });
+  })
+}
+
 // Given list of people, populate birth and death events for each.
 async function populateBirthAndDeathList(people) {
-  for (let i in people) {
-    await people[i].populateBirthAndDeath();
-  }
+  const Event = mongoose.model('Event');
+
+  const births = await Event.find({title: 'birth'});
+  const deaths = await Event.find({title: 'death'});
+  const combos = await Event.find({title: 'birth and death'});
+
+  const birthsMap = {};
+  const deathsMap = {};
+
+  [...births, ...combos].forEach(event => {
+    event.people.forEach(person => birthsMap[person] = event);
+  });
+
+  [...deaths, ...combos].forEach(event => {
+    event.people.forEach(person => deathsMap[person] = event);
+  });
+
+  people.forEach(person => {
+    person.birth = birthsMap[person._id];
+    person.death = deathsMap[person._id];
+  });
+
+  // Old version: causes stack overflow if people data are too populated;
+  // see checklist/vitals.
+  // for (let i in people) {
+  //   await people[i].populateBirthAndDeath();
+  // }
 }
 
 function findInList(people, person) {
