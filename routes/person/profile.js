@@ -4,7 +4,6 @@ const {
   Notation,
   Person,
   Source,
-  sortCitations,
 } = require('../import');
 
 const getTools = (path) => { return require('../../tools/' + path) };
@@ -39,8 +38,10 @@ async function personSummary(req, res) {
 
   await Citation.populateStories(citations);
 
+  Citation.sortByItem(citations);
+
   res.renderPersonProfile('summary', {
-    citations: sortCitations(citations, 'item'),
+    citations,
     events,
     findPersonInList: Person.findInList,
     people,
@@ -67,7 +68,7 @@ async function personSources(req, res) {
   for (let i in sources) {
     const source = sources[i];
     await source.populatePersonCitations(person);
-    source.citations = sortCitations(source.citations, 'item');
+    Citation.sortByItem(source.citations);
   }
 
   Source.sortByStory(sources);

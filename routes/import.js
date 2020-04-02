@@ -11,7 +11,6 @@ const tools = [
   'getNewEventValues',
   'removeDuplicatesFromList',
   'reorderList',
-  'sortCitations',
   'sortEvents',
 ];
 

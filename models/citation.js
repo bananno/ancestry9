@@ -1,3 +1,4 @@
+const tools = require('./tools');
 const mongoose = require('mongoose');
 
 const citationSchema = new mongoose.Schema({
@@ -15,6 +16,14 @@ const citationSchema = new mongoose.Schema({
 
 citationSchema.methods.populateStory = populateStory;
 citationSchema.statics.populateStories = populateStories;
+
+citationSchema.statics.sortByItem = (citations, people) => {
+  return tools.citationSort(citations, 'item', people);
+};
+
+citationSchema.statics.sortByPerson = (citations, people) => {
+  return tools.citationSort(citations, 'person', people);
+};
 
 mongoose.model('Citation', citationSchema);
 

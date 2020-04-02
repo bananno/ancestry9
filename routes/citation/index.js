@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Source = mongoose.model('Source');
 const Citation = mongoose.model('Citation');
-const sortCitations = require('../../tools/sortCitations');
 
 module.exports = createRoutes;
 

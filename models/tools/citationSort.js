@@ -1,3 +1,4 @@
+module.exports = citationSort;
 
 const citationItemOrder = [
   'name',
@@ -31,9 +32,7 @@ const citationItemSubOrder = [
   'place',
 ];
 
-function sortCitations(citationList, sortBy, peopleList) {
-  citationList = [...citationList];
-
+function citationSort(citationList, sortBy, peopleList) {
   if (peopleList) {
     peopleList = peopleList.map(person => person._id + '');
   }
@@ -109,8 +108,6 @@ function sortCitations(citationList, sortBy, peopleList) {
     let strB = sortRef[b._id];
     return strA === strB ? 0 : strA < strB ? -1 : 1;
   });
-
-  return citationList;
 }
 
-module.exports = sortCitations;
+

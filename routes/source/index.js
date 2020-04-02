@@ -11,7 +11,6 @@ const createModelRoutes = tool('createModelRoutes');
 const getDateValues = tool('getDateValues');
 const getLocationValues = tool('getLocationValues');
 const sortPeople = tool('sortPeople');
-const sortCitations = tool('sortCitations');
 const sortSources = tool('sortSources');
 
 const mainSourceTypes = ['document', 'index', 'cemetery', 'newspaper',
@@ -151,12 +150,15 @@ function showSource(req, res) {
     const { source, citationText } = data;
     Citation.find({ source: source }).populate('person')
     .exec((err, citations) => {
+      const citationsByPerson = [...citations];
+      Citation.sortByItem(citations, source.people);
+      Citation.sortByPerson(citationsByPerson, source.people);
       res.render('source/_layout', {
         subview: 'show',
         title: source.story.title + ' - ' + source.title,
         source: source,
-        citations: sortCitations(citations, 'item', source.people),
-        citationsByPerson: sortCitations(citations, 'person', source.people),
+        citations,
+        citationsByPerson,
         citationText,
       });
     });
@@ -204,14 +206,17 @@ function editSource(req, res, next) {
       .exec((err, citations) => {
         Story.find({}, (err, stories) => {
           stories.sort((a, b) => a.title < b.title ? -1 : 1);
+          const citationsByPerson = [...citations];
+          Citation.sortByItem(citations, source.people);
+          Citation.sortByPerson(citationsByPerson, source.people);
           res.render('source/_layout', {
             subview: 'edit',
             title: 'Edit Source',
             source: source,
             people: sortPeopleListForNewCitations(source, people, citations),
             stories: stories,
-            citations: sortCitations(citations, 'item', source.people),
-            citationsByPerson: sortCitations(citations, 'person', source.people),
+            citations,
+            citationsByPerson,
             needCitationText: source.story.title.match('Census')
               && citationText.length == 0
           });
@@ -257,14 +262,18 @@ function editSourceFastCitations(req, res, next) {
 
           stories.sort((a, b) => a.title < b.title ? -1 : 1);
 
+          const citationsByPerson = [...citations];
+          Citation.sortByItem(citations, source.people);
+          Citation.sortByPerson(citationsByPerson, source.people);
+
           res.render('source/_layout', {
             subview: 'fastCitations',
             title: 'Edit Source',
             source: source,
             people: people,
             stories: stories,
-            citations: sortCitations(citations, 'item', source.people),
-            citationsByPerson: sortCitations(citations, 'person', source.people),
+            citations,
+            citationsByPerson,
           });
         });
       });
