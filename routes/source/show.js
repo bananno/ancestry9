@@ -4,7 +4,6 @@ const {
   Person,
   Source,
   Story,
-  sortPeople,
 } = require('../import');
 
 const sourceTools = require('./tools');
@@ -30,12 +29,12 @@ async function renderSummary(req, res) {
 
   await source.populateCiteText({storyFirst: true});
 
-  const citations = await Citation.find({source}).populate('person');
-  const citationsByPerson = [...citations];
-  Citation.sortByItem(citations, source.people);
+  await source.populateCitations();
+  const citationsByPerson = [...source.citations];
+  Citation.sortByItem(source.citations, source.people);
   Citation.sortByPerson(citationsByPerson, source.people);
 
-  res.renderSource('show', {citations, citationsByPerson});
+  res.renderSource('show', {citationsByPerson});
 }
 
 async function renderEdit(req, res) {
@@ -52,20 +51,17 @@ async function renderEdit(req, res) {
   const stories = await Story.find({});
   stories.sort((a, b) => a.title < b.title ? -1 : 1);
 
-  const citations = await Citation.find({source}).populate('person');
-  const citationsByPerson = [...citations];
-  Citation.sortByItem(citations, source.people);
+  await source.populateCitations();
+  const citationsByPerson = [...source.citations];
+  Citation.sortByItem(source.citations, source.people);
   Citation.sortByPerson(citationsByPerson, source.people);
 
-  const allPeople = await Person.find({});
-  const people = sourceTools.sortPeopleForNewCitations(source, allPeople,
-    citations);
+  const people = await source.getPeopleForNewCitations();
 
   res.renderSource('edit', {
     title: 'Edit Source',
     people,
     stories,
-    citations,
     citationsByPerson,
     needCitationText: source.story.title.match('Census')
       && source.citeText.length == 0
@@ -80,21 +76,23 @@ async function renderFastCitations(req, res) {
   const source = req.source;
 
   let people = await Person.find({});
-  sortPeople(people, 'name');
+
   source.people.forEach(thisPerson => {
     people = Person.removeFromList(people, thisPerson);
   });
+
+  Person.sortByName(people);
+
   people = [...source.people, ...people];
 
-  const citations = await Citation.find({source}).populate('person');
-  const citationsByPerson = [...citations];
-  Citation.sortByItem(citations, source.people);
+  await source.populateCitations();
+  const citationsByPerson = [...source.citations];
+  Citation.sortByItem(source.citations, source.people);
   Citation.sortByPerson(citationsByPerson, source.people);
 
   res.renderSource('fastCitations', {
     title: 'Edit Source',
     people,
-    citations,
     citationsByPerson,
   });
 }

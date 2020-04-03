@@ -4,20 +4,9 @@
   const linksList = source.links;
 
   if (source.sharing) {
-    linksList.push('https://ancestry.annacpeterson.com/?source/' + source._id + ' CustomSite');
+    linksList.push('https://ancestry.annacpeterson.com/?source/'
+      + source._id + ' CustomSite');
   }
-
-  // Show the date & location if the story type allows it,
-  // OR if it already has one.
-
-  const canHaveDate = !['grave'].includes(source.story.type)
-    || (source.date && (source.date.year || source.date.month
-      || source.date.day || source.date.display));
-
-  const canHaveLocation = !['grave', 'newspaper'].includes(source.story.type)
-    || (source.location && (source.location.country || source.location.region1
-      || source.location.region2 || source.location.city
-      || source.location.notes));
 
   const missingCitation = source.story.title.match('Census USA')
     && source.citeText.length < 2;
@@ -41,23 +30,23 @@
   %>
   <h2>summary</h2>
   <% summaryItems.forEach(str => { %>
-    <p style="max-width: 600px;">
+    <p class="max600">
       <%= str %>
     </p>
   <% }); %>
 <% } %>
 
-<% if (canHaveDate) { %>
+<% if (source.canHaveDate()) { %>
   <h2>date</h2>
   <p>
-    <%- include('../format/date', { date: source.date }) %>
+    <%- include('../format/date', {date: source.date}) %>
   </p>
 <% } %>
 
-<% if (canHaveLocation) { %>
+<% if (source.canHaveLocation()) { %>
   <h2>location</h2>
   <p>
-    <%- include('../format/location', { location: source.location }) %>
+    <%- include('../format/location', {location: source.location}) %>
   </p>
 <% } %>
 
@@ -82,9 +71,9 @@
 <% if (linksList.length) { %>
   <h2>links</h2>
   <ul class="bullet-list">
-    <% linksList.forEach(linkUrl => { %>
+    <% linksList.forEach(url => { %>
       <li>
-        <%- include('../format/externalLink', { url: linkUrl }) %>
+        <%- include('../format/externalLink', {url}) %>
       </li>
     <% }); %>
   </ul>
@@ -105,9 +94,9 @@
   %>
   <h2>notes</h2>
 
-  <ul class="bullet-list">
+  <ul class="bullet-list max600">
     <% notesList.forEach(note => { %>
-      <li style="max-width: 600px;">
+      <li>
         <%= note %>
       </li>
     <% }); %>
@@ -125,7 +114,7 @@
   <h2>citation text</h2>
   <ul class="bullet-list">
     <% if (missingCitation) { %>
-      <li><span style="color: red;">missing</span></li>
+      <li class="error">missing</li>
     <% } %>
     <% source.citeText.forEach(text => { %>
       <li><%= text %></li>
@@ -136,10 +125,10 @@
 <h2>citations</h2>
 
 <%- include('../citation/_list', {
-  citations: citations,
+  citations: source.citations,
   showDelete: false,
   showSource: false,
   showPerson: true,
-  rootPath: rootPath,
+  rootPath,
   groupBy: 'person',
 }) %>

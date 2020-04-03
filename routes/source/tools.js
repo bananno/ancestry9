@@ -1,7 +1,5 @@
 const {
-  Person,
   Source,
-  sortPeople,
 } = require('../import');
 
 const mainSourceTypes = [
@@ -15,7 +13,6 @@ module.exports = {
   convertParamSourceId2,
   createRenderSource,
   getSourcesByType,
-  sortPeopleForNewCitations,
 };
 
 function createRenderSource(req, res, next) {
@@ -65,24 +62,4 @@ async function getSourcesByType(type) {
   }
 
   return sources.filter(source => source.story.type.toLowerCase() == type);
-}
-
-function sortPeopleForNewCitations(source, people, citations) {
-  source.people.forEach(thisPerson => {
-    people = Person.removeFromList(people, thisPerson);
-  });
-
-  sortPeople(people, 'name');
-
-  const citationsPeople = [];
-  const tempPeople = source.people.map(person => '' + person._id);
-  citations.forEach(citation => {
-    if (!tempPeople.includes('' + citation.person._id)) {
-      tempPeople.push('' + citation.person._id);
-      citationsPeople.push(citation.person);
-      people = Person.removeFromList(people, citation.person);
-    }
-  });
-
-  return [...source.people, ...citationsPeople, ...people];
 }

@@ -1,27 +1,19 @@
 <%
   const rootPath = '/source/' + source._id;
   const rootEditPath = '/source/' + source._id + '/edit';
-
-  let canDeleteSource = source.people.length == 0
-    && (source.links || []).length == 0
-    && (source.images || []).length == 0
-    && (source.tags || []).length == 0
-    && (source.citations || []).length == 0
-    && (source.notes || '').length == 0
-    && (source.summary || '').length == 0
-    && (source.content || '').length == 0;
-
-  const canHaveDate = !['cemetery'].includes(source.story.type)
-    || (source.date && (source.date.year || source.date.month
-      || source.date.day || source.date.display));
-
-  const canHaveLocation = !['cemetery', 'newspaper'].includes(source.story.type)
-    || (source.location && (source.location.country || source.location.region1
-      || source.location.region2 || source.location.city
-      || source.location.notes));
 %>
 
-<% if (canDeleteSource) { %>
+<style>
+  #new-citation-notation-form {
+    display: none;
+  }
+  #new-citation-notation-form textarea {
+    height: 100px;
+    width: 300px;
+  }
+</style>
+
+<% if (source.canBeDeleted()) { %>
   <form action="/source/<%= source._id %>/delete" method="POST"
       onsubmit="return confirmDeletion('source')" style="margin: 20px;">
     <button>delete source</button>
@@ -37,7 +29,7 @@
     editPath: rootEditPath + '/sharing',
     originalValue: source.sharing,
     toggle: true,
-    preventSharing: source.story && !source.story.sharing,
+    preventSharing: !source.canBeShared(),
   }) %>
 
   <!-- STORY -->
@@ -58,7 +50,7 @@
 
   <!-- DATE -->
 
-  <% if (canHaveDate) { %>
+  <% if (source.canHaveDate()) { %>
     <%- include('../forms/tableRowSingle', {
       attr: 'date',
       editPath: rootEditPath + '/date',
@@ -68,7 +60,7 @@
 
   <!-- LOCATION -->
 
-  <% if (canHaveLocation) { %>
+  <% if (source.canHaveLocation()) { %>
     <%- include('../forms/tableRowSingle', {
       attr: 'location',
       editPath: rootEditPath + '/location',
@@ -80,7 +72,7 @@
 
   <%- include('../forms/tableRowMulti', {
     attr: 'people',
-    rootPath: rootPath,
+    rootPath,
     values: source.people,
   }) %>
 
@@ -88,7 +80,7 @@
 
   <%- include('../forms/tableRowMulti', {
     attr: 'links',
-    rootPath: rootPath,
+    rootPath,
     values: source.links,
   }) %>
 
@@ -96,7 +88,7 @@
 
   <%- include('../forms/tableRowMulti', {
     attr: 'images',
-    rootPath: rootPath,
+    rootPath,
     values: source.images,
   }) %>
 
@@ -104,7 +96,7 @@
 
   <%- include('../forms/tableRowMulti', {
     attr: 'tags',
-    rootPath: rootPath,
+    rootPath,
     values: source.tags,
   }) %>
 
@@ -130,7 +122,7 @@
 
   <%- include('../forms/tableRowMulti', {
     attr: 'stories',
-    rootPath: rootPath,
+    rootPath,
     values: source.stories,
   }) %>
 </table>
@@ -176,30 +168,20 @@
 
 <h2>Citations</h2>
 
-<%- include('./citationForm', {
-  rootPath: rootPath,
-  rootEditPath: rootEditPath,
+<%- include('../citation/_form', {
+  source,
+  rootPath,
   fastCitations: true,
 }) %>
 
 <%- include('../citation/_list', {
-  citations: citations,
+  citations: source.citations,
   showDelete: true,
   showSource: false,
   showPerson: true,
-  rootPath: rootPath,
+  rootPath,
   groupBy: 'person',
 }) %>
-
-<style>
-  #new-citation-notation-form {
-    display: none;
-  }
-  #new-citation-notation-form textarea {
-    height: 100px;
-    width: 300px;
-  }
-</style>
 
 <script>
   initializeEditForm();

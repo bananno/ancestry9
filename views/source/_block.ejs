@@ -1,6 +1,5 @@
-
-<div class="source-item-box">
-  <div class="column" style="width: 450px;">
+<div class="source-block">
+  <div class="column column1">
     <% if (showStory) { %>
       <p>
         <%- include('../story/_link', {story: source.story}) %>
@@ -23,16 +22,11 @@
     <% } %>
 
     <p>
-      <%- include('../format/date', { params: {
-        date: source.date,
-        format: 'long',
-      }}) %>
+      <%- include('../format/date', {date: source.date, format: 'long'}) %>
     </p>
 
     <p>
-      <%- include('../format/location', { params: {
-        location: source.location,
-      }}) %>
+      <%- include('../format/location', {location: source.location}) %>
     </p>
 
     <p>
@@ -55,7 +49,7 @@
       <ul class="bullet-list">
         <% source.links.forEach(url => { %>
           <li>
-            <%- include('../format/externalLink', { url: url }) %>
+            <%- include('../format/externalLink', {url}) %>
           </li>
         <% }); %>
       </ul>
@@ -69,7 +63,7 @@
 
       <ul class="bullet-list">
         <% summaryList.forEach(str => { %>
-          <li style="max-width: 600px;">
+          <li>
             <%= str %>
           </li>
         <% }); %>
@@ -84,7 +78,7 @@
 
       <ul class="bullet-list">
         <% notesList.forEach(str => { %>
-          <li style="max-width: 600px;">
+          <li>
             <%= str %>
           </li>
         <% }); %>
@@ -97,7 +91,7 @@
     <% } %>
   </div>
 
-  <div class="column" style="max-width: 600px;" filter="source-details" filter-set="content">
+  <div class="column column2" filter="source-details" filter-set="content">
     <h3>content</h3>
 
     <%- include('../format/content', {

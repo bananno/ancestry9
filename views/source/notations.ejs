@@ -10,6 +10,21 @@
   });
 %>
 
+<style>
+  hr {
+    margin: 20px 0;
+  }
+  .notation p {
+    margin-top: 10px;
+  }
+  .notation li {
+    margin-top: 5px;
+  }
+  #new-notation-form {
+    display: none;
+  }
+</style>
+
 <p>
   <span class="clickable-link main-link" id="add-notation">+ add notation</span>
 </p>
@@ -101,21 +116,6 @@
     </div>
   <% }); %>
 <% } %>
-
-<style>
-  hr {
-    margin: 20px 0;
-  }
-  .notation p {
-    margin-top: 10px;
-  }
-  .notation li {
-    margin-top: 5px;
-  }
-  #new-notation-form {
-    display: none;
-  }
-</style>
 
 <script>
   $('#add-notation').click(() => {

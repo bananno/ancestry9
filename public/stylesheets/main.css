@@ -58,8 +58,17 @@ ul.no-bullet-list {
   margin-left: 0;
 }
 
+.error {
+  color: red;
+}
+
 .center {
   text-align: center;
+}
+
+.max600,
+ul.max600 li {
+  max-width: 600px;
 }
 
 /* EVENT LIST TABLE */
@@ -182,22 +191,36 @@ tr.citation-row-edit {
   display: none;
 }
 
-/*******/
+/* SOURCE BLOCK */
 
-.text-content {
-  max-width: 700px;
-  margin: 10px 0px;
-}
-
-.source-item-box {
+.source-block {
   border: 1px solid black;
   border-radius: 5px;
   margin: 10px;
   padding: 10px;
 }
 
-.source-item-box p {
+.source-block .column1 {
+  width: 450px;
+}
+
+.source-block .column2 {
+  max-width: 600px;
+}
+
+.source-block p {
   padding: 5px;
+}
+
+.source-block .bullet-list li {
+  max-width: 600px;
+}
+
+/*******/
+
+.text-content {
+  max-width: 700px;
+  margin: 10px 0px;
 }
 
 .content-table th, .content-table td {

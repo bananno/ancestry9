@@ -59,6 +59,14 @@
   });
 %>
 
+<style>
+  #mention-list td,
+  #mention-list th {
+    border: 1px solid black;
+    padding: 5px;
+  }
+</style>
+
 <h2>content</h2>
 
 <%- include('../format/content', {content, mentions}) %>
@@ -90,11 +98,3 @@
     </tr>
   <% }); %>
 </table>
-
-<style>
-  #mention-list td,
-  #mention-list th {
-    border: 1px solid black;
-    padding: 5px;
-  }
-</style>
