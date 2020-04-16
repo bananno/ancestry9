@@ -1,62 +1,53 @@
-const mongoose = require('mongoose');
-const Source = mongoose.model('Source');
-const Citation = mongoose.model('Citation');
+const {
+  Citation,
+  Source,
+} = require('../import');
 
 module.exports = createRoutes;
 
 function createRoutes(router) {
+  router.param('citationId', convertParamCitationId);
   router.post('/source/:sourceId/add/citations', createCitation);
   router.post('/source/:sourceId/edit/citations/:citationId', updateCitation);
   router.post('/source/:sourceId/delete/citations/:citationId', deleteCitation);
 }
 
-function createCitation(req, res, next) {
-  const sourceId = req.params.sourceId;
-  const newItem = getCitationValues(req, sourceId);
-  const fastCitations = !!req.body.fastCitations;
+async function createCitation(req, res) {
+  const newCitation = getCitationValues(req);
 
-  let redirectTo = '/source/' + sourceId;
-  if (fastCitations) {
-    redirectTo += '/fastCitations';
+  const citation = await Citation.create(newCitation);
+
+  if (req.body.fastCitations) {
+    res.redirect('/source/' + req.sourceId + '/fastCitations');
   } else {
-    redirectTo += '/edit';
-  }
-
-  if (newItem) {
-    Citation.create(newItem, () => {
-      res.redirect(redirectTo);
-    });
+    res.redirect('/source/' + req.sourceId + '/edit');
   }
 }
 
-function updateCitation(req, res, next) {
-  const sourceId = req.params.sourceId;
-  const citationId = req.params.citationId;
-  const updatedItem = getCitationValues(req, sourceId);
-
-  if (updatedItem) {
-    Citation.findById(citationId, (err, citation) => {
-      citation.update(updatedItem, () => {
-        res.redirect('/source/' + sourceId + '/edit');
-      });
-    });
+async function updateCitation(req, res) {
+  const updatedItem = getCitationValues(req);
+  if (!updatedItem) {
+    // Data is invalid; page spins. Has actually proven to be convenient.
+    return;
   }
+  await req.citation.update(updatedItem);
+  res.redirect('/source/' + req.sourceId + '/edit');
 }
 
-function deleteCitation(req, res, next) {
-  const sourceId = req.params.sourceId;
-  const citationId = req.params.citationId;
-
-  Citation.findById(citationId, (err, citation) => {
-    citation.delete(() => {
-      res.redirect('/source/' + sourceId + '/edit');
-    });
-  });
+async function deleteCitation(req, res) {
+  await req.citation.delete();
+  res.redirect('/source/' + req.sourceId + '/edit');
 }
 
-function getCitationValues(req, sourceId) {
+async function convertParamCitationId(req, res, next, citationId) {
+  req.citationId = citationId;
+  req.citation = await Citation.findById(citationId);
+  next();
+}
+
+function getCitationValues(req) {
   const citationValues = {
-    source: sourceId,
+    source: req.sourceId,
     person: req.body.person,
     item: req.body.item.trim(),
     information: req.body.information.trim(),
@@ -64,7 +55,7 @@ function getCitationValues(req, sourceId) {
 
   if (citationValues.item == '' || citationValues.information == ''
       || citationValues.person == '0') {
-    return;
+    return false;
   }
 
   return citationValues;

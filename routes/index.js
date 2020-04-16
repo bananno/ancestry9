@@ -17,12 +17,12 @@ router.use((req, res, next) => {
 
 // HOME
 
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
   res.render('index', {title: null});
 });
 
-router.get('/shared', (req, res, next) => {
-  res.render('../shared/index.html');
+router.get('/shared', (req, res) => { // BROKEN due to relative filepaths
+  res.renderOriginal('../shared/index.html');
 });
 
 [
