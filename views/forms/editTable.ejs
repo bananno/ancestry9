@@ -1,7 +1,8 @@
 <table class="edit-form-frame">
   <% fields.forEach(field => { %>
     <%
-      if (field.onlyIf && !field.onlyIf(item)) {
+      if ((field.onlyIf && !field.onlyIf(item))
+          || field.inputType === 'none') {
         return;
       }
 
@@ -9,7 +10,7 @@
         attr: field.name,
         editPath: rootPath + '/edit/' + field.name,
         toggle: field.toggle,
-        fieldType: field.fieldType,
+        fieldType: field.inputType || field.fieldType, // phase out fieldType
       };
 
       let filename;
@@ -47,5 +48,7 @@
 <% } %>
 
 <script>
-  initializeEditForm();
+  $(document).ready(() => {
+    initializeEditForm();
+  });
 </script>

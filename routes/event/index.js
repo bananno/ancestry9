@@ -3,18 +3,12 @@ const {
   Person,
   createModelRoutes,
   getNewEventValues,
+  modelFields,
 } = require('../import');
 
 module.exports = createEventRoutes;
 
-const eventFields = [
-  {name: 'title'},
-  {name: 'date'},
-  {name: 'location'},
-  {name: 'people', multi: true},
-  {name: 'notes'},
-  {name: 'tags', multi: true},
-];
+const eventFields = modelFields.event;
 
 function createEventRoutes(router) {
   router.use(createRenderEvent);

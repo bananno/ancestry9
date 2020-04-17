@@ -1,23 +1,26 @@
-const mongoose = require('mongoose');
-const Story = mongoose.model('Story');
-const Source = mongoose.model('Source');
-const Person = mongoose.model('Person');
-const Notation = mongoose.model('Notation');
-const tool = path => require('../../tools/' + path);
-const createModelRoutes = tool('createModelRoutes');
-const getDateValues = tool('getDateValues');
-const getLocationValues = tool('getLocationValues');
+const {
+  Person,
+  Notation,
+  Story,
+  Source,
+  createModelRoutes,
+  getDateValues,
+  getLocationValues,
+} = require('../import');
 
-const mainStoryTypes = [
-  'book', 'cemetery', 'document', 'index',
-  'newspaper', 'website', 'place', 'topic'
-];
+const storyTools = require('./tools');
 
-const noEntryStoryTypes = ['artifact', 'event', 'landmark', 'place'];
+const {
+  mainStoryTypes,
+  storyFields,
+  createRenderStory,
+} = storyTools;
 
 module.exports = createRoutes;
 
 function createRoutes(router) {
+  router.use(createRenderStory);
+
   createModelRoutes({
     Model: Story,
     modelName: 'story',
@@ -32,10 +35,7 @@ function createRoutes(router) {
       'newEntry': storyNewEntry,
       'notations': storyNotations,
     },
-    toggleAttributes: ['sharing'],
-    singleAttributes: ['type', 'group', 'title', 'date', 'location',
-      'notes', 'summary', 'content'],
-    listAttributes: ['people', 'links', 'images', 'tags'],
+    fields: storyFields,
   });
 
   router.post('/story/:id/createNotation', createStoryNotation);
@@ -193,7 +193,7 @@ function mainStoryView(res, story, params) {
     story,
     rootPath: '/story/' + story._id,
     canHaveDate: story.type != 'cemetery',
-    canHaveEntries: !noEntryStoryTypes.includes(story.type),
+    canHaveEntries: !['artifact', 'event', 'landmark', 'place'].includes(story.type),
     ...params
   });
 }
@@ -211,27 +211,20 @@ function storyShowMain(req, res) {
   });
 }
 
-function storyEdit(req, res) {
-  withStory(req, res, {}, ({story}) => {
-    Person.find({}, (err, people) => {
-      mainStoryView(res, story, {
-        subview: 'edit',
-        people: people,
-      });
-    });
-  });
+async function storyEdit(req, res) {
+  req.story = await Story.findById(req.params.id)
+    .populate('people').populate('images');
+
+  const people = await Person.find({});
+
+  res.renderStory('edit', {storyFields, people});
 }
 
-function storyEntries(req, res, next) {
-  withStory(req, res, {
-    entries: true,
-    entryImages: true
-  }, ({story, entries}) => {
-    mainStoryView(res, story, {
-      subview: 'entries',
-      entries: entries,
-    });
-  });
+async function storyEntries(req, res) {
+  req.story = await Story.findById(req.params.id);
+  const entries = await Source.find({story: req.story}).populate('images');
+  entries.sort((a, b) => a.title < b.title ? -1 : 1);
+  res.renderStory('entries', {entries});
 }
 
 function storyNewEntry(req, res, next) {
