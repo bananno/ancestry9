@@ -14,8 +14,6 @@ const {
 module.exports = createEventRoutes;
 
 function createEventRoutes(router) {
-  router.get('/events', makeEventsIndexRoute(false));
-  router.get('/events/new', makeEventsIndexRoute(true));
   router.post('/events/new', createNewEvent);
 
   router.get('/event/:eventId', makeRouteEditGet('none'));
@@ -37,7 +35,8 @@ function createEventRoutes(router) {
   createModelRoutes({
     Model: Event,
     modelName: 'event',
-    router: router,
+    router,
+    index: eventIndex,
     editView: false,
     singleAttributes: ['title', 'notes'],
   });
@@ -53,24 +52,10 @@ function withEvent(req, callback) {
   });
 }
 
-function makeEventsIndexRoute(showNew) {
-  return function(req, res, next) {
-    Event
-    .find({})
-    .populate('people')
-    .exec(function (err, events) {
-      events = sortEvents(events);
-      if (err) {
-        return console.error(err);
-      } else {
-        res.render('event/index', {
-          title: 'All Events',
-          events,
-          showNew,
-        });
-      }
-    });
-  };
+async function eventIndex(req, res) {
+  let events = await Event.find({}).populate('people');
+  events = sortEvents(events);
+  res.render('event/index', {title: 'All Events', events});
 }
 
 function createNewEvent(req, res) {
@@ -99,7 +84,7 @@ function makeRouteEditGet(fieldName) {
       Person.find({}, (err, people) => {
         people.sort((a, b) => a.name < b.name ? -1 : 1);
         res.render('layout', {
-          view: 'events/show',
+          view: 'event/show',
           title: 'Edit Event',
           eventId: eventId,
           event: event,

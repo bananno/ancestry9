@@ -1,14 +1,24 @@
-<h1>All Events</h1>
+<style>
+  #new-event-form {
+    display: none;
+  }
+</style>
 
-<% if (showNew) { %>
-    <%- include('../forms/newEvent', { params: {
-        actionPath: '/events/new',
-        cancelPath: '/events',
-    }}) %>
-<% } else { %>
-    <p>
-        <a href="/events/new">+ Create Event</a>
-    </p>
-<% } %>
+<h1>Events</h1>
+
+<p id="new-event-link">
+  <span class="clickable-link main-link">+ New Event</span>
+</p>
+
+<div id="new-event-form">
+  <%- include('./_new', {actionPath: '/events/new'}) %>
+</div>
 
 <%- include('./_list', {events, showTags: true}) %>
+
+<script>
+  $('#new-event-link span').click(() => {
+    $('#new-event-link').hide();
+    $('#new-event-form').show();
+  });
+</script>
