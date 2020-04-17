@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Notation = mongoose.model('Notation');
 const Person = mongoose.model('Person');
 const Story = mongoose.model('Story');
-const tool = filename => require('../tools/' + filename);
+const tool = filename => require('../../tools/' + filename);
 const createModelRoutes = tool('createModelRoutes');
 const sortPeople = tool('sortPeople');
 

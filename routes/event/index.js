@@ -9,7 +9,7 @@ const {
   getNewEventValues,
   reorderList,
   sortEvents,
-} = require('./import');
+} = require('../import');
 
 module.exports = createEventRoutes;
 
