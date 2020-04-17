@@ -1,0 +1,18 @@
+<%
+  const rootPath = '/event/' + event._id;
+%>
+
+<h2>event:</h2>
+<h1><%= event.title %></h1>
+
+<% if (subview == 'edit') { %>
+  <p>
+    <a href="<%= rootPath %>" class="main-link">done</a>
+  </p>
+<% } else { %>
+  <p>
+    <a href="<%= rootPath %>/edit" class="main-link">edit</a>
+  </p>
+<% } %>
+
+<%- include('./' + subview, {rootPath}) %>

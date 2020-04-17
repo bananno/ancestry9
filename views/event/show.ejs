@@ -1,0 +1,29 @@
+<h2>date</h2>
+<p>
+  <%- include('../format/date', {date: event.date}) %>
+</p>
+
+<h2>location</h2>
+<p>
+  <%- include('../format/location', {location: event.location}) %>
+</p>
+
+<h2>people</h2>
+<%- include('../person/_list', {people: event.people, format: 'bullet'}) %>
+
+<% if (event.notes) { %>
+  <%
+    const notesList = event.notes.split('\n');
+  %>
+  <h2>notes</h2>
+  <ul class="bullet-list max600">
+    <% notesList.forEach(note => { %>
+      <li>
+        <%= note %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<h2>tags</h2>
+<%- include('../tag/_list', {tags: event.tags}) %>

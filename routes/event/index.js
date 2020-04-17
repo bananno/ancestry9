@@ -1,163 +1,86 @@
 const {
   Event,
-  Notation,
   Person,
-  Source,
   createModelRoutes,
-  getDateValues,
-  getLocationValues,
   getNewEventValues,
-  reorderList,
-  sortEvents,
 } = require('../import');
 
 module.exports = createEventRoutes;
 
 function createEventRoutes(router) {
-  router.post('/events/new', createNewEvent);
-
-  router.get('/event/:eventId', makeRouteEditGet('none'));
-  router.post('/event/:eventId/delete', deleteEvent);
-
-  router.get('/event/:eventId/edit/date', makeRouteEditGet('date'));
-  router.post('/event/:eventId/edit/date', makeRouteEditPost('date'));
-  router.get('/event/:eventId/edit/location', makeRouteEditGet('location'));
-  router.post('/event/:eventId/edit/location', makeRouteEditPost('location'));
-
-  router.post('/event/:eventId/add/people', makeRouteEditPost('people', true));
-  router.post('/event/:eventId/delete/people/:deleteId', makeRouteDelete('people'));
-  router.post('/event/:eventId/reorder/people/:orderId', makeRouteReorder('people'));
-
-  router.post('/event/:eventId/add/tags', makeRouteEditPost('tags', true));
-  router.post('/event/:eventId/delete/tags/:deleteId', makeRouteDelete('tags'));
-  router.post('/event/:eventId/reorder/tags/:orderId', makeRouteReorder('tags'));
+  router.use(createRenderEvent);
 
   createModelRoutes({
     Model: Event,
     modelName: 'event',
     router,
     index: eventIndex,
-    editView: false,
-    singleAttributes: ['title', 'notes'],
+    create: createEvent,
+    delete: deleteEvent,
+    show: showEvent,
+    edit: editEvent,
+    singleAttributes: ['title', 'date', 'location', 'notes'],
+    listAttributes: ['people', 'tags'],
   });
 }
 
-function withEvent(req, callback) {
-  const eventId = req.params.eventId;
-  Event
-  .findById(eventId)
-  .populate('people')
-  .exec((err, event) => {
-    callback(event, eventId);
-  });
+function createRenderEvent(req, res, next) {
+  res.renderEvent = (subview, options = {}) => {
+    res.render('event/_layout', {
+      subview,
+      title: options.title || 'Event',
+      event: req.event,
+      ...options
+    });
+  };
+  next();
 }
 
 async function eventIndex(req, res) {
-  let events = await Event.find({}).populate('people');
-  events = sortEvents(events);
+  const events = await Event.find({}).populate('people');
+  Event.sortByDate(events);
   res.render('event/index', {title: 'All Events', events});
 }
 
-function createNewEvent(req, res) {
+function createEvent(req, res) {
   const newEvent = getNewEventValues(req);
 
   if (newEvent == null) {
     return;
   }
 
-  Event.create(newEvent, function(err, event) {
+  Event.create(newEvent, (err, event) => {
     if (err) {
       res.send('There was a problem adding the information to the database.');
     } else {
-      res.format({
-        html: function() {
-          res.redirect('/event/' + event._id);
-        }
-      });
+      res.redirect('/event/' + event._id);
     }
   });
 }
 
-function makeRouteEditGet(fieldName) {
-  return (req, res, next) => {
-    withEvent(req, (event, eventId) => {
-      Person.find({}, (err, people) => {
-        people.sort((a, b) => a.name < b.name ? -1 : 1);
-        res.render('layout', {
-          view: 'event/show',
-          title: 'Edit Event',
-          eventId: eventId,
-          event: event,
-          editField: fieldName,
-          people: people,
-        });
-      });
-    });
-  };
+async function deleteEvent(req, res) {
+  const event = await Event.findById(req.params.id);
+  if (!event) {
+    return res.send('event not found');
+  }
+  await event.remove();
+  res.redirect('/events');
 }
 
-function makeRouteEditPost(fieldName, multipleValues) {
-  return (req, res, next) => {
-    withEvent(req, (event, eventId) => {
-      const updatedObj = {};
-
-      if (fieldName == 'date') {
-        updatedObj[fieldName] = getDateValues(req);
-      } else if (fieldName == 'location') {
-        updatedObj[fieldName] = getLocationValues(req);
-      } else if (multipleValues) {
-        const newValue = req.body[fieldName];
-        updatedObj[fieldName] = event[fieldName];
-        updatedObj[fieldName].push(newValue);
-      } else {
-        updatedObj[fieldName] = req.body[fieldName];
-      }
-
-      event.update(updatedObj, err => {
-        res.redirect('/event/' + eventId);
-      });
-    });
-  };
+async function showEvent(req, res) {
+  req.event = await Event.findById(req.params.id).populate('people');
+  if (!req.event) {
+    return res.send('event not found');
+  }
+  res.renderEvent('show');
 }
 
-function makeRouteDelete(fieldName) {
-  return (req, res, next) => {
-    withEvent(req, (event, eventId) => {
-      const updatedObj = {};
-      const deleteId = req.params.deleteId;
-
-      if (fieldName == 'people') {
-        updatedObj[fieldName] = Person.removeFromList(event.people, deleteId);
-      } else {
-        updatedObj[fieldName] = event[fieldName].filter((value, index) => index != deleteId);
-      }
-
-      event.update(updatedObj, err => {
-        res.redirect('/event/' + eventId);
-      });
-    });
-  };
-}
-
-function makeRouteReorder(fieldName) {
-  return (req, res, next) => {
-    withEvent(req, (event, eventId) => {
-      const updatedObj = {};
-      const orderId = req.params.orderId;
-
-      updatedObj[fieldName] = reorderList(event[fieldName], orderId, fieldName);
-
-      event.update(updatedObj, err => {
-        res.redirect('/event/' + eventId);
-      });
-    });
-  };
-}
-
-function deleteEvent(req, res) {
-  withEvent(req, (event, eventId) => {
-    event.remove(err => {
-      res.redirect('/events');
-    });
-  });
+async function editEvent(req, res) {
+  req.event = await Event.findById(req.params.id).populate('people');
+  if (!req.event) {
+    return res.send('event not found');
+  }
+  const people = await Person.find({});
+  Person.sortByName(people);
+  res.renderEvent('edit', {title: 'Edit Event', people});
 }
