@@ -1,68 +1,7 @@
-<table class="edit-form-frame">
-
-  <!-- TITLE -->
-
-  <%- include('../forms/tableRowSingle', {
-    attr: 'title',
-    editPath: rootPath + '/edit/title',
-    originalValue: event.title,
-  }) %>
-
-  <!-- DATE -->
-
-  <%- include('../forms/tableRowSingle', {
-    attr: 'date',
-    rootEditPath: rootPath,
-    editPath: rootPath + '/edit/date',
-    originalValue: event.date,
-  }) %>
-
-  <!-- LOCATION -->
-
-  <%- include('../forms/tableRowSingle', {
-    attr: 'location',
-    rootEditPath: rootPath,
-    editPath: rootPath + '/edit/location',
-    originalValue: event.location,
-  }) %>
-
-  <!-- PEOPLE -->
-
-  <%- include('../forms/tableRowMulti', {
-    attr: 'people',
-    rootPath: rootPath,
-    values: event.people,
-  }) %>
-
-  <!-- NOTES -->
-
-  <%- include('../forms/tableRowSingle', {
-    attr: 'notes',
-    editPath: rootPath + '/edit/notes',
-    originalValue: event.notes,
-  }) %>
-
-  <!-- TAGS -->
-
-  <%- include('../forms/tableRowMulti', {
-    attr: 'tags',
-    rootPath: rootPath,
-    values: event.tags,
-  }) %>
-</table>
-
-<!-- DELETE EVENT -->
-
-<form
-  action="<%= rootPath %>/delete"
-  method="post"
-  onsubmit="return confirmDeletion('event')"
->
-  <p style="padding-top: 20px;">
-    <button type="submit" class="button-delete">delete event</button>
-  </p>
-</form>
-
-<script>
-  initializeEditForm(false);
-</script>
+<%- include('../forms/editTable', {
+  item: event,
+  itemName: 'event',
+  rootPath,
+  fields: eventFields,
+  canDelete: true,
+}) %>

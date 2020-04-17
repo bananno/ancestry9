@@ -8,7 +8,7 @@ const {
 const sourceTools = require('./tools');
 const sourceProfile = require('./show');
 const sourceUpdate = require('./update');
-const {mainSourceTypes} = sourceTools;
+const {mainSourceTypes, sourceFields} = sourceTools;
 
 module.exports = createRoutes;
 
@@ -30,10 +30,7 @@ function createRoutes(router) {
     otherRoutes: {
       ...sourceProfile.other
     },
-    toggleAttributes: ['sharing'],
-    singleAttributes: ['title', 'content', 'notes', 'summary',
-      'date', 'location', 'story'],
-    listAttributes: ['people', 'links', 'images', 'tags', 'stories'],
+    fields: sourceFields,
   });
 
   mainSourceTypes.forEach(sourceType => {

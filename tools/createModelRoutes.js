@@ -51,6 +51,20 @@ class ModelRoutes {
       }
     }
 
+    if (specs.fields) {
+      specs.fields.forEach(field => {
+        if (field.multi) {
+          this.addListAttribute(field.name);
+          this.deleteListAttribute(field.name);
+          this.reorderListAttribute(field.name);
+        } else if (field.toggle) {
+          this.toggleAttribute(field.name);
+        } else {
+          this.updateAttribute(field.name);
+        }
+      });
+    }
+
     if (specs.toggleAttributes) {
       specs.toggleAttributes.forEach(fieldName => {
         this.toggleAttribute(fieldName);

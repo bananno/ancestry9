@@ -1,7 +1,3 @@
-<%
-  const rootPath = '/event/' + event._id;
-%>
-
 <h2>event:</h2>
 <h1><%= event.title %></h1>
 
@@ -15,4 +11,4 @@
   </p>
 <% } %>
 
-<%- include('./' + subview, {rootPath}) %>
+<%- include('./' + subview) %>

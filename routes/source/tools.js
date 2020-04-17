@@ -7,8 +7,24 @@ const mainSourceTypes = [
   'photo', 'website', 'book', 'other'
 ];
 
+const sourceFields = [
+  {name: 'sharing', toggle: true, preventSharing: source => !source.canBeShared()},
+  {name: 'story'},
+  {name: 'title'},
+  {name: 'date', onlyIf: source => source.canHaveDate()},
+  {name: 'location', onlyIf: source => source.canHaveLocation()},
+  {name: 'people', multi: true},
+  {name: 'links', multi: true},
+  {name: 'images', multi: true},
+  {name: 'tags', multi: true},
+  {name: 'notes', fieldType: 'textarea'},
+  {name: 'summary', fieldType: 'textarea'},
+  {name: 'stories', multi: true},
+];
+
 module.exports = {
   mainSourceTypes,
+  sourceFields,
   convertParamSourceId1,
   convertParamSourceId2,
   createRenderSource,

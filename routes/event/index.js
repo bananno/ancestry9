@@ -7,6 +7,15 @@ const {
 
 module.exports = createEventRoutes;
 
+const eventFields = [
+  {name: 'title'},
+  {name: 'date'},
+  {name: 'location'},
+  {name: 'people', multi: true},
+  {name: 'notes'},
+  {name: 'tags', multi: true},
+];
+
 function createEventRoutes(router) {
   router.use(createRenderEvent);
 
@@ -19,8 +28,7 @@ function createEventRoutes(router) {
     delete: deleteEvent,
     show: showEvent,
     edit: editEvent,
-    singleAttributes: ['title', 'date', 'location', 'notes'],
-    listAttributes: ['people', 'tags'],
+    fields: eventFields,
   });
 }
 
@@ -28,6 +36,7 @@ function createRenderEvent(req, res, next) {
   res.renderEvent = (subview, options = {}) => {
     res.render('event/_layout', {
       subview,
+      rootPath: '/event/' + req.event._id,
       title: options.title || 'Event',
       event: req.event,
       ...options
@@ -82,5 +91,5 @@ async function editEvent(req, res) {
   }
   const people = await Person.find({});
   Person.sortByName(people);
-  res.renderEvent('edit', {title: 'Edit Event', people});
+  res.renderEvent('edit', {title: 'Edit Event', eventFields, people});
 }

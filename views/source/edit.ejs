@@ -1,8 +1,3 @@
-<%
-  const rootPath = '/source/' + source._id;
-  const rootEditPath = '/source/' + source._id + '/edit';
-%>
-
 <style>
   #new-citation-notation-form {
     display: none;
@@ -13,119 +8,13 @@
   }
 </style>
 
-<% if (source.canBeDeleted()) { %>
-  <form action="/source/<%= source._id %>/delete" method="POST"
-      onsubmit="return confirmDeletion('source')" style="margin: 20px;">
-    <button>delete source</button>
-  </form>
-<% } %>
-
-<table class="edit-form-frame">
-
-  <!-- SHARING -->
-
-  <%- include('../forms/tableRowSingle', {
-    attr: 'sharing',
-    editPath: rootEditPath + '/sharing',
-    originalValue: source.sharing,
-    toggle: true,
-    preventSharing: !source.canBeShared(),
-  }) %>
-
-  <!-- STORY -->
-
-  <%- include('../forms/tableRowSingle', {
-    attr: 'story',
-    editPath: rootEditPath + '/story',
-    originalValue: source.story,
-  }) %>
-
-  <!-- TITLE -->
-
-  <%- include('../forms/tableRowSingle', {
-    attr: 'title',
-    editPath: rootEditPath + '/title',
-    originalValue: source.title,
-  }) %>
-
-  <!-- DATE -->
-
-  <% if (source.canHaveDate()) { %>
-    <%- include('../forms/tableRowSingle', {
-      attr: 'date',
-      editPath: rootEditPath + '/date',
-      originalValue: source.date,
-    }) %>
-  <% } %>
-
-  <!-- LOCATION -->
-
-  <% if (source.canHaveLocation()) { %>
-    <%- include('../forms/tableRowSingle', {
-      attr: 'location',
-      editPath: rootEditPath + '/location',
-      originalValue: source.location,
-    }) %>
-  <% } %>
-
-  <!-- PEOPLE -->
-
-  <%- include('../forms/tableRowMulti', {
-    attr: 'people',
-    rootPath,
-    values: source.people,
-  }) %>
-
-  <!-- LINKS -->
-
-  <%- include('../forms/tableRowMulti', {
-    attr: 'links',
-    rootPath,
-    values: source.links,
-  }) %>
-
-  <!-- IMAGES -->
-
-  <%- include('../forms/tableRowMulti', {
-    attr: 'images',
-    rootPath,
-    values: source.images,
-  }) %>
-
-  <!-- IMAGES -->
-
-  <%- include('../forms/tableRowMulti', {
-    attr: 'tags',
-    rootPath,
-    values: source.tags,
-  }) %>
-
-  <!-- NOTES -->
-
-  <%- include('../forms/tableRowSingle', {
-    attr: 'notes',
-    editPath: rootEditPath + '/notes',
-    originalValue: source.notes,
-    fieldType: 'textarea',
-  }) %>
-
-  <!-- SUMMARY -->
-
-  <%- include('../forms/tableRowSingle', {
-    attr: 'summary',
-    editPath: rootEditPath + '/summary',
-    originalValue: source.summary,
-    fieldType: 'textarea',
-  }) %>
-
-  <!-- STORIES -->
-
-  <%- include('../forms/tableRowMulti', {
-    attr: 'stories',
-    rootPath,
-    values: source.stories,
-  }) %>
-</table>
+<%- include('../forms/editTable', {
+  item: source,
+  itemName: 'source',
+  rootPath,
+  fields: sourceFields,
+  canDelete: source.canBeDeleted(),
+}) %>
 
 <% if (needCitationText) { %>
   <h2>citation text</h2>
@@ -156,7 +45,7 @@
   </div>
 
   <div class="value-edit" item="content">
-    <form action="<%= rootEditPath %>/content" method="POST">
+    <form action="<%= rootPath %>/edit/content" method="POST">
       <textarea name="content" class="content-textarea"><%= source.content %></textarea>
       <input type="hidden" value="PUT" name="_method">
       <button type="submit">save</button>
@@ -184,8 +73,6 @@
 }) %>
 
 <script>
-  initializeEditForm();
-
   $('#add-citation-notation').click(() => {
     $('#new-citation-notation-form').show();
     $('#add-citation-notation').hide();

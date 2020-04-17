@@ -1,0 +1,51 @@
+<table class="edit-form-frame">
+  <% fields.forEach(field => { %>
+    <%
+      if (field.onlyIf && !field.onlyIf(item)) {
+        return;
+      }
+
+      const data = {
+        attr: field.name,
+        editPath: rootPath + '/edit/' + field.name,
+        toggle: field.toggle,
+        fieldType: field.fieldType,
+      };
+
+      let filename;
+
+      if (field.multi) {
+        filename = './tableRowMulti';
+        data.values = item[field.name];
+      } else {
+        filename = './tableRowSingle';
+        data.originalValue = item[field.name];
+      }
+
+      if (field.preventSharing) {
+        data.preventSharing = field.preventSharing(item);
+      }
+    %>
+    <%- include(filename, data) %>
+  <% }); %>
+</table>
+
+<% if (locals.canDelete) { %>
+  <%
+    const deletePath = rootPath + '/delete';
+    const buttonText = 'delete ' + itemName;
+  %>
+  <form
+    action="<%= deletePath %>"
+    method="post"
+    onsubmit="return confirmDeletion('<%= itemName %>')"
+  >
+    <p style="padding-top: 20px;">
+      <button type="submit" class="button-delete"><%= buttonText %></button>
+    </p>
+  </form>
+<% } %>
+
+<script>
+  initializeEditForm();
+</script>

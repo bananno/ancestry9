@@ -60,6 +60,8 @@ async function renderEdit(req, res) {
 
   res.renderSource('edit', {
     title: 'Edit Source',
+    rootPath: '/source/' + source._id,
+    sourceFields: sourceTools.sourceFields,
     people,
     stories,
     citationsByPerson,
