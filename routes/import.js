@@ -12,7 +12,6 @@ const tools = [
   'removeDuplicatesFromList',
   'reorderList',
   'sortEvents',
-  'sortPeople',
 ];
 
 module.exports = {

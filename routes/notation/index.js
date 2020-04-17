@@ -1,10 +1,9 @@
-const mongoose = require('mongoose');
-const Notation = mongoose.model('Notation');
-const Person = mongoose.model('Person');
-const Story = mongoose.model('Story');
-const tool = filename => require('../../tools/' + filename);
-const createModelRoutes = tool('createModelRoutes');
-const sortPeople = tool('sortPeople');
+const {
+  Notation,
+  Person,
+  Story,
+  createModelRoutes,
+} = require('../import');
 
 module.exports = createRoutes;
 
@@ -23,16 +22,12 @@ function createRoutes(router) {
   });
 }
 
-function notationsIndex(req, res, next) {
-  Notation.find({}, (err, notations) => {
-    res.render('notation/index', {
-      title: 'Notations',
-      notations: notations,
-    });
-  });
+async function notationsIndex(req, res) {
+  const notations = await Notation.find({});
+  res.render('notation/index', {title: 'Notations', notations});
 }
 
-function createNotation(req, res, next) {
+function createNotation(req, res) {
   const newNotation = {
     title: req.body.title.trim(),
   };
@@ -44,51 +39,35 @@ function createNotation(req, res, next) {
   });
 }
 
-function withNotation(req, res, callback) {
-  const notationId = req.params.id;
-  Notation
-  .findById(notationId)
-  .populate('source')
-  .populate('people')
-  .populate('stories')
-  .exec((err, notation) => {
-    if (!notation) {
-      return res.send('Notation not found.');
-    }
-    if (notation.source) {
-      Story.findById(notation.source.story, (err, story) => {
-        if (story) {
-          notation.source.story = story;
-        }
-        callback(notation);
-      });
-    } else {
-      callback(notation);
-    }
-  });
+async function showNotation(req, res) {
+  const notation = await getNotation(req.params.id);
+  if (!notation) {
+    return res.send('Notation not found.');
+  }
+  res.render('notation/show', {title: 'Notation', notation});
 }
 
-function showNotation(req, res, next) {
-  withNotation(req, res, notation => {
-    res.render('notation/show', {
-      title: 'Notation',
-      notation,
-    });
-  });
+async function editNotation(req, res) {
+  const notation = await getNotation(req.params.id);
+  if (!notation) {
+    return res.send('Notation not found.');
+  }
+  const people = await Person.find({});
+  Person.sortByName(people);
+  const stories = await Story.find({});
+  res.render('notation/edit', {title: 'Notation', notation, people, stories});
 }
 
-function editNotation(req, res, next) {
-  withNotation(req, res, notation => {
-    Person.find({}, (err, people) => {
-      sortPeople(people, 'name');
-      Story.find({}, (err, stories) => {
-        res.render('notation/edit', {
-          title: 'Notation',
-          notation,
-          people,
-          stories,
-        });
-      });
-    });
-  });
+async function getNotation(notationId) {
+  const notation = await Notation
+    .findById(notationId)
+    .populate('source')
+    .populate('people')
+    .populate('stories');
+
+  if (notation && notation.source) {
+    await notation.source.populateStory();
+  }
+
+  return notation;
 }

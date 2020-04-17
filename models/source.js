@@ -39,6 +39,7 @@ sourceSchema.methods.getPeopleForNewCitations = getPeopleForNewCitations;
 sourceSchema.methods.populateCitations = populateCitations;
 sourceSchema.methods.populateCiteText = populateCiteTextSingle;
 sourceSchema.methods.populatePersonCitations = populatePersonCitations;
+sourceSchema.methods.populateStory = populateStory;
 
 sourceSchema.statics.populateCiteText = populateCiteTextList;
 
@@ -134,6 +135,12 @@ async function populateCiteTextSingle(options = {}) {
 
 async function populatePersonCitations(person) {
   this.citations = await mongoose.model('Citation').find({source: this, person});
+}
+
+async function populateStory() {
+  if (!this.story.title) {
+    this.story = await mongoose.model('Story').findById(this.story);
+  }
 }
 
 async function populateCiteTextList(sources) {
