@@ -4,10 +4,15 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-const modelFiles = require('./models').files;
+const modelFiles = require('./app/models').files;
+
+mongoose.connect('mongodb://localhost/ancestry', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 modelFiles.forEach(model => {
-  require('./models/' + model);
+  require('./app/' + model + '/model');
 });
 
 const app = express();

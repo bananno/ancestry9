@@ -11,5 +11,5 @@ const models = [
 
 module.exports = {
   models,
-  files: ['db', ...models.map(model => model.toLowerCase())]
+  files: models.map(model => model.toLowerCase())
 };
