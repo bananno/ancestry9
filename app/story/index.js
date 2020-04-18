@@ -6,20 +6,17 @@ const {
   createModelRoutes,
   getDateValues,
   getLocationValues,
+  modelFields,
 } = require('../import');
 
 const storyTools = require('./tools');
-
-const {
-  mainStoryTypes,
-  storyFields,
-  createRenderStory,
-} = storyTools;
+const storyFields = modelFields.story;
+const constants = require('./constants');
 
 module.exports = createRoutes;
 
 function createRoutes(router) {
-  router.use(createRenderStory);
+  router.use(storyTools.createRenderStory);
 
   createModelRoutes({
     Model: Story,
@@ -53,7 +50,7 @@ async function storyIndex(req, res) {
     title: 'Stories',
     stories,
     subview: storyType,
-    mainStoryTypes: [...mainStoryTypes, 'other'],
+    mainStoryTypes: [...constants.mainStoryTypes, 'other'],
   });
 }
 

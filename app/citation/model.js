@@ -1,5 +1,5 @@
-const tools = require('./tools');
 const mongoose = require('mongoose');
+const tools = require('../modelTools');
 
 const citationSchema = new mongoose.Schema({
   person: {

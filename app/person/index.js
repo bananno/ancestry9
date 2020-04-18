@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Person = mongoose.model('Person');
-const tool = path => require('../../tools/' + path);
+const tool = path => require('../tools/' + path);
 const createModelRoutes = tool('createModelRoutes');
 const personTools = require('./tools');
 const getNewEventValues = tool('getNewEventValues');

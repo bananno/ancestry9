@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Image = mongoose.model('Image');
 const Source = mongoose.model('Source');
 const Story = mongoose.model('Story');
-const createModelRoutes = require('../../tools/createModelRoutes');
+const createModelRoutes = require('../tools/createModelRoutes');
 
 module.exports = createRoutes;
 

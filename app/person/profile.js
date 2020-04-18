@@ -6,7 +6,7 @@ const {
   Source,
 } = require('../import');
 
-const getTools = (path) => { return require('../../tools/' + path) };
+const getTools = (path) => { return require('../tools/' + path) };
 const getPersonRelativesList = getTools('getPersonRelativesList');
 
 module.exports = {

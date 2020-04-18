@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
-const tools = require('./tools');
-const dateStructure = require('./dateStructure.js');
-const locationStructure = require('./locationStructure.js');
+const constants = require('./constants');
+const tools = require('../modelTools');
 
 const storySchema = new mongoose.Schema({
   type: String,
   title: String,
-  date: dateStructure,
-  location: locationStructure,
+  date: tools.dateStructure,
+  location: tools.locationStructure,
   people: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Person',
@@ -23,11 +22,6 @@ const storySchema = new mongoose.Schema({
   summary: String,
   sharing: { type: Boolean, default: false },
 });
-
-const mainStoryTypes = [
-  'book', 'cemetery', 'document', 'index',
-  'newspaper', 'website', 'place', 'topic'
-];
 
 // --------------- INSTANCE ---------------
 
@@ -54,7 +48,7 @@ storySchema.statics.getAllByType = async function(type) {
   }
 
   if (type == 'other') {
-    return await Story.find({type: {$nin: mainStoryTypes}});
+    return await Story.find({type: {$nin: constants.mainStoryTypes}});
   }
 
   return await Story.find({type});

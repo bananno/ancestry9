@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const tools = require('./tools');
-const dateStructure = require('./dateStructure');
-const locationStructure = require('./locationStructure');
+const tools = require('../modelTools');
 
 const sourceSchema = new mongoose.Schema({
   title: String,
@@ -13,8 +11,8 @@ const sourceSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Story',
   }],
-  date: dateStructure,
-  location: locationStructure,
+  date: tools.dateStructure,
+  location: tools.locationStructure,
   people: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Person',

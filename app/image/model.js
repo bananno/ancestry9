@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const tools = require('./tools');
+const tools = require('../modelTools');
 
 const imageSchema = new mongoose.Schema({
   url: String,

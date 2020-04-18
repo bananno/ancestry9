@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const fs = require('fs');
-const sortEvents = require('../../tools/sortEvents');
+const sortEvents = require('../tools/sortEvents');
 
 const fields = {
   personEveryone: [

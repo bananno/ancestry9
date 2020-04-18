@@ -1,17 +1,6 @@
-const {
-  modelFields,
-} = require('../import');
-
-const mainStoryTypes = [
-  'book', 'cemetery', 'document', 'index',
-  'newspaper', 'website', 'place', 'topic'
-];
-
-const noEntryStoryTypes = ['artifact', 'event', 'landmark', 'place'];
+const constants = require('./constants');
 
 module.exports = {
-  mainStoryTypes,
-  storyFields: modelFields.story,
   createRenderStory,
 };
 
@@ -24,7 +13,7 @@ function createRenderStory(req, res, next) {
       story,
       rootPath: '/story/' + story._id,
       canHaveDate: story.type != 'cemetery',
-      canHaveEntries: !noEntryStoryTypes.includes(story.type),
+      canHaveEntries: !constants.noEntryStoryTypes.includes(story.type),
       ...options
     });
   };

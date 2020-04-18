@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const tools = require('./tools');
+const tools = require('../modelTools');
 
 const personSchema = new mongoose.Schema({
   name: String,

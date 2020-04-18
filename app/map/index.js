@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const getLocationValues = require('../../tools/getLocationValues');
+const getLocationValues = require('../tools/getLocationValues');
 
 module.exports = createRoutes;
 
