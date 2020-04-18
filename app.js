@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const router = require('./routes');
+const router = require('./app/router');
 app.use('/', router);
 
 app.use((req, res, next) => {
