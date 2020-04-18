@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const tools = require('./tools');
 const dateStructure = require('./dateStructure.js');
 const locationStructure = require('./locationStructure.js');
 
@@ -23,6 +24,11 @@ const storySchema = new mongoose.Schema({
   sharing: { type: Boolean, default: false },
 });
 
+const mainStoryTypes = [
+  'book', 'cemetery', 'document', 'index',
+  'newspaper', 'website', 'place', 'topic'
+];
+
 // --------------- INSTANCE ---------------
 
 // Return list of sources that belong to THIS story.
@@ -39,6 +45,21 @@ storySchema.methods.populateEntries = async function() {
 
 // ---------------- STATIC ----------------
 
+// Return a list of stories with given type.
+storySchema.statics.getAllByType = async function(type) {
+  const Story = mongoose.model('Story');
+
+  if (!type) {
+    return await Story.find({});
+  }
+
+  if (type == 'other') {
+    return await Story.find({type: {$nin: mainStoryTypes}});
+  }
+
+  return await Story.find({type});
+};
+
 // Return a list of stories with "Census USA ___" title.
 storySchema.statics.getAllCensusUSA = async function() {
   return await mongoose.model('Story')
@@ -53,6 +74,11 @@ storySchema.statics.getAllEntries = async function(stories) {
     entries = entries.concat(nextEntries);
   }
   return entries;
+};
+
+// Sort by type, then title.
+storySchema.statics.sortByTypeTitle = function(stories) {
+  tools.sortBy(stories, story => story.type + story.title);
 };
 
 // ----------------------------------------

@@ -43,40 +43,18 @@ function createRoutes(router) {
   router.get('/stories/:type', storyIndex);
 }
 
-function storyIndex(req, res, next) {
+async function storyIndex(req, res) {
   const storyType = req.params.type;
+  const stories = await Story.getAllByType(storyType);
 
-  withAllStories(storyType, stories => {
-    stories.sort((a, b) => {
-      return (a.type + a.title) < (b.type + b.title) ? -1 : 1;
-    });
+  Story.sortByTypeTitle(stories);
 
-    res.render('story/index', {
-      title: 'Stories',
-      stories,
-      subview: storyType,
-      mainStoryTypes: [...mainStoryTypes, 'other'],
-    });
+  res.render('story/index', {
+    title: 'Stories',
+    stories,
+    subview: storyType,
+    mainStoryTypes: [...mainStoryTypes, 'other'],
   });
-}
-
-function withAllStories(type, callback) {
-  if (!type) {
-    Story.find({}, (err, stories) => {
-      callback(stories);
-    });
-  } else if (type == 'other') {
-    Story.find({}, (err, stories) => {
-      stories = stories.filter(story => {
-        return !mainStoryTypes.includes(story.type);
-      });
-      callback(stories);
-    });
-  } else {
-    Story.find({type}, (err, stories) => {
-      callback(stories);
-    });
-  }
 }
 
 function createStory(req, res, next) {
