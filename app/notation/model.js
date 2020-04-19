@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const tools = require('../modelTools');
+const tools = require('../tools/modelTools');
 
 const notationSchema = new mongoose.Schema({
   title: String,

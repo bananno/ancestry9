@@ -2,8 +2,7 @@ const tool = filename => require('../tools/' + filename);
 
 const mongoose = require('mongoose');
 const models = require('./models').models;
-const {sortBy} = require('./modelTools');
-const modelFields = require('./modelTools/fields');
+const modelTools = require('./tools/modelTools');
 
 const tools = [
   'createModelRoutes',
@@ -13,12 +12,15 @@ const tools = [
   'removeDuplicatesFromList',
   'reorderList',
   'sortEvents',
+  'dateStructure',
+  'locationStructure',
+  'sorting',
+  'modelFields',
 ];
 
 module.exports = {
   mongoose,
-  sortBy,
-  modelFields,
+  ...modelTools,
 };
 
 models.forEach(model => {

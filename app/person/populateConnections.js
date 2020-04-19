@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const sortBy = require('./sorting').sortBy;
+const sortBy = require('../tools/sorting').sortBy;
 
 module.exports = peoplePopulateConnections;
 

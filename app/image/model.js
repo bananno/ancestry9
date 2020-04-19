@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const tools = require('../modelTools');
+const {sorting} = require('../tools/modelTools');
 
 const imageSchema = new mongoose.Schema({
   url: String,
@@ -30,7 +30,7 @@ imageSchema.statics.sortByTags = function(images) {
     image.sortBy = [(20 - image.tags.length), ...image.tags].join('-');
   });
 
-  tools.sortBy(images, image => image.sortBy);
+  sorting.sortBy(images, image => image.sortBy);
 };
 
 mongoose.model('Image', imageSchema);

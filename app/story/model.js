@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const constants = require('./constants');
-const tools = require('../modelTools');
+const tools = require('../tools/modelTools');
 
 const storySchema = new mongoose.Schema({
   type: String,
