@@ -1,74 +1,87 @@
 const {
-  mongoose, // remove
+  Citation,
   Event,
+  Image,
+  Notation,
+  Person,
+  Story,
+  Source,
 } = require('../import');
 
 const fs = require('fs');
-const constants = require('./constants');
-const {fields} = constants;
-const getSharedData = require('./getSharedData');
 
 module.exports = createRoutes;
 
 function createRoutes(router) {
-  router.get('/database', showDatabaseEverything);
-  router.get('/sharing', exportSharedDatabase);
+  router.get('/database', exportAndRenderEverything);
+  router.get('/sharing', exportSharedData);
 }
 
-function showDatabaseEverything(req, res) {
-  let data = {};
-  new Promise(resolve => {
-    resolve();
-  }).then(() => {
-    return saveFullDataFile(data, 'Person', 'people');
-  }).then(() => {
-    return saveFullDataFile(data, 'Story', 'stories');
-  }).then(() => {
-    return saveFullDataFile(data, 'Source', 'sources');
-  }).then(() => {
-    return saveFullDataFile(data, 'Event', 'events');
-  }).then(() => {
-    return saveFullDataFile(data, 'Citation', 'citations');
-  }).then(() => {
-    return saveFullDataFile(data, 'Notation', 'notations');
-  }).then(() => {
-    return saveFullDataFile(data, 'Image', 'images');
-  }).then(() => {
-    res.render('database', data);
-  });
+async function exportAndRenderEverything(req, res) {
+  const data = await getFullData();
+
+  await saveFullDataFile(data, 'people');
+  await saveFullDataFile(data, 'stories');
+  await saveFullDataFile(data, 'sources');
+  await saveFullDataFile(data, 'events');
+  await saveFullDataFile(data, 'citations');
+  await saveFullDataFile(data, 'notations');
+  await saveFullDataFile(data, 'images');
+
+  res.render('export/index', data);
 }
 
-async function exportSharedDatabase(req, res) {
+async function exportSharedData(req, res) {
   const data = await getSharedData();
 
-  await saveRawSharedDataFile('people', data.people, data);
-  await saveRawSharedDataFile('stories', data.stories);
-  await saveRawSharedDataFile('sources', data.sources);
-  await saveRawSharedDataFile('events', data.events);
-  await saveRawSharedDataFile('citations', data.citations);
-  await saveRawSharedDataFile('notations', data.notations);
+  await saveSharedDataFile('people', data.people, data);
+  await saveSharedDataFile('stories', data.stories);
+  await saveSharedDataFile('sources', data.sources);
+  await saveSharedDataFile('events', data.events);
+  await saveSharedDataFile('citations', data.citations);
+  await saveSharedDataFile('notations', data.notations);
 
   res.redirect('/');
 }
 
-function saveFullDataFile(data, modelName, itemName) {
+async function getFullData() {
+  const data = {};
+
+  data.citations = await Citation.find({});
+  data.events = await Event.find({});
+  data.images = await Image.find({});
+  data.notations = await Notation.find({});
+  data.people = await Person.find({});
+  data.stories = await Story.find({});
+  data.sources = await Source.find({});
+
+  return data;
+}
+
+async function getSharedData() {
+  const data = {};
+
+  data.citations = await Citation.getAllSharedData();
+  data.events = await Event.getAllSharedData();
+  data.notations = await Notation.getAllSharedData();
+  data.people = await Person.getAllSharedData();
+  data.stories = await Story.getAllSharedData();
+  data.sources = await Source.getAllSharedData();
+  data.countryList = Person.getAllCountriesOfOrigin(data.people);
+
+  return data;
+}
+
+function saveFullDataFile(data, itemName) {
+  const itemData = data[itemName];
+  const filename = 'database-backup/database-' + itemName + '.json';
+  const content = stringifyData(itemData);
   return new Promise(resolve => {
-    mongoose.model(modelName).find({}, (err, results) => resolve(results));
-  }).then(results => {
-    data[itemName] = results;
-    const filename = 'database-backup/database-' + itemName + '.json';
-    const content = stringifyData(data[itemName]);
-    return new Promise(resolve => {
-      fs.writeFile(filename, content, resolve);
-    });
+    fs.writeFile(filename, content, resolve);
   });
 }
 
-function stringifyData(array) {
-  return '[\n' + array.map(s => JSON.stringify(s)).join(',\n') + '\n]';
-}
-
-function saveRawSharedDataFile(attr, arr, data) {
+function saveSharedDataFile(attr, arr, data) {
   const filename = 'shared/database/raw-' + attr + '.js';
 
   const content = (
@@ -81,6 +94,10 @@ function saveRawSharedDataFile(attr, arr, data) {
   return new Promise(resolve => {
     fs.writeFile(filename, content, resolve);
   });
+}
+
+function stringifyData(array) {
+  return '[\n' + array.map(s => JSON.stringify(s)).join(',\n') + '\n]';
 }
 
 function getStarterContent(data) {

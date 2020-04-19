@@ -3,6 +3,13 @@ const tools = require('../tools/modelTools');
 const methods = {};
 module.exports = methods;
 
+methods.getAllSharedData = async () => {
+  const sources = await mongoose.model('Source').find({sharing: true})
+    .populate('people').populate('story').populate('images');
+
+  return sources.map(source => source.toSharedObject());
+};
+
 methods.populateCiteText = async sources => {
   for (let i in sources) {
     await sources[i].populateCiteText();

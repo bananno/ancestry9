@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const tools = require('../tools/modelTools');
 const citationSort = require('./sort');
-
 const methods = {};
 module.exports = methods;
 
@@ -13,11 +11,7 @@ methods.getAllSharedData = async () => {
   // Then un-populate person and source, leaving IDs only.
   return allCitations.filter(citation => {
     return citation.person.isPublic() && citation.source.sharing;
-  }).map(citation => {
-    citation.source = citation.source._id;
-    citation.person = citation.person._id;
-    return citation;
-  });
+  }).map(citation => citation.toSharedObject());
 };
 
 methods.populateStories = async citations => {

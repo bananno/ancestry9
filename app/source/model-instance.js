@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const tools = require('../tools/modelTools');
+const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
@@ -96,3 +98,22 @@ methods.populateStory = async function() {
     this.story = await mongoose.model('Story').findById(this.story);
   }
 };
+
+methods.toSharedObject = function() {
+  const source = tools.reduceToExportData(this, constants.fieldNames);
+
+  // Remove non-shared people and then un-populate people.
+  source.people = source.people
+    .filter(person => person.isPublic())
+    .map(person => person._id);
+
+  // Use story to create full title and then un-populate story.
+  source.fullTitle = source.story.title + ' - ' + source.title;
+  source.story = source.story._id;
+
+  // No need to un-populate images because they only exist as attributes
+  // of their parent story or source.
+  source.images = source.images.map(image => image.toSharedObject());
+
+  return source;
+}
