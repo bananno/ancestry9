@@ -4,7 +4,14 @@ const {sorting} = require('../tools/modelTools');
 const imageSchema = new mongoose.Schema({
   url: String,
   tags: [String],
+  // Image actually belows to either a source or story.
 });
+
+imageSchema.methods.populateParent = async function() {
+  this.source = await mongoose.model('Source').findOne({images: this})
+    .populate('story');
+  this.story = await mongoose.model('Story').findOne({images: this});
+}
 
 imageSchema.statics.getAllByParent = async function() {
   const sources = await mongoose.model('Source').find({}).populate('images');
@@ -26,11 +33,9 @@ imageSchema.statics.getAllByParent = async function() {
 };
 
 imageSchema.statics.sortByTags = function(images) {
-  images.forEach(image => {
-    image.sortBy = [(20 - image.tags.length), ...image.tags].join('-');
+  sorting.sortBy(images, image => {
+    return [(20 - image.tags.length), ...image.tags].join('-');
   });
-
-  sorting.sortBy(images, image => image.sortBy);
 };
 
 mongoose.model('Image', imageSchema);

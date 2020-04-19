@@ -7,17 +7,17 @@
 
 <img src="<%= image.url %>" class="main-image">
 
-<% if (story) { %>
+<% if (image.story) { %>
   <h2>belongs to story</h2>
-  <%- include('../story/_link', {story}) %>
+  <%- include('../story/_link', {story: image.story}) %>
 <% } %>
 
-<% if (source) { %>
+<% if (image.source) { %>
   <h2>belongs to source</h2>
-  <%- include('../source/_link', {source, showStory: true}) %>
+  <%- include('../source/_link', {source: image.source, showStory: true}) %>
 <% } %>
 
-<% if (!source && !story) { %>
+<% if (!image.source && !image.story) { %>
   <h2>(orphan image - no story or source)</h2>
 <% } %>
 

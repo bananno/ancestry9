@@ -24,13 +24,12 @@ function padZero(str, length) {
 }
 
 function sortBy(list, callback) {
+  list.forEach(item => {
+    item.sortBy = callback(item);
+  });
+
   list.sort((a, b) => {
-    const sortA = callback(a);
-    const sortB = callback(b);
-    if (sortA === sortB) {
-      return 0;
-    }
-    return sortA < sortB ? -1 : 1;
+    return a.sortBy === b.sortBy ? 0 : a.sortBy < b.sortBy ? -1 : 1;
   });
 }
 

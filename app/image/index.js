@@ -1,8 +1,7 @@
-const mongoose = require('mongoose');
-const Image = mongoose.model('Image');
-const Source = mongoose.model('Source');
-const Story = mongoose.model('Story');
-const createModelRoutes = require('../tools/createModelRoutes');
+const {
+  Image,
+  createModelRoutes,
+} = require('../import');
 
 module.exports = createRoutes;
 
@@ -18,23 +17,15 @@ function createRoutes(router) {
   });
 }
 
-function showImage(req, res, next) {
+async function showImage(req, res) {
   const imageId = req.params.id;
-  Image.findById(imageId)
-  .exec((err, image) => {
-    if (!image) {
-      return res.send('Image not found.');
-    }
-    Story.find({ images: image }).exec((err, stories) => {
-      Source.find({ images: image }).populate('story').exec((err, sources) => {
-        res.render('layout', {
-          view: 'images/show',
-          title: 'Image',
-          image,
-          story: stories[0],
-          source: sources[0],
-        });
-      });
-    });
-  });
+  const image = await Image.findById(imageId);
+
+  if (!image) {
+    return res.send('Image not found.');
+  }
+
+  await image.populateParent();
+
+  res.render('layout', {view: 'image/show', title: 'Image', image});
 }
