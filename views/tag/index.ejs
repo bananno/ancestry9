@@ -1,53 +1,14 @@
-<%
-  const tagsDefined = [];
-  const tagsUndefined = [];
-
-  const tagData = {};
-
-  for (let tag in tags) {
-    const numItems = tags[tag];
-    tag = tag.trim();
-    let value = '';
-
-    if (tag.match('=')) {
-      value = tag.slice(tag.indexOf('=') + 1).trim();
-      tag = tag.slice(0, tag.indexOf('=')).trim();
-    }
-
-    if (!tagData[tag]) {
-      tagData[tag] = {
-        path: tag.split(' ').join('_'),
-        definition: definitions[tag],
-        values: [],
-        numItems: 0,
-      };
-
-      if (tagData[tag].definition) {
-        tagsDefined.push(tag);
-      } else {
-        tagsUndefined.push(tag);
-      }
-    }
-
-    tagData[tag].values.push(value);
-    tagData[tag].numItems += numItems;
-  }
-
-  tagsDefined.sort();
-  tagsUndefined.sort();
-%>
-
 <h1>Checklist - Tags</h1>
 
-<h3>total: <%= (tagsDefined.length + tagsUndefined.length) %> tags</h3>
+<h3>total: <%= totalNumTags %> tags</h3>
 
 <h2>not defined</h2>
 
 <ul class="bullet-list">
   <% tagsUndefined.forEach(tag => { %>
     <li>
-      <a href="/tag/<%= tagData[tag].path %>"><%= tag %></a>
-      - <%= tagData[tag].numItems %>
+      <a href="<%= tag.path %>"><%= tag.name %></a>
+      - <%= tag.count %>
     </li>
   <% }); %>
 </ul>
@@ -57,9 +18,9 @@
 <ul class="bullet-list">
   <% tagsDefined.forEach(tag => { %>
     <li>
-      <a href="/tag/<%= tagData[tag].path %>"><%= tag %></a>
-      - <%= tagData[tag].numItems %>
-      <br><%= tagData[tag].definition %>
+      <a href="<%= tag.path %>"><%= tag.name %></a>
+      - <%= tag.count %>
+      <br><%= tag.definition %>
     </li>
   <% }); %>
 </ul>

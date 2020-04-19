@@ -57,7 +57,7 @@
 <% } %>
 
 <% if (tag == 'number of children') { %>
-  <%- include('./special-numChildren', {people: data.people}) %>
+  <%- include('./_special-numChildren', {people: data.people}) %>
 <% } else if (data.people.length > 0) { %>
   <h2>people</h2>
   <ul class="bullet-list">
