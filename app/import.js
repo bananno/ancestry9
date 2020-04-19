@@ -6,15 +6,11 @@ const modelTools = require('./tools/modelTools');
 
 const tools = [
   'createModelRoutes',
-  'getDateValues',
-  'getLocationValues',
-  'getNewEventValues',
   'removeDuplicatesFromList',
   'reorderList',
   'dateStructure',
   'locationStructure',
   'sorting',
-  'modelFields',
 ];
 
 module.exports = {

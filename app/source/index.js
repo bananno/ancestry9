@@ -1,14 +1,13 @@
 const {
   Source,
   createModelRoutes,
-  getDateValues,
-  getLocationValues,
 } = require('../import');
 
+const constants = require('./constants');
 const sourceTools = require('./tools');
 const sourceProfile = require('./show');
 const sourceUpdate = require('./update');
-const {mainSourceTypes, sourceFields} = sourceTools;
+const {mainSourceTypes, sourceFields} = constants;
 
 module.exports = createRoutes;
 
@@ -55,18 +54,11 @@ function getSourcesIndex(subview) {
 }
 
 function createSource(req, res) {
-  const newSource = {
-    type: req.body.type.trim(),
-    title: req.body.title.trim(),
-    story: req.body.story,
-  };
+  const newSource = Source.getFormDataNew(req);
 
-  if (!newSource.title) {
-    return res.send('Title is required.');
+  if (!newSource) {
+    return res.send('error');
   }
-
-  newSource.date = getDateValues(req);
-  newSource.location = getLocationValues(req);
 
   Source.create(newSource, (err, source) => {
     if (err) {

@@ -1,10 +1,12 @@
-const mongoose = require('mongoose');
-const Person = mongoose.model('Person');
-const tool = path => require('../tools/' + path);
-const createModelRoutes = tool('createModelRoutes');
+const {
+  Event,
+  Notation,
+  Person,
+  createModelRoutes,
+  reorderList,
+} = require('../import');
+
 const personTools = require('./tools');
-const getNewEventValues = tool('getNewEventValues');
-const reorderList = tool('reorderList');
 const personProfileRoutes = require('./profile');
 const personTimeline = require('./timeline');
 const personChecklist = require('./checklist');
@@ -74,7 +76,7 @@ function createPerson(req, res, next) {
     .replace(/\[|\]|\(|\)|\.|\//g, '')
     .replace(/ /g, '-');
 
-  mongoose.model('Person').create(newPerson, function(err, person) {
+  Person.create(newPerson, function(err, person) {
     if (err) {
       res.send('There was a problem adding the information to the database.');
     } else {
@@ -88,7 +90,7 @@ function createPerson(req, res, next) {
 }
 
 function makeRouteEditPost(editField, corresponding) {
-  return (req, res) => {
+  return async (req, res) => {
     const person = req.person;
     const updatedObj = {};
     const newValue = req.body[editField];
@@ -107,15 +109,15 @@ function makeRouteEditPost(editField, corresponding) {
         });
       }
     } else if (editField == 'events') {
-      var newEvent = getNewEventValues(req);
+      const newEvent = Event.getFormDataNew(req);
 
-      if (newEvent == null) {
-        return;
+      if (!newEvent) {
+        return res.send('error');
       }
 
       newEvent.people.push(person);
 
-      mongoose.model('Event').create(newEvent, () => {});
+      await Event.create(newEvent, () => {});
     } else {
       updatedObj[editField] = newValue;
     }
@@ -219,7 +221,7 @@ function createPersonNotation(req, res, next) {
   if (tags) {
     newNotation.tags = tags.split('\n');
   }
-  mongoose.model('Notation').create(newNotation, (err, notation) => {
+  Notation.create(newNotation, (err, notation) => {
     res.redirect('/person/' + req.paramPersonId + '/notations');
   });
 }

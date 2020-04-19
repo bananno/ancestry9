@@ -5,10 +5,9 @@ const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
-methods.getAllSharedData = getAllSharedData;
 methods.sortByDate = tools.sorting.sortByDate;
 
-async function getAllSharedData() {
+methods.getAllSharedData = async () => {
   const Event = mongoose.model('Event');
   const rawList = await Event.find({}).populate('people');
 
@@ -38,4 +37,21 @@ async function getAllSharedData() {
   Event.sortByDate(newList);
 
   return newList;
-}
+};
+
+methods.getFormDataNew = req => {
+  const eventTitle = req.body.title.trim();
+
+  if (eventTitle == '') {
+    return null;
+  }
+
+  const newEvent = {
+    title: eventTitle,
+    people: [],
+    date: req.getFormDataDate(),
+    location: req.getFormDataLocation(),
+  };
+
+  return newEvent;
+};

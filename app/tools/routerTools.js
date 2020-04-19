@@ -1,4 +1,18 @@
-function getLocationValues(req) {
+module.exports = {
+  getFormDataDate,
+  getFormDataLocation,
+};
+
+function getFormDataDate(req) {
+  return {
+    year: req.body.date_year,
+    month: req.body.date_month,
+    day: req.body.date_day,
+    display: req.body.date_display,
+  };
+}
+
+function getFormDataLocation(req) {
   const location = {
     country: req.body['location-country'],
     region1: req.body['location-region1'],
@@ -15,5 +29,3 @@ function getLocationValues(req) {
 
   return location;
 }
-
-module.exports = getLocationValues;

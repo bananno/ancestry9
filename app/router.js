@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 module.exports = router;
 
+const routerTools = require('./tools/routerTools');
+
 router.use((req, res, next) => {
   res.renderOriginal = res.render;
 
@@ -11,6 +13,9 @@ router.use((req, res, next) => {
     }
     return res.renderOriginal('layout', {view, ...options});
   };
+
+  req.getFormDataDate = () => routerTools.getFormDataDate(req);
+  req.getFormDataLocation = () => routerTools.getFormDataLocation(req);
 
   next();
 });

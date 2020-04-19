@@ -2,15 +2,15 @@ const {
   Event,
   Person,
   createModelRoutes,
-  getNewEventValues,
   modelFields,
 } = require('../import');
 
-module.exports = createEventRoutes;
+const constants = require('./constants');
+const {eventFields} = constants;
 
-const eventFields = modelFields.event;
+module.exports = createRoutes;
 
-function createEventRoutes(router) {
+function createRoutes(router) {
   router.use(createRenderEvent);
 
   createModelRoutes({
@@ -46,10 +46,10 @@ async function eventIndex(req, res) {
 }
 
 function createEvent(req, res) {
-  const newEvent = getNewEventValues(req);
+  const newEvent = Event.getFormDataNew(req);
 
-  if (newEvent == null) {
-    return;
+  if (!newEvent) {
+    return res.send('error');
   }
 
   Event.create(newEvent, (err, event) => {

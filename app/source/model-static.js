@@ -10,6 +10,23 @@ methods.getAllSharedData = async () => {
   return sources.map(source => source.toSharedObject());
 };
 
+methods.getFormDataNew = req => {
+  const sourceTitle = req.body.title.trim();
+
+  if (sourceTitle == '') {
+    return null;
+  }
+
+  const newSource = {
+    title: sourceTitle,
+    date: req.getFormDataDate(),
+    location: req.getFormDataLocation(),
+    story: req.body.story,
+  };
+
+  return newSource;
+};
+
 methods.populateCiteText = async sources => {
   for (let i in sources) {
     await sources[i].populateCiteText();

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const getLocationValues = require('../tools/getLocationValues');
 
 module.exports = createRoutes;
 
@@ -72,7 +71,7 @@ function getEventsAndSources(callback) {
 }
 
 function addMapPlace(req, res, next) {
-  const newPlace = getLocationValues(req);
+  const newPlace = req.getFormDataLocation();
 
   ['latitude', 'longitude', 'zoom'].forEach(attr => {
     let value = req.body['location-' + attr].trim();

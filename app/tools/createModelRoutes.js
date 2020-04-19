@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const reorderList = require('./reorderList');
-const getDateValues = require('./getDateValues');
-const getLocationValues = require('./getLocationValues');
 
 function createModelRoutes(specs) {
   new ModelRoutes(specs);
@@ -145,9 +143,9 @@ class ModelRoutes {
       this.withItem(req, (item, itemId) => {
         const updatedObj = {};
         if (fieldName == 'date') {
-          updatedObj[fieldName] = getDateValues(req);
+          updatedObj[fieldName] = req.getFormDataDate();
         } else if (fieldName == 'location') {
-          updatedObj[fieldName] = getLocationValues(req);
+          updatedObj[fieldName] = req.getFormDataLocation();
         } else {
           updatedObj[fieldName] = req.body[fieldName];
         }

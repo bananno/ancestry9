@@ -1,16 +1,10 @@
 const {
   Source,
-  modelFields,
 } = require('../import');
 
-const mainSourceTypes = [
-  'document', 'index', 'cemetery', 'newspaper',
-  'photo', 'website', 'book', 'other'
-];
+const {mainSourceTypes} = require('./constants');
 
 module.exports = {
-  mainSourceTypes,
-  sourceFields: modelFields.source,
   convertParamSourceId1,
   convertParamSourceId2,
   createRenderSource,

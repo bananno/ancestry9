@@ -4,14 +4,11 @@ const {
   Story,
   Source,
   createModelRoutes,
-  getDateValues,
-  getLocationValues,
-  modelFields,
 } = require('../import');
 
 const storyTools = require('./tools');
-const storyFields = modelFields.story;
 const constants = require('./constants');
+const {storyFields} = constants;
 
 module.exports = createRoutes;
 
@@ -54,20 +51,11 @@ async function storyIndex(req, res) {
   });
 }
 
-function createStory(req, res, next) {
-  const newStory = {
-    type: req.body.type,
-    title: req.body.title.trim(),
-    date: getDateValues(req),
-    location: getLocationValues(req),
-  };
+function createStory(req, res) {
+  const newStory = Story.getFormDataNew(req);
 
-  if (newStory.type == 'other') {
-    newStory.type = req.body['type-text'].trim();
-  }
-
-  if (newStory.type.length == 0 || newStory.title.length == 0) {
-    return res.send('Type and title are required.');
+  if (!newStory) {
+    return res.send('error');
   }
 
   Story.create(newStory, (err, story) => {

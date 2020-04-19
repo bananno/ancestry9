@@ -6,7 +6,7 @@ const {
   Story,
 } = require('../import');
 
-const sourceTools = require('./tools');
+const constants = require('./constants');
 
 module.exports = {
   summary: renderSummary,
@@ -61,7 +61,7 @@ async function renderEdit(req, res) {
   res.renderSource('edit', {
     title: 'Edit Source',
     rootPath: '/source/' + source._id,
-    sourceFields: sourceTools.sourceFields,
+    sourceFields: constants.sourceFields,
     people,
     stories,
     citationsByPerson,
