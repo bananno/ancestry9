@@ -89,3 +89,13 @@ methods.removeFromList = function(people, person) {
 methods.sortByName = function(people) {
   people.sort((a, b) => a.name < b.name ? -1 : 1);
 };
+
+methods.getAllCountriesOfOrigin = people => {
+  const countries = {};
+  people.filter(person => person.tags.country).forEach(person => {
+    person.tags.country.split(',').forEach(country => {
+      countries[country.trim()] = true;
+    });
+  });
+  return Object.keys(countries).sort();
+};

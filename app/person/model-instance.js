@@ -13,6 +13,10 @@ methods.isLiving = function() {
   return this.tags.includes('living');
 };
 
+methods.isPublic = function() {
+  return this.sharing.level === 2;
+};
+
 methods.populateBirthAndDeath = async function() {
   const Event = mongoose.model('Event');
 

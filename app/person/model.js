@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const tools = require('../tools/modelTools');
-const methods = require('./model-methods');
-const statics = require('./model-statics');
+const instanceMethods = require('./model-instance');
+const staticMethods = require('./model-static');
 
 const personSchema = new mongoose.Schema({
   name: String,
@@ -28,12 +27,12 @@ const personSchema = new mongoose.Schema({
   },
 });
 
-for (let methodName in methods) {
-  personSchema.methods[methodName] = methods[methodName];
+for (let methodName in instanceMethods) {
+  personSchema.methods[methodName] = instanceMethods[methodName];
 }
 
-for (let methodName in statics) {
-  personSchema.statics[methodName] = statics[methodName];
+for (let methodName in staticMethods) {
+  personSchema.statics[methodName] = staticMethods[methodName];
 }
 
-const Person = mongoose.model('Person', personSchema);
+mongoose.model('Person', personSchema);

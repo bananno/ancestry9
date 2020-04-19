@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const citationSort = require('./sort');
+const tools = require('../tools/modelTools');
+const staticMethods = require('./model-static');
 
 const citationSchema = new mongoose.Schema({
   person: {
@@ -15,15 +16,10 @@ const citationSchema = new mongoose.Schema({
 });
 
 citationSchema.methods.populateStory = populateStory;
-citationSchema.statics.populateStories = populateStories;
 
-citationSchema.statics.sortByItem = (citations, people) => {
-  return citationSort(citations, 'item', people);
-};
-
-citationSchema.statics.sortByPerson = (citations, people) => {
-  return citationSort(citations, 'person', people);
-};
+for (let methodName in staticMethods) {
+  citationSchema.statics[methodName] = staticMethods[methodName];
+}
 
 mongoose.model('Citation', citationSchema);
 
@@ -34,11 +30,5 @@ async function populateStory() {
   } else if (!this.source.story.title) {
     this.source.story = await mongoose.model('Story')
       .findById(this.source.story);
-  }
-}
-
-async function populateStories(citations) {
-  for (let i in citations) {
-    await citations[i].populateStory();
   }
 }

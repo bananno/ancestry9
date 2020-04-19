@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const tools = require('../tools/modelTools');
+const staticMethods = require('./model-static');
 
 const eventSchema = new mongoose.Schema({
   title: String,
@@ -13,6 +14,8 @@ const eventSchema = new mongoose.Schema({
   tags: [String],
 });
 
-eventSchema.statics.sortByDate = tools.sortByDate;
+for (let methodName in staticMethods) {
+  eventSchema.statics[methodName] = staticMethods[methodName];
+}
 
 mongoose.model('Event', eventSchema);

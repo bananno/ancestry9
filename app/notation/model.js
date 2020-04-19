@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const tools = require('../tools/modelTools');
+const staticMethods = require('./model-static');
 
 const notationSchema = new mongoose.Schema({
   title: String,
@@ -22,18 +23,8 @@ const notationSchema = new mongoose.Schema({
   sharing: { type: Boolean, default: false },
 });
 
-notationSchema.statics.getCitesForSource = async function(source) {
-  return await mongoose.model('Notation').find({
-    title: 'source citation',
-    source
-  });
-};
-
-notationSchema.statics.getCitesForStory = async function(story) {
-  return await mongoose.model('Notation').find({
-    title: 'source citation',
-    stories: story
-  });
-};
+for (let methodName in staticMethods) {
+  notationSchema.statics[methodName] = staticMethods[methodName];
+}
 
 mongoose.model('Notation', notationSchema);

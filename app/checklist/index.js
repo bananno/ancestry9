@@ -143,7 +143,7 @@ async function checklistProfileSummary(req, res) {
       return;
     }
 
-    if (person.sharing.level == 2) {
+    if (person.isPublic()) {
       data.peopleWithoutSummaryShared.push(person);
     } else {
       data.peopleWithoutSummaryNotShared.push(person);

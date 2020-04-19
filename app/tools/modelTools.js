@@ -9,4 +9,31 @@ module.exports = {
   locationStructure,
   sorting,
   ...sorting,
+  convertTags,
+  reduceListToExportData,
+  reduceToExportData,
 };
+
+function convertTags(obj) {
+  const tags = {};
+  obj.tags.forEach(tag => {
+    if (tag.match('=')) {
+      let [key, value] = tag.split('=').map(s => s.trim());
+      tags[key] = value;
+    } else {
+      tags[tag] = true;
+    }
+  });
+  return tags;
+}
+
+function reduceListToExportData(list, fields) {
+  return list.map(itemInfo => reduceToExportData(itemInfo, fields));
+}
+
+function reduceToExportData(itemInfo, fields) {
+  const newItem = {};
+  fields.forEach(attr => newItem[attr] = itemInfo[attr]);
+  newItem.tags = convertTags(itemInfo);
+  return newItem;
+}
