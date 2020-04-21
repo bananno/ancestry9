@@ -9,19 +9,15 @@
       const data = {
         attr: field.name,
         editPath: rootPath + '/edit/' + field.name,
+        dataType: field.dataType,
         toggle: field.toggle,
         fieldType: field.inputType || field.fieldType, // phase out fieldType
       };
 
-      let filename;
+      const filename = field.multi ? './tableRowMulti' : './tableRowSingle';
 
-      if (field.multi) {
-        filename = './tableRowMulti';
-        data.values = item[field.name];
-      } else {
-        filename = './tableRowSingle';
-        data.originalValue = item[field.name];
-      }
+      data.values = field.getValue ? field.getValue(item) : item[field.name];
+      data.originalValue = data.values;
 
       if (field.preventSharing) {
         data.preventSharing = field.preventSharing(item);

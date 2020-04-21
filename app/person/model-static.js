@@ -74,6 +74,26 @@ methods.getAllSharedData = async () => {
   return people;
 };
 
+methods.getFormDataNew = req => {
+  const personName = req.body.name.trim();
+
+  if (!personName) {
+    return false;
+  }
+
+  const newPerson = {
+    name: personName,
+    gender: req.body.gender,
+  };
+
+  newPerson.customId = personName
+    .toLowerCase()
+    .replace(/\[|\]|\(|\)|\.|\//g, '')
+    .replace(/ /g, '-');
+
+  return newPerson;
+};
+
 async function populateAncestors(personId, people, safety) {
   safety = safety || 0;
 

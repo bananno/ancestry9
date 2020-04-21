@@ -20,6 +20,25 @@ methods.getAllSharedData = async () => {
   });
 };
 
+methods.getFormDataNew = req => {
+  const notationTitle = req.body.title.trim();
+
+  if (!notationTitle) {
+    return false;
+  }
+
+  const newNotation = {
+    title: req.body.title.trim(),
+    text: req.body.text.trim(),
+    people: [],
+    tags: req.getFormDataTags(),
+    date: req.getFormDataDate(),
+    location: req.getFormDataLocation(),
+  };
+
+  return newNotation;
+};
+
 methods.getCitesForSource = async function(source) {
   return await mongoose.model('Notation').find({
     title: 'source citation',

@@ -16,6 +16,7 @@ router.use((req, res, next) => {
 
   req.getFormDataDate = () => routerTools.getFormDataDate(req);
   req.getFormDataLocation = () => routerTools.getFormDataLocation(req);
+  req.getFormDataTags = () => routerTools.getFormDataTags(req);
 
   next();
 });

@@ -2,15 +2,23 @@ const mongoose = require('mongoose');
 const Person = mongoose.model('Person');
 
 module.exports = {
-  convertParamPersonId,
+  convertParamPersonId1,
+  convertParamPersonId2,
   createRenderPersonProfile,
 };
 
-function convertParamPersonId(req, res, next, paramPersonId) {
+function convertParamPersonId1(req, res, next, paramPersonId) { // person/:id
   if (req.originalUrl.slice(0, 7) !== '/person') {
     return next();
   }
+  convertParamPersonId(req, res, next, paramPersonId)
+}
 
+function convertParamPersonId2(req, res, next, paramPersonId) { // :personId
+  convertParamPersonId(req, res, next, paramPersonId);
+}
+
+function convertParamPersonId(req, res, next, paramPersonId) {
   req.paramPersonId = paramPersonId;
 
   Person.findById(paramPersonId, (err, person) => {

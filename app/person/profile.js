@@ -6,8 +6,9 @@ const {
   Source,
 } = require('../import');
 
-const getTools = (path) => { return require('../tools/' + path) };
-const getPersonRelativesList = getTools('getPersonRelativesList');
+const constants = require('./constants');
+const getPersonRelativesList = require('./getPersonRelativesList');
+const {personFields} = constants;
 
 module.exports = {
   show: personSummary,
@@ -56,7 +57,11 @@ async function personEdit(req, res) {
   const people = Person.removeFromList(allPeople, req.person);
   Person.sortByName(people);
 
-  res.renderPersonProfile('edit', {people});
+  res.renderPersonProfile('edit', {
+    people,
+    personFields,
+    rootPath: '/person/' + req.paramPersonId,
+  });
 }
 
 async function personSources(req, res) {

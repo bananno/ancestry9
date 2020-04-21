@@ -14,7 +14,8 @@ const personChecklist = require('./checklist');
 module.exports = createRoutes;
 
 function createRoutes(router) {
-  router.param('id', personTools.convertParamPersonId);
+  router.param('id', personTools.convertParamPersonId1);
+  router.param('personId', personTools.convertParamPersonId2);
   router.use(personTools.createRenderPersonProfile);
 
   createModelRoutes({
@@ -38,12 +39,24 @@ function createRoutes(router) {
     listAttributes: ['links', 'tags'],
   });
 
-  router.post('/person/:id/add/events', makeRouteEditPost('events'));
-  router.post('/person/:id/add/notations', createPersonNotation);
+  const personRelationships = [
+    ['parents', 'children'],
+    ['spouses', 'spouses'],
+    ['children', 'parents']
+  ];
 
-  createRelationshipRoutes(router, 'parents', 'children');
-  createRelationshipRoutes(router, 'spouses', 'spouses');
-  createRelationshipRoutes(router, 'children', 'parents');
+  personRelationships.forEach(([relationship, corresponding]) => {
+    const addPath = '/person/:id/add/' + relationship;
+    const deletePath = '/person/:id/delete/' + relationship + '/:deleteId';
+    const reorderPath = '/person/:id/reorder/' + relationship + '/:orderId';
+
+    router.post(addPath, makeRouteEditPost(relationship, corresponding));
+    router.post(deletePath, makeRouteDelete(relationship, corresponding));
+    router.post(reorderPath, makeRouteReorder(relationship));
+  });
+
+  router.post('/person/:id/add/events', createPersonEvent);
+  router.post('/person/:id/add/notations', createPersonNotation);
 }
 
 async function peopleIndex(req, res) {
@@ -51,75 +64,38 @@ async function peopleIndex(req, res) {
   res.render('person/index', {title: 'All People', people});
 }
 
-function createRelationshipRoutes(router, relationship, corresponding) {
-  const addPath = '/person/:id/add/' + relationship;
-  const deletePath = '/person/:id/delete/' + relationship + '/:deleteId';
-  const reorderPath = '/person/:id/reorder/' + relationship + '/:orderId';
+function createPerson(req, res) {
+  const newPerson = Person.getFormDataNew(req);
 
-  router.post(addPath, makeRouteEditPost(relationship, corresponding));
-  router.post(deletePath, makeRouteDelete(relationship, corresponding));
-  router.post(reorderPath, makeRouteReorder(relationship));
-}
-
-function createPerson(req, res, next) {
-  const newPerson = {
-    name: req.body.name.trim(),
-    gender: req.body.gender,
-  };
-
-  if (newPerson.name == '') {
-    return;
+  if (!newPerson) {
+    return res.send('error');
   }
-
-  newPerson.customId = newPerson.name
-    .toLowerCase()
-    .replace(/\[|\]|\(|\)|\.|\//g, '')
-    .replace(/ /g, '-');
 
   Person.create(newPerson, function(err, person) {
     if (err) {
       res.send('There was a problem adding the information to the database.');
     } else {
-      res.format({
-        html: function() {
-          res.redirect('/person/' + person.customId + '/edit');
-        }
-      });
+      res.redirect('/person/' + person.customId + '/edit');
     }
   });
 }
 
-function makeRouteEditPost(editField, corresponding) {
+function makeRouteEditPost(relationship, corresponding) {
   return async (req, res) => {
     const person = req.person;
     const updatedObj = {};
-    const newValue = req.body[editField];
+    const newValue = req.body[relationship];
+    const newPersonId = newValue;
 
-    if (corresponding) {
-      var newPersonId = newValue;
+    if (newPersonId != '0') {
+      updatedObj[relationship] = (person[relationship] || []).concat(newPersonId);
 
-      if (newPersonId != '0') {
-        updatedObj[editField] = (person[editField] || []).concat(newPersonId);
-
-        Person.findById(newPersonId, (err, relative) => {
-          var updatedRelative = {};
-          updatedRelative[corresponding] = relative[corresponding] || [];
-          updatedRelative[corresponding].push(person.id);
-          relative.update(updatedRelative, () => {});
-        });
-      }
-    } else if (editField == 'events') {
-      const newEvent = Event.getFormDataNew(req);
-
-      if (!newEvent) {
-        return res.send('error');
-      }
-
-      newEvent.people.push(person);
-
-      await Event.create(newEvent, () => {});
-    } else {
-      updatedObj[editField] = newValue;
+      Person.findById(newPersonId, (err, relative) => {
+        var updatedRelative = {};
+        updatedRelative[corresponding] = relative[corresponding] || [];
+        updatedRelative[corresponding].push(person.id);
+        relative.update(updatedRelative, () => {});
+      });
     }
 
     person.update(updatedObj, err => {
@@ -129,13 +105,13 @@ function makeRouteEditPost(editField, corresponding) {
 
       let redirectUrl = '/person/';
 
-      if (editField == 'customId') {
+      if (relationship == 'customId') {
         redirectUrl += newValue;
       } else {
         redirectUrl += req.paramPersonId;
       }
 
-      if (editField == 'events') {
+      if (relationship == 'events') {
         redirectUrl += '/timeline';
       } else {
         redirectUrl += '/edit';
@@ -146,28 +122,25 @@ function makeRouteEditPost(editField, corresponding) {
   };
 }
 
-function makeRouteDelete(editField, corresponding) {
+function makeRouteDelete(relationship, corresponding) {
   return function(req, res, next) {
     var person = req.person;
     var updatedObj = {};
     var deleteId = req.params.deleteId;
+    var relationship = relationship;
 
-    if (corresponding) {
-      var relationship = editField;
+    updatedObj[relationship] = Person.removeFromList(person[relationship], deleteId);
 
-      updatedObj[relationship] = Person.removeFromList(person[relationship], deleteId);
+    Person.findById(deleteId, function(err, relative) {
+      if (err) {
+      } else {
+        var updatedRelative = {};
 
-      Person.findById(deleteId, function(err, relative) {
-        if (err) {
-        } else {
-          var updatedRelative = {};
+        updatedRelative[corresponding] = Person.removeFromList(relative[corresponding], person);
 
-          updatedRelative[corresponding] = Person.removeFromList(relative[corresponding], person);
-
-          relative.update(updatedRelative, () => {});
-        }
-      });
-    }
+        relative.update(updatedRelative, () => {});
+      }
+    });
 
     person.update(updatedObj, function(err) {
       if (err) {
@@ -183,45 +156,44 @@ function makeRouteDelete(editField, corresponding) {
   };
 }
 
-function makeRouteReorder(editField) {
-  return function(req, res) {
-    var person = req.person;
-    var updatedObj = {};
-    var orderId = req.params.orderId;
-    var dataType = editField;
+function makeRouteReorder(relationship) {
+  return async (req, res) => {
+    const person = req.person;
+    const updatedObj = {};
+    const orderId = req.params.orderId;
 
-    if (editField == 'parents' || editField == 'spouses' || editField == 'children') {
-      dataType = 'people';
-    }
+    updatedObj[relationship] = reorderList(person[relationship], orderId, 'people');
 
-    updatedObj[editField] = reorderList(person[editField], orderId, dataType);
+    await person.update(updatedObj);
 
-    person.update(updatedObj, function(err) {
-      if (err) {
-        res.send('There was a problem updating the information to the database: ' + err);
-      } else {
-        res.format({
-          html: function() {
-            res.redirect('/person/' + req.paramPersonId + '/edit');
-          }
-        });
-       }
-    });
+    res.redirect('/person/' + req.paramPersonId + '/edit');
   };
 }
 
-function createPersonNotation(req, res, next) {
-  const person = req.person;
-  const newNotation = {
-    title: req.body.title.trim(),
-    text: req.body.text.trim(),
-    people: [person],
-  };
-  const tags = req.body.tags.trim();
-  if (tags) {
-    newNotation.tags = tags.split('\n');
+async function createPersonEvent(req, res) {
+  const newEvent = Event.getFormDataNew(req);
+
+  if (!newEvent) {
+    return res.send('error');
   }
-  Notation.create(newNotation, (err, notation) => {
-    res.redirect('/person/' + req.paramPersonId + '/notations');
-  });
+
+  newEvent.people.push(req.person);
+
+  await Event.create(newEvent);
+
+  res.redirect('/person/' + req.paramPersonId + '/timeline');
+}
+
+async function createPersonNotation(req, res) {
+  const newNotation = Notation.getFormDataNew(req);
+
+  if (!newNotation) {
+    return res.send('error');
+  }
+
+  newNotation.people.push(req.person);
+
+  await Notation.create(newNotation);
+
+  res.redirect('/person/' + req.paramPersonId + '/notations');
 }

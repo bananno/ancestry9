@@ -1,6 +1,7 @@
 module.exports = {
   getFormDataDate,
   getFormDataLocation,
+  getFormDataTags,
 };
 
 function getFormDataDate(req) {
@@ -28,4 +29,8 @@ function getFormDataLocation(req) {
   }
 
   return location;
+}
+
+function getFormDataTags(req) {
+  return (req.body.tags || '').split('\n').map(s => s.trim()).filter(Boolean);
 }
