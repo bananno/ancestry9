@@ -2,6 +2,14 @@ const mongoose = require('mongoose');
 const methods = {};
 module.exports = methods;
 
+methods.addRelative = async function(relationship, relative) {
+  const updatedPerson = {
+    [relationship]: (this[relationship] || []).concat(relative)
+  };
+
+  await this.update(updatedPerson);
+};
+
 methods.getLifeEvents = async function() {
   const Event = mongoose.model('Event');
   const events = await Event.find({people: this}).populate('people');
@@ -54,4 +62,13 @@ methods.populateSiblings = async function() {
       this.siblings.push(sibling);
     }
   }
+};
+
+methods.removeRelative = async function(relationship, relative) {
+  const updatedPerson = {
+    [relationship]: mongoose.model('Person')
+      .removeFromList(this[relationship], relative)
+  };
+
+  await this.update(updatedPerson);
 };

@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const Image = mongoose.model('Image');
+const Person = mongoose.model('Person');
 const reorderList = require('./reorderList');
 
 function createModelRoutes(specs) {
@@ -52,34 +54,34 @@ class ModelRoutes {
     if (specs.fields) {
       specs.fields.forEach(field => {
         if (field.multi) {
-          this.addListAttribute(field.name);
-          this.deleteListAttribute(field.name);
-          this.reorderListAttribute(field.name);
+          this.addListAttribute(field);
+          this.deleteListAttribute(field);
+          this.reorderListAttribute(field);
         } else if (field.toggle) {
-          this.toggleAttribute(field.name);
+          this.toggleAttribute(field);
         } else {
-          this.updateAttribute(field.name);
+          this.updateAttribute(field);
         }
       });
     }
 
     if (specs.toggleAttributes) {
       specs.toggleAttributes.forEach(fieldName => {
-        this.toggleAttribute(fieldName);
+        this.toggleAttribute({name: fieldName});
       });
     }
 
     if (specs.singleAttributes) {
       specs.singleAttributes.forEach(fieldName => {
-        this.updateAttribute(fieldName);
+        this.updateAttribute({name: fieldName});
       });
     }
 
     if (specs.listAttributes) {
       specs.listAttributes.forEach(fieldName => {
-        this.addListAttribute(fieldName);
-        this.deleteListAttribute(fieldName);
-        this.reorderListAttribute(fieldName);
+        this.addListAttribute({name: fieldName});
+        this.deleteListAttribute({name: fieldName});
+        this.reorderListAttribute({name: fieldName});
       });
     }
   }
@@ -119,7 +121,8 @@ class ModelRoutes {
     });
   }
 
-  toggleAttribute(fieldName) {
+  toggleAttribute(field) {
+    const fieldName = field.name;
     this.postEdit(fieldName, (req, res, next) => {
       this.withItem(req, (item, itemId) => {
         const updatedObj = {};
@@ -138,7 +141,8 @@ class ModelRoutes {
     });
   }
 
-  updateAttribute(fieldName) {
+  updateAttribute(field) {
+    const fieldName = field.name;
     this.postEdit(fieldName, (req, res, next) => {
       this.withItem(req, (item, itemId) => {
         const updatedObj = {};
@@ -158,40 +162,49 @@ class ModelRoutes {
     });
   }
 
-  addListAttribute(fieldName) {
-    const routePath = '/' + this.modelName + '/:id/add/' + fieldName;
-    this.router.post(routePath, (req, res, next) => {
-      const newValue = req.body[fieldName].trim();
-      if (newValue == '') {
-        return;
+  addListAttribute(field) {
+    const routePath = '/' + this.modelName + '/:id/add/' + field.name;
+    this.router.post(routePath, async (req, res) => {
+      const newValue = req.body[field.name].trim();
+
+      if (!newValue) {
+        return res.send('error');
       }
-      new Promise(resolve => {
-        if (fieldName == 'images') {
-          const newVals = { url: newValue };
-          mongoose.model('Image').create(newVals, (err, newObject) => {
-            resolve(newObject);
-          });
-        } else {
-          resolve(newValue);
-        }
-      }).then(newItem => {
-        this.withItem(req, (item, itemId) => {
-          const updatedObj = {};
-          updatedObj[fieldName] = (item[fieldName] || []).concat(newItem);
-          this.updateAndRedirect(req, res, item, itemId, updatedObj);
-        });
+
+      this.withItem(req, async (item, itemId) => {
+        const newItem = await (async () => {
+          if (field.name === 'images') {
+            return await Image.create({url: newValue});
+          }
+
+          if (field.corresponding) {
+            const relative = await Person.findById(newValue);
+            await relative.addRelative(field.corresponding, item);
+          }
+
+          return newValue;
+        })();
+
+        const updatedObj = {};
+
+        updatedObj[field.name] = (item[field.name] || []).concat(newItem);
+
+        this.updateAndRedirect(req, res, item, itemId, updatedObj);
       });
     });
   }
 
-  deleteListAttribute(fieldName) {
+  deleteListAttribute(field) {
+    const fieldName = field.name;
     const routePath = '/' + this.modelName + '/:id/delete/' + fieldName + '/:deleteId';
     this.router.post(routePath, (req, res, next) => {
-      this.withItem(req, (item, itemId) => {
+      this.withItem(req, async (item, itemId) => {
         const updatedObj = {};
         const deleteId = req.params.deleteId;
 
-        if (['people', 'stories', 'images'].includes(fieldName)) {
+        const attrName = field.dataType || field.name;
+
+        if (['people', 'stories', 'images'].includes(attrName)) {
           updatedObj[fieldName] = item[fieldName].filter(item => {
             return ('' + (item._id || item)) != deleteId;
           });
@@ -201,28 +214,27 @@ class ModelRoutes {
           });
         }
 
-        new Promise(resolve => {
-          if (fieldName == 'images') {
-            mongoose.model('Image').findById(deleteId).exec((err, image) => {
-              image.remove(resolve);
-            });
-          } else {
-            resolve();
-          }
-        }).then(() => {
-          this.updateAndRedirect(req, res, item, itemId, updatedObj);
-        });
+        if (attrName === 'images') {
+          const image = await Image.findById(deleteId);
+          await image.remove();
+        } else if (field.corresponding) {
+          const relative = await Person.findById(deleteId);
+          await relative.removeRelative(field.corresponding, item);
+        }
+
+        this.updateAndRedirect(req, res, item, itemId, updatedObj);
       });
     });
   }
 
-  reorderListAttribute(fieldName) {
-    const routePath = '/' + this.modelName + '/:id/reorder/' + fieldName + '/:orderId';
-    this.router.post(routePath, (req, res, next) => {
+  reorderListAttribute(field) {
+    const routePath = '/' + this.modelName + '/:id/reorder/' + field.name + '/:orderId';
+    this.router.post(routePath, (req, res) => {
       this.withItem(req, (item, itemId) => {
         const updatedObj = {};
         const orderId = req.params.orderId;
-        updatedObj[fieldName] = reorderList(item[fieldName], orderId, fieldName);
+        const attrName = field.dataType || field.name;
+        updatedObj[field.name] = reorderList(item[field.name], orderId, attrName);
         this.updateAndRedirect(req, res, item, itemId, updatedObj);
       });
     });
