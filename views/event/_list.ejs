@@ -71,8 +71,13 @@
         <%= event.notes %>
         <% if (event.source) { %>
           <% event.source.images.forEach(image => { %>
-            <a href="<%= image.url %>" target="_blank"><img src="<%= image.url %>"
-              style="max-height: 100px; max-width: 350px;"></a>
+            <a
+              href="<%= image.src() %>"
+              target="_blank"
+            ><img
+              src="<%= image.src() %>"
+              style="max-height: 100px; max-width: 350px;"
+            ></a>
           <% }); %>
         <% } %>
       </td>
