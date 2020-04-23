@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
+const ObjectId = require('mongoose').Types.ObjectId;
 const Image = mongoose.model('Image');
 const Person = mongoose.model('Person');
 const reorderList = require('./reorderList');
+
+module.exports = createModelRoutes;
 
 function createModelRoutes(specs) {
   new ModelRoutes(specs);
@@ -64,130 +67,132 @@ class ModelRoutes {
     });
   }
 
-  postEdit(fieldName, callback) {
-    this.router.post('/' + this.modelName + '/:id/edit/' + fieldName, callback);
-  }
+  redirect(req, res, item, itemId, updatedObj, fieldName) {
+    let redirectId;
 
-  updateAndRedirect(req, res, item, itemId, updatedObj, fieldName) {
-    item.update(updatedObj, err => {
-      let redirectId;
-
-      if (this.modelName == 'person') {
-        if (fieldName == 'customId') {
-          redirectId = updatedObj.customId;
-        } else {
-          redirectId = req.paramPersonId;
-        }
+    if (this.modelName == 'person') {
+      if (fieldName == 'customId') {
+        redirectId = updatedObj.customId;
       } else {
-        redirectId = itemId;
+        redirectId = req.paramPersonId;
       }
+    } else {
+      redirectId = itemId;
+    }
 
-      res.redirect('/' + this.modelName + '/' + redirectId + this.redirectTo);
-    });
+    res.redirect('/' + this.modelName + '/' + redirectId + this.redirectTo);
   }
 
-  withItem(req, callback) {
+  async getItem(req) {
     const itemId = req.params.id;
-    this.Model.findById(itemId, (err, item) => {
-      if (!item && this.modelName == 'person') {
-        this.Model.find({ customId: itemId }, (err, item) => {
-          callback(item[0], itemId);
-        });
-      } else {
-        callback(item, itemId);
+
+    if (ObjectId.isValid(itemId)) {
+      const item = await this.Model.findById(itemId);
+      if (item) {
+        return {item, itemId};
       }
-    });
+    }
+
+    if (this.modelName === 'person') {
+      const item = await Person.findOne({customId: itemId});
+      return {item, itemId};
+    }
+
+    return {itemId};
   }
 
   toggleAttribute(field) {
-    const fieldName = field.name;
-    this.postEdit(fieldName, (req, res, next) => {
-      this.withItem(req, (item, itemId) => {
+    const routePath = '/' + this.modelName + '/:id/edit/' + field.name;
+    this.router.post(routePath, async (req, res) => {
+      const {item, itemId} = await this.getItem(req);
+      if (!item) {
+        return res.send('error');
+      }
+      if (field.onUpdate) {
+        await field.onUpdate(item);
+      } else {
         const updatedObj = {};
-        if (fieldName == 'shareLevel') {
-          updatedObj.sharing = item.sharing;
-          updatedObj.sharing.level += 1;
-          if (updatedObj.sharing.level == 3) {
-            updatedObj.sharing.level = 0;
-          }
-        } else {
-          const currentValue = item[fieldName] || false;
-          updatedObj[fieldName] = !currentValue;
-        }
-        this.updateAndRedirect(req, res, item, itemId, updatedObj);
-      });
+        const currentValue = item[field.name] || false;
+        updatedObj[field.name] = !currentValue;
+        await item.update(updatedObj);
+      }
+      this.redirect(req, res, item, itemId);
     });
   }
 
   updateAttribute(field) {
-    const fieldName = field.name;
-    this.postEdit(fieldName, (req, res, next) => {
-      this.withItem(req, (item, itemId) => {
-        const updatedObj = {};
-        if (fieldName == 'date') {
-          updatedObj[fieldName] = req.getFormDataDate();
-        } else if (fieldName == 'location') {
-          updatedObj[fieldName] = req.getFormDataLocation();
-        } else {
-          updatedObj[fieldName] = req.body[fieldName];
-        }
-        if (['story', 'source'].includes(fieldName)
-            && ['0', ''].includes(updatedObj[fieldName])) {
-          updatedObj[fieldName] = null;
-        }
-        this.updateAndRedirect(req, res, item, itemId, updatedObj, fieldName);
-      });
+    const routePath = '/' + this.modelName + '/:id/edit/' + field.name;
+    this.router.post(routePath, async (req, res) => {
+      const {item, itemId} = await this.getItem(req);
+      const updatedObj = {};
+
+      if (field.name == 'date') {
+        updatedObj[field.name] = req.getFormDataDate();
+      } else if (field.name == 'location') {
+        updatedObj[field.name] = req.getFormDataLocation();
+      } else {
+        updatedObj[field.name] = req.body[field.name];
+      }
+
+      if (['story', 'source'].includes(field.name)
+          && ['0', ''].includes(updatedObj[field.name])) {
+        updatedObj[field.name] = null;
+      }
+
+      await item.update(updatedObj);
+      this.redirect(req, res, item, itemId, updatedObj, field.name);
     });
   }
 
   addListAttribute(field) {
     const routePath = '/' + this.modelName + '/:id/add/' + field.name;
     this.router.post(routePath, async (req, res) => {
+      const {item, itemId} = await this.getItem(req);
       const newValue = req.body[field.name].trim();
 
-      if (!newValue) {
+      if (!item || !newValue) {
         return res.send('error');
       }
 
-      this.withItem(req, async (item, itemId) => {
-        const newItem = await (async () => {
-          if (field.name === 'images') {
-            return await Image.create({url: newValue});
-          }
+      if (field.onAdd) {
+        await field.onAdd(item, newValue);
+      } else {
+        const updatedObj = {
+          [field.name]: (item[field.name] || [])
+        };
 
-          if (field.corresponding) {
-            const relative = await Person.findById(newValue);
-            await relative.addRelative(field.corresponding, item);
-          }
+        if (field.name === 'images') {
+          const newItem = await Image.create({url: newValue});
+          updatedObj[field.name].push(newItem);
+        } else {
+          updatedObj[field.name].push(newValue);
+        }
 
-          return newValue;
-        })();
+        await item.update(updatedObj);
+      }
 
-        const updatedObj = {};
-
-        updatedObj[field.name] = (item[field.name] || []).concat(newItem);
-
-        this.updateAndRedirect(req, res, item, itemId, updatedObj);
-      });
+      this.redirect(req, res, item, itemId);
     });
   }
 
   deleteListAttribute(field) {
-    const fieldName = field.name;
-    const routePath = '/' + this.modelName + '/:id/delete/' + fieldName + '/:deleteId';
-    this.router.post(routePath, (req, res, next) => {
-      this.withItem(req, async (item, itemId) => {
-        const updatedObj = {};
-        const deleteId = req.params.deleteId;
+    const routePath = '/' + this.modelName + '/:id/delete/' + field.name + '/:deleteId';
+    this.router.post(routePath, async (req, res) => {
+      const {item, itemId} = await this.getItem(req);
+      const deleteId = req.params.deleteId;
 
+      if (field.onDelete) {
+        await field.onDelete(item, deleteId);
+      } else {
+        const updatedObj = {};
         const attrName = field.dataType || field.name;
 
         if (['people', 'stories', 'images'].includes(attrName)) {
-          updatedObj[fieldName] = item[fieldName].filter(item => {
+          updatedObj[field.name] = item[field.name].filter(item => {
             return ('' + (item._id || item)) != deleteId;
           });
         } else {
-          updatedObj[fieldName] = item[fieldName].filter((item, i) => {
+          updatedObj[field.name] = item[field.name].filter((item, i) => {
             return i != deleteId;
           });
         }
@@ -195,28 +200,25 @@ class ModelRoutes {
         if (attrName === 'images') {
           const image = await Image.findById(deleteId);
           await image.remove();
-        } else if (field.corresponding) {
-          const relative = await Person.findById(deleteId);
-          await relative.removeRelative(field.corresponding, item);
         }
 
-        this.updateAndRedirect(req, res, item, itemId, updatedObj);
-      });
+        await item.update(updatedObj);
+      }
+
+      this.redirect(req, res, item, itemId);
     });
   }
 
   reorderListAttribute(field) {
     const routePath = '/' + this.modelName + '/:id/reorder/' + field.name + '/:orderId';
-    this.router.post(routePath, (req, res) => {
-      this.withItem(req, (item, itemId) => {
-        const updatedObj = {};
-        const orderId = req.params.orderId;
-        const attrName = field.dataType || field.name;
-        updatedObj[field.name] = reorderList(item[field.name], orderId, attrName);
-        this.updateAndRedirect(req, res, item, itemId, updatedObj);
-      });
+    this.router.post(routePath, async (req, res) => {
+      const {item, itemId} = await this.getItem(req);
+      const updatedObj = {};
+      const orderId = req.params.orderId;
+      const attrName = field.dataType || field.name;
+      updatedObj[field.name] = reorderList(item[field.name], orderId, attrName);
+      await item.update(updatedObj);
+      this.redirect(req, res, item, itemId, updatedObj);
     });
   }
 }
-
-module.exports = createModelRoutes;
