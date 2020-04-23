@@ -3,6 +3,7 @@ const {
   createModelRoutes,
 } = require('../import');
 
+const constants = require('./constants');
 module.exports = createRoutes;
 
 function createRoutes(router) {
@@ -12,8 +13,7 @@ function createRoutes(router) {
     router: router,
     show: showImage,
     editView: false,
-    singleAttributes: ['url'],
-    listAttributes: ['tags'],
+    fields: constants.fields,
   });
 }
 
@@ -27,5 +27,10 @@ async function showImage(req, res) {
 
   await image.populateParent();
 
-  res.render('layout', {view: 'image/show', title: 'Image', image});
+  res.render('image/show', {
+    title: 'Image',
+    image,
+    fields: constants.fields,
+    rootPath: '/image/' + image._id,
+  });
 }

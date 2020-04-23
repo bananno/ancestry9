@@ -9,7 +9,7 @@ constants.fieldNamesShared = [
   'name', 'customId', 'links', 'profileImage', 'gender',
 ];
 
-constants.personFields = [
+constants.fields = [
   {name: 'name'},
   {name: 'customId'},
   {name: 'shareLevel', toggle: true, getValue: person => person.sharing.level},

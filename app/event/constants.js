@@ -5,7 +5,7 @@ constants.fieldNames = [
   '_id', 'title', 'date', 'location', 'people', 'notes'
 ];
 
-constants.eventFields = [
+constants.fields = [
   {name: 'title'},
   {name: 'date'},
   {name: 'location'},

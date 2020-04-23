@@ -11,7 +11,7 @@ constants.mainSourceTypes = [
   'photo', 'website', 'book', 'other'
 ];
 
-constants.sourceFields = [
+constants.fields = [
   {name: 'sharing', toggle: true, preventSharing: source => !source.canBeShared()},
   {name: 'story'},
   {name: 'title'},

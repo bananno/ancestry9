@@ -28,9 +28,10 @@ methods.getFormDataNew = req => {
   }
 
   const newNotation = {
-    title: req.body.title.trim(),
-    text: req.body.text.trim(),
+    title: notationTitle,
+    text: (req.body.text || '').trim(),
     people: [],
+    stories: [],
     tags: req.getFormDataTags(),
     date: req.getFormDataDate(),
     location: req.getFormDataLocation(),

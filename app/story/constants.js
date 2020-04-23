@@ -15,7 +15,7 @@ constants.noEntryStoryTypes = [
   'artifact', 'event', 'landmark', 'place'
 ];
 
-constants.storyFields = [
+constants.fields = [
   {name: 'sharing', toggle: true},
   {name: 'type'},
   {name: 'group', onlyIf: story => story.group}, // can edit/remove but not add

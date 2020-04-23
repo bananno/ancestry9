@@ -1,8 +1,3 @@
-<%
-  const rootPath = '/notation/' + notation._id;
-  const rootEditPath = '/notation/' + notation._id + '/edit';
-%>
-
 <h1>Notation</h1>
 <h2><%= notation.title %></h2>
 
@@ -10,84 +5,9 @@
   <a href="<%= rootPath %>">done</a>
 </p>
 
-<table class="edit-form-frame">
-
-  <!-- SHARING -->
-
-  <%- include('../forms/tableRowSingle', { params: {
-    attr: 'sharing',
-    editPath: rootEditPath + '/sharing',
-    originalValue: notation.sharing,
-    toggle: true,
-  }}) %>
-
-  <!-- TITLE -->
-
-  <%- include('../forms/tableRowSingle', { params: {
-    attr: 'title',
-    editPath: rootEditPath + '/title',
-    originalValue: notation.title,
-  }}) %>
-
-  <!-- SOURCE -->
-
-  <%- include('../forms/tableRowSingle', { params: {
-    attr: 'source',
-    editPath: rootEditPath + '/source',
-    originalValue: notation.source,
-  }}) %>
-
-  <!-- DATE -->
-
-  <%- include('../forms/tableRowSingle', { params: {
-    attr: 'date',
-    editPath: rootEditPath + '/date',
-    originalValue: notation.date,
-  }}) %>
-
-  <!-- LOCATION -->
-
-  <%- include('../forms/tableRowSingle', { params: {
-    attr: 'location',
-    editPath: rootEditPath + '/location',
-    originalValue: notation.location,
-  }}) %>
-
-  <!-- PEOPLE -->
-
-  <%- include('../forms/tableRowMulti', {
-    attr: 'people',
-    rootPath: rootPath,
-    values: notation.people,
-  }) %>
-
-  <!-- STORIES -->
-
-  <%- include('../forms/tableRowMulti', {
-    attr: 'stories',
-    rootPath: rootPath,
-    values: notation.stories,
-  }) %>
-
-  <!-- TEXT -->
-
-  <%- include('../forms/tableRowSingle', { params: {
-    attr: 'text',
-    editPath: rootEditPath + '/text',
-    originalValue: notation.text,
-    fieldType: 'textarea',
-  }}) %>
-
-  <!-- TAGS -->
-
-  <%- include('../forms/tableRowMulti', {
-    attr: 'tags',
-    rootPath: rootPath,
-    values: notation.tags,
-  }) %>
-
-</table>
-
-<script>
-  initializeEditForm();
-</script>
+<%- include('../forms/editTable', {
+  item: notation,
+  itemName: 'notation',
+  rootPath,
+  fields,
+}) %>

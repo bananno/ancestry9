@@ -61,12 +61,13 @@ async function renderEdit(req, res) {
   res.renderSource('edit', {
     title: 'Edit Source',
     rootPath: '/source/' + source._id,
-    sourceFields: constants.sourceFields,
+    fields: constants.fields,
     people,
     stories,
     citationsByPerson,
     needCitationText: source.story.title.match('Census')
-      && source.citeText.length == 0
+      && source.citeText.length == 0,
+    citationTextPath: '/source/' + source._id + '/createCitationNotation',
   });
 }
 

@@ -34,7 +34,7 @@ function createRoutes(router) {
       checklist: personChecklist,
       ...personProfileRoutes.other,
     },
-    fields: constants.personFields,
+    fields: constants.fields,
   });
 
   router.post('/person/:id/add/events', createPersonEvent);

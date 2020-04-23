@@ -6,8 +6,6 @@ const {
 } = require('../import');
 
 const constants = require('./constants');
-const {eventFields} = constants;
-
 module.exports = createRoutes;
 
 function createRoutes(router) {
@@ -22,7 +20,7 @@ function createRoutes(router) {
     delete: deleteEvent,
     show: showEvent,
     edit: editEvent,
-    fields: eventFields,
+    fields: constants.fields,
   });
 }
 
@@ -85,5 +83,10 @@ async function editEvent(req, res) {
   }
   const people = await Person.find({});
   Person.sortByName(people);
-  res.renderEvent('edit', {title: 'Edit Event', eventFields, people});
+
+  res.renderEvent('edit', {
+    title: 'Edit Event',
+    fields: constants.fields,
+    people,
+  });
 }

@@ -8,7 +8,6 @@ const {
 
 const constants = require('./constants');
 const getPersonRelativesList = require('./getPersonRelativesList');
-const {personFields} = constants;
 
 module.exports = {
   show: personSummary,
@@ -59,7 +58,7 @@ async function personEdit(req, res) {
 
   res.renderPersonProfile('edit', {
     people,
-    personFields,
+    fields: constants.fields,
     rootPath: '/person/' + req.paramPersonId,
   });
 }

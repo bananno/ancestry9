@@ -12,21 +12,23 @@
   item: source,
   itemName: 'source',
   rootPath,
-  fields: sourceFields,
+  fields,
   canDelete: source.canBeDeleted(),
 }) %>
 
 <% if (needCitationText) { %>
   <h2>citation text</h2>
-  <p>
-    <span class="clickable-link main-link" id="add-citation-notation">+ add notation</span>
+  <p id="add-citation-notation">
+    <span class="clickable-link main-link">+ add notation</span>
   </p>
-  <form method="post" action="/source/<%= source._id %>/createCitationNotation"
-      id="new-citation-notation-form">
-    <textarea name="text"></textarea>
-    <button>submit</button>
-    <span class="clickable-link" id="new-citation-notation-cancel">cancel</span>
-  </form>
+  <div id="new-citation-notation-form">
+    <form method="post" action="<%= citationTextPath %>">
+      <input type="hidden" name="title" value="source citation">
+      <textarea name="text"></textarea>
+      <button>submit</button>
+      <span class="clickable-link" id="new-citation-notation-cancel">cancel</span>
+    </form>
+  </div>
 <% } %>
 
 <div>
@@ -73,12 +75,12 @@
 }) %>
 
 <script>
-  $('#add-citation-notation').click(() => {
+  $('#add-citation-notation span').click(() => {
     $('#new-citation-notation-form').show();
     $('#add-citation-notation').hide();
   });
   $('#new-citation-notation-cancel').click(() => {
-    $('#new-citation-notation-form').find('input, textarea').val('');
+    $('#new-citation-notation-form').find('[name="text"]').val('');
     $('#new-citation-notation-form').hide();
     $('#add-citation-notation').show();
   });

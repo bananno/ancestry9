@@ -13,7 +13,7 @@ function createRoutes(router) {
 }
 
 async function createCitation(req, res) {
-  const newCitation = getCitationValues(req);
+  const newCitation = Citation.getFormData(req);
 
   const citation = await Citation.create(newCitation);
 
@@ -25,7 +25,7 @@ async function createCitation(req, res) {
 }
 
 async function updateCitation(req, res) {
-  const updatedItem = getCitationValues(req);
+  const updatedItem = Citation.getFormData(req);
   if (!updatedItem) {
     // Data is invalid; page spins. Has actually proven to be convenient.
     return;
@@ -43,20 +43,4 @@ async function convertParamCitationId(req, res, next, citationId) {
   req.citationId = citationId;
   req.citation = await Citation.findById(citationId);
   next();
-}
-
-function getCitationValues(req) {
-  const citationValues = {
-    source: req.sourceId,
-    person: req.body.person,
-    item: req.body.item.trim(),
-    information: req.body.information.trim(),
-  };
-
-  if (citationValues.item == '' || citationValues.information == ''
-      || citationValues.person == '0') {
-    return false;
-  }
-
-  return citationValues;
 }

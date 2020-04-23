@@ -14,6 +14,22 @@ methods.getAllSharedData = async () => {
   }).map(citation => citation.toSharedObject());
 };
 
+methods.getFormData = req => { // create or update
+  const newCitation = {
+    source: req.sourceId,
+    person: req.body.person,
+    item: req.body.item.trim(),
+    information: req.body.information.trim(),
+  };
+
+  if (!newCitation.item || !newCitation.information
+      || newCitation.person === '0') {
+    return false;
+  }
+
+  return newCitation;
+};
+
 methods.populateStories = async citations => {
   for (let i in citations) {
     await citations[i].populateStory();

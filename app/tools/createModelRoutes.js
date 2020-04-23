@@ -51,39 +51,17 @@ class ModelRoutes {
       }
     }
 
-    if (specs.fields) {
-      specs.fields.forEach(field => {
-        if (field.multi) {
-          this.addListAttribute(field);
-          this.deleteListAttribute(field);
-          this.reorderListAttribute(field);
-        } else if (field.toggle) {
-          this.toggleAttribute(field);
-        } else {
-          this.updateAttribute(field);
-        }
-      });
-    }
-
-    if (specs.toggleAttributes) {
-      specs.toggleAttributes.forEach(fieldName => {
-        this.toggleAttribute({name: fieldName});
-      });
-    }
-
-    if (specs.singleAttributes) {
-      specs.singleAttributes.forEach(fieldName => {
-        this.updateAttribute({name: fieldName});
-      });
-    }
-
-    if (specs.listAttributes) {
-      specs.listAttributes.forEach(fieldName => {
-        this.addListAttribute({name: fieldName});
-        this.deleteListAttribute({name: fieldName});
-        this.reorderListAttribute({name: fieldName});
-      });
-    }
+    specs.fields.forEach(field => {
+      if (field.multi) {
+        this.addListAttribute(field);
+        this.deleteListAttribute(field);
+        this.reorderListAttribute(field);
+      } else if (field.toggle) {
+        this.toggleAttribute(field);
+      } else {
+        this.updateAttribute(field);
+      }
+    });
   }
 
   postEdit(fieldName, callback) {

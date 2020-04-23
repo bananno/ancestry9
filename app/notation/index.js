@@ -5,6 +5,7 @@ const {
   createModelRoutes,
 } = require('../import');
 
+const constants = require('./constants');
 module.exports = createRoutes;
 
 function createRoutes(router) {
@@ -16,9 +17,7 @@ function createRoutes(router) {
     create: createNotation,
     show: showNotation,
     edit: editNotation,
-    toggleAttributes: ['sharing'],
-    singleAttributes: ['title', 'text', 'source', 'date', 'location'],
-    listAttributes: ['people', 'stories', 'tags'],
+    fields: constants.fields,
   });
 }
 
@@ -28,9 +27,10 @@ async function notationsIndex(req, res) {
 }
 
 function createNotation(req, res) {
-  const newNotation = {
-    title: req.body.title.trim(),
-  };
+  const newNotation = Notation.getFormDataNew(req);
+  if (!newNotation) {
+    return res.send('error');
+  }
   Notation.create(newNotation, (err, notation) => {
     if (err) {
       return res.send('There was a problem adding the information to the database.');
@@ -55,7 +55,15 @@ async function editNotation(req, res) {
   const people = await Person.find({});
   Person.sortByName(people);
   const stories = await Story.find({});
-  res.render('notation/edit', {title: 'Notation', notation, people, stories});
+
+  res.render('notation/edit', {
+    title: 'Notation',
+    notation,
+    people,
+    stories,
+    rootPath: '/notation/' + notation._id,
+    fields: constants.fields,
+  });
 }
 
 async function getNotation(notationId) {

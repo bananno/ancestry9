@@ -1,4 +1,5 @@
 const {
+  Notation,
   Source,
   createModelRoutes,
 } = require('../import');
@@ -6,8 +7,6 @@ const {
 const constants = require('./constants');
 const sourceTools = require('./tools');
 const sourceProfile = require('./show');
-const sourceUpdate = require('./update');
-const {mainSourceTypes, sourceFields} = constants;
 
 module.exports = createRoutes;
 
@@ -23,21 +22,21 @@ function createRoutes(router) {
     router,
     index: getSourcesIndex('none'),
     create: createSource,
-    delete: sourceUpdate.deleteSource,
+    delete: deleteSource,
     show: sourceProfile.summary,
     edit: sourceProfile.edit,
     otherRoutes: {
       ...sourceProfile.other
     },
-    fields: sourceFields,
+    fields: constants.fields,
   });
 
-  mainSourceTypes.forEach(sourceType => {
+  constants.mainSourceTypes.forEach(sourceType => {
     router.get('/sources/' + sourceType, getSourcesIndex(sourceType));
   });
 
-  router.post('/source/:id/createCitationNotation', sourceUpdate.createCiteText);
-  router.post('/source/:id/createNotation', sourceUpdate.createNotation);
+  router.post('/source/:id/createCitationNotation', createSourceCiteNotation);
+  router.post('/source/:id/createNotation', createSourceNotation);
 }
 
 function getSourcesIndex(subview) {
@@ -48,7 +47,7 @@ function getSourcesIndex(subview) {
       title: 'Sources',
       sources,
       subview,
-      mainSourceTypes,
+      mainSourceTypes: constants.mainSourceTypes,
     });
   };
 }
@@ -67,4 +66,23 @@ function createSource(req, res) {
     }
     res.redirect('/source/' + source._id + '/edit');
   });
+}
+
+async function deleteSource(req, res) {
+  await Source.deleteOne({_id: req.sourceId});
+  res.redirect('/sources');
+}
+
+async function createSourceCiteNotation(req, res) {
+  const newNotation = Notation.getFormDataNew(req);
+  newNotation.source = req.sourceId;
+  await Notation.create(newNotation);
+  res.redirect('/source/' + req.sourceId + '/edit');
+}
+
+async function createSourceNotation(req, res) {
+  const newNotation = Notation.getFormDataNew(req);
+  newNotation.source = req.sourceId;
+  await Notation.create(newNotation);
+  res.redirect('/source/' + req.sourceId + '/notations');
 }

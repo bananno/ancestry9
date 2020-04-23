@@ -6,10 +6,8 @@ const {
   createModelRoutes,
 } = require('../import');
 
-const storyTools = require('./tools');
 const constants = require('./constants');
-const {storyFields} = constants;
-
+const storyTools = require('./tools');
 module.exports = createRoutes;
 
 function createRoutes(router) {
@@ -29,7 +27,7 @@ function createRoutes(router) {
       'newEntry': storyNewEntry,
       'notations': storyNotations,
     },
-    fields: storyFields,
+    fields: constants.fields,
   });
 
   router.post('/story/:id/createNotation', createStoryNotation);
@@ -134,20 +132,12 @@ function withStory(req, res, options, callback) {
   });
 }
 
-function createStoryNotation(req, res, next) {
-  withStory(req, res, {}, ({story}) => {
-    const newNotation = {
-      title: req.body.title.trim(),
-      text: req.body.text.trim(),
-      stories: [story],
-    };
-    Notation.create(newNotation, (err, notation) => {
-      if (err) {
-        return res.send('There was a problem adding the information to the database.');
-      }
-      res.redirect('/story/' + story._id + '/notations');
-    });
-  });
+async function createStoryNotation(req, res) {
+  const storyId = req.params.id;
+  const newNotation = Notation.getFormDataNew(req);
+  newNotation.stories.push(storyId);
+  await Notation.create(newNotation);
+  res.redirect('/story/' + storyId + '/notations');
 }
 
 function mainStoryView(res, story, params) {
@@ -180,7 +170,7 @@ async function storyEdit(req, res) {
 
   const people = await Person.find({});
 
-  res.renderStory('edit', {storyFields, people});
+  res.renderStory('edit', {fields: constants.fields, people});
 }
 
 async function storyEntries(req, res) {

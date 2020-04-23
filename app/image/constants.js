@@ -1,7 +1,11 @@
-const fieldNames = [
+const constants = {};
+module.exports = constants;
+
+constants.fieldNames = [
   '_id', 'url', 'tags'
 ];
 
-module.exports = {
-  fieldNames,
-};
+constants.fields = [
+  {name: 'url'},
+  {name: 'tags', multi: true},
+];
