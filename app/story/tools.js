@@ -5,15 +5,16 @@ module.exports = {
 };
 
 function createRenderStory(req, res, next) {
-  res.renderStory = (subview, options = {}) => {
+  res.renderStory = async (subview, options = {}) => {
     const story = req.story;
+    if (!story.entries) {
+      await story.populateEntries();
+    }
     res.render('story/_layout', {
       subview,
       title: story.title,
       story,
       rootPath: '/story/' + story._id,
-      canHaveDate: story.type != 'cemetery',
-      canHaveEntries: !constants.noEntryStoryTypes.includes(story.type),
       ...options
     });
   };

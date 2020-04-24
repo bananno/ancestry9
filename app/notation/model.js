@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const tools = require('../tools/modelTools');
+const instanceMethods = require('./model-instance');
 const staticMethods = require('./model-static');
 
 const notationSchema = new mongoose.Schema({
@@ -22,6 +23,10 @@ const notationSchema = new mongoose.Schema({
   text: String,
   sharing: { type: Boolean, default: false },
 });
+
+for (let methodName in instanceMethods) {
+  notationSchema.methods[methodName] = instanceMethods[methodName];
+}
 
 for (let methodName in staticMethods) {
   notationSchema.statics[methodName] = staticMethods[methodName];

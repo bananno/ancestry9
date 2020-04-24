@@ -4,6 +4,22 @@ const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
+methods.canHaveDate = function() {
+  return this.type !== 'cemetery';
+};
+
+methods.canHaveEntries = function() {
+  return !constants.noEntryStoryTypes.includes(this.type);
+};
+
+methods.entriesCanHaveDate = function() {
+  return this.type !== 'cemetery';
+};
+
+methods.entriesCanHaveLocation = function() {
+  return !['cemetery', 'newspaper'].includes(this.type);
+};
+
 // Return list of sources that belong to THIS story.
 methods.getEntries = async function() {
   const entries = await mongoose.model('Source').find({story: this});
@@ -11,9 +27,29 @@ methods.getEntries = async function() {
   return entries;
 };
 
+// Get official text about story origin (e.g., MLA) NOT the citation model.
+methods.populateCiteText = async function() {
+  const notations = await mongoose.model('Notation').getCitesForStory(this);
+  this.citeText = notations.map(notation => notation.text);
+};
+
 // Assign list of sources that belong to THIS story.
 methods.populateEntries = async function() {
-  this.entries = this.getEntries();
+  this.entries = await this.getEntries();
+};
+
+// Assign list of sources that are attached to this story, but don't belong to it.
+methods.populateNonEntrySources = async function() {
+  this.nonEntrySources = await mongoose.model('Source')
+    .find({stories: this}).populate('story');
+};
+
+methods.populateNotations = async function() {
+  this.notations = await mongoose.model('Notation').find({stories: this});
+};
+
+methods.shouldHaveCiteText = async function() {
+  return !['event', 'place'].includes(this.type);
 };
 
 methods.toSharedObject = function() {

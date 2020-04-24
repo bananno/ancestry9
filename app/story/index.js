@@ -61,77 +61,6 @@ function createStory(req, res) {
   });
 }
 
-function withStory(req, res, options, callback) {
-  const storyId = req.params.id;
-
-  Story.findById(storyId)
-  .populate('people')
-  .populate('images')
-  .exec((err, story) => {
-    if (!story) {
-      return res.send('Story not found');
-    }
-
-    const data = { story };
-
-    // ENTRIES (sources that belong to the story)
-    new Promise(resolve => {
-      if (!options.entries) {
-        return resolve();
-      }
-      if (options.entryImages) {
-        return Source.find({ story: story }).populate('images').exec((err, entries) => {
-          entries.sort((a, b) => a.title < b.title ? -1 : 1);
-          data.entries = entries;
-          resolve();
-        });
-      }
-      Source.find({ story: story }).exec((err, entries) => {
-        entries.sort((a, b) => a.title < b.title ? -1 : 1);
-        data.entries = entries;
-        resolve();
-      });
-    // SOURCES (other pinned sources; don't belong to the story)
-    }).then(() => {
-      if (!options.sources) {
-        return;
-      }
-      return new Promise(resolve => {
-        Source.find({ stories: story })
-        .populate('story')
-        .exec((err, sources) => {
-          data.sources = sources;
-          resolve();
-        });
-      });
-    // NOTATIONS
-    }).then(() => {
-      if (!options.notations && !options.citationText) {
-        return;
-      }
-      return new Promise(resolve => {
-        Notation
-        .find({ stories: [story] })
-        .exec((err, notations) => {
-          // all notations
-          if (options.notations) {
-            data.notations = notations;
-          }
-          // citation text: offical text describing the origin of story/sources
-          if (options.citationText) {
-            data.citationText = notations
-              .filter(notation => notation.title == 'source citation')
-              .map(notation => notation.text);
-          }
-          resolve();
-        });
-      });
-    }).then(() => {
-      callback(data);
-    });
-  });
-}
-
 async function createStoryNotation(req, res) {
   const storyId = req.params.id;
   const newNotation = Notation.getFormDataNew(req);
@@ -140,84 +69,48 @@ async function createStoryNotation(req, res) {
   res.redirect('/story/' + storyId + '/notations');
 }
 
-function mainStoryView(res, story, params) {
-  res.render('story/_layout', {
-    title: story.title,
-    story,
-    rootPath: '/story/' + story._id,
-    canHaveDate: story.type != 'cemetery',
-    canHaveEntries: !['artifact', 'event', 'landmark', 'place'].includes(story.type),
-    ...params
-  });
-}
-
-function storyShowMain(req, res) {
-  withStory(req, res, {
-    entries: true, sources: true, citationText: true
-  }, ({story, entries, sources, citationText}) => {
-    mainStoryView(res, story, {
-      subview: 'show',
-      entries,
-      sources,
-      citationText
-    });
-  });
+async function storyShowMain(req, res) {
+  req.story = await Story.findById(req.params.id)
+    .populate('people').populate('images');
+  await req.story.populateCiteText();
+  await req.story.populateNonEntrySources();
+  res.renderStory('show');
 }
 
 async function storyEdit(req, res) {
   req.story = await Story.findById(req.params.id)
     .populate('people').populate('images');
-
   const people = await Person.find({});
-
   res.renderStory('edit', {fields: constants.fields, people});
 }
 
 async function storyEntries(req, res) {
   req.story = await Story.findById(req.params.id);
-  const entries = await Source.find({story: req.story}).populate('images');
-  entries.sort((a, b) => a.title < b.title ? -1 : 1);
-  res.renderStory('entries', {entries});
+  await req.story.populateEntries();
+  req.story.entries.sort((a, b) => a.title < b.title ? -1 : 1);
+  res.renderStory('entries');
 }
 
-function storyNewEntry(req, res, next) {
-  withStory(req, res, { entries: true }, ({story, entries}) => {
-    let sourceType = {
-      website: 'article',
-      book: 'book',
-      document: 'document',
-      cemetery: 'grave',
-      index: 'index',
-      newspaper: 'newspaper',
-    }[story.type] || 'other';
+async function storyNewEntry(req, res) {
+  req.story = await Story.findById(req.params.id);
+  res.renderStory('newEntry', {actionPath: '/sources/new'});
+}
 
-    const entryCanHaveDate = !['cemetery'].includes(story.type);
-    const entryCanHaveLocation = !['cemetery', 'newspaper'].includes(story.type);
+async function storyNotations(req, res) {
+  req.story = await Story.findById(req.params.id);
+  await req.story.populateNotations();
 
-    mainStoryView(res, story, {
-      subview: 'newEntry',
-      actionPath: '/sources/new',
-      entries,
-      entryCanHaveDate,
-      entryCanHaveLocation,
-      sourceType,
-    });
+  const notations = {};
+
+  req.story.notations.forEach(notation => {
+    const category = notation.getCategoryForStory();
+    notations[category] = (notations[category] || []).concat(notation);
   });
+
+  res.renderStory('notations', {notations});
 }
 
-function storyNotations(req, res, next) {
-  withStory(req, res, {
-    entries: true, notations: true
-  }, ({ story, entries, notations }) => {
-    mainStoryView(res, story, {
-      subview: 'notations',
-      entries,
-      notations,
-    });
-  });
-}
-
-function storiesWithSources(req, res, next) {
+function storiesWithSources(req, res) {
   Source.find({})
   .populate('story')
   .populate('stories')

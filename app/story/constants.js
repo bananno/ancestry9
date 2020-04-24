@@ -20,7 +20,7 @@ constants.fields = [
   {name: 'type'},
   {name: 'group', onlyIf: story => story.group}, // can edit/remove but not add
   {name: 'title'},
-  {name: 'date'},
+  {name: 'date', onlyIf: story => story.canHaveDate()},
   {name: 'location'},
   {name: 'people', multi: true},
   {name: 'links', multi: true},

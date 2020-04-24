@@ -8,11 +8,11 @@
     navLinks.push(['', 'show']);
     navLinks.push(['edit', 'edit']);
 
-    if (entries.length > 0) {
+    if (story.entries.length > 0) {
       navLinks.push(['entries', 'entries']);
     }
 
-    if (canHaveEntries) {
+    if (story.canHaveEntries()) {
       navLinks.push(['newEntry', '+ new entry']);
     }
 

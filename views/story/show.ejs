@@ -36,7 +36,7 @@
   <% }); %>
 <% } %>
 
-<% if (canHaveDate && story.date) { %>
+<% if (story.canHaveDate() && story.date) { %>
   <h2>date</h2>
   <p>
     <%- include('../format/date', { params: {
@@ -102,19 +102,19 @@
   }) %>
 <% } %>
 
-<% if (citationText.length) { %>
+<% if (story.citeText.length) { %>
   <h2>citation text</h2>
   <ul class="bullet-list">
-    <% citationText.forEach(text => { %>
+    <% story.citeText.forEach(text => { %>
       <li><%= text %></li>
     <% }); %>
   </ul>
 <% } %>
 
-<% if (entries.length) { %>
+<% if (story.entries.length) { %>
   <h2>entries</h2>
   <ul class="bullet-list">
-    <% entries.forEach(source => { %>
+    <% story.entries.forEach(source => { %>
       <li>
         <%- include('../source/_link', {source}) %>
       </li>
@@ -122,10 +122,10 @@
   </ul>
 <% } %>
 
-<% if (sources.length) { %>
+<% if (story.nonEntrySources.length) { %>
   <h2>sources</h2>
   <ul class="bullet-list">
-    <% sources.forEach(source => { %>
+    <% story.nonEntrySources.forEach(source => { %>
       <li>
         <%- include('../source/_link', {source, showStory: true}) %>
       </li>

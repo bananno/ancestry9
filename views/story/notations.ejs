@@ -1,17 +1,36 @@
 <%
-  const citations = notations.filter(notation => notation.title == 'source citation');
-
-  const excerpts = notations.filter(notation => {
-    return notation.title == 'excerpt' || notation.tags.includes('excerpt');
-  });
-
-  const otherNotations = notations.filter(notation => {
-    return !['source citation', 'excerpt'].includes(notation.title)
-      && !notation.tags.includes('excerpt');
-  });
-
-  const shouldHaveCitation = !['event', 'place'].includes(story.type);
+  const categories = [
+    {
+      key: 'citation',
+      title: 'citation',
+      alwaysShowCategory: story.shouldHaveCiteText(),
+      showNone: !notations.citation,
+    },
+    {
+      key: 'except',
+      title: 'excerpts from sources',
+    },
+    {
+      key: 'other',
+      title: 'other notations',
+    },
+  ];
 %>
+
+<style>
+  hr {
+    margin: 20px 0;
+  }
+  .notation p {
+    margin-top: 10px;
+  }
+  .notation li {
+    margin-top: 5px;
+  }
+  #new-notation-form {
+    display: none;
+  }
+</style>
 
 <h2>story notations</h2>
 
@@ -31,77 +50,31 @@
   </form>
 </div>
 
-<% if (shouldHaveCitation || citations.length > 0) { %>
-  <hr>
+<% categories.forEach(category => { %>
+  <% if (notations[category.key] || category.alwaysShowCategory) { %>
+    <hr>
 
-  <h2>citation</h2>
+    <h2><%= category.title %></h2>
 
-  <% if (citations.length == 0) { %>
-    <p>
-      <i>(none)</i>
-    </p>
+    <% if (category.showNone) { %>
+      <p>
+        <i>(none)</i>
+      </p>
+    <% } %>
+
+    <% (notations[category.key] || []).forEach(notation => { %>
+      <hr>
+      <div>
+        <p>
+          <%- include('../notation/_link', {notation}) %>
+        </p>
+        <p>
+          <%= notation.text %>
+        </p>
+      </div>
+    <% }); %>
   <% } %>
-
-  <% citations.forEach(notation => { %>
-    <div>
-      <p>
-        <%- include('../notation/_link', {notation}) %>
-      </p>
-      <p>
-        <%= notation.text %>
-      </p>
-    </div>
-  <% }); %>
-<% } %>
-
-<% if (excerpts.length) { %>
-  <hr>
-  <h2>excerpts from sources</h2>
-<% } %>
-
-<% excerpts.forEach(notation => { %>
-  <hr>
-  <div>
-    <p>
-      <%- include('../notation/_link', {notation}) %>
-    </p>
-    <p>
-      <%= notation.text %>
-    </p>
-  </div>
 <% }); %>
-
-<% if (otherNotations.length) { %>
-  <hr>
-  <h2>other notations</h2>
-<% } %>
-
-<% otherNotations.forEach(notation => { %>
-  <hr>
-  <div>
-    <p>
-      <%- include('../notation/_link', {notation}) %>
-    </p>
-    <p>
-      <%= notation.text %>
-    </p>
-  </div>
-<% }); %>
-
-<style>
-  hr {
-    margin: 20px 0;
-  }
-  .notation p {
-    margin-top: 10px;
-  }
-  .notation li {
-    margin-top: 5px;
-  }
-  #new-notation-form {
-    display: none;
-  }
-</style>
 
 <script>
   $('#add-notation').click(() => {
