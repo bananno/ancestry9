@@ -39,18 +39,14 @@
 <% if (story.canHaveDate() && story.date) { %>
   <h2>date</h2>
   <p>
-    <%- include('../format/date', { params: {
-      date: story.date,
-    }}) %>
+    <%- include('../format/date', {date: story.date}) %>
   </p>
 <% } %>
 
 <% if (story.location) { %>
   <h2>location</h2>
   <p>
-    <%- include('../format/location', { params: {
-      location: story.location,
-    }}) %>
+    <%- include('../format/location', {location: story.location}) %>
   </p>
 <% } %>
 

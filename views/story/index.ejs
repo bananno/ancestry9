@@ -129,14 +129,10 @@
         <%- include('../story/_link', {story}) %>
       </td>
       <td>
-        <%- include('../format/date', { params: {
-          date: story.date,
-        }}) %>
+        <%- include('../format/date', {date: story.date}) %>
       </td>
       <td>
-        <%- include('../format/location', { params: {
-          location: story.location,
-        }}) %>
+        <%- include('../format/location', {location: story.location}) %>
       </td>
       <td>
         <% storyNotes.forEach(str => { %>

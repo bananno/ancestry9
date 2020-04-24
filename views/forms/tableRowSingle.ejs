@@ -2,7 +2,7 @@
   const attr = locals.params ? (params.attr || params.attrName) : locals.attr;
   const editPath = locals.params ? params.editPath : locals.editPath;
   const originalValue = locals.params ? params.originalValue : locals.originalValue;
-  const fieldType = (locals.params ? params.fieldType : locals.fieldType) || 'text';
+  const inputType = locals.inputType || locals.fieldType) || 'text';
   const toggle = locals.params ? params.toggle : locals.toggle;
   const preventSharing = locals.preventSharing || false;
   const disableToggleButton = toggle && preventSharing && !originalValue;
@@ -24,13 +24,9 @@
         <!-- date, location -->
 
         <% if (attr == 'date') { %>
-          <%- include('../format/date', { params: {
-            date: originalValue,
-          }}) %>
+          <%- include('../format/date', {date: originalValue}) %>
         <% } else if (attr == 'location') { %>
-          <%- include('../format/location', { params: {
-            location: originalValue,
-          }}) %>
+          <%- include('../format/location', {location: originalValue}) %>
 
         <!-- story -->
 
@@ -68,7 +64,7 @@
 
         <!-- textarea -->
 
-        <% } else if (fieldType == 'textarea') { %>
+        <% } else if (inputType == 'textarea') { %>
           <%
             let valueList = [];
             if (originalValue && originalValue != '') {
@@ -122,11 +118,11 @@
 
       <% if (attr == 'date') { %>
         <div item="<%= attr %>" class="value-edit">
-          <%- include('../forms/date', { date: originalValue }) %>
+          <%- include('../forms/date', {date: originalValue}) %>
         </div>
       <% } else if (attr == 'location') { %>
         <div item="<%= attr %>" class="value-edit">
-          <%- include('../forms/location', { location: originalValue }) %>
+          <%- include('../forms/location', {location: originalValue}) %>
         </div>
       <% } else if (attr == 'story') { %>
         <div item="<%= attr %>" class="value-edit">
@@ -145,7 +141,7 @@
             <% } %>
           <% }); %>
         </select>
-      <% } else if (fieldType == 'textarea') { %>
+      <% } else if (inputType == 'textarea') { %>
         <textarea item="<%= attr %>" class="value-edit" name="<%= attr %>"><%= originalValue %></textarea>
       <% } else { %>
         <input item="<%= attr %>" class="value-edit" type="text" value="<%= originalValueText %>" name="<%= attr %>">

@@ -1,37 +1,37 @@
 <style>
-    ul {
-        margin-left: 30px;
-    }
-    #location-list, #show-pins {
-        display: inline-block;
-        vertical-align: text-top;
-        height: 85%;
-        overflow: scroll;
-    }
-    #location-list {
-        width: 30%;
-    }
-    #show-pins {
-        width: 60%;
-    }
-    #map {
-        height: 500px;
-        width: 700px;
-    }
-    .location-list th,
-    .location-list td {
-        border: 1px solid black;
-        padding: 5px;
-    }
-    .location-list .edit-info {
-        display: none;
-    }
-    #new-map-place-form {
-        display: none;
-    }
-    #show-new-map-place-form {
-        margin-bottom: 10px;
-    }
+  ul {
+    margin-left: 30px;
+  }
+  #location-list, #show-pins {
+    display: inline-block;
+    vertical-align: text-top;
+    height: 85%;
+    overflow: scroll;
+  }
+  #location-list {
+    width: 30%;
+  }
+  #show-pins {
+    width: 60%;
+  }
+  #map {
+    height: 500px;
+    width: 700px;
+  }
+  .location-list th,
+  .location-list td {
+    border: 1px solid black;
+    padding: 5px;
+  }
+  .location-list .edit-info {
+    display: none;
+  }
+  #new-map-place-form {
+    display: none;
+  }
+  #show-new-map-place-form {
+    margin-bottom: 10px;
+  }
 </style>
 
 <h1>Map</h1>
@@ -48,122 +48,118 @@
 <h2>List</h2>
 
 <div id="location-list">
-    <ul class="map-list-country">
-        <li>
-            <span onClick="showPlace()">
-                show all
-            </span>
-        </li>
-        <% for (let country in pins) { %>
+  <ul class="map-list-country">
+    <li>
+      <span onClick="showPlace()">
+        show all
+      </span>
+    </li>
+    <% for (let country in pins) { %>
+      <li>
+        <span onClick="showPlace('<%= country %>')">
+          <%= country %>
+        </span>
+        <ul class="map-list-region1">
+          <% for (let region1 in pins[country]) { %>
             <li>
-                <span onClick="showPlace('<%= country %>')">
-                    <%= country %>
-                </span>
-                <ul class="map-list-region1">
-                    <% for (let region1 in pins[country]) { %>
+              <span onClick="showPlace('<%= country %>','<%= region1 %>')">
+                <%= region1 %>
+              </span>
+              <ul class="map-list-region2">
+                <% for (let region2 in pins[country][region1]) { %>
+                  <li>
+                    <span onClick="showPlace('<%= country %>','<%= region1 %>','<%= region2 %>')">
+                      <%= region2 %>
+                    </span>
+                    <ul class="map-list-city">
+                      <% for (let city in pins[country][region1][region2]) { %>
                         <li>
-                            <span onClick="showPlace('<%= country %>','<%= region1 %>')">
-                                <%= region1 %>
-                            </span>
-                            <ul class="map-list-region2">
-                                <% for (let region2 in pins[country][region1]) { %>
-                                    <li>
-                                        <span onClick="showPlace('<%= country %>','<%= region1 %>','<%= region2 %>')">
-                                            <%= region2 %>
-                                        </span>
-                                        <ul class="map-list-city">
-                                            <% for (let city in pins[country][region1][region2]) { %>
-                                                <li>
-                                                    <span onClick="showPlace('<%= country %>','<%= region1 %>','<%= region2 %>','<%= city %>')">
-                                                        <%= city %>
-                                                    </span>
-                                                </li>
-                                            <% } %>
-                                        </ul>
-                                    </li>
-                                <% } %>
-                            </ul>
+                          <span onClick="showPlace('<%= country %>','<%= region1 %>','<%= region2 %>','<%= city %>')">
+                            <%= city %>
+                          </span>
                         </li>
-                    <% } %>
-                </ul>
+                      <% } %>
+                    </ul>
+                  </li>
+                <% } %>
+              </ul>
             </li>
-        <% } %>
-    </ul>
+          <% } %>
+        </ul>
+      </li>
+    <% } %>
+  </ul>
 </div>
 
 <div id="show-pins">
-    <table class="event-list">
-        <tr>
-            <th> title </th>
-            <th> date </th>
-            <th> location </th>
-            <th> people </th>
-        </tr>
-        <% for (let country in pins) { %>
-            <% for (let region1 in pins[country]) { %>
-                <% for (let region2 in pins[country][region1]) { %>
-                    <% for (let city in pins[country][region1][region2]) { %>
-                        <% pins[country][region1][region2][city].forEach(pin => { %>
-                            <tr class="pin" country="<%= country %>" region1="<%= region1 %>"
-                                    region2="<%= region2 %>" city="<%= city %>">
-                                <td>
-                                    <% if (pin.pinType == 'source') { %>
-                                        <%- include('../source/_link', {
-                                            source: pin
-                                        }) %>
-                                    <% } else if (pin.pinType == 'event') { %>
-                                        <a href="/event/<%= pin._id %>"><%= pin.title %></a>
-                                    <% } else { %>
-                                        <%= pin.title %>
-                                    <% } %>
-                                </td>
-                                <td>
-                                    <%- include('../format/date', { params: {
-                                        date: pin.date,
-                                    }}) %>
-                                </td>
-                                <td>
-                                    <%- include('../format/location', { params: {
-                                        location: pin.location,
-                                    }}) %>
-                                </td>
-                                <td>
-                                    <%- include('../person/_list', { params: {
-                                        people: pin.people,
-                                        format: 'list',
-                                    }}) %>
-                                </td>
-                            </tr>
-                        <% });%>
-                    <% } %>
-                <% } %>
-            <% } %>
+  <table class="event-list">
+    <tr>
+      <th> title </th>
+      <th> date </th>
+      <th> location </th>
+      <th> people </th>
+    </tr>
+    <% for (let country in pins) { %>
+      <% for (let region1 in pins[country]) { %>
+        <% for (let region2 in pins[country][region1]) { %>
+          <% for (let city in pins[country][region1][region2]) { %>
+            <% pins[country][region1][region2][city].forEach(pin => { %>
+              <tr class="pin" country="<%= country %>" region1="<%= region1 %>"
+                  region2="<%= region2 %>" city="<%= city %>">
+                <td>
+                  <% if (pin.pinType == 'source') { %>
+                    <%- include('../source/_link', {
+                      source: pin
+                    }) %>
+                  <% } else if (pin.pinType == 'event') { %>
+                    <a href="/event/<%= pin._id %>"><%= pin.title %></a>
+                  <% } else { %>
+                    <%= pin.title %>
+                  <% } %>
+                </td>
+                <td>
+                  <%- include('../format/date', {date: pin.date}) %>
+                </td>
+                <td>
+                  <%- include('../format/location', {location: pin.location}) %>
+                </td>
+                <td>
+                  <%- include('../person/_list', {
+                    people: pin.people,
+                    format: 'list',
+                  }) %>
+                </td>
+              </tr>
+            <% });%>
+          <% } %>
         <% } %>
-    </table>
+      <% } %>
+    <% } %>
+  </table>
 </div>
 
 <script>
-    function showPlace(country, region1, region2, city) {
-        let selector = '';
+  function showPlace(country, region1, region2, city) {
+    let selector = '';
 
-        if (country) {
-            selector += '[country="' + country + '"]';
-        }
-        if (region1) {
-            selector += '[region1="' + region1 + '"]';
-        }
-        if (region2) {
-            selector += '[region2="' + region2 + '"]';
-        }
-        if (city) {
-            selector += '[city="' + city + '"]';
-        }
-
-        if (selector) {
-            $('.pin').hide();
-            $('.pin').filter(selector).show();
-        } else {
-            $('.pin').show();
-        }
+    if (country) {
+      selector += '[country="' + country + '"]';
     }
+    if (region1) {
+      selector += '[region1="' + region1 + '"]';
+    }
+    if (region2) {
+      selector += '[region2="' + region2 + '"]';
+    }
+    if (city) {
+      selector += '[city="' + city + '"]';
+    }
+
+    if (selector) {
+      $('.pin').hide();
+      $('.pin').filter(selector).show();
+    } else {
+      $('.pin').show();
+    }
+  }
 </script>
