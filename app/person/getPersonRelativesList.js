@@ -1,24 +1,26 @@
-const mongoose = require('mongoose');
-const Person = mongoose.model('Person');
+const {
+  mongoose,
+  sorting,
+} = require('../tools/modelTools');
 
-var relativeList;
-var nextGroupList;
-var personIsPlaced;
-var relationshipNames = getRelationshipNameList();
-var people;
+const relationshipNames = getRelationshipNameList();
 
-function getRelativesList(allPeople, person) {
-  // these will cache if they are not reset
-  relativeList = [];
-  nextGroupList = [];
-  personIsPlaced = {};
+module.exports = getRelativesList;
 
-  people = allPeople;
+function getRelativesList(allPeople) {
+  const Person = mongoose.model('Person');
+  const person = this;
+
+  const relativeList = [];
+  let nextGroupList = [];
+  const personIsPlaced = {};
+
+  const people = allPeople;
 
   addPersonToGroup(person, 0, '');
   processNextGenList(0);
 
-  var remainingPeople = allPeople.filter(thisPerson => {
+  const remainingPeople = allPeople.filter(thisPerson => {
     return personIsPlaced[thisPerson._id] == null;
   });
 
@@ -31,82 +33,84 @@ function getRelativesList(allPeople, person) {
     });
   });
 
-  return sortList(relativeList, relativeList.length);
-}
+  sorting.sortBy(relativeList, getSortValue);
 
-function processNextGenList(safety) {
-  if (safety > 20) {
-    return;
-  }
+  return relativeList;
 
-  nextGroupList.forEach(obj => {
-    relativeList.push({
-      person: obj.person,
-      relationship: getRelationshipName(obj.track),
-      generation: obj.generation,
-      distance: obj.track.length,
-      track: obj.track,
-      type: getRelationshipType(obj.track),
+  function processNextGenList(safety) {
+    if (safety > 20) {
+      return;
+    }
+
+    nextGroupList.forEach(obj => {
+      relativeList.push({
+        person: obj.person,
+        relationship: getRelationshipName(obj.track),
+        generation: obj.generation,
+        distance: obj.track.length,
+        track: obj.track,
+        type: getRelationshipType(obj.track),
+      });
     });
-  });
 
-  var tempList = nextGroupList.concat();
-  nextGroupList = [];
+    const tempList = nextGroupList.concat();
+    nextGroupList = [];
 
-  tempList.forEach(obj => {
-    collectRelatives(obj.person, obj.generation, obj.track);
-  });
+    tempList.forEach(obj => {
+      collectRelatives(obj.person, obj.generation, obj.track);
+    });
 
-  processNextGenList(safety + 1);
-}
-
-function collectRelatives(person, generation, track) {
-  person = Person.findInList(people, person);
-
-  person.spouses.forEach(thisPerson => {
-    addPersonToGroup(thisPerson, generation, track + 's');
-  });
-
-  person.parents.forEach(thisPerson => {
-    addPersonToGroup(thisPerson, generation + 1, track + 'p');
-  });
-
-  person.children.forEach(thisPerson => {
-    addPersonToGroup(thisPerson, generation - 1, track + 'c');
-  });
-}
-
-function addPersonToGroup(person, generation, track) {
-  if (person._id) {
-    if (personIsPlaced[person._id]) {
-      return;
-    }
-  } else {
-    if (personIsPlaced[person]) {
-      return;
-    }
-    person = Person.findInList(people, person);
+    processNextGenList(safety + 1);
   }
 
-  // change "parent, child" to "sibling" to count 1 degree of removal instead of 2
-  track = track.replace('pc', 'x');
+  function collectRelatives(person, generation, track) {
+    person = Person.findInList(people, person);
 
-  personIsPlaced[person._id] = true;
-  nextGroupList.push({ person: person, generation: generation, track: track });
+    person.spouses.forEach(thisPerson => {
+      addPersonToGroup(thisPerson, generation, track + 's');
+    });
+
+    person.parents.forEach(thisPerson => {
+      addPersonToGroup(thisPerson, generation + 1, track + 'p');
+    });
+
+    person.children.forEach(thisPerson => {
+      addPersonToGroup(thisPerson, generation - 1, track + 'c');
+    });
+  }
+
+  function addPersonToGroup(person, generation, track) {
+    if (person._id) {
+      if (personIsPlaced[person._id]) {
+        return;
+      }
+    } else {
+      if (personIsPlaced[person]) {
+        return;
+      }
+      person = Person.findInList(people, person);
+    }
+
+    // change "parent, child" to "sibling" to count 1 degree of removal instead of 2
+    track = track.replace('pc', 'x');
+
+    personIsPlaced[person._id] = true;
+    nextGroupList.push({ person: person, generation: generation, track: track });
+  }
 }
 
 function getRelationshipName(track) {
-  var relationship = relationshipNames[track];
+  const relationship = relationshipNames[track];
 
-  if (relationship != null) {
+  if (relationship) {
     return relationship;
   }
 
-  var siblingIndex = track.indexOf('x');
+  const siblingIndex = track.indexOf('x');
 
   if (siblingIndex >= 0) {
-    var before = track.slice(0, siblingIndex);
-    var after = track.slice(siblingIndex + 1);
+    let before = track.slice(0, siblingIndex);
+    let after = track.slice(siblingIndex + 1);
 
     if (before.length > 0) {
       if (relationshipNames[before] == null) {
@@ -148,67 +152,17 @@ function getRelationshipType(track) {
   }
 }
 
-function sortList(relativeList, endPoint) {
-  var madeChange = false;
-
-  for (var i = 0; i < endPoint - 1; i++) {
-    if (shouldSwap(relativeList[i], relativeList[i + 1])) {
-      var temp = relativeList[i];
-      relativeList[i] = relativeList[i + 1];
-      relativeList[i + 1] = temp;
-      madeChange = true;
-    }
-  }
-
-  if (madeChange) {
-    return sortList(relativeList, endPoint - 1);
-  }
-
-  return relativeList;
-}
-
-function shouldSwap(relative1, relative2) {
-  var dist1 = relative1.distance;
-  var dist2 = relative2.distance;
-  var rel1 = relative1.relationship;
-  var rel2 = relative2.relationship;
-  var gen1 = Math.abs(relative1.generation);
-  var gen2 = Math.abs(relative2.generation);
-
-  var isOther1 = rel1.match('other') != null;
-  var isOther2 = rel2.match('other') != null;
-
-  var isNone1 = rel1.match('no connection') != null;
-  var isNone2 = rel2.match('no connection') != null;
-
-  if (isNone1) {
-    if (!isNone2) {
-      return true;
-    }
-  } else if (isNone2) {
-    return false;
-  }
-
-  if (isOther1) {
-    if (!isOther2) {
-      return true;
-    }
-  } else if (isOther2) {
-    return false;
-  }
-
-  if (dist1 == dist2) {
-    if (gen1 == gen2) {
-      return rel1 > rel2;
-    }
-    return gen1 > gen2;
-  }
-
-  return dist1 > dist2;
+function getSortValue(relative) {
+  return [
+    relative.relationship.match('no connection') ? '1' : '0',
+    relative.relationship.match('other') ? '1' : '0',
+    sorting.padZero(relative.distance, 2),
+    sorting.padZero(Math.abs(relative.generation), 2),
+  ].join('-');
 }
 
 function getRelationshipNameList() {
-  var obj = {
+  const obj = {
     '' : 'person',
     'p' : 'parent',
     's' : 'spouse',
@@ -226,14 +180,12 @@ function getRelationshipNameList() {
     'cs' : 'child-in-law',
   };
 
-  for (var i = 3; i <= 10; i++) {
-    var key1 = new Array(i + 2).fill('p').join('');
-    var key2 = new Array(i + 2).fill('c').join('');
+  for (let i = 3; i <= 10; i++) {
+    const key1 = new Array(i + 2).fill('p').join('');
+    const key2 = new Array(i + 2).fill('c').join('');
     obj[key1] = '' + i + '-great-grandparent';
     obj[key2] = '' + i + '-great-grandchild';
   }
 
   return obj;
 }
-
-module.exports = getRelativesList;

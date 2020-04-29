@@ -1,5 +1,6 @@
 module.exports = {
   getDateSortStr,
+  padZero,
   sortBy,
   sortByDate,
 };
@@ -17,6 +18,7 @@ function getDateSortStr(date) {
 }
 
 function padZero(str, length) {
+  str = '' + str;
   while (str.length < length) {
     str = '0' + str;
   }

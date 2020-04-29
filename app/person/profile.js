@@ -7,7 +7,6 @@ const {
 } = require('../import');
 
 const constants = require('./constants');
-const getPersonRelativesList = require('./getPersonRelativesList');
 
 module.exports = {
   show: personSummary,
@@ -105,17 +104,16 @@ async function personNationality(req, res) {
   });
 }
 
-function personRelatives(req, res) {
-  Person
-  .find({})
-  .populate('parents')
-  .populate('spouses')
-  .populate('children')
-  .exec(function(err, people) {
-    const person = Person.findInList(people, req.personId);
-    const relativeList = getPersonRelativesList(people, person);
-    res.renderPersonProfile('relatives', {people, relativeList});
-  });
+async function personRelatives(req, res) {
+  const person = await Person.findById(req.personId)
+    .populate('parents').populate('spouses').populate('children');
+
+  const people = await Person.find({})
+    .populate('parents').populate('spouses').populate('children');
+
+  const relativeList = person.getRelativesList(people);
+
+  res.renderPersonProfile('relatives', {people, relativeList});
 }
 
 async function personConnection(req, res) {

@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
+const getRelativesList = require('./getPersonRelativesList');
+
 const methods = {};
 module.exports = methods;
+
+methods.getRelativesList = getRelativesList;
 
 methods.addRelative = async function(relationship, relative) {
   const updatedPerson = {

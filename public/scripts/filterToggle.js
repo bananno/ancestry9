@@ -1,15 +1,14 @@
-
 /*
 
   BUTTONS:
 
   <div class="filter-buttons" filter="putNameHere">
-      <div class="filter-button active" filter-set="thing1">
-          thing 1 <!-- currently active -->
-      </div>
-      <div class="filter-button" value="thing2">
-          thing 2 <!-- currently NOT active -->
-      </div>
+    <div class="filter-button active" filter-set="thing1">
+      thing 1 <!-- currently active -->
+    </div>
+    <div class="filter-button" value="thing2">
+      thing 2 <!-- currently NOT active -->
+    </div>
   </div>
 
   ITEMS TOGGLED:
@@ -22,20 +21,20 @@
   BOTTOM OF PAGE:
 
   <script>
-      createToggleFilter('putNameHere');
+    createToggleFilter('putNameHere');
   </script>
 
 */
 
 function createToggleFilter(filterName) {
-  var $buttonSet = $('.filter-buttons[filter="' + filterName + '"] .filter-button');
-  var $items = $('[filter="' + filterName + '"]').not($buttonSet);
+  const $buttonSet = $('.filter-buttons[filter="' + filterName + '"] .filter-button');
+  const $items = $('[filter="' + filterName + '"]').not($buttonSet);
 
-  $buttonSet.toArray().forEach(button => {
-    var $button = $(button);
-    var set = $button.attr('filter-set');
-    var $setItems = $items.filter('[filter-set="' + set + '"]');
-    var active = $button.hasClass('active');
+  $buttonSet.each((i, button) => {
+    const $button = $(button);
+    const set = $button.attr('filter-set');
+    const $setItems = $items.filter('[filter-set="' + set + '"]');
+    let active = $button.hasClass('active');
     if (!active) {
       $setItems.hide();
     }
