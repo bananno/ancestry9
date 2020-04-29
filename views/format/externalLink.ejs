@@ -1,13 +1,18 @@
-<% if (url != null && url != '') { %>
-    <%
-        var linkText = url;
-        if (url.match(' ')) {
-            linkText = url.slice(url.indexOf(' ') + 1);
-            url = url.slice(0, url.indexOf(' '));
-        }
-        if (url.match('http') == null) {
-            url = 'https://' + url;
-        }
-    %>
-    <a href="<%= url %>" target="_blank"><%= linkText %></a>
+<% if (url) { %>
+  <%
+    let linkPath, linkText;
+
+    if (url.match(' ')) {
+      linkPath = url.slice(0, url.indexOf(' '));
+      linkText = url.slice(url.indexOf(' ') + 1);
+    } else {
+      linkPath = url;
+      linkText = url;
+    }
+
+    if (!linkPath.match('http')) {
+      linkPath = 'https://' + linkPath;
+    }
+  %>
+  <a href="<%= linkPath %>" target="_blank"><%= linkText %></a>
 <% } %>

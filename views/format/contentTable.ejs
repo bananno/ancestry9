@@ -1,39 +1,38 @@
 <table class="content-table">
-    <% for (var i = 0; i < content.length; i++) { %>
-        <tr>
-            <%
-                var thisRow = content[i];
-            %>
+  <% content.forEach(contentRow => { %>
+    <%
+      let remainingRow = contentRow;
+    %>
+    <tr>
+      <% while (remainingRow.length) { %>
+        <%
+          let isHeader = false;
+          remainingRow = remainingRow.slice(1);
 
-            <% while (thisRow.length) { %>
-                <%
-                    var isHeader = false;
-                    thisRow = thisRow.slice(1);
+          if (remainingRow.length && remainingRow.slice(0, 1) == '\|') {
+            isHeader = true;
+            remainingRow = remainingRow.slice(1);
+          }
 
-                    if (thisRow.length && thisRow.slice(0, 1) == '\|') {
-                        isHeader = true;
-                        thisRow = thisRow.slice(1);
-                    }
+          remainingRow = remainingRow.trim();
+          let thisCell;
+          const nextCellIndex = remainingRow.indexOf('\|');
 
-                    thisRow = thisRow.trim();
-                    var thisCell;
-                    var nextCellIndex = thisRow.indexOf('\|');
+          if (nextCellIndex >= 0) {
+            thisCell = remainingRow.slice(0, nextCellIndex);
+            remainingRow = remainingRow.slice(nextCellIndex);
+          } else {
+            thisCell = remainingRow;
+            remainingRow = '';
+          }
+        %>
 
-                    if (nextCellIndex >= 0) {
-                        thisCell = thisRow.slice(0, nextCellIndex);
-                        thisRow = thisRow.slice(nextCellIndex);
-                    } else {
-                        thisCell = thisRow;
-                        thisRow = '';
-                    }
-                %>
-
-                <% if (isHeader) { %>
-                    <th><%= thisCell %></th>
-                <% } else { %>
-                    <td><%= thisCell %></td>
-                <% } %>
-            <% } %>
-        </tr>
-    <% } %>
+        <% if (isHeader) { %>
+          <th><%= thisCell %></th>
+        <% } else { %>
+          <td><%= thisCell %></td>
+        <% } %>
+      <% } %>
+    </tr>
+  <% }); %>
 </table>

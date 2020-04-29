@@ -25,8 +25,8 @@
 
 <div class="checklist">
   <%
-    var parent1 = person.parents.length >= 1;
-    var parent2 = person.parents.length >= 2;
+    const parent1 = person.parents.length >= 1;
+    const parent2 = person.parents.length >= 2;
   %>
   <div class="checklist-item checklist-<%= parent1 %>">
     <div class="checkmark">
@@ -53,9 +53,9 @@
 <h3>Life</h3>
 
 <div class="checklist">
-  <% for (var lifeItem in checklistLife) { %>
+  <% for (let lifeItem in checklistLife) { %>
     <%
-      var isChecked = checklistLife[lifeItem];
+      const isChecked = checklistLife[lifeItem];
     %>
     <div class="checklist-item checklist-<%= isChecked %>">
       <div class="checkmark">
@@ -73,9 +73,9 @@
 <h3>Sources</h3>
 
 <div class="checklist">
-  <% for (var sourceName in sourceChecklist) { %>
+  <% for (let sourceName in sourceChecklist) { %>
     <%
-      var isChecked = sourceChecklist[sourceName];
+      const isChecked = sourceChecklist[sourceName];
     %>
     <div class="checklist-item checklist-<%= isChecked %>">
       <div class="checkmark">

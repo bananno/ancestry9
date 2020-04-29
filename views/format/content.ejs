@@ -9,26 +9,25 @@
 
 <script>
   function showMore(clickedItem) {
-    var $link = $(clickedItem);
-    var $div = $link.closest('.text-content');
+    const $link = $(clickedItem);
+    const $div = $link.closest('.text-content');
     $div.find('.cropped-view').remove();
     $div.find('.full-view').removeClass('full-view');
   }
 </script>
 
 <%
-  var characterLimit = 500;
-  var fullArr = [];
-  var croppedArr = [];
-  var isCropped = false;
-  var tableArr = [];
+  const characterLimit = 500;
+  let fullArr = [];
+  let croppedArr = [];
+  let isCropped = false;
 
   if (content) {
     fullArr = content.split('\n');
     if (locals.limit) {
       if (content.length > characterLimit) {
         isCropped = true;
-        var content2 = content.slice(0, characterLimit) + '...';
+        const content2 = content.slice(0, characterLimit) + '...';
         croppedArr = content2.split('\n');
         if (croppedArr.length > 5) {
           croppedArr = croppedArr.slice(0, 5);
@@ -46,20 +45,26 @@
 %>
 
 <div class="text-content">
-  <% for (var r = 0; r < (isCropped ? 2 : 1); r++) { %>
+  <% for (let r = 0; r < (isCropped ? 2 : 1); r++) { %>
     <%
-      var divClass = '';
-      var showLink = isCropped && r == 1;
-      var contentList = r == 0 ? fullArr : croppedArr;
+      const divClass = [];
+
       if (isCropped) {
-        divClass = r == 0 ? 'full-view' : 'cropped-view';
+        if (r === 0) {
+          divClass.push('full-view');
+        } else {
+          divClass.push('cropped-view');
+        }
       }
+
+      const contentList = r === 0 ? fullArr : croppedArr;
+      const showLink = isCropped && r === 1;
     %>
-    <div class="content-box <%= divClass %>">
-      <% for (var i = 0; i < contentList.length; i++) { %>
+    <div class="<%= divClass.join(' ') %>">
+      <% for (let i = 0; i < contentList.length; i++) { %>
         <%
-          var str = contentList[i];
-          var tableArr = [];
+          const str = contentList[i];
+          const tableArr = [];
 
           if (lineIsPartOfTable(str)) {
             tableArr.push(str);
@@ -71,7 +76,7 @@
         %>
 
         <% if (tableArr.length) { %>
-          <%- include('../format/contentTable', { content: tableArr }) %>
+          <%- include('../format/contentTable', {content: tableArr}) %>
         <% } else { %>
           <p> <%= str %> </p>
         <% } %>
