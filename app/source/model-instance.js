@@ -40,11 +40,13 @@ methods.canHaveLocation = function() {
 //   3. Everyone else, in alphabetical order.
 methods.getPeopleForNewCitations = async function() {
   const Person = mongoose.model('Person');
+  const personRef = {};
 
   let remainingPeople = await Person.find({});
 
-  this.people.forEach(thisPerson => {
-    remainingPeople = Person.removeFromList(remainingPeople, thisPerson);
+  this.people.forEach(person => {
+    remainingPeople = Person.removeFromList(remainingPeople, person);
+    personRef['' + (person._id || person)] = true;
   });
 
   Person.sortByName(remainingPeople);
@@ -52,9 +54,10 @@ methods.getPeopleForNewCitations = async function() {
   const citationsPeople = [];
 
   this.citations.forEach(({person}) => {
-    if (!citationsPeople.includes(person)) {
+    if (!personRef['' + (person._id || person)]) {
       citationsPeople.push(person);
       remainingPeople = Person.removeFromList(remainingPeople, person);
+      personRef['' + (person._id || person)] = true;
     }
   });
 
