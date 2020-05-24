@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const getRelativesList = require('./getPersonRelativesList');
+const tools = require('../tools/modelTools');
 
 const methods = {};
 module.exports = methods;
 
 methods.getRelativesList = getRelativesList;
+methods.getTagValue = tools.getTagValue;
 
 // These two methods only to be used after populateBirthAndDeath()
 methods.getBirthYear = function() {

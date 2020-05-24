@@ -65,9 +65,32 @@ function createLinkChecklist(links) {
 }
 
 function createRelativesChecklist(person) {
+  const numberOfChildren = {title: 'number of children'};
+
+  const childrenTagValue = person.getTagValue('number of children');
+  if (!childrenTagValue) {
+    numberOfChildren.note = 'status not specified';
+  } else if (childrenTagValue === 'unknown') {
+    numberOfChildren.note = 'incomplete';
+  } else if (childrenTagValue === 'too distant') {
+    numberOfChildren.strike = true;
+    numberOfChildren.note = 'incomplete, but relationship is too distant';
+  } else if (childrenTagValue === 'done') {
+    numberOfChildren.complete = true;
+    if (person.children.length) {
+      numberOfChildren.note = 'done: all children are in database';
+    } else {
+      numberOfChildren.note = 'done: never had any children';
+    }
+  } else {
+    numberOfChildren.complete = true;
+    numberOfChildren.note = 'done: exact number is manually specified';
+  }
+
   return [
     {title: 'parent 1', complete: person.parents.length >= 1},
     {title: 'parent 2', complete: person.parents.length >= 2},
+    numberOfChildren,
   ];
 }
 

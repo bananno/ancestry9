@@ -3,7 +3,7 @@ const sorting = require('./sorting');
 const dateStructure = require('./dateStructure');
 const locationStructure = require('./locationStructure');
 
-module.exports = {
+const tools = {
   mongoose,
   dateStructure,
   locationStructure,
@@ -13,6 +13,8 @@ module.exports = {
   reduceListToExportData,
   reduceToExportData,
 };
+
+module.exports = tools;
 
 function convertTags(obj) {
   const tags = {};
@@ -37,3 +39,12 @@ function reduceToExportData(itemInfo, fields) {
   newItem.tags = convertTags(itemInfo);
   return newItem;
 }
+
+tools.getTagValue = function (tagName) {
+  const tag = this.tags.find(tagStr => {
+    return tagStr.split('=').map(s => s.trim())[0] === tagName;
+  });
+  if (tag) {
+    return tag.replace(tagName, '').replace('=', '').trim();
+  }
+};
