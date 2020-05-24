@@ -1,9 +1,9 @@
 <%
-  const attr = locals.params ? (params.attr || params.attrName) : locals.attr;
-  const editPath = locals.params ? params.editPath : locals.editPath;
-  const originalValue = locals.params ? params.originalValue : locals.originalValue;
+  const attr = locals.attr;
+  const editPath = locals.editPath;
+  const originalValue = locals.originalValue;
   const inputType = locals.inputType || locals.fieldType || 'text';
-  const toggle = locals.params ? params.toggle : locals.toggle;
+  const toggle = locals.toggle;
   const preventSharing = locals.preventSharing || false;
   const disableToggleButton = toggle && preventSharing && !originalValue;
 
