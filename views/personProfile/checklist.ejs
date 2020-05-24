@@ -1,94 +1,43 @@
 <h2>Checklist</h2>
 
-<h3>Links</h3>
+<% checklistSections.forEach(({title, items}) => { %>
+  <h3><%= title %></h3>
 
-<div class="checklist">
-  <% for (let linkType in checklistLinks) { %>
-    <%
-      const url = checklistLinks[linkType];
-      const checked = url != null;
-    %>
-    <div class="checklist-item checklist-<%= checked %>">
-      <div class="checkmark">
-        <img src="/images/check-<%= checked %>.png">
+  <div class="checklist">
+    <% items.forEach(item => { %>
+      <%
+        const canStrike = item.strike || !!(item.strikeLiving && person.isLiving());
+
+        // Checked if item is complete OR if non-applicable, e.g. for a living
+        // person or too-distant relative.
+        const isChecked = !!item.complete || canStrike;
+
+        // If item is actually complete, show it as complete instead of N/A.
+        const showStrike = canStrike && !item.complete;
+      %>
+      <div class="checklist-item checklist-<%= isChecked %>">
+        <div class="checkmark">
+          <img src="/images/check-<%= isChecked %>.png">
+        </div>
+        <div class="info">
+          <p>
+            <% if (showStrike) { %>
+              <b><strike><%= item.title %></strike></b>
+              <% if (item.strikeLiving) { %>
+                <i>(living)</i>
+              <% } %>
+            <% } else { %>
+              <b><%= item.title %></b>
+            <% } %>
+            <% if (item.note) { %>
+              <i>(<%= item.note %>)</i>
+            <% } %>
+          </p>
+        </div>
       </div>
-      <div class="info">
-        <p>
-          <b><%= linkType %></b>
-        </p>
-      </div>
-    </div>
-  <% } %>
-</div>
-
-<h3>Relatives</h3>
-
-<div class="checklist">
-  <%
-    const parent1 = person.parents.length >= 1;
-    const parent2 = person.parents.length >= 2;
-  %>
-  <div class="checklist-item checklist-<%= parent1 %>">
-    <div class="checkmark">
-      <img src="/images/check-<%= parent1 %>.png">
-    </div>
-    <div class="info">
-      <p>
-        <b>Parent 1</b>
-      </p>
-    </div>
+    <% }); %>
   </div>
-  <div class="checklist-item checklist-<%= parent2 %>">
-    <div class="checkmark">
-      <img src="/images/check-<%= parent2 %>.png">
-    </div>
-    <div class="info">
-      <p>
-        <b>Parent 2</b>
-      </p>
-    </div>
-  </div>
-</div>
-
-<h3>Life</h3>
-
-<div class="checklist">
-  <% for (let lifeItem in checklistLife) { %>
-    <%
-      const isChecked = checklistLife[lifeItem];
-    %>
-    <div class="checklist-item checklist-<%= isChecked %>">
-      <div class="checkmark">
-        <img src="/images/check-<%= isChecked %>.png">
-      </div>
-      <div class="info">
-        <p>
-          <b><%= lifeItem %></b>
-        </p>
-      </div>
-    </div>
-  <% } %>
-</div>
-
-<h3>Sources</h3>
-
-<div class="checklist">
-  <% for (let sourceName in sourceChecklist) { %>
-    <%
-      const isChecked = sourceChecklist[sourceName];
-    %>
-    <div class="checklist-item checklist-<%= isChecked %>">
-      <div class="checkmark">
-        <img src="/images/check-<%= isChecked %>.png">
-      </div>
-      <div class="info">
-        <p>
-          <b><%= sourceName %></b>
-        </p>
-      </div>
-    </div>
-  <% } %>
-</div>
+<% }); %>
 
 <% if (incompleteSourceList.length) { %>
   <h3>Incomplete Sources</h3>

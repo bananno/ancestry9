@@ -6,6 +6,14 @@ module.exports = methods;
 
 methods.getRelativesList = getRelativesList;
 
+// These two methods only to be used after populateBirthAndDeath()
+methods.getBirthYear = function() {
+  return this.birth && this.birth.date ? this.birth.date.year : undefined;
+};
+methods.getDeathYear = function() {
+  return this.death && this.death.date ? this.death.date.year : undefined;
+};
+
 methods.addRelative = async function(relationship, relative) {
   const updatedPerson = {
     [relationship]: (this[relationship] || []).concat(relative)

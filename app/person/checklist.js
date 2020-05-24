@@ -1,99 +1,112 @@
-const mongoose = require('mongoose');
-const Event = mongoose.model('Event');
-const Source = mongoose.model('Source');
+const {
+  Source,
+} = require('../import');
 
 module.exports = renderPersonChecklist;
 
 async function renderPersonChecklist(req, res) {
   const person = req.person;
 
-  const events = await Event.find({people: person});
+  await person.populateBirthAndDeath();
+  const birthYear = person.getBirthYear();
+  const deathYear = person.getDeathYear();
+
   const sources = await Source.find({people: person}).populate('story');
 
-  const checklistLinks = createLinkChecklist(person.links);
-
-  let [birthYear, deathYear] = findBirthAndDeath(events);
-
-  const checklistLife = {
-    'Birth date': birthYear != null,
-    'Death date': deathYear != null,
-  };
-
-  const sourceChecklist = createSourceChecklist(sources,
-    person, birthYear, deathYear);
-
-  const incompleteSourceList = createIncompleteSourceList(sources);
-
   res.renderPersonProfile('checklist', {
-    checklistLinks,
-    checklistLife,
-    sourceChecklist,
-    incompleteSourceList,
+    checklistSections: [
+      {
+        title: 'Links',
+        items: createLinkChecklist(person.links)
+      },
+      {
+        title: 'Relatives',
+        items: createRelativesChecklist(person)
+      },
+      {
+        title: 'Life',
+        items: createLifeEventsChecklist(birthYear, deathYear)
+      },
+      {
+        title: 'Sources',
+        items: createSourceChecklist(sources, person, birthYear, deathYear)
+      },
+    ],
+    incompleteSourceList: createIncompleteSourceList(sources),
   });
 }
 
 function createLinkChecklist(links) {
-  const checklistLinks = {
-    Ancestry: null,
-    FamilySearch: null,
-    FindAGrave: null,
-    Lundberg: null,
-    WikiTree: null,
+  const linksRef = {
+    Ancestry: {},
+    FamilySearch: {},
+    FindAGrave: {strikeLiving: true},
+    Lundberg: {strikeLiving: true},
+    WikiTree: {},
   };
 
   links.forEach(url => {
     if (url.match('lundbergancestry')) {
-      checklistLinks.Lundberg = url;
+      linksRef.Lundberg.complete = true;
     } else if (url.match('ancestry.com')) {
-      checklistLinks.Ancestry = url;
+      linksRef.Ancestry.complete = true;
     } else if (url.match('familysearch.org')) {
-      checklistLinks.FamilySearch = url;
+      linksRef.FamilySearch.complete = true;
     } else if (url.match('findagrave')) {
-      checklistLinks.FindAGrave = url;
+      linksRef.FindAGrave.complete = true;
     } else if (url.match('wikitree')) {
-      checklistLinks.WikiTree = url;
+      linksRef.WikiTree.complete = true;
     }
   });
 
-  return checklistLinks;
+  return Object.keys(linksRef).map(key => {
+    return {...linksRef[key], title: key};
+  });
 }
 
-function findBirthAndDeath(events) {
-  let birthYear, deathYear;
+function createRelativesChecklist(person) {
+  return [
+    {title: 'parent 1', complete: person.parents.length >= 1},
+    {title: 'parent 2', complete: person.parents.length >= 2},
+  ];
+}
 
-  events.forEach(event => {
-    if (event.title == 'birth') {
-      if (event.date != null && event.date.year != null) {
-        birthYear = event.date.year;
-      }
-    } else if (event.title == 'death') {
-      if (event.date != null && event.date.year != null) {
-        deathYear = event.date.year;
-      }
+function createLifeEventsChecklist(birthYear, deathYear) {
+  return [
+    {
+      title: 'birth date',
+      complete: !!birthYear
+    },
+    {
+      title: 'death date',
+      complete: !!deathYear,
+      strikeLiving: true
     }
-  });
-
-  return [birthYear, deathYear];
+  ];
 }
 
 function createSourceChecklist(sources, person, birthYear, deathYear) {
-  const sourceChecklist = {};
+  const sourceChecklist = [];
 
-  const checkForStory = (attr, value) => {
-    sourceChecklist[value] = sources.filter(source => {
-      return source.story[attr] == value;
-    }).length > 0;
+  const checkForStory = (attr, title, strikeLiving) => {
+    const foundSource = !!sources.find(source => source.story[attr] === title);
+
+    sourceChecklist.push({
+      complete: foundSource,
+      strikeLiving,
+      title,
+    });
   };
 
-  checkForStory('type', 'cemetery');
+  checkForStory('type', 'cemetery', true);
 
   for (let year = 1840; year <= 1940; year += 10) {
-    if (birthYear != null && birthYear > year) {
+    if (birthYear && birthYear > year) {
       continue;
     }
 
-    if (deathYear == null) {
-      if (birthYear != null && year - birthYear > 90) {
+    if (!deathYear) {
+      if (birthYear && year - birthYear > 90) {
         continue;
       }
     } else if (deathYear < year) {
@@ -119,37 +132,37 @@ function createIncompleteSourceList(sourceList) {
   const list = [];
 
   sourceList.forEach(source => {
-    const needsContent = source.content == null || source.content == '';
-    const needsImage = source.images.length == 0;
-    const needsSummary = (source.summary || '').length == 0;
+    const missingContent = source.content == null || source.content == '';
+    const missingImage = source.images.length == 0;
+    const missingSummary = (source.summary || '').length == 0;
     const isCensus = source.story.type == 'document'
       && source.story.title.match('Census');
 
-    let text1, text2;
-
-    if (source.story.type == 'newspaper') {
-      text1 = 'newspaper article: ' + source.title;
-    } else if (source.story.type == 'cemetery' || isCensus) {
-      text1 = source.story.title;
-    } else if (source.story.type == 'book') {
-      text1 = source.story.title + ' - ' + source.title;
-    } else {
-      return;
-    }
-
     const missing = [];
 
-    if (needsContent) {
+    if (missingContent) {
       missing.push('transcription');
     }
-    if (needsImage && source.story.type != 'book') {
+    if (missingImage && source.story.type != 'book') {
       missing.push('image');
     }
-    if (needsSummary && (isCensus || source.story.type == 'newspaper')) {
+    if (missingSummary && (isCensus || source.story.type == 'newspaper')) {
       missing.push('summary');
     }
 
     if (missing.length) {
+      let text1;
+
+      if (source.story.type == 'newspaper') {
+        text1 = 'newspaper article: ' + source.title;
+      } else if (source.story.type == 'cemetery' || isCensus) {
+        text1 = source.story.title;
+      } else if (source.story.type == 'book') {
+        text1 = source.story.title + ' - ' + source.title;
+      } else {
+        return;
+      }
+
       list.push([source, text1, missing.join(', ')]);
     }
   });
