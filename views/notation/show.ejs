@@ -5,20 +5,22 @@
 
   const siteLinks = [];
 
-  if (notation.tags.includes('brick wall')
-      || notation.tags.includes('broken brick wall')) {
+  const tagTitles = notation.tags.map(tag => tag.title);
+
+  if (tagTitles.includes('brick wall')
+      || tagTitles.includes('broken brick wall')) {
     siteLinks.push(['topic/brickwalls', 'topic: brick walls']);
   }
 
   if (notation.title == 'profile summary'
-      || notation.tags.includes('profile summary')) {
+      || tagTitles.includes('profile summary')) {
     notation.people.forEach(person => {
       siteLinks.push(['person/' + person.customId, person.name
         + ' profile (summary)']);
     });
   }
 
-  if (notation.tags.includes('research notes')) {
+  if (tagTitles.includes('research notes')) {
     notation.people.forEach(person => {
       siteLinks.push(['person/' + person.customId, person.name
         + ' profile (research notes section)']);
@@ -77,7 +79,7 @@
     format: 'bullet',
   }) %>
 
-  <%- include('../tag/_list', {tags: notation.tags}) %>
+  <%- include('../tag/_list', {tags: notation.tags, values: notation.tagValues}) %>
 <% } %>
 
 <h2>text</h2>

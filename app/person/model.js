@@ -19,13 +19,10 @@ const personSchema = new mongoose.Schema({
   }],
   links: [String],
   tags: [{
-    tag: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Person',
-    },
-    value: String
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tag',
   }],
-  tempTags: [String],
+  tagValues: [String],
   profileImage: String,
   gender: Number,
   sharing: {

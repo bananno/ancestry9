@@ -90,7 +90,8 @@ tools.getTagShowData = async function(tag) {
       : await Model.find({});
 
     data[modelName] = items.filter(item => {
-      return item.tempTags.map(tag => tag.split('=')[0].trim()).includes(tag.title);
+      return item.tags.includes(tag._id)
+        || item.tempTags.map(tag => tag.split('=')[0].trim()).includes(tag.title);
     });
   });
 

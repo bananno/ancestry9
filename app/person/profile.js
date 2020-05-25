@@ -23,7 +23,8 @@ module.exports = {
 
 async function personSummary(req, res) {
   const person = await Person.findById(req.personId)
-    .populate('parents').populate('spouses').populate('children');
+    .populate('parents').populate('spouses')
+    .populate('children').populate('tags');
 
   req.person = person;
 

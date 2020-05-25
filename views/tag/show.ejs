@@ -1,17 +1,25 @@
 <%
   function getTagValue(item, parentheses = true) {
-    let tagValue = '';
-    for (let i in item.tempTags) {
-      const nextTag = item.tempTags[i];
-      if (nextTag.match('=')
-          && nextTag.split('=')[0].trim() === tag.title) {
-        tagValue = nextTag.slice(nextTag.indexOf('=') + 1).trim();
-        break;
+    let tagValue;
+
+    if (item.tags.length) {
+      const index = item.tags.indexOf(tag._id);
+      tagValue = item.tagValues[index];
+    } else {
+      for (let i in item.tempTags) {
+        const nextTag = item.tempTags[i];
+        if (nextTag.match('=')
+            && nextTag.split('=')[0].trim() === tag.title) {
+          tagValue = nextTag.slice(nextTag.indexOf('=') + 1).trim();
+          break;
+        }
       }
     }
-    if (tagValue.length && parentheses) {
+
+    if (tagValue && parentheses) {
       return '(' + tagValue + ')';
     }
+
     return tagValue;
   }
 %>

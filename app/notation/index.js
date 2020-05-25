@@ -71,7 +71,8 @@ async function getNotation(notationId) {
     .findById(notationId)
     .populate('source')
     .populate('people')
-    .populate('stories');
+    .populate('stories')
+    .populate('tags');
 
   if (notation && notation.source) {
     await notation.source.populateStory();
