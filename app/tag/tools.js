@@ -5,11 +5,51 @@ const {
   Person,
   Story,
   Source,
+  Tag,
 } = require('../import');
 
-module.exports = {
-  getTagIndexData,
-  getTagShowData,
+const tools = {};
+module.exports = tools;
+
+tools.convertParamTagId = (req, res, next, paramTagId) => {
+  if (req.originalUrl.slice(0, 4) !== '/tag') {
+    return next();
+  }
+
+  req.paramTagId = paramTagId;
+
+  Tag.findById(paramTagId, (err, tag) => {
+    if (!err && tag) {
+      req.tagId = tag._id;
+      req.tag = tag;
+      return next();
+    }
+
+    const tryTitle = paramTagId.replace(/_/g, ' ').replace(/%20/g, ' ');
+
+    Tag.findOne({title: tryTitle}, (err, tag) => {
+      if (!err && tag) {
+        req.tagId = tag._id;
+        req.tag = tag;
+        return next();
+      }
+
+      res.send('tag not found');
+    });
+  });
+}
+
+tools.createRenderTag = function(req, res, next) {
+  res.renderTag = async (subview, options = {}) => {
+    res.render('tag/_layout', {
+      subview,
+      tag: req.tag,
+      title: 'Tag: ' + req.tag.title,
+      rootPath: '/tag/' + req.tag._id,
+      ...options
+    });
+  };
+  next();
 };
 
 async function forEachModel(callback) {
@@ -21,54 +61,38 @@ async function forEachModel(callback) {
   }
 }
 
-async function getTagIndexData() {
+tools.getTagIndexData = async tags => {
   const tagRef = {};
+
+  tags.forEach(tag => {
+    tag.count = 0;
+    tagRef[tag.title] = tag;
+  });
 
   await forEachModel(async Model => {
     const items = await Model.find({});
 
     items.forEach(item => {
-      item.tags.forEach(rawTagName => {
+      item.tempTags.forEach(rawTagName => {
         const tagName = rawTagName.split('=')[0].trim();
-        findTag(tagName).count += 1;
+        tagRef[tagName].count += 1;
       });
     });
   });
+};
 
-  const definitions = await Notation.find({tags: 'tag definition'});
-  definitions.forEach(notation => {
-    const tagName = notation.title || 'ERROR: NOTATION MISSING TITLE';
-    findTag(tagName).definition = notation.text;
-  });
-
-  const tagNameList = Object.keys(tagRef).sort();
-
-  return tagNameList.map(tagName => tagRef[tagName]);
-
-  function findTag(tagName) {
-    if (!tagRef[tagName]) {
-      tagRef[tagName] = {
-        name: tagName,
-        count: 0,
-        path: '/tag/' + tagName.split(' ').join('_')
-      };
-    }
-    return tagRef[tagName];
-  }
-}
-
-async function getTagShowData(tagName) {
+tools.getTagShowData = async function(tag) {
   const data = {};
 
   await forEachModel(async (Model, modelName) => {
     const items = modelName === 'sources'
-      ? await Model.find({})
-      : await Model.find({}).populate('story');
+      ? await Model.find({}).populate('story')
+      : await Model.find({});
 
     data[modelName] = items.filter(item => {
-      return item.tags.map(tag => tag.split('=')[0].trim()).includes(tagName);
+      return item.tempTags.map(tag => tag.split('=')[0].trim()).includes(tag.title);
     });
   });
 
   return data;
-}
+};

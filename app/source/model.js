@@ -24,7 +24,14 @@ const sourceSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Image',
   }],
-  tags: [String],
+  tags: [{
+    tag: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Person',
+    },
+    value: String
+  }],
+  tempTags: [String],
   content: String,
   notes: String,
   summary: String,

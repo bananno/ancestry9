@@ -11,7 +11,14 @@ const eventSchema = new mongoose.Schema({
     ref: 'Person',
   }],
   notes: String,
-  tags: [String],
+  tags: [{
+    tag: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Person',
+    },
+    value: String
+  }],
+  tempTags: [String],
 });
 
 for (let methodName in staticMethods) {

@@ -1,4 +1,1 @@
-<%
-  const tagUrl = tag.split('=')[0].trim().split(' ').join('_');
-%>
-<a href="/tag/<%= tagUrl %>"><%= tag %></a>
+<a href="/tag/<%= tag._id %>"><%= tag.title %></a>

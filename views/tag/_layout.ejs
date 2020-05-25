@@ -1,0 +1,25 @@
+<%
+  const navLinks = [];
+
+  if (subview === 'edit') {
+    navLinks.push(['', 'done']);
+  } else {
+    navLinks.push(['edit', 'edit']);
+  }
+%>
+
+<div class="column">
+  <p>
+    <a href="/tags">tags</a>
+  </p>
+
+  <h1><%= tag.title %></h1>
+
+  <p>
+    <% navLinks.forEach(([path, text]) => { %>
+      <a href="<%= rootPath + '/' + path %>" class="main-link"><%= text %></a>
+    <% }); %>
+  </p>
+</div>
+
+<%- include('./' + subview) %>

@@ -5,67 +5,50 @@ const {
   Person,
   Story,
   Source,
+  Tag,
+  createModelRoutes,
 } = require('../import');
 
+const constants = require('./constants');
 const tagTools = require('./tools');
-const mongoose = require('mongoose');
+
 module.exports = createRoutes;
 
 function createRoutes(router) {
-  router.get('/tags', tagIndex);
-  router.get('/tag/:tag', tagShow);
-  router.post('/tag/newDefinition', createTagDefinition);
-  router.post('/tag/updateDefinition', updateTagDefinition);
+  router.use(tagTools.createRenderTag);
+  router.param('id', tagTools.convertParamTagId);
+
+  createModelRoutes({
+    Model: Tag,
+    modelName: 'tag',
+    modelNamePlural: 'tags',
+    router,
+    index: tagIndex,
+    // create: createTag,
+    show: showTag,
+    edit: editTag,
+    fields: constants.fields,
+  });
 }
 
 async function tagIndex(req, res) {
-  const tags = await tagTools.getTagIndexData();
+  const tags = await Tag.find({});
+
+  await tagTools.getTagIndexData(tags);
 
   res.render('tag/index', {
     title: 'Tags',
     tagsDefined: tags.filter(tag => tag.definition),
     tagsUndefined: tags.filter(tag => !tag.definition),
-    totalNumTags: tags.length
+    totalNumTags: tags.length,
   });
 }
 
-async function tagShow(req, res) {
-  const tag = req.params.tag.split('_').join(' ');
-
-  const data = await tagTools.getTagShowData(tag);
-
-  const definition = await Notation
-    .findOne({title: tag, tags: 'tag definition'});
-
-  res.render('tag/show', {
-    title: 'Tag: ' + tag,
-    tag,
-    data,
-    definition,
-  });
+async function showTag(req, res) {
+  const data = await tagTools.getTagShowData(req.tag);
+  res.renderTag('show', {data});
 }
 
-function createTagDefinition(req, res) {
-  const tag = req.body.tag;
-  const newNotation = {
-    title: tag,
-    tags: ['tag definition'],
-    text: req.body.text
-  };
-  mongoose.model('Notation').create(newNotation, (err, notation) => {
-    return res.redirect('/tag/' + tag);
-  });
-}
-
-function updateTagDefinition(req, res) {
-  const tag = req.body.tag;
-  const notationId = req.body.notation;
-  const updatedNotation = {
-    text: req.body.text
-  };
-  mongoose.model('Notation').findById(notationId, (err, notation) => {
-    notation.update(updatedNotation, err => {
-      return res.redirect('/tag/' + tag);
-    });
-  });
+async function editTag(req, res) {
+  res.renderTag('edit', {fields: constants.fields});
 }

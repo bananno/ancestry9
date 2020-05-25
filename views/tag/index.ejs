@@ -7,7 +7,7 @@
 <ul class="bullet-list">
   <% tagsUndefined.forEach(tag => { %>
     <li>
-      <a href="<%= tag.path %>"><%= tag.name %></a>
+      <%- include('./_link', {tag}) %>
       - <%= tag.count %>
     </li>
   <% }); %>
@@ -18,7 +18,7 @@
 <ul class="bullet-list">
   <% tagsDefined.forEach(tag => { %>
     <li>
-      <a href="<%= tag.path %>"><%= tag.name %></a>
+      <%- include('./_link', {tag}) %>
       - <%= tag.count %>
       <br><%= tag.definition %>
     </li>

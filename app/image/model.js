@@ -4,7 +4,14 @@ const staticMethods = require('./model-static');
 
 const imageSchema = new mongoose.Schema({
   url: String,
-  tags: [String],
+  tags: [{
+    tag: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Person',
+    },
+    value: String
+  }],
+  tempTags: [String],
   // Image actually belows to either a source or story.
 });
 

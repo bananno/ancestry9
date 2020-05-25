@@ -1,10 +1,11 @@
 <%
   function getTagValue(item, parentheses = true) {
     let tagValue = '';
-    for (let i in item.tags) {
-      if (item.tags[i].match('=')
-          && item.tags[i].split('=')[0].trim() == tag) {
-        tagValue = item.tags[i].slice(item.tags[i].indexOf('=') + 1).trim();
+    for (let i in item.tempTags) {
+      const nextTag = item.tempTags[i];
+      if (nextTag.match('=')
+          && nextTag.split('=')[0].trim() === tag.title) {
+        tagValue = nextTag.slice(nextTag.indexOf('=') + 1).trim();
         break;
       }
     }
@@ -15,48 +16,17 @@
   }
 %>
 
-<p>
-  <a href="/tags">tags</a>
-</p>
-
-<h1><%= tag %></h1>
-
 <h2>definition</h2>
 
-<% if (definition) { %>
-  <% definition.text.split('\n').forEach(text => { %>
+<% if (tag.definition) { %>
+  <% tag.definition.split('\n').forEach(text => { %>
     <p id="show-notation">
       <%= text %>
     </p>
   <% }); %>
-  <div id="edit-notation-form">
-    <form method="post" action="/tag/updateDefinition">
-      <input type="hidden" name="tag" value="<%= tag %>">
-      <input type="hidden" name="notation" value="<%= definition._id %>">
-      <textarea name="text" style="height: 100px; width: 300px;"
-        ><%= definition.text %></textarea>
-      <br><button>save</button>
-      <span class="clickable-link" id="click-cancel-edit">cancel</span>
-    </form>
-  </div>
-  <p>
-    <span id="click-start-edit" class="clickable-link">edit</span>
-    <span id="link-to-notation">
-      <%- include('../notation/_link', {
-        notation: definition,
-        text: 'go to notation'
-      }) %>
-    </span>
-  </p>
-<% } else { %>
-  <form method="post" action="/tag/newDefinition">
-    <input type="hidden" name="tag" value="<%= tag %>">
-    <textarea name="text" style="height: 100px; width: 300px;"></textarea>
-    <br><button>create</button>
-  </form>
 <% } %>
 
-<% if (tag == 'number of children') { %>
+<% if (tag.title === 'number of children') { %>
   <%- include('./_special-numChildren', {people: data.people}) %>
 <% } else if (data.people.length > 0) { %>
   <h2>people</h2>
@@ -127,20 +97,3 @@
     </div>
   <% }); %>
 <% } %>
-
-<style>
-  #edit-notation-form {
-    display: none;
-  }
-</style>
-
-<script>
-  $('#click-start-edit').click(() => {
-    $('#show-notation, #click-start-edit, #link-to-notation').hide();
-    $('#edit-notation-form').show();
-  });
-  $('#click-cancel-edit').click(() => {
-    $('#show-notation, #click-start-edit, #link-to-notation').show();
-    $('#edit-notation-form').hide();
-  });
-</script>

@@ -7,6 +7,7 @@ const models = [
   'Person',
   'Source',
   'Story',
+  'Tag',
 ];
 
 module.exports = {

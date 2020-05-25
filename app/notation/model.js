@@ -19,7 +19,14 @@ const notationSchema = new mongoose.Schema({
   }],
   date: tools.dateStructure,
   location: tools.locationStructure,
-  tags: [String],
+  tags: [{
+    tag: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Person',
+    },
+    value: String
+  }],
+  tempTags: [String],
   text: String,
   sharing: { type: Boolean, default: false },
 });
