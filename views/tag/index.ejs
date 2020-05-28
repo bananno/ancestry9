@@ -1,12 +1,56 @@
+<style>
+  #not-creating-tag,
+  #create-tag-box {
+    min-height: 90px;
+    box-sizing: border-box;
+  }
+
+  #not-creating-tag p {
+    padding: 10px;
+  }
+
+  input {
+    padding: 3px;
+  }
+
+  #create-tag-box {
+    display: none;
+    padding: 10px;
+  }
+</style>
+
 <h1>Checklist - Tags</h1>
+
+<div id="not-creating-tag">
+  <p>
+    <span id="create-tag-start" class="clickable-link">+ new tag</span>
+  </p>
+  <p>
+    filter: <input id="tag-list-filter" type="text">
+  </p>
+</div>
+
+<div id="create-tag-box">
+  <form action="/tags/new" method="post">
+    <b>title:</b>
+    <input type="text" name="title">
+    <button>create tag</button>
+    <p>
+      <span id="create-tag-cancel" class="clickable-link">cancel</span>
+    </p>
+  </form>
+</div>
 
 <h3>total: <%= totalNumTags %> tags</h3>
 
 <h2>not defined</h2>
 
-<ul class="bullet-list">
+<ul class="bullet-list tag-list">
   <% tagsUndefined.forEach(tag => { %>
-    <li>
+    <%
+      let searchText = tag.title.toLowerCase();
+    %>
+    <li filter-text="<%= searchText %>">
       <%- include('./_link', {tag}) %>
       - <%= tag.count %>
     </li>
@@ -15,12 +59,35 @@
 
 <h2>defined</h2>
 
-<ul class="bullet-list">
+<ul class="bullet-list tag-list">
   <% tagsDefined.forEach(tag => { %>
-    <li>
+    <%
+      let searchText = tag.title.toLowerCase();
+    %>
+    <li filter-text="<%= searchText %>">
       <%- include('./_link', {tag}) %>
       - <%= tag.count %>
       <br><%= tag.definition %>
     </li>
   <% }); %>
 </ul>
+
+<script>
+  $('#create-tag-start').click(() => {
+    $('#not-creating-tag').hide();
+    $('#create-tag-box').show();
+    $('#create-tag-box [name="title"]').focus();
+  });
+
+  $('#create-tag-cancel').click(() => {
+    $('#not-creating-tag').show();
+    $('#create-tag-box').hide();
+  });
+
+  createQuickFilter({
+    input: '#tag-list-filter',
+    items: '.tag-list li',
+    getItemText: $item => $item.attr('filter-text'),
+    startFocus: true,
+  });
+</script>

@@ -24,7 +24,7 @@ function createRoutes(router) {
     modelNamePlural: 'tags',
     router,
     index: tagIndex,
-    // create: createTag,
+    create: createTag,
     show: showTag,
     edit: editTag,
     fields: constants.fields,
@@ -41,6 +41,18 @@ async function tagIndex(req, res) {
     tagsDefined: tags.filter(tag => tag.definition),
     tagsUndefined: tags.filter(tag => !tag.definition),
     totalNumTags: tags.length,
+  });
+}
+
+function createTag(req, res) {
+  const newTag = Tag.getFormDataNew(req);
+
+  if (!newTag) {
+    return res.send('error');
+  }
+
+  Tag.create(newTag, (err, tag) => {
+    res.redirect('/tag/' + tag._id + '/edit');
   });
 }
 
