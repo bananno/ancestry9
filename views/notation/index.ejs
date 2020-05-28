@@ -9,7 +9,6 @@
   [
     '',
     'person notes',
-    'tag definition'
   ].forEach(category => categories[category] = []);
 
   notations.forEach(notation => {
@@ -23,9 +22,6 @@
       }
       if (['source citation', 'checklist'].includes(notation.title)) {
         return notation.title;
-      }
-      if (notation.tags.includes('tag definition')) {
-        return 'tag definition';
       }
       if (notation.title == 'excerpt') {
         return 'source excerpt';

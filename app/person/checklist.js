@@ -1,11 +1,13 @@
 const {
+  Person,
   Source,
 } = require('../import');
 
 module.exports = renderPersonChecklist;
 
 async function renderPersonChecklist(req, res) {
-  const person = req.person;
+  const person = await Person.findById(req.personId).populate('tags');
+  req.person = person;
 
   await person.populateBirthAndDeath();
   const birthYear = person.getBirthYear();

@@ -1,10 +1,4 @@
 const {
-  Event,
-  Image,
-  Notation,
-  Person,
-  Story,
-  Source,
   Tag,
   createModelRoutes,
 } = require('../import');

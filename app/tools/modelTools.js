@@ -40,11 +40,8 @@ function reduceToExportData(itemInfo, fields) {
   return newItem;
 }
 
-tools.getTagValue = function (tagName) {
-  const tag = this.tags.find(tagStr => {
-    return tagStr.split('=').map(s => s.trim())[0] === tagName;
-  });
-  if (tag) {
-    return tag.replace(tagName, '').replace('=', '').trim();
-  }
+tools.getTagValue = function(tagTitle) {
+  const tag = this.tags.find(tag => tag.title === tagTitle);
+  const idx = this.tags.indexOf(tag);
+  return this.tagValues[idx];
 };
