@@ -3,6 +3,7 @@ module.exports = {
   padZero,
   sortBy,
   sortByDate,
+  sortByTitle,
 };
 
 function getDateSortStr(date) {
@@ -33,4 +34,8 @@ function sortBy(list, callback) {
 
 function sortByDate(list) {
   sortBy(list, getDateSortStr);
+}
+
+function sortByTitle(list) {
+  sortBy(list, item => item.title.toLowerCase());
 }

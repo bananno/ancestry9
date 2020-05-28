@@ -4,6 +4,7 @@ const {
   Notation,
   Person,
   Source,
+  Tag,
 } = require('../import');
 
 const constants = require('./constants');
@@ -50,16 +51,23 @@ async function personSummary(req, res) {
 
 async function personEdit(req, res) {
   req.person = await Person.findById(req.personId)
-    .populate('parents').populate('spouses').populate('children');
+    .populate('parents')
+    .populate('spouses')
+    .populate('children')
+    .populate('tags');
 
   const allPeople = await Person.find({});
   const people = Person.removeFromList(allPeople, req.person);
   Person.sortByName(people);
 
+  const tags = await Tag.find({});
+  Tag.sortByTitle(tags);
+
   res.renderPersonProfile('edit', {
     people,
     fields: constants.fields,
     rootPath: '/person/' + req.paramPersonId,
+    tags,
   });
 }
 

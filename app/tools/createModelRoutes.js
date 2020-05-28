@@ -156,6 +156,19 @@ class ModelRoutes {
 
       if (field.onAdd) {
         await field.onAdd(item, newValue);
+      } else if (field.name === 'tags') {
+        if (item.tags.includes(newValue)) {
+          return res.send('error - tag is already in the list');
+        }
+
+        const tagValue = req.body.tagValue.trim();
+        const idx = item.tags.length;
+
+        const updatedObj = {tags: item.tags, tagValues: item.tagValues};
+        updatedObj.tags[idx] = newValue;
+        updatedObj.tagValues[idx] = tagValue;
+
+        await item.update(updatedObj);
       } else {
         const updatedObj = {
           [field.name]: (item[field.name] || [])
@@ -191,6 +204,10 @@ class ModelRoutes {
           updatedObj[field.name] = item[field.name].filter(item => {
             return ('' + (item._id || item)) != deleteId;
           });
+        } else if (attrName === 'tags') {
+          const idx = item.tags.indexOf(deleteId);
+          updatedObj.tags = item.tags.filter((item, i) => i != idx);
+          updatedObj.tagValues = item.tagValues.filter((item, i) => i != idx);
         } else {
           updatedObj[field.name] = item[field.name].filter((item, i) => {
             return i != deleteId;
@@ -216,7 +233,15 @@ class ModelRoutes {
       const updatedObj = {};
       const orderId = req.params.orderId;
       const attrName = field.dataType || field.name;
-      updatedObj[field.name] = reorderList(item[field.name], orderId, attrName);
+
+      if (attrName === 'tags') {
+        const idx = item.tags.indexOf(orderId);
+        updatedObj.tags = reorderList(item.tags, idx, attrName);
+        updatedObj.tagValues = reorderList(item.tagValues, idx, attrName);
+      } else {
+        updatedObj[field.name] = reorderList(item[field.name], orderId, attrName);
+      }
+
       await item.update(updatedObj);
       this.redirect(req, res, item, itemId, updatedObj);
     });

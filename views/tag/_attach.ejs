@@ -1,0 +1,18 @@
+<%
+  const fieldName = locals.fieldName || 'tags';
+%>
+<% if (locals.tags) { %>
+  <select name="<%= fieldName %>">
+    <option value="0">
+      -- Select --
+    </option>
+    <% tags.forEach(tag => { %>
+      <option value="<%= tag._id %>">
+        <%= tag.title %>
+      </option>
+    <% }); %>
+  </select>
+  <input name="tagValue">
+<% } else { %>
+  TAGS NOT LOADED
+<% } %>

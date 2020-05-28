@@ -7,6 +7,7 @@
       }
 
       const data = {
+        item,
         attr: field.name,
         editPath: rootPath + '/edit/' + field.name,
         dataType: field.dataType,
@@ -18,6 +19,10 @@
 
       data.values = field.getValue ? field.getValue(item) : item[field.name];
       data.originalValue = data.values;
+
+      if (field.dataType === 'tags') {
+        data.tagValues = item.tagValues;
+      }
 
       if (field.preventSharing) {
         data.preventSharing = field.preventSharing(item);

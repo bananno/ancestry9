@@ -39,6 +39,9 @@
         <%- include('../story/_link', {story: thisItem}) %>
       <% } else if (dataType == 'tags') { %>
         <%- include('../tag/_link', {tag: thisItem}) %>
+        <% if (item.tagValues[i]) { %>
+          - <%= item.tagValues[i] %>
+        <% } %>
       <% } else { %>
         <%= thisItem %>
       <% } %>
@@ -92,6 +95,10 @@
             selectedPerson: null,
             people: peopleDropdownList,
           }) %>
+        </div>
+      <% } else if (dataType === 'tags') { %>
+        <div item="<%= attr %>" class="value-new">
+          <%- include('../tag/_attach') %>
         </div>
       <% } else if (dataType == 'stories') { %>
         <div item="<%= attr %>" class="value-new">
