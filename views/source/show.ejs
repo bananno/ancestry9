@@ -22,7 +22,10 @@
   <% } %>
 </p>
 
-<%- include('../tag/_list', {tags: source.tags}) %>
+<% if (source.tags.length) { %>
+  <h2>tags</h2>
+  <%- include('../tag/_list', {tags: source.tags, tagValues: source.tagValues}) %>
+<% } %>
 
 <% if (source.summary) { %>
   <%

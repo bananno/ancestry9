@@ -1,9 +1,14 @@
+<%
+  const tagValues = locals.tagValues || [];
+%>
 <% if (tags.length) { %>
-  <h2>tags</h2>
   <ul class="bullet-list">
-    <% tags.forEach(tag => { %>
+    <% tags.forEach((tag, i) => { %>
       <li>
         <%- include('./_link', {tag}) %>
+        <% if (tagValues[i]) { %>
+          - <%= tagValues[i] %>
+        <% } %>
       </li>
     <% }); %>
   </ul>

@@ -19,7 +19,7 @@ function createRoutes(router) {
 
 async function showImage(req, res) {
   const imageId = req.params.id;
-  const image = await Image.findById(imageId);
+  const image = await Image.findById(imageId).populate('tags');
 
   if (!image) {
     return res.send('Image not found.');

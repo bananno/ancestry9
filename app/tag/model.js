@@ -5,12 +5,10 @@ const tagSchema = new mongoose.Schema({
   title: String,
   definition: String,
   tags: [{
-    tag: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Person',
-    },
-    value: String
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tag',
   }],
+  tagValues: [String],
 });
 
 mongoose.model('Tag', tagSchema);

@@ -1,1 +1,5 @@
-<a href="/tag/<%= tag._id %>"><%= tag.title %></a>
+<%
+  const url = tag._id || tag;
+  const text = tag.title || tag;
+%>
+<a href="/tag/<%= url %>"><%= text %></a>

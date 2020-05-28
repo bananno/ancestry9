@@ -26,7 +26,10 @@
   <h2>(orphan image - no story or source)</h2>
 <% } %>
 
-<%- include('../tag/_list', {tags: image.tags}) %>
+<% if (image.tags.length) { %>
+  <h2>tags</h2>
+  <%- include('../tag/_list', {tags: image.tags, tagValues: image.tagValues}) %>
+<% } %>
 
 <hr>
 

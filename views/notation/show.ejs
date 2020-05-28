@@ -73,12 +73,9 @@
 
 <% if (!isCitation) { %>
   <h2>people</h2>
+  <%- include('../person/_list', {people: notation.people, format: 'bullet'}) %>
 
-  <%- include('../person/_list', {
-    people: notation.people,
-    format: 'bullet',
-  }) %>
-
+  <h2>tags</h2>
   <%- include('../tag/_list', {tags: notation.tags, values: notation.tagValues}) %>
 <% } %>
 

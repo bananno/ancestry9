@@ -66,16 +66,15 @@ tools.getTagIndexData = async tags => {
 
   tags.forEach(tag => {
     tag.count = 0;
-    tagRef[tag.title] = tag;
+    tagRef[tag._id] = tag;
   });
 
   await forEachModel(async Model => {
     const items = await Model.find({});
 
     items.forEach(item => {
-      item.tempTags.forEach(rawTagName => {
-        const tagName = rawTagName.split('=')[0].trim();
-        tagRef[tagName].count += 1;
+      item.tags.forEach(tagId => {
+        tagRef[tagId].count += 1;
       });
     });
   });
@@ -89,10 +88,7 @@ tools.getTagShowData = async function(tag) {
       ? await Model.find({}).populate('story')
       : await Model.find({});
 
-    data[modelName] = items.filter(item => {
-      return item.tags.includes(tag._id)
-        || item.tempTags.map(tag => tag.split('=')[0].trim()).includes(tag.title);
-    });
+    data[modelName] = items.filter(item => item.tags.includes(tag._id));
   });
 
   return data;

@@ -69,7 +69,8 @@ async function deleteEvent(req, res) {
 }
 
 async function showEvent(req, res) {
-  req.event = await Event.findById(req.params.id).populate('people');
+  req.event = await Event.findById(req.params.id)
+    .populate('people').populate('tags');
   if (!req.event) {
     return res.send('event not found');
   }

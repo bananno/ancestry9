@@ -5,13 +5,10 @@ const staticMethods = require('./model-static');
 const imageSchema = new mongoose.Schema({
   url: String,
   tags: [{
-    tag: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Person',
-    },
-    value: String
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tag',
   }],
-  tempTags: [String],
+  tagValues: [String],
   // Image actually belows to either a source or story.
 });
 

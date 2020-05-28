@@ -23,7 +23,8 @@ async function renderSummary(req, res) {
     .populate('story')
     .populate('stories')
     .populate('people')
-    .populate('images');
+    .populate('images')
+    .populate('tags');
 
   const source = req.source;
 
@@ -42,7 +43,8 @@ async function renderEdit(req, res) {
     .populate('story')
     .populate('stories')
     .populate('images')
-    .populate('people');
+    .populate('people')
+    .populate('tags');
 
   const source = req.source;
 

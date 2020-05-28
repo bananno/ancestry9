@@ -22,7 +22,10 @@
   <%= story.type %>
 </p>
 
-<%- include('../tag/_list', {tags: story.tags}) %>
+<% if (story.tags.length) { %>
+  <h2>tags</h2>
+  <%- include('../tag/_list', {tags: story.tags, tagValues: story.tagValues}) %>
+<% } %>
 
 <% if (story.summary) { %>
   <%
