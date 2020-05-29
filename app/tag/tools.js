@@ -1,13 +1,9 @@
 const {
-  Event,
-  Image,
-  Notation,
-  Person,
-  Story,
-  Source,
   Tag,
+  modelRef,
 } = require('../import');
 
+const constants = require('./constants');
 const tools = {};
 module.exports = tools;
 
@@ -53,11 +49,10 @@ tools.createRenderTag = function(req, res, next) {
 };
 
 async function forEachModel(callback) {
-  const modelsWithTags = [Event, Image, Person, Story, Source, Notation];
-  const modelNames = ['events', 'images', 'people', 'stories', 'sources', 'notations'];
-
-  for (let i in modelsWithTags) {
-    await callback(modelsWithTags[i], modelNames[i]);
+  for (let i in constants.modelsThatHaveTags) {
+    const model = modelRef[constants.modelsThatHaveTags[i].name];
+    const modelName = constants.modelsThatHaveTags[i].plural;
+    await callback(model, modelName);
   }
 }
 

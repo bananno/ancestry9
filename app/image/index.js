@@ -1,5 +1,6 @@
 const {
   Image,
+  Tag,
   createModelRoutes,
 } = require('../import');
 
@@ -27,10 +28,14 @@ async function showImage(req, res) {
 
   await image.populateParent();
 
+  const tags = await Tag.find({});
+  Tag.sortByTitle(tags);
+
   res.render('image/show', {
     title: 'Image',
     image,
     fields: constants.fields,
     rootPath: '/image/' + image._id,
+    tags,
   });
 }

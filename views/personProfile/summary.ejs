@@ -27,14 +27,7 @@
 
 <% if (person.tags.length) { %>
   <h2>Tags</h2>
-  <ul class="bullet-list">
-    <% person.tags.forEach((tag, i) => { %>
-      <li>
-        <%- include('../tag/_link', {tag}) %>
-        <%= person.tagValues[i] ? ' - ' + person.tagValues[i] : '' %>
-      </li>
-    <% }); %>
-  </ul>
+  <%- include('../tag/_list', {item: person}) %>
 <% } %>
 
 <h2>Family</h2>

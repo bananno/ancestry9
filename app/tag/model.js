@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const tools = require('../tools/modelTools');
+const instanceMethods = require('./model-instance');
 const staticMethods = require('./model-static');
 
 const tagSchema = new mongoose.Schema({
@@ -11,6 +12,10 @@ const tagSchema = new mongoose.Schema({
   }],
   tagValues: [String],
 });
+
+for (let methodName in instanceMethods) {
+  tagSchema.methods[methodName] = instanceMethods[methodName];
+}
 
 for (let methodName in staticMethods) {
   tagSchema.statics[methodName] = staticMethods[methodName];

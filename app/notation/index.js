@@ -2,6 +2,7 @@ const {
   Notation,
   Person,
   Story,
+  Tag,
   createModelRoutes,
 } = require('../import');
 
@@ -22,7 +23,7 @@ function createRoutes(router) {
 }
 
 async function notationsIndex(req, res) {
-  const notations = await Notation.find({});
+  const notations = await Notation.find({}).populate('tags');
   res.render('notation/index', {title: 'Notations', notations});
 }
 
@@ -52,9 +53,14 @@ async function editNotation(req, res) {
   if (!notation) {
     return res.send('Notation not found.');
   }
+
   const people = await Person.find({});
   Person.sortByName(people);
+
   const stories = await Story.find({});
+
+  const tags = await Tag.find({});
+  Tag.sortByTitle(tags);
 
   res.render('notation/edit', {
     title: 'Notation',
@@ -63,6 +69,7 @@ async function editNotation(req, res) {
     stories,
     rootPath: '/notation/' + notation._id,
     fields: constants.fields,
+    tags,
   });
 }
 

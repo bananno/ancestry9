@@ -4,6 +4,7 @@ const {
   Person,
   Source,
   Story,
+  Tag,
 } = require('../import');
 
 const constants = require('./constants');
@@ -47,7 +48,6 @@ async function renderEdit(req, res) {
     .populate('tags');
 
   const source = req.source;
-
   await source.populateCiteText({includeStory: false});
 
   const stories = await Story.find({});
@@ -60,6 +60,9 @@ async function renderEdit(req, res) {
 
   const people = await source.getPeopleForNewCitations();
 
+  const tags = await Tag.find({});
+  Tag.sortByTitle(tags);
+
   res.renderSource('edit', {
     title: 'Edit Source',
     rootPath: '/source/' + source._id,
@@ -70,6 +73,7 @@ async function renderEdit(req, res) {
     needCitationText: source.story.title.match('Census')
       && source.citeText.length == 0,
     citationTextPath: '/source/' + source._id + '/createCitationNotation',
+    tags,
   });
 }
 

@@ -12,12 +12,14 @@
   ].forEach(category => categories[category] = []);
 
   notations.forEach(notation => {
+    const tagTitles = notation.tags.map(tag => tag.title);
+
     const category = (() => {
       if (notation.title == 'profile summary'
-          || notation.tags.includes('profile summary')
-          || notation.tags.includes('research notes')
-          || notation.tags.includes('brick wall')
-          || notation.tags.includes('broken brick wall')) {
+          || tagTitles.includes('profile summary')
+          || tagTitles.includes('research notes')
+          || tagTitles.includes('brick wall')
+          || tagTitles.includes('broken brick wall')) {
         return 'person notes';
       }
       if (['source citation', 'checklist'].includes(notation.title)) {
@@ -27,7 +29,7 @@
         return 'source excerpt';
       }
       if (notation.title == 'featured quote'
-          || notation.tags.includes('featured quote')) {
+          || tagTitles.includes('featured quote')) {
         return 'other tasks';
       }
       return '';
@@ -69,7 +71,7 @@
           <%- include('../notation/_link', {notation}) %>
         </td>
         <td>
-          <%= notation.tags.join(', ') %>
+          <%- include('../tag/_list', {item: notation}) %>
         </td>
         <td>
           <% if (notation.sharing) { %>

@@ -26,13 +26,13 @@
 
 <table class="event-list">
   <tr>
-    <th> title </th>
-    <th> date </th>
-    <th> location </th>
-    <th> people </th>
-    <th> notes </th>
+    <th>title</th>
+    <th>date</th>
+    <th>location</th>
+    <th>people</th>
+    <th>notes</th>
     <% if (locals.showTags) { %>
-      <th> tags </th>
+      <th>tags</th>
     <% } %>
   </tr>
 
@@ -79,11 +79,7 @@
       </td>
       <% if (locals.showTags) { %>
         <td>
-          <ul class="bullet-list">
-            <% event.tags.forEach(tag => { %>
-              <li> <%= tag %> </li>
-            <% }); %>
-          </ul>
+          <%- include('../tag/_list', {item: event}) %>
         </td>
       <% } %>
     </tr>

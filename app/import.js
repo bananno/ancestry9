@@ -15,11 +15,16 @@ const tools = [
 
 module.exports = {
   mongoose,
+  models: [],
+  modelRef: {},
   ...modelTools,
 };
 
-models.forEach(model => {
-  module.exports[model] = mongoose.model(model);
+models.forEach(modelName => {
+  const Model = mongoose.model(modelName);
+  module.exports[modelName] = Model;
+  module.exports.models.push(Model);
+  module.exports.modelRef[modelName] = Model;
 });
 
 tools.forEach(tool => {

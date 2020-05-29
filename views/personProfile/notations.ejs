@@ -39,13 +39,7 @@
     </p>
   <% }); %>
 
-  <ul style="margin: 5px 0 0 20px;">
-    <% notation.tags.forEach(tag => { %>
-      <li>
-        <%= tag %>
-      </li>
-    <% }); %>
-  </ul>
+  <%- include('../tag/_list', {item: notation}) %>
 
   <p style="margin-top: 5px;">
     <% if (notation.sharing) { %>

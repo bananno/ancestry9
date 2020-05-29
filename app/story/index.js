@@ -3,6 +3,7 @@ const {
   Notation,
   Story,
   Source,
+  Tag,
   createModelRoutes,
 } = require('../import');
 
@@ -71,7 +72,9 @@ async function createStoryNotation(req, res) {
 
 async function storyShowMain(req, res) {
   req.story = await Story.findById(req.params.id)
-    .populate('people').populate('images').populate('tags');
+    .populate('people')
+    .populate('images')
+    .populate('tags');
   await req.story.populateCiteText();
   await req.story.populateNonEntrySources();
   res.renderStory('show');
@@ -79,9 +82,17 @@ async function storyShowMain(req, res) {
 
 async function storyEdit(req, res) {
   req.story = await Story.findById(req.params.id)
-    .populate('people').populate('images').populate('tags');
+    .populate('people')
+    .populate('images')
+    .populate('tags');
+
   const people = await Person.find({});
-  res.renderStory('edit', {fields: constants.fields, people});
+  Person.sortByName(people);
+
+  const tags = await Tag.find({});
+  Tag.sortByTitle(tags);
+
+  res.renderStory('edit', {fields: constants.fields, people, tags});
 }
 
 async function storyEntries(req, res) {

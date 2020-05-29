@@ -1,6 +1,7 @@
 const {
   Event,
   Person,
+  Tag,
   createModelRoutes,
   modelFields,
 } = require('../import');
@@ -38,8 +39,12 @@ function createRenderEvent(req, res, next) {
 }
 
 async function eventIndex(req, res) {
-  const events = await Event.find({}).populate('people');
+  const events = await Event.find({})
+    .populate('people')
+    .populate('tags');
+
   Event.sortByDate(events);
+
   res.render('event/index', {title: 'All Events', events});
 }
 
@@ -78,16 +83,24 @@ async function showEvent(req, res) {
 }
 
 async function editEvent(req, res) {
-  req.event = await Event.findById(req.params.id).populate('people');
+  req.event = await Event.findById(req.params.id)
+    .populate('people')
+    .populate('tags');
+
   if (!req.event) {
     return res.send('event not found');
   }
+
   const people = await Person.find({});
   Person.sortByName(people);
+
+  const tags = await Tag.find({});
+  Tag.sortByTitle(tags);
 
   res.renderEvent('edit', {
     title: 'Edit Event',
     fields: constants.fields,
     people,
+    tags,
   });
 }

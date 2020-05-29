@@ -90,7 +90,7 @@ async function personSources(req, res) {
 
 async function personNotations(req, res) {
   const person = req.person;
-  const notations = await Notation.find({people: person});
+  const notations = await Notation.find({people: person}).populate('tags');
   res.renderPersonProfile('notations', {notations});
 }
 

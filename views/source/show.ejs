@@ -24,7 +24,7 @@
 
 <% if (source.tags.length) { %>
   <h2>tags</h2>
-  <%- include('../tag/_list', {tags: source.tags, tagValues: source.tagValues}) %>
+  <%- include('../tag/_list', {item: source}) %>
 <% } %>
 
 <% if (source.summary) { %>

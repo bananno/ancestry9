@@ -28,7 +28,7 @@
 
 <% if (image.tags.length) { %>
   <h2>tags</h2>
-  <%- include('../tag/_list', {tags: image.tags, tagValues: image.tagValues}) %>
+  <%- include('../tag/_list', {item: image}) %>
 <% } %>
 
 <hr>

@@ -19,6 +19,7 @@ function createRoutes(router) {
     router,
     index: tagIndex,
     create: createTag,
+    delete: deleteTag,
     show: showTag,
     edit: editTag,
     fields: constants.fields,
@@ -56,5 +57,16 @@ async function showTag(req, res) {
 }
 
 async function editTag(req, res) {
-  res.renderTag('edit', {fields: constants.fields});
+  const editParams = {
+    item: req.tag,
+    itemName: 'tag',
+    fields: constants.fields,
+    canDelete: await req.tag.canBeDeleted(),
+  };
+  res.renderTag('edit', {editParams});
+}
+
+async function deleteTag(req, res) {
+  await Tag.deleteOne({_id: req.tagId});
+  res.redirect('/tags');
 }

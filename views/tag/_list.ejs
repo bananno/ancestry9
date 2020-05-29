@@ -1,5 +1,6 @@
 <%
-  const tagValues = locals.tagValues || [];
+  const tags = (locals.item ? item.tags : locals.tags) || [];
+  const tagValues = (locals.item ? item.tagValues : locals.tagValues) || [];
 %>
 <% if (tags.length) { %>
   <ul class="bullet-list">
