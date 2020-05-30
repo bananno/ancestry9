@@ -19,3 +19,13 @@
 <ul class="bullet-list">
   <li><a href="/checklist/sourceCensus">census</a></li>
 </ul>
+
+<h2>dynamic tag checklists</h2>
+
+<ul class="bullet-list">
+  <% checklistTags.forEach(tag => { %>
+    <li>
+      <%- include('../tag/_link', {tag}) %>
+    </li>
+  <% }); %>
+</ul>

@@ -14,7 +14,7 @@ tools.convertParamTagId = (req, res, next, paramTagId) => {
 
   req.paramTagId = paramTagId;
 
-  Tag.findById(paramTagId, (err, tag) => {
+  Tag.findById(paramTagId).populate('tags').exec((err, tag) => {
     if (!err && tag) {
       req.tagId = tag._id;
       req.tag = tag;
@@ -23,7 +23,7 @@ tools.convertParamTagId = (req, res, next, paramTagId) => {
 
     const tryTitle = paramTagId.replace(/_/g, ' ').replace(/%20/g, ' ');
 
-    Tag.findOne({title: tryTitle}, (err, tag) => {
+    Tag.findOne({title: tryTitle}).populate('tags').exec((err, tag) => {
       if (!err && tag) {
         req.tagId = tag._id;
         req.tag = tag;
@@ -78,12 +78,32 @@ tools.getTagIndexData = async tags => {
 tools.getTagShowData = async function(tag) {
   const data = {};
 
+  const metatagTitles = tag.getTagTitles();
+
+  if (metatagTitles.includes('group by value')) {
+    data.groupByValue = {};
+    data.values = {};
+  }
+
   await forEachModel(async (Model, modelName) => {
     const items = modelName === 'sources'
       ? await Model.find({}).populate('story')
       : await Model.find({});
 
     data[modelName] = items.filter(item => item.tags.includes(tag._id));
+
+    if (data.groupByValue) {
+      const byValue = {};
+
+      data[modelName].forEach(item => {
+        const tagValue = item.getTagValue(tag);
+        byValue[tagValue] = byValue[tagValue] || [];
+        byValue[tagValue].push(item);
+      });
+
+      data.groupByValue[modelName] = byValue;
+      data.values[modelName] = Object.keys(byValue);
+    }
   });
 
   return data;

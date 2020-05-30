@@ -43,8 +43,59 @@
   </ul>
 <% } %>
 
+<% if (tag.tags.length) { %>
+  <h2>metatags</h2>
+  <%- include('../tag/_list', {item: tag}) %>
+<% } %>
+
+<hr style="margin-top: 20px;">
+
+<h1>items with tag</h1>
+
 <% if (tag.title === 'number of children') { %>
   <%- include('./_special-numChildren', {people: data.people, getTagValue}) %>
+<% } else if (data.groupByValue) { %>
+  <% modelsThatHaveTags
+    .filter(model => model.name != 'Image')
+    .forEach(model => {
+  %>
+    <%
+      const singularName = model.name.toLowerCase();
+      const pluralName = model.plural;
+
+      if (!data[pluralName].length) {
+        return;
+      }
+    %>
+    <h2><%= pluralName %></h2>
+    <% data.values[pluralName].forEach(tagValue => { %>
+      <%
+        const items = data.groupByValue[pluralName][tagValue];
+
+        const isError = tagValue
+          && tag.valueType != 1
+          && !tagValueList.includes(tagValue);
+      %>
+      <p style="margin: 5px 0;" class="<%= isError ? 'error' : 'none' %>">
+        <b><%= tagValue %></b>
+      </p>
+      <ul class="bullet-list">
+        <% items.forEach(item => { %>
+          <%
+            const tagValue = getTagValue(item);
+            const isError = tagValue
+              && tag.valueType != 1
+              && !tagValueList.includes(tagValue);
+          %>
+          <li>
+            <%- include('../' + singularName + '/_link', {
+              [singularName]: item
+            }) %>
+          </li>
+        <% }); %>
+      </ul>
+    <% }); %>
+  <% }); %>
 <% } else { %>
   <% modelsThatHaveTags
     .filter(model => model.name != 'Image')

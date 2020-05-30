@@ -65,7 +65,9 @@ async function editTag(req, res) {
     itemName: 'tag',
     fields: constants.fields,
     canDelete: await req.tag.canBeDeleted(),
+    tags: await Tag.getAvailableForItem(req.tag),
   };
+
   res.renderTag('edit', {editParams});
 }
 

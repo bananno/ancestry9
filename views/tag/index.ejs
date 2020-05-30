@@ -62,7 +62,8 @@
 <ul class="bullet-list tag-list">
   <% tagsDefined.forEach(tag => { %>
     <%
-      let searchText = tag.title.toLowerCase();
+      let searchText = tag.title + ' ' + tag.definition;
+      searchText = searchText.toLowerCase();
     %>
     <li filter-text="<%= searchText %>">
       <%- include('./_link', {tag}) %>

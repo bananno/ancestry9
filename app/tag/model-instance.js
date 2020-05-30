@@ -4,6 +4,8 @@ const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
+methods.getTagTitles = tools.getTagTitles;
+
 methods.canBeDeleted = async function() {
   for (let i in constants.modelsThatHaveTags) {
     const modelName = constants.modelsThatHaveTags[i].name;

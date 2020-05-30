@@ -1,5 +1,10 @@
 const {
-  Image, Notation, Person, Source, Story,
+  Image,
+  Notation,
+  Person,
+  Source,
+  Story,
+  Tag,
   sortBy,
 } = require('../import');
 
@@ -29,8 +34,11 @@ function createRenderChecklist(req, res, next) {
   next();
 }
 
-function checklistIndex(req, res) {
-  res.renderChecklist('index');
+async function checklistIndex(req, res) {
+  const checklistMetatag = await Tag.find({title: 'checklist'});
+  const checklistTags = await Tag.find({tags: checklistMetatag});
+  Tag.sortByTitle(checklistTags);
+  res.renderChecklist('index', {checklistTags});
 }
 
 async function checklistVitals(req, res) {
