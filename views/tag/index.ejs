@@ -43,35 +43,64 @@
 
 <h3>total: <%= totalNumTags %> tags</h3>
 
-<h2>not defined</h2>
+<p>
+  group tags by:
+  <span class="clickable-link group-tags-link" group-by="definition">definition</span>
+  <span class="clickable-link group-tags-link" group-by="category">category</span>
+</p>
 
-<ul class="bullet-list tag-list">
-  <% tagsUndefined.forEach(tag => { %>
-    <%
-      let searchText = tag.title.toLowerCase();
-    %>
-    <li filter-text="<%= searchText %>">
-      <%- include('./_link', {tag}) %>
-      - <%= tag.count %>
-    </li>
+<hr style="margin-top: 30px;">
+
+<div class="group-tags-box" group-by="definition">
+  <h2>not defined</h2>
+
+  <ul class="bullet-list tag-list">
+    <% tagsUndefined.forEach(tag => { %>
+      <%
+        let searchText = tag.title.toLowerCase();
+      %>
+      <li filter-text="<%= searchText %>">
+        <%- include('./_link', {tag}) %>
+        - <%= tag.count %>
+      </li>
+    <% }); %>
+  </ul>
+
+  <h2>defined</h2>
+
+  <ul class="bullet-list tag-list">
+    <% tagsDefined.forEach(tag => { %>
+      <%
+        let searchText = tag.title + ' ' + tag.definition;
+        searchText = searchText.toLowerCase();
+      %>
+      <li filter-text="<%= searchText %>">
+        <%- include('./_link', {tag}) %>
+        - <%= tag.count %>
+        <br><%= tag.definition %>
+      </li>
+    <% }); %>
+  </ul>
+</div>
+
+<div class="group-tags-box" group-by="category">
+  <% categoryList.forEach(category => { %>
+    <h2><%= category %></h2>
+    <ul class="bullet-list tag-list">
+      <% categoryTags[category].forEach(tag => { %>
+        <%
+          let searchText = tag.title + ' ' + tag.definition;
+          searchText = searchText.toLowerCase();
+        %>
+        <li filter-text="<%= searchText %>">
+          <%- include('./_link', {tag}) %>
+          - <%= tag.count %>
+          <br><%= tag.definition %>
+        </li>
+      <% }); %>
+    </ul>
   <% }); %>
-</ul>
-
-<h2>defined</h2>
-
-<ul class="bullet-list tag-list">
-  <% tagsDefined.forEach(tag => { %>
-    <%
-      let searchText = tag.title + ' ' + tag.definition;
-      searchText = searchText.toLowerCase();
-    %>
-    <li filter-text="<%= searchText %>">
-      <%- include('./_link', {tag}) %>
-      - <%= tag.count %>
-      <br><%= tag.definition %>
-    </li>
-  <% }); %>
-</ul>
+</div>
 
 <script>
   $('#create-tag-start').click(() => {
@@ -90,5 +119,13 @@
     items: '.tag-list li',
     getItemText: $item => $item.attr('filter-text'),
     startFocus: true,
+  });
+
+  $('.group-tags-link').each((i, link) => {
+    const groupBy = $(link).attr('group-by');
+    $(link).click(() => {
+      $('.group-tags-box').hide();
+      $('.group-tags-box[group-by="' + groupBy + '"]').show();
+    });
   });
 </script>

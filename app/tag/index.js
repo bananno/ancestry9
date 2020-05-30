@@ -31,11 +31,33 @@ async function tagIndex(req, res) {
 
   await tagTools.getTagIndexData(tags);
 
+  const categoryTags = {};
+  const noCategory = [];
+
+  tags.forEach(tag => {
+    if (tag.category) {
+      tag.category
+        .split(',')
+        .map(str => str.trim())
+        .forEach(category => {
+          categoryTags[category] = categoryTags[category] || [];
+          categoryTags[category].push(tag);
+        });
+    } else {
+      noCategory.push(tag);
+    }
+  });
+
+  const categoryList = [...Object.keys(categoryTags).sort(), 'none'];
+  categoryTags.none = noCategory;
+
   res.render('tag/index', {
     title: 'Tags',
     tagsDefined: tags.filter(tag => tag.definition),
     tagsUndefined: tags.filter(tag => !tag.definition),
     totalNumTags: tags.length,
+    categoryTags,
+    categoryList,
   });
 }
 

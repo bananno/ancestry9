@@ -4,6 +4,7 @@ module.exports = constants;
 constants.fields = [
   {name: 'title'},
   {name: 'definition', inputType: 'textarea'},
+  {name: 'category'},
   {
     name: 'valueType',
     toggle: true,
