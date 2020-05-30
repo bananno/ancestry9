@@ -10,6 +10,7 @@ const tagSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  values: String,
   tags: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Tag',

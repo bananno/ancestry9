@@ -14,6 +14,11 @@ constants.fields = [
       'use list of preset values'
     ],
   },
+  {
+    name: 'values',
+    inputType: 'textarea',
+    onlyIf: tag => tag.valueType === 2 || tag.values,
+  },
   {name: 'tags', multi: true},
 ];
 

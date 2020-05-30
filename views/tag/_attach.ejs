@@ -1,18 +1,72 @@
 <%
   const fieldName = locals.fieldName || 'tags';
 %>
+
+<style>
+.tag-values-dropdown {
+  display: none;
+}
+</style>
+
 <% if (locals.tags) { %>
-  <select name="<%= fieldName %>">
+  <select name="<%= fieldName %>" id="attach-new-tag-select">
     <option value="0">
       -- Select --
     </option>
     <% tags.forEach(tag => { %>
-      <option value="<%= tag._id %>">
+      <option
+        tag-id="<%= tag._id %>"
+        value="<%= tag._id %>"
+        use-value-type="<%= tag.valueType %>"
+      >
         <%= tag.title %>
       </option>
     <% }); %>
   </select>
-  <input name="tagValue">
+  <% tags.filter(tag => tag.values).forEach(tag => { %>
+    <select class="tag-values-dropdown" tag-id="<%= tag._id %>">
+      <option value="0">
+        -- select value --
+      </option>
+      <% tag.values.split('\n').forEach(text => { %>
+        <option>
+          <%= text %>
+        </option>
+      <% }); %>
+    </select>
+  <% }); %>
+  <input name="tagValue" id="attach-new-tag-value">
 <% } else { %>
   TAGS NOT LOADED
 <% } %>
+
+<script>
+  const $tagDropdown = $('#attach-new-tag-select');
+  const $tagValueTextbox = $('#attach-new-tag-value');
+  const $tagValueDropdowns = $('.tag-values-dropdown');
+
+  $tagDropdown.change(() => {
+    const $item = $('#attach-new-tag-select option:selected');
+    const tagId = $item.attr('tag-id');
+
+    $tagValueDropdowns.val(0).hide();
+    $tagValueTextbox.val('');
+
+    const useValueType = $item.attr('use-value-type');
+
+    if (useValueType === '0') {
+      $tagValueTextbox.hide();
+    } else if (useValueType === '1') {
+      $tagValueTextbox.show();
+    } else if (useValueType === '2') {
+      $tagValueTextbox.hide();
+      $tagValueDropdowns.filter('[tag-id="' + tagId + '"]').show();
+    }
+  });
+
+  $tagValueDropdowns.each((i, dropdown) => {
+    $(dropdown).change(() => {
+      $tagValueTextbox.val($(dropdown).val());
+    });
+  });
+</script>

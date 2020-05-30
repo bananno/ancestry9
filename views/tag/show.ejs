@@ -34,6 +34,30 @@
   <% }); %>
 <% } %>
 
+<h2>value options</h2>
+
+<p>
+  value type:
+  <%= tag.valueType %>
+</p>
+
+<p>
+  value options:
+  <% if (!tag.values) { %>
+    <i>N/A</i>
+  <% } %>
+</p>
+
+<% if (tag.values) { %>
+  <ul class="bullet-list">
+    <% tag.values.split('\n').forEach(text => { %>
+      <li id="show-notation">
+        <%= text %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
 <% if (tag.title === 'number of children') { %>
   <%- include('./_special-numChildren', {people: data.people}) %>
 <% } else if (data.people.length > 0) { %>
@@ -102,6 +126,8 @@
   <% data.images.forEach(image => { %>
     <div style="display: inline-block; width: 200px;">
       <%- include('../image/_link', {image}) %>
+      <br>
+      <%= getTagValue(image, false) %>
     </div>
   <% }); %>
 <% } %>
