@@ -27,6 +27,10 @@
       if (field.preventSharing) {
         data.preventSharing = field.preventSharing(item);
       }
+
+      if (field.toggle && field.valueNames) {
+        data.currentValueTitle = field.valueNames[data.values];
+      }
     %>
     <%- include(filename, data) %>
   <% }); %>

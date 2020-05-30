@@ -6,6 +6,10 @@ const staticMethods = require('./model-static');
 const tagSchema = new mongoose.Schema({
   title: String,
   definition: String,
+  valueType: {
+    type: Number,
+    default: 0
+  },
   tags: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Tag',

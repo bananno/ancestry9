@@ -110,6 +110,12 @@ class ModelRoutes {
       }
       if (field.onUpdate) {
         await field.onUpdate(item);
+      } else if (field.maxValue) {
+        let newValue = (item[field.name] || 0) + 1;
+        if (newValue > field.maxValue) {
+          newValue = 0;
+        }
+        await item.update({[field.name]: newValue});
       } else {
         const updatedObj = {};
         const currentValue = item[field.name] || false;

@@ -111,6 +111,9 @@
 
         <% } else { %>
           <%= originalValue %>
+          <% if (locals.currentValueTitle) { %>
+          - <%= currentValueTitle %>
+          <% } %>
         <% } %>
       </div>
 
