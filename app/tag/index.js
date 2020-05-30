@@ -28,6 +28,7 @@ function createRoutes(router) {
 
 async function tagIndex(req, res) {
   const tags = await Tag.find({});
+  Tag.sortByTitle(tags);
 
   await tagTools.getTagIndexData(tags);
 
@@ -56,8 +57,10 @@ async function tagIndex(req, res) {
     tagsDefined: tags.filter(tag => tag.definition),
     tagsUndefined: tags.filter(tag => !tag.definition),
     totalNumTags: tags.length,
+    tags,
     categoryTags,
     categoryList,
+    modelsThatHaveTags: constants.modelsThatHaveTags,
   });
 }
 

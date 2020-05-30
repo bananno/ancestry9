@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const tools = require('../tools/modelTools');
+const constants = require('./constants');
 const instanceMethods = require('./model-instance');
 const staticMethods = require('./model-static');
 
@@ -12,6 +13,11 @@ const tagSchema = new mongoose.Schema({
     default: 0
   },
   values: String,
+  restrictModels: {
+    type: Boolean,
+    default: false
+  },
+  ...constants.modelAttrs,
   tags: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Tag',

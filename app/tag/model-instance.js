@@ -6,6 +6,10 @@ module.exports = methods;
 
 methods.getTagTitles = tools.getTagTitles;
 
+methods.isModelAllowed = function(modelName) {
+  return !this.restrictModels || this['allow' + modelName];
+};
+
 methods.canBeDeleted = async function() {
   for (let i in constants.modelsThatHaveTags) {
     const modelName = constants.modelsThatHaveTags[i].name;

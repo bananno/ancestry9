@@ -4,6 +4,8 @@ const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
+methods.getTagValue = tools.getTagValue;
+
 methods.canBeDeleted = function() {
   return this.people.length === 0
     && (this.links || []).length === 0

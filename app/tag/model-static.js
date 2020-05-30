@@ -8,9 +8,16 @@ methods.sortByTitle = tools.sortByTitle;
 methods.getAvailableForItem = async item => {
   const Tag = mongoose.model('Tag');
   const allTags = await Tag.find({});
+
   const itemTagIds = item.tags.map(tag => tag._id || tag);
-  const tags = allTags.filter(tag => !itemTagIds.includes(tag._id));
+  const modelName = item.constructor.modelName;
+
+  const tags = allTags.filter(tag => {
+    return !itemTagIds.includes(tag._id) && tag.isModelAllowed(modelName);
+  });
+
   Tag.sortByTitle(tags);
+
   return tags;
 };
 

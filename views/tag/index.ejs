@@ -47,11 +47,12 @@
   group tags by:
   <span class="clickable-link group-tags-link" group-by="definition">definition</span>
   <span class="clickable-link group-tags-link" group-by="category">category</span>
+  <span class="clickable-link group-tags-link" group-by="grid">grid</span>
 </p>
 
-<hr style="margin-top: 30px;">
-
 <div class="group-tags-box" group-by="definition">
+  <hr style="margin-top: 30px;">
+
   <h2>not defined</h2>
 
   <ul class="bullet-list tag-list">
@@ -59,7 +60,7 @@
       <%
         let searchText = tag.title.toLowerCase();
       %>
-      <li filter-text="<%= searchText %>">
+      <li class="tag-list-item" filter-text="<%= searchText %>">
         <%- include('./_link', {tag}) %>
         - <%= tag.count %>
       </li>
@@ -74,7 +75,7 @@
         let searchText = tag.title + ' ' + tag.definition;
         searchText = searchText.toLowerCase();
       %>
-      <li filter-text="<%= searchText %>">
+      <li class="tag-list-item" filter-text="<%= searchText %>">
         <%- include('./_link', {tag}) %>
         - <%= tag.count %>
         <br><%= tag.definition %>
@@ -84,6 +85,8 @@
 </div>
 
 <div class="group-tags-box" group-by="category">
+  <hr style="margin-top: 30px;">
+
   <% categoryList.forEach(category => { %>
     <h2><%= category %></h2>
     <ul class="bullet-list tag-list">
@@ -92,7 +95,7 @@
           let searchText = tag.title + ' ' + tag.definition;
           searchText = searchText.toLowerCase();
         %>
-        <li filter-text="<%= searchText %>">
+        <li class="tag-list-item" filter-text="<%= searchText %>">
           <%- include('./_link', {tag}) %>
           - <%= tag.count %>
           <br><%= tag.definition %>
@@ -100,6 +103,52 @@
       <% }); %>
     </ul>
   <% }); %>
+</div>
+
+<div class="group-tags-box" group-by="grid">
+  <table class="nice-table" style="margin-top: 20px">
+    <tr>
+      <th>title</th>
+      <th>count</th>
+      <th>category</th>
+      <th>restricted</th>
+      <th>definition</th>
+    </tr>
+    <% tags.forEach(tag => { %>
+      <%
+        let searchText = tag.title + ' ' + tag.definition;
+        searchText = searchText.toLowerCase();
+
+        let modelsAllowed = '';
+        if (tag.restrictModels) {
+          const tempArr = [];
+          modelsThatHaveTags.forEach(({name, plural}) => {
+            if (tag.isModelAllowed(name)) {
+              tempArr.push(plural);
+            }
+          });
+          modelsAllowed = tempArr.join(', ');
+        }
+      %>
+      <tr class="tag-list-item" filter-text="<%= searchText %>">
+        <td>
+          <%- include('./_link', {tag}) %>
+        </td>
+        <td>
+          <%= tag.count %>
+        </td>
+        <td>
+          <%= tag.category %>
+        </td>
+        <td>
+          <%= modelsAllowed %>
+        </td>
+        <td>
+          <%= tag.definition %>
+        </td>
+      </tr>
+    <% }); %>
+  </table>
 </div>
 
 <script>
@@ -116,7 +165,7 @@
 
   createQuickFilter({
     input: '#tag-list-filter',
-    items: '.tag-list li',
+    items: '.tag-list-item',
     getItemText: $item => $item.attr('filter-text'),
     startFocus: true,
   });
