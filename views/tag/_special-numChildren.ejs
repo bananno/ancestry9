@@ -1,14 +1,5 @@
 <%
-  data.people.forEach(person => {
-    person.tagValue = (() => {
-      for (let i in person.tags) {
-        if (person.tags[i].match('=')
-            && person.tags[i].split('=')[0].trim() == tag) {
-          return person.tags[i].slice(person.tags[i].indexOf('=') + 1).trim();
-        }
-      }
-    })();
-  });
+  data.people.forEach(person => person.tagValue = getTagValue(person));
 
   const peopleUnknown = data.people.filter(person => person.tagValue == 'unknown');
 

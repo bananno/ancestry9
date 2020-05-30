@@ -1,27 +1,12 @@
 <%
-  function getTagValue(item, parentheses = true) {
-    let tagValue;
-
-    if (item.tags.length) {
-      const index = item.tags.indexOf(tag._id);
-      tagValue = item.tagValues[index];
-    } else {
-      for (let i in item.tempTags) {
-        const nextTag = item.tempTags[i];
-        if (nextTag.match('=')
-            && nextTag.split('=')[0].trim() === tag.title) {
-          tagValue = nextTag.slice(nextTag.indexOf('=') + 1).trim();
-          break;
-        }
-      }
-    }
-
-    if (tagValue && parentheses) {
-      return '(' + tagValue + ')';
-    }
-
-    return tagValue;
+  function getTagValue(item) {
+    const index = item.tags.indexOf(tag._id);
+    return item.tagValues[index];
   }
+
+  const tagValueList = tag.values
+    ? tag.values.split('\n').map(str => str.trim())
+    : [];
 %>
 
 <h2>definition</h2>
@@ -59,66 +44,43 @@
 <% } %>
 
 <% if (tag.title === 'number of children') { %>
-  <%- include('./_special-numChildren', {people: data.people}) %>
-<% } else if (data.people.length > 0) { %>
-  <h2>people</h2>
-  <ul class="bullet-list">
-    <% data.people.forEach(person => { %>
-      <li>
-        <%- include('../person/_link', {person}) %>
-        <%= getTagValue(person) %>
-      </li>
-    <% }); %>
-  </ul>
-<% } %>
+  <%- include('./_special-numChildren', {people: data.people, getTagValue}) %>
+<% } else { %>
+  <% modelsThatHaveTags
+    .filter(model => model.name != 'Image')
+    .forEach(model => {
+  %>
+    <%
+      const singularName = model.name.toLowerCase();
+      const pluralName = model.plural;
+      const items = data[pluralName];
 
-<% if (data.stories.length > 0) { %>
-  <h2>stories</h2>
-  <ul class="bullet-list">
-    <% data.stories.forEach(story => { %>
-      <li>
-        <%- include('../story/_link', {story}) %>
-        - <%= story.type %>
-        <%= getTagValue(story) %>
-      </li>
-    <% }); %>
-  </ul>
-<% } %>
-
-<% if (data.sources.length > 0) { %>
-  <h2>sources</h2>
-  <ul class="bullet-list">
-    <% data.sources.forEach(source => { %>
-      <li>
-        <%- include('../source/_link', {showStory: true, source}) %>
-        <%= getTagValue(source) %>
-      </li>
-    <% }); %>
-  </ul>
-<% } %>
-
-<% if (data.events.length > 0) { %>
-  <h2>events</h2>
-  <ul class="bullet-list">
-    <% data.events.forEach(event => { %>
-      <li>
-        <%- include('../event/_link', {event}) %>
-        <%= getTagValue(event) %>
-      </li>
-    <% }); %>
-  </ul>
-<% } %>
-
-<% if (data.notations.length > 0) { %>
-  <h2>notations</h2>
-  <ul class="bullet-list">
-    <% data.notations.forEach(notation => { %>
-      <li>
-        <%- include('../notation/_link', {notation}) %>
-        <%= getTagValue(notation) %>
-      </li>
-    <% }); %>
-  </ul>
+      if (!items.length) {
+        return;
+      }
+    %>
+    <h2><%= pluralName %></h2>
+    <ul class="bullet-list">
+      <% items.forEach(item => { %>
+        <%
+          const tagValue = getTagValue(item);
+          const isError = tagValue
+            && tag.valueType != 1
+            && !tagValueList.includes(tagValue);
+        %>
+        <li>
+          <%- include('../' + singularName + '/_link', {
+            [singularName]: item
+          }) %>
+          <% if (tagValue) { %>
+            <span class="<%= isError ? 'error' : 'none' %>">
+              - (<%= tagValue %>)
+            </span>
+          <% } %>
+        </li>
+      <% }); %>
+    </ul>
+  <% }); %>
 <% } %>
 
 <% if (data.images.length > 0) { %>
@@ -127,7 +89,7 @@
     <div style="display: inline-block; width: 200px;">
       <%- include('../image/_link', {image}) %>
       <br>
-      <%= getTagValue(image, false) %>
+      <%= getTagValue(image) %>
     </div>
   <% }); %>
 <% } %>

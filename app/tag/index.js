@@ -53,7 +53,10 @@ function createTag(req, res) {
 
 async function showTag(req, res) {
   const data = await tagTools.getTagShowData(req.tag);
-  res.renderTag('show', {data});
+  res.renderTag('show', {
+    data,
+    modelsThatHaveTags: constants.modelsThatHaveTags,
+  });
 }
 
 async function editTag(req, res) {
