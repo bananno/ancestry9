@@ -24,44 +24,54 @@ function createRoutes(router) {
     edit: editTag,
     fields: constants.fields,
   });
+
+  router.get('/tags/:indexFormat', tagIndex);
 }
 
 async function tagIndex(req, res) {
+  const indexFormat = req.params.indexFormat || constants.indexFormats[0];
+
   const tags = await Tag.find({});
   Tag.sortByTitle(tags);
 
   await tagTools.getTagIndexData(tags);
 
-  const categoryTags = {};
-  const noCategory = [];
-
-  tags.forEach(tag => {
-    if (tag.category) {
-      tag.category
-        .split(',')
-        .map(str => str.trim())
-        .forEach(category => {
-          categoryTags[category] = categoryTags[category] || [];
-          categoryTags[category].push(tag);
-        });
-    } else {
-      noCategory.push(tag);
-    }
-  });
-
-  const categoryList = [...Object.keys(categoryTags).sort(), 'none'];
-  categoryTags.none = noCategory;
-
-  res.render('tag/index', {
+  const pageData = {
     title: 'Tags',
-    tagsDefined: tags.filter(tag => tag.definition),
-    tagsUndefined: tags.filter(tag => !tag.definition),
+    indexFormat,
     totalNumTags: tags.length,
     tags,
-    categoryTags,
-    categoryList,
     modelsThatHaveTags: constants.modelsThatHaveTags,
-  });
+    indexFormats: constants.indexFormats,
+  };
+
+  if (indexFormat === 'definition') {
+    pageData.tagsDefined = tags.filter(tag => tag.definition);
+    pageData.tagsUndefined = tags.filter(tag => !tag.definition);
+  } else if (indexFormat === 'categories') {
+    const categoryTags = {};
+    const noCategory = [];
+
+    tags.forEach(tag => {
+      if (tag.category) {
+        tag.category
+          .split(',')
+          .map(str => str.trim())
+          .forEach(category => {
+            categoryTags[category] = categoryTags[category] || [];
+            categoryTags[category].push(tag);
+          });
+      } else {
+        noCategory.push(tag);
+      }
+    });
+
+    pageData.categoryList = [...Object.keys(categoryTags).sort(), 'none'];
+    categoryTags.none = noCategory;
+    pageData.categoryTags = categoryTags;
+  }
+
+  res.render('tag/index', pageData);
 }
 
 function createTag(req, res) {

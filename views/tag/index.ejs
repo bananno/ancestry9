@@ -45,12 +45,12 @@
 
 <p>
   group tags by:
-  <span class="clickable-link group-tags-link" group-by="definition">definition</span>
-  <span class="clickable-link group-tags-link" group-by="category">category</span>
-  <span class="clickable-link group-tags-link" group-by="grid">grid</span>
+  <% indexFormats.forEach(format => { %>
+    <a href="/tags/<%= format %>"><%= format %></a>
+  <% }); %>
 </p>
 
-<div class="group-tags-box" group-by="definition">
+<% if (indexFormat === 'definition') { %>
   <hr style="margin-top: 30px;">
 
   <h2>not defined</h2>
@@ -82,9 +82,7 @@
       </li>
     <% }); %>
   </ul>
-</div>
-
-<div class="group-tags-box" group-by="category">
+<% } else if (indexFormat === 'categories') { %>
   <hr style="margin-top: 30px;">
 
   <% categoryList.forEach(category => { %>
@@ -103,9 +101,7 @@
       <% }); %>
     </ul>
   <% }); %>
-</div>
-
-<div class="group-tags-box" group-by="grid">
+<% } else if (indexFormat === 'grid') { %>
   <table class="nice-table" style="margin-top: 20px">
     <tr>
       <th>title</th>
@@ -149,7 +145,7 @@
       </tr>
     <% }); %>
   </table>
-</div>
+<% } %>
 
 <script>
   $('#create-tag-start').click(() => {
@@ -168,13 +164,5 @@
     items: '.tag-list-item',
     getItemText: $item => $item.attr('filter-text'),
     startFocus: true,
-  });
-
-  $('.group-tags-link').each((i, link) => {
-    const groupBy = $(link).attr('group-by');
-    $(link).click(() => {
-      $('.group-tags-box').hide();
-      $('.group-tags-box[group-by="' + groupBy + '"]').show();
-    });
   });
 </script>

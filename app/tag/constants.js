@@ -48,3 +48,5 @@ constants.fields = [
   ...allowFieldList,
   {name: 'tags', multi: true},
 ];
+
+constants.indexFormats = ['definition', 'categories', 'grid'];
