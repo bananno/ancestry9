@@ -17,6 +17,8 @@
     const itemId = thisItem._id || i;
     const deleteItemPath = rootPath + '/delete/' + attr + '/' + itemId;
     const reorderItemPath = rootPath + '/reorder/' + attr + '/' + itemId;
+
+    let canEditTag;
   %>
 
   <tr>
@@ -28,7 +30,9 @@
 
     <!-- DISPLAY VALUE -->
 
-    <td>
+    <td
+      <%= attr === 'tags' ? '' : 'colspan=2' %>
+    >
       <% if (dataType == 'links') { %>
         <%- include('../format/externalLink', {url: thisItem}) %>
       <% } else if (dataType == 'images') { %>
@@ -40,21 +44,69 @@
       <% } else if (dataType == 'tags') { %>
         <%- include('../tag/_link', {tag: thisItem}) %>
         <% if (item.tagValues[i]) { %>
-          - <%= item.tagValues[i] %>
         <% } %>
       <% } else { %>
         <%= thisItem %>
       <% } %>
     </td>
 
-    <!-- DELETE -->
+    <!-- EDITABLE VALUE -->
+
+    <% if (attr === 'tags') { %>
+      <td>
+        <%
+          const tagValue = item.tagValues[i];
+
+          console.log(thisItem);
+          console.log(tagValue);
+
+          let showDropdown, showTextbox, valueList = [];
+
+          if (thisItem.valueType === 2) {
+            valueList = thisItem.values.split('\n').map(s => s.trim());
+            if (!tagValue || valueList.includes(tagValue)) {
+              showDropdown = true;
+            } else {
+              showTextbox = true;
+            }
+            canEditTag = true;
+          } else if (tagValue || thisItem.valueType === 1) {
+            showTextbox = true;
+            canEditTag = true;
+          }
+        %>
+
+        <span item="<%= attr + '-' + i %>" class="value-show"><%= tagValue %></span>
+
+        <div item="<%= attr + '-' + i %>" class="value-edit">
+          <% if (showDropdown) { %>
+            <select>
+              <% valueList.forEach(value => { %>
+                <%
+                  let selected = value === tagValue ? 'selected' : '';
+                %>
+                <option <%= selected %>>
+                  <%= value %>
+                </option>
+              <% }); %>
+            </select>
+          <% } else if (showTextbox) { %>
+            <input value="<%= tagValue %>">
+          <% } %>
+        </div>
+      </td>
+    <% } %>
+
+    <!-- EDIT VALUE -->
 
     <td>
-      <form action="<%= deleteItemPath %>" method="POST"
-          onsubmit="return confirmDeletion('<%= attr %>')">
-        <input type="hidden" value="PUT" name="_method">
-        <button type="submit" class="button-delete">delete</button>
-      </form>
+      <% if (attr === 'tags' && canEditTag) { %>
+        <span
+          item="<%= attr %>"
+          class="clickable-link link-start"
+          onclick="startEdit('<%= attr + '-' + i %>')"
+        >edit value</span>
+      <% } %>
     </td>
 
     <!-- REORDER UP -->
@@ -66,6 +118,25 @@
           <button type="submit" class="button-reorder">reorder up</button>
         </form>
       <% } %>
+    </td>
+
+    <!-- DELETE -->
+
+    <td>
+      <form
+        method="post"
+        action="<%= deleteItemPath %>"
+        onsubmit="return confirmDeletion('<%= attr %>')"
+      >
+        <input type="hidden" value="PUT" name="_method">
+        <button type="submit" class="button-delete">delete</button>
+      </form>
+
+      <span
+        item="<%= attr + '-' + i %>"
+        class="clickable-link link-cancel"
+        onclick="cancelEdit()"
+      >cancel</span>
     </td>
   </tr>
 <% }); %>
@@ -80,7 +151,7 @@
   </td>
 
   <form action="<%= addItemPath %>" method="POST">
-    <td>
+    <td colspan="2">
       <!-- START ADDING -->
 
       <a class="link-start" onclick="startEdit('<%= attr %>')">add</a>
@@ -118,6 +189,9 @@
       &#160;
     </td>
   </form>
+
+  <td>
+  </td>
 
   <!-- CANCEL NEW ITEM -->
   <td>

@@ -16,7 +16,7 @@
       <b><%= attr %></b>
     </td>
 
-    <td>
+    <td colspan="2">
       <!-- DISPLAY VALUE -->
 
       <div item="<%= attr %>" class="value-show">
@@ -153,6 +153,9 @@
       <!-- HIDDEN ORIGINAL VALUE -->
 
       <input item="<%= attr %>" class="value-original" type="hidden" value="<%= originalValueText %>">
+    </td>
+    <td>
+      <!-- filler cell to line up with multi value version -->
     </td>
     <td>
       <!-- SUBMIT EDIT -->
