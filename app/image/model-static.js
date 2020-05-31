@@ -19,11 +19,18 @@ methods.getAllByParent = async () => {
     images = images.concat(story.images);
   });
 
+  for (let i in images) {
+    for (let j in images[i].tags) {
+      const tagId = images[i].tags[j];
+      images[i].tags[j] = await mongoose.model('Tag').findById(tagId);
+    }
+  }
+
   return images;
 };
 
 methods.sortByTags = images => {
   tools.sorting.sortBy(images, image => {
-    return [(20 - image.tags.length), ...image.tags].join('-');
+    return [(20 - image.tags.length), ...image.getTagTitles()].join('-');
   });
 };

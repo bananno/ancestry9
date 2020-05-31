@@ -5,6 +5,8 @@ const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
+methods.getTagTitles = tools.getTagTitles;
+
 methods.getCategoryForStory = function() {
   if (this.title === 'source citation') {
     return 'citation';

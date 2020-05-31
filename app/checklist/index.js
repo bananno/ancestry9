@@ -15,8 +15,6 @@ function createRoutes(router) {
 
   router.get('/checklist', checklistIndex);
   router.get('/checklist/vitals', checklistVitals);
-  router.get('/checklist/wikitree', checklistWikiTree);
-  router.get('/checklist/findagrave', checklistFindAGrave);
   router.get('/checklist/sourceCensus', checklistSourceCensus);
   router.get('/checklist/profileSummary', checklistProfileSummary);
   router.get('/checklist/images', checklistImages);
@@ -35,14 +33,14 @@ function createRenderChecklist(req, res, next) {
 }
 
 async function checklistIndex(req, res) {
-  const checklistMetatag = await Tag.find({title: 'checklist'});
+  const checklistMetatag = await Tag.findOne({title: 'checklist'});
   const checklistTags = await Tag.find({tags: checklistMetatag});
   Tag.sortByTitle(checklistTags);
   res.renderChecklist('index', {checklistTags});
 }
 
 async function checklistVitals(req, res) {
-  const people = await Person.find({});
+  const people = await Person.find({}).populate('tags');
   const rootPerson = people.find(person => person.name === 'Anna Peterson');
   Person.populateConnections(people, rootPerson);
   await Person.populateBirthAndDeath(people);
@@ -51,16 +49,6 @@ async function checklistVitals(req, res) {
     people,
     connectionTitle: [null, 'start', 'ancestor', 'cousin', 'marriage']
   });
-}
-
-async function checklistWikiTree(req, res) {
-  const people = await Person.find({});
-  res.renderChecklist('personLinks', {people, linkType: 'WikiTree'});
-}
-
-async function checklistFindAGrave(req, res) {
-  const people = await Person.find({});
-  res.renderChecklist('personLinks', {people, linkType: 'FindAGrave'});
 }
 
 async function checklistSourceCensus(req, res) {
@@ -100,9 +88,15 @@ async function checklistImages(req, res) {
 
 async function checklistProfileSummary(req, res) {
   const people = await Person.find({});
-  const sources = await Source.find({tags: 'biography'});
-  const notations1 = await Notation.find({title: 'profile summary'});
-  const notations2 = await Notation.find({tags: 'profile summary'});
+
+  const biographyTag = await Tag.find({title: 'biography'});
+  const sources = await Source.find({tags: biographyTag});
+
+  const profileSummaryTag = await Tag.find({title: 'profile summary'});
+  const notations1 = await Notation.find({title: 'profile summary'})
+    .populate('tags');
+  const notations2 = await Notation.find({tags: profileSummaryTag})
+    .populate('tags');
   const notations = [...notations1, ...notations2];
 
   const personNotations = {};
@@ -115,8 +109,8 @@ async function checklistProfileSummary(req, res) {
   });
 
   notations.forEach(notation => {
-    notation.also = notation.tags.filter(tag => {
-      return tag.match('brick wall') || tag == 'research notes';
+    notation.also = notation.getTagTitles().filter(tagTitle => {
+      return tagTitle.match('brick wall') || tagTitle == 'research notes';
     });
     notation.people.forEach(person => {
       personNotations['' + person] = personNotations['' + person] || [];
@@ -136,7 +130,7 @@ async function checklistProfileSummary(req, res) {
     person.notations = personNotations['' + person._id];
     person.biographies = personBiographies['' + person._id];
 
-    if (person.tags.includes('need profile summary')) {
+    if (person.getTagTitles().includes('need profile summary')) {
       data.peopleNeedSummary.push(person);
       return;
     }

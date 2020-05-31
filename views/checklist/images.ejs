@@ -9,7 +9,7 @@
       <% } %>
       <a href="/image/<%= image._id %>"><%= image._id %></a>
       <% if (image.tags.length) { %>
-        (<%= image.tags.join(', ') %>)
+        (<%= image.getTagTitles().join(', ') %>)
       <% } %>
     </li>
   <% }); %>

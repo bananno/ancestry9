@@ -13,8 +13,12 @@
 
 <% if (tag.definition) { %>
   <% tag.definition.split('\n').forEach(text => { %>
-    <p id="show-notation">
-      <%= text %>
+    <p>
+      <% if (text.slice(0, 4) === 'http') { %>
+        <a href="<%= text %>" target="_blank"><%= text %></a>
+      <% } else { %>
+        <%= text %>
+      <% } %>
     </p>
   <% }); %>
 <% } %>
@@ -36,7 +40,7 @@
 <% if (tag.values) { %>
   <ul class="bullet-list">
     <% tag.values.split('\n').forEach(text => { %>
-      <li id="show-notation">
+      <li>
         <%= text %>
       </li>
     <% }); %>
@@ -53,7 +57,17 @@
 <h1>items with tag</h1>
 
 <% if (tag.title === 'number of children') { %>
-  <%- include('./_special-numChildren', {people: data.people, getTagValue}) %>
+  <%- include('./special/number-of-children', {people: data.people, getTagValue}) %>
+<% } else if (tag.title === 'findagrave') { %>
+  <%- include('./special/person-links', {
+    people: data.people,
+    getTagValue,
+    linkType: 'FindAGrave'}) %>
+<% } else if (tag.title === 'wikitree') { %>
+  <%- include('./special/person-links', {
+    people: data.people,
+    getTagValue,
+    linkType: 'WikiTree'}) %>
 <% } else if (data.groupByValue) { %>
   <% modelsThatHaveTags
     .filter(model => model.name != 'Image')

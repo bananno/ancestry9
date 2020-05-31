@@ -12,24 +12,23 @@
   people.forEach(person => {
     [person.status, person.link] = (() => {
       const link = person.links.filter(link => link.match(' ' + linkType))[0];
+      const personLinkTagValue = getTagValue(person);
       if (!link) {
-        if (person.tags.includes(linkTypeLower + '=ignore')) {
+        if (personLinkTagValue === 'ignore') {
           return ['ignore'];
         }
         return ['missing'];
       }
-      if (person.tags.includes(linkTypeLower + '=good')) {
+      if (personLinkTagValue === 'good') {
         return ['manage-good', link];
       }
-      if (person.tags.includes(linkTypeLower + '=managed')) {
+      if (personLinkTagValue === 'managed') {
         return ['need-work', link];
       }
       return ['have', link];
     })();
   });
 %>
-
-<h1>Checklist - <%= linkType %></h1>
 
 <% sections.forEach(([title, status]) => { %>
   <h2><%= title %></h2>
@@ -40,7 +39,7 @@
           <a href="<%= person.link.split(' ')[0] %>" target="_blank">link</a>
           -
         <% } %>
-        <%- include('../person/_link', {person}) %>
+        <%- include('../../person/_link', {person}) %>
       </li>
     <% }); %>
   </ul>

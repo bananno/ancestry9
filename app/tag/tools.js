@@ -50,9 +50,10 @@ tools.createRenderTag = function(req, res, next) {
 
 async function forEachModel(callback) {
   for (let i in constants.modelsThatHaveTags) {
-    const model = modelRef[constants.modelsThatHaveTags[i].name];
-    const modelName = constants.modelsThatHaveTags[i].plural;
-    await callback(model, modelName);
+    const modelName = constants.modelsThatHaveTags[i].name;
+    const Model = modelRef[modelName];
+    const pluralName = constants.modelsThatHaveTags[i].plural;
+    await callback(Model, modelName, pluralName);
   }
 }
 
@@ -84,25 +85,50 @@ tools.getTagShowData = async function(tag) {
     data.groupByValue = {};
     data.values = {};
   }
+  if (metatagTitles.includes('show missing items')) {
+    data.missingItems = {};
+  }
 
-  await forEachModel(async (Model, modelName) => {
-    const items = modelName === 'sources'
-      ? await Model.find({}).populate('story')
-      : await Model.find({});
+  await forEachModel(async (Model, modelName, pluralName) => {
+    if (!tag.isModelAllowed(modelName)) {
+      data[pluralName] = [];
+      if (data.groupByValue) {
+        data.values[pluralName] = [];
+      }
+      if (data.missingItems) {
+        data.missingItems[pluralName] = [];
+      }
+      return;
+    }
 
-    data[modelName] = items.filter(item => item.tags.includes(tag._id));
+    if (pluralName === 'sources') {
+      data[pluralName] = await Model.find({tags: tag._id}).populate('story');
+    } else {
+      data[pluralName] = await Model.find({tags: tag._id});
+    }
 
     if (data.groupByValue) {
       const byValue = {};
 
-      data[modelName].forEach(item => {
+      data[pluralName].forEach(item => {
         const tagValue = item.getTagValue(tag);
         byValue[tagValue] = byValue[tagValue] || [];
         byValue[tagValue].push(item);
       });
 
-      data.groupByValue[modelName] = byValue;
-      data.values[modelName] = Object.keys(byValue);
+      data.groupByValue[pluralName] = byValue;
+      data.values[pluralName] = Object.keys(byValue);
+    }
+
+    if (data.missingItems) {
+      if (pluralName === 'sources') {
+        data.missingItems[pluralName] = await Model
+          .find({tags: {$nin: tag._id}})
+          .populate('story');
+      } else {
+        data.missingItems[pluralName] = await Model
+          .find({tags: {$nin: tag._id}});
+      }
     }
   });
 

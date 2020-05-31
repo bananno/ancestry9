@@ -60,8 +60,7 @@ async function personEdit(req, res) {
   const people = Person.removeFromList(allPeople, req.person);
   Person.sortByName(people);
 
-  const tags = await Tag.find({});
-  Tag.sortByTitle(tags);
+  const tags = await Tag.getAvailableForItem(req.person);
 
   res.renderPersonProfile('edit', {
     people,

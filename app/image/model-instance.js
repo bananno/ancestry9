@@ -4,6 +4,8 @@ const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
+methods.getTagTitles = tools.getTagTitles;
+
 methods.toSharedObject = function() {
   return tools.reduceToExportData(this, constants.fieldNames);
 }

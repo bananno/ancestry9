@@ -6,6 +6,7 @@ const methods = {};
 module.exports = methods;
 
 methods.getRelativesList = getRelativesList;
+methods.getTagTitles = tools.getTagTitles;
 methods.getTagValue = tools.getTagValue;
 
 // These two methods only to be used after populateBirthAndDeath()
@@ -32,7 +33,7 @@ methods.getLifeEvents = async function() {
 };
 
 methods.isLiving = function() {
-  return this.tags.includes('living');
+  return this.tags.some(tag => tag.title === 'living');
 };
 
 methods.isPublic = function() {
