@@ -1,12 +1,12 @@
 <%
   const citations = notations.filter(notation => notation.title == 'source citation');
   const excerpts = notations.filter(notation => {
-    return notation.title == 'excerpt' || notation.tags.includes('excerpt');
+    return notation.title == 'excerpt' || notation.hasTag('excerpt');
   });
   const otherNotations = notations.filter(notation => {
     return notation.title != 'source citation'
       && notation.title != 'excerpt'
-      && !notation.tags.includes('excerpt');
+      && !notation.hasTag('excerpt');
   });
 %>
 

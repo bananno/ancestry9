@@ -56,7 +56,7 @@ function filterEvents(events, person) {
 
     // Historical events that have no people in the list are global events.
     // Always include them if they are during the person's life.
-    if (thisEvent.tags.includes('historical') && thisEvent.people.length == 0) {
+    if (thisEvent.hasTag('historical') && thisEvent.people.length == 0) {
       if (!birthYear || !thisEvent.date || thisEvent.date.year < birthYear
           || (deathYear && thisEvent.date.year > deathYear)) {
         return null;

@@ -13,7 +13,7 @@ methods.getAllSharedData = async () => {
 
   const eventList = rawList.map(event => {
     // A historical event with NO people in the list is a global event. Always include.
-    if (event.people.length == 0 && event.tags.includes('historical')) {
+    if (event.people.length == 0 && event.hasTag('historical')) {
       return event;
     }
 

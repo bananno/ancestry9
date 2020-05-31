@@ -18,14 +18,16 @@ methods.getAllByType = async function(type) {
   const Story = mongoose.model('Story');
 
   if (!type) {
-    return await Story.find({});
+    return await Story.find({}).populate('tags');
   }
 
   if (type == 'other') {
-    return await Story.find({type: {$nin: constants.mainStoryTypes}});
+    return await Story
+      .find({type: {$nin: constants.mainStoryTypes}})
+      .populate('tags');
   }
 
-  return await Story.find({type});
+  return await Story.find({type}).populate('tags');
 };
 
 methods.getAllSharedData = async () => {

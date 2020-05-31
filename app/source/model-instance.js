@@ -4,7 +4,9 @@ const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
+methods.getTagTitles = tools.getTagTitles;
 methods.getTagValue = tools.getTagValue;
+methods.hasTag = tools.hasTag;
 
 methods.canBeDeleted = function() {
   return this.people.length === 0

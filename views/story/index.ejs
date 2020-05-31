@@ -2,7 +2,7 @@
   let lastStorySection;
   let groupByAttr = 'type';
 
-  if (subview == 'documents') {
+  if (subview === 'document') {
     groupByAttr = 'subtype';
 
     const displayOrder = [
@@ -20,7 +20,7 @@
           if (title.match('usa')) {
             return 'census - USA';
           }
-          if (story.tags.includes('Census US States')) {
+          if (story.hasTag('Census US States')) {
             return 'census - US states';
           }
           return 'census - other countries';
@@ -31,7 +31,7 @@
         }
         if (title.match('book records')
             || title.match('church records')
-            || story.tags.includes('book record')) {
+            || story.hasTag('book record')) {
           return 'books of records';
         }
         return 'other';

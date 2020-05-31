@@ -5,6 +5,8 @@ const methods = {};
 module.exports = methods;
 
 methods.getTagTitles = tools.getTagTitles;
+methods.getTagValue = tools.getTagValue;
+methods.hasTag = tools.hasTag;
 
 methods.toSharedObject = function() {
   return tools.reduceToExportData(this, constants.fieldNames);

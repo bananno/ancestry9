@@ -130,7 +130,7 @@ async function checklistProfileSummary(req, res) {
     person.notations = personNotations['' + person._id];
     person.biographies = personBiographies['' + person._id];
 
-    if (person.getTagTitles().includes('need profile summary')) {
+    if (person.hasTag('need profile summary')) {
       data.peopleNeedSummary.push(person);
       return;
     }

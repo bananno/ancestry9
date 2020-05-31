@@ -5,6 +5,8 @@ const methods = {};
 module.exports = methods;
 
 methods.getTagTitles = tools.getTagTitles;
+methods.getTagValue = tools.getTagValue;
+methods.hasTag = tools.hasTag;
 
 methods.isModelAllowed = function(modelName) {
   return !this.restrictModels || this['allow' + modelName];

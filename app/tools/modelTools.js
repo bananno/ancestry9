@@ -50,3 +50,7 @@ tools.getTagValue = function(tagInput) {
   const idx = itemTagIds.indexOf(tag._id);
   return this.tagValues[idx];
 };
+
+tools.hasTag = function(tagTitle) {
+  return this.tags.some(tag => tag.title === tagTitle);
+};
