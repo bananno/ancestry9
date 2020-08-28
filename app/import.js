@@ -1,7 +1,7 @@
 const tool = filename => require('../tools/' + filename);
 
 const mongoose = require('mongoose');
-const models = require('./models').models;
+const models = require('./models');
 const modelTools = require('./tools/modelTools');
 
 const tools = [

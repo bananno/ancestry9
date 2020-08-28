@@ -4,7 +4,6 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-const modelFiles = require('./app/models').files;
 
 mongoose.connect('mongodb://localhost/ancestry', {
   useNewUrlParser: true,
@@ -15,9 +14,7 @@ mongoose.connect('mongodb://localhost/ancestry', {
   console.log('\nIs mongod instance running?');
 });
 
-modelFiles.forEach(model => {
-  require('./app/' + model + '/model');
-});
+require('./app/models');
 
 const app = express();
 
