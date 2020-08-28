@@ -1,4 +1,4 @@
-const app = require('../app');
+const app = require('./app');
 const debug = require('debug')('ancestry9:server');
 const http = require('http');
 
