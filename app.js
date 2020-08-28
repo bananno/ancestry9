@@ -9,6 +9,10 @@ const modelFiles = require('./app/models').files;
 mongoose.connect('mongodb://localhost/ancestry', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+}).catch(err => {
+  console.log('--- mongoose.connect() failed ---');
+  console.log(err);
+  console.log('\nIs mongod instance running?');
 });
 
 modelFiles.forEach(model => {
