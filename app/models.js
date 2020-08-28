@@ -12,6 +12,7 @@ const models = [
 
 const updatedModels = [
   'Citation',
+  'Story',
 ];
 
 const createModel = require('./tools/createModel');
@@ -28,7 +29,6 @@ const models2 = [
   'Notation',
   'Person',
   'Source',
-  'Story',
   'Tag',
 ];
 

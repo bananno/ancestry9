@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const tools = require('./modelTools');
 
 module.exports = createModel;
 
@@ -12,18 +13,42 @@ function createModel(modelName) {
   const modelSchema = {};
 
   modelProperties.forEach(prop => {
-    let spec;
-
-    if (prop.references) {
-      spec = {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: prop.references,
-      };
-    } else {
-      spec = prop.type;
+    if (prop.includeInSchema === false) {
+      return;
     }
 
-    modelSchema[prop.name] = spec;
+    if (prop.specialType) {
+      if (prop.specialType === 'date') {
+        modelSchema[prop.name] = tools.dateStructure;
+        return;
+      }
+
+      if (prop.specialType === 'location') {
+        modelSchema[prop.name] = tools.locationStructure;
+        return;
+      }
+
+      if (prop.specialType === 'tags') {
+        modelSchema.tags = [{type: mongoose.Schema.Types.ObjectId, ref: 'Tag'}];
+        modelSchema.tagValues = [String];
+        return;
+      }
+    }
+
+    const spec = {};
+
+    if (prop.references) {
+      spec.type = mongoose.Schema.Types.ObjectId;
+      spec.ref = prop.references;
+    } else {
+      spec.type = prop.type;
+    }
+
+    if (prop.defaultValue) {
+      spec.default = prop.defaultValue;
+    }
+
+    modelSchema[prop.name] = prop.isArray ? [spec] : spec;
   });
 
   const citationSchema = new mongoose.Schema(modelSchema);
