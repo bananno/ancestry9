@@ -2,10 +2,10 @@
   const attr = locals.attr;
   const editPath = locals.editPath;
   const originalValue = locals.originalValue;
-  const inputType = locals.inputType || locals.fieldType || 'text';
-  const toggle = locals.toggle;
+  const inputType = locals.inputType || 'text';
+  const useToggleButton = locals.toggle || locals.inputType === 'toggle';
   const preventSharing = locals.preventSharing || false;
-  const disableToggleButton = toggle && preventSharing && !originalValue;
+  const disableToggleButton = useToggleButton && preventSharing && !originalValue;
 
   const originalValueText = originalValue ? (originalValue._id || originalValue) : originalValue;
 %>
@@ -165,7 +165,7 @@
 
       <!-- TOGGLE SHOW/EDIT -->
 
-      <% if (toggle) { %>
+      <% if (useToggleButton) { %>
         <button item="<%= attr %>" class="link-start" type="submit"
           <%= disableToggleButton ? " disabled" : "" %>>toggle</button>
       <% } else { %>

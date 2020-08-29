@@ -11,10 +11,7 @@ constants.fields = modelSchema
     return prop.showInEditTable !== false;
   }).map(prop => {
     return {
-      name: prop.name,
-      onlyIf: prop.onlyEditableIf,
-      inputType: prop.inputType,
       multi: prop.isArray,
-      toggle: prop.toggle,
+      ...prop
     }
   });

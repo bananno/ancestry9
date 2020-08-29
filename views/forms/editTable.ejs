@@ -1,7 +1,7 @@
 <table class="edit-form-frame">
   <% fields.forEach(field => { %>
     <%
-      if ((field.onlyIf && !field.onlyIf(item))
+      if ((field.onlyEditableIf && !field.onlyEditableIf(item))
           || field.inputType === 'none') {
         return;
       }
@@ -12,7 +12,6 @@
         editPath: rootPath + '/edit/' + field.name,
         dataType: field.dataType,
         toggle: field.toggle,
-        fieldType: field.inputType || field.fieldType, // phase out fieldType
       };
 
       const filename = field.multi ? './tableRowMulti' : './tableRowSingle';

@@ -53,7 +53,6 @@ function getFieldNameForAllowingModels(otherModel) {
     type: Boolean,
     toggle: true,
     defaultValue: false,
-    isTesting: true,
     onlyEditableIf: tag => tag.restrictModels,
   };
 }
