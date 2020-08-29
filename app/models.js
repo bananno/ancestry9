@@ -15,6 +15,7 @@ const updatedModels = [
   'Event',
   'Notation',
   'Story',
+  'Source',
 ];
 
 const createModel = require('./tools/createModel');
@@ -28,7 +29,6 @@ const models2 = [
   'Image',
   'Location',
   'Person',
-  'Source',
   'Tag',
 ];
 
