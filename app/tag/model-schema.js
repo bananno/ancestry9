@@ -17,7 +17,7 @@ module.exports = [
   {
     name: 'valueType',
     type: Number,
-    toggle: true,
+    inputType: 'toggle',
     defaultValue: 0,
     maxValue: 2,
     valueNames: [
@@ -35,7 +35,7 @@ module.exports = [
   {
     name: 'restrictModels',
     type: Boolean,
-    toggle: true,
+    inputType: 'toggle',
     defaultValue: false,
   },
   {
@@ -51,7 +51,7 @@ function getFieldNameForAllowingModels(otherModel) {
   return {
     name: 'allow' + otherModel.name,
     type: Boolean,
-    toggle: true,
+    inputType: 'toggle',
     defaultValue: false,
     onlyEditableIf: tag => tag.restrictModels,
   };

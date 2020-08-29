@@ -5,7 +5,7 @@ const models = require('./models');
 const modelTools = require('./tools/modelTools');
 
 const tools = [
-  'createModelRoutes',
+  'createController',
   'removeDuplicatesFromList',
   'reorderList',
   'dateStructure',
@@ -30,3 +30,6 @@ models.forEach(modelName => {
 tools.forEach(tool => {
   module.exports[tool] = require('./tools/' + tool);
 });
+
+// phase out
+module.exports.createModelRoutes = require('./tools/createController');

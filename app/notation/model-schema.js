@@ -10,7 +10,7 @@ module.exports = [
     name: 'sharing',
     type: Boolean,
     defaultValue: false,
-    toggle: true,
+    inputType: 'toggle',
   },
   {
     name: 'title',

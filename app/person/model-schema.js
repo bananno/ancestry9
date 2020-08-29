@@ -10,7 +10,7 @@ module.exports = [
   {
     name: 'shareLevel',
     type: Number,
-    toggle: true,
+    inputType: 'toggle',
     maxValue: 2,
   },
   {

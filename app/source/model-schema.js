@@ -9,7 +9,7 @@ module.exports = [
   {
     name: 'sharing',
     type: Boolean,
-    toggle: true,
+    inputType: 'toggle',
     defaultValue: false,
     onlyShareableIf: source => source.canBeShared(),
   },

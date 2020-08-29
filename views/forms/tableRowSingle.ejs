@@ -3,7 +3,7 @@
   const editPath = locals.editPath;
   const originalValue = locals.originalValue;
   const inputType = locals.inputType || 'text';
-  const useToggleButton = locals.toggle || locals.inputType === 'toggle';
+  const useToggleButton = locals.useToggleButton;
   const preventSharing = locals.preventSharing || false;
   const disableToggleButton = useToggleButton && preventSharing && !originalValue;
 

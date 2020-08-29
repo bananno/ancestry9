@@ -4,13 +4,13 @@ const Image = mongoose.model('Image');
 const Person = mongoose.model('Person');
 const reorderList = require('./reorderList');
 
-module.exports = createModelRoutes;
+module.exports = createController;
 
-function createModelRoutes(specs) {
-  new ModelRoutes(specs);
+function createController(specs) {
+  new Controller(specs);
 }
 
-class ModelRoutes {
+class Controller {
   constructor(specs) {
     this.router = specs.router;
     this.Model = specs.Model;
@@ -59,7 +59,7 @@ class ModelRoutes {
         this.addListAttribute(field);
         this.deleteListAttribute(field);
         this.reorderListAttribute(field);
-      } else if (field.toggle) {
+      } else if (field.inputType === 'toggle') {
         this.toggleAttribute(field);
       } else {
         this.updateAttribute(field);

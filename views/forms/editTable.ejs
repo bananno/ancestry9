@@ -11,7 +11,7 @@
         attr: field.name,
         editPath: rootPath + '/edit/' + field.name,
         dataType: field.dataType,
-        toggle: field.toggle,
+        useToggleButton: field.inputType === 'toggle',
       };
 
       const filename = field.multi ? './tableRowMulti' : './tableRowSingle';
@@ -27,7 +27,7 @@
         data.preventSharing = field.preventSharing(item);
       }
 
-      if (field.toggle && field.valueNames) {
+      if (field.useToggleButton && field.valueNames) {
         data.currentValueTitle = field.valueNames[data.values];
       }
     %>
