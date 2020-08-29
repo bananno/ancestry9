@@ -12,6 +12,8 @@ const models = [
 
 const updatedModels = [
   'Citation',
+  'Event',
+  'Notation',
   'Story',
 ];
 
@@ -23,10 +25,8 @@ module.exports = models;
 // OLD VERSIONS
 
 const models2 = [
-  'Event',
   'Image',
   'Location',
-  'Notation',
   'Person',
   'Source',
   'Tag',
