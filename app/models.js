@@ -13,6 +13,7 @@ const models = [
 const updatedModels = [
   'Citation',
   'Event',
+  'Image',
   'Notation',
   'Story',
   'Source',
@@ -26,7 +27,6 @@ module.exports = models;
 // OLD VERSIONS
 
 const models2 = [
-  'Image',
   'Location',
   'Person',
   'Tag',
