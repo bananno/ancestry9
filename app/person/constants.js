@@ -9,38 +9,21 @@ constants.fieldNamesShared = [
   'name', 'customId', 'links', 'profileImage', 'gender',
 ];
 
-constants.fields = [
-  {name: 'name'},
-  {name: 'customId'},
-  {
-    name: 'shareLevel',
-    toggle: true,
-    maxValue: 2,
-  },
-  {name: 'shareName', onlyIf: person => person.shareLevel === 1},
-  {name: 'profileImage'},
-  {name: 'gender'},
-  {
-    name: 'parents',
-    multi: true,
-    dataType: 'people',
-    onAdd: (person, relativeId) => person.attachParent(relativeId),
-    onDelete: (person, relativeId) => person.detachParent(relativeId),
-  },
-  {
-    name: 'spouses',
-    multi: true,
-    dataType: 'people',
-    onAdd: (person, relativeId) => person.attachSpouse(relativeId),
-    onDelete: (person, relativeId) => person.detachSpouse(relativeId),
-  },
-  {
-    name: 'children',
-    multi: true,
-    dataType: 'people',
-    onAdd: (person, relativeId) => person.attachChild(relativeId),
-    onDelete: (person, relativeId) => person.detachChild(relativeId),
-  },
-  {name: 'links', multi: true},
-  {name: 'tags', multi: true},
-];
+// convert to old format - phase out
+const modelSchema = require('./model-schema');
+
+constants.fields = modelSchema
+  .filter(prop => {
+    return prop.showInEditTable !== false;
+  }).map(prop => {
+    return {
+      name: prop.name,
+      onlyIf: prop.onlyEditableIf,
+      inputType: prop.inputType,
+      multi: prop.isArray,
+      toggle: prop.toggle,
+      onAdd: prop.onAdd,
+      onDelete: prop.onDelete,
+      dataType: prop.references === 'Person' ? 'people' : undefined,
+    }
+  });
