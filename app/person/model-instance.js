@@ -37,7 +37,7 @@ methods.isLiving = function() {
 };
 
 methods.isPublic = function() {
-  return this.sharing.level === 2;
+  return this.shareLevel === 2;
 };
 
 methods.populateBirthAndDeath = async function() {
@@ -77,17 +77,6 @@ methods.populateSiblings = async function() {
       this.siblings.push(sibling);
     }
   }
-};
-
-methods.toggleSharing = async function() {
-  const updatedPerson = {
-    sharing: this.sharing
-  };
-  updatedPerson.sharing.level += 1;
-  if (updatedPerson.sharing.level === 3) {
-    updatedPerson.sharing.level = 0;
-  }
-  await this.update(updatedPerson);
 };
 
 // RELATIVES

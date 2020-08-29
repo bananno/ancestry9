@@ -25,9 +25,13 @@ const personSchema = new mongoose.Schema({
   tagValues: [String],
   profileImage: String,
   gender: Number,
-  sharing: {
-    level: { type: Number, default: 0 },
-    name: { type: String, default: '' },
+  shareLevel: {
+    type: Number,
+    default: 0,
+  },
+  shareName: {
+    type: String,
+    default: '',
   },
 });
 

@@ -51,9 +51,9 @@
         <%= person.degree %>
       </td>
       <td class="center">
-        <% if (person.sharing.level == 2) { %>
+        <% if (person.shareLevel == 2) { %>
           <img class="checkmark-inline" src="/images/check-true.png">
-        <% } else if (person.sharing.level == 1) { %>
+        <% } else if (person.shareLevel == 1) { %>
           restricted
         <% } else { %>
           <img class="checkmark-inline" src="/images/check-false.png">

@@ -25,7 +25,7 @@ methods.getAllSharedData = async () => {
   }
 
   const people = rawPeople.map(personInfo => {
-    if (personInfo.sharing.level == 0) {
+    if (personInfo.shareLevel == 0) {
       return null;
     }
 
@@ -42,9 +42,9 @@ methods.getAllSharedData = async () => {
       person.degree = ancestors[person._id][1];
     }
 
-    if (personInfo.sharing.level == 1) {
+    if (personInfo.shareLevel == 1) {
       person.private = true;
-      person.name = personInfo.sharing.name || 'Person';
+      person.name = personInfo.shareName || 'Person';
       person.customId = personInfo._id;
       person.tags = {};
       return person;

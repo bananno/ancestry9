@@ -15,10 +15,9 @@ constants.fields = [
   {
     name: 'shareLevel',
     toggle: true,
-    getValue: person => person.sharing.level,
-    onUpdate: person => person.toggleSharing(),
+    maxValue: 2,
   },
-  {name: 'shareName', onlyIf: person => person.sharing.level === 1},
+  {name: 'shareName', onlyIf: person => person.shareLevel === 1},
   {name: 'profileImage'},
   {name: 'gender'},
   {

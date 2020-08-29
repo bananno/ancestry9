@@ -20,7 +20,7 @@ methods.getAllSharedData = async () => {
     // Remove non-shared people from the event.
     // Then un-populate people, leaving _id only.
     event.people = event.people.map(person => {
-      return person.sharing.level === 2 ? person._id : false;
+      return person.shareLevel === 2 ? person._id : false;
     }).filter(Boolean);
 
     // Keep (share) the event IF it applies to at least one shared person.

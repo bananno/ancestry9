@@ -1,10 +1,10 @@
 <%
   const linksList = person.links;
 
-  if (person.sharing.level == 2) {
+  if (person.shareLevel == 2) {
     linksList.push('https://ancestry.annacpeterson.com/?person/' + person.customId
       + ' CustomSite');
-  } else if (person.sharing.level == 1) {
+  } else if (person.shareLevel == 1) {
     linksList.push('https://ancestry.annacpeterson.com/?person/' + person._id
       + ' CustomSite');
   }
@@ -13,12 +13,12 @@
 <h2>Sharing</h2>
 
 <div>
-  <% if (person.sharing.level == 2) { %>
+  <% if (person.shareLevel == 2) { %>
     <img class="checkmark-inline" src="/images/check-true.png"> everything
-  <% } else if (person.sharing.level == 1) { %>
+  <% } else if (person.shareLevel == 1) { %>
     <img class="checkmark-inline" src="/images/check-false.png"> restricted
-    <% if (person.sharing.name && person.sharing.name != person.name) { %>
-      (name: "<%= person.sharing.name %>")
+    <% if (person.shareName && person.shareName != person.name) { %>
+      (name: "<%= person.shareName %>")
     <% } %>
   <% } else { %>
     <img class="checkmark-inline" src="/images/check-false.png"> none
