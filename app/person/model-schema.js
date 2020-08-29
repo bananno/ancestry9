@@ -12,6 +12,8 @@ module.exports = [
     type: Number,
     inputType: 'toggle',
     maxValue: 2,
+    defaultValue: 0,
+    valueNames: ['none (0)', 'restricted (1)', 'everything (2)'],
   },
   {
     name: 'shareName',

@@ -4,9 +4,7 @@
   const originalValue = locals.originalValue;
   const inputType = locals.inputType || 'text';
   const useToggleButton = locals.useToggleButton;
-  const preventSharing = locals.preventSharing || false;
-  const disableToggleButton = useToggleButton && preventSharing && !originalValue;
-
+  const disableToggleButton = useToggleButton && locals.isDisabled;
   const originalValueText = originalValue ? (originalValue._id || originalValue) : originalValue;
 %>
 
@@ -83,37 +81,35 @@
           <%
             let imageValue = originalValue === 2 || originalValue === true;
             let shareText = '';
+            let showSourceWarning;
 
-            if (originalValue === 2) {
-              shareText = 'everything (2)';
-            } else if (originalValue === 1) {
-              shareText = 'restricted (1)';
-            } else if (originalValue === 0) {
-              shareText = 'none (0)';
-            } else if (originalValue === true) {
-              shareText = 'yes';
+            if (locals.toggleValueTextList) {
+              shareText = toggleValueTextList[originalValue];
             } else {
-              shareText = 'no';
+              shareText = originalValue ? 'yes' : 'no';
+            }
+
+            if (item.canBeShared && !item.canBeShared()) {
+              if (originalValue) {
+                showSourceWarning = true;
+              } else {
+                shareText += ' (story is not shared)';
+              }
             }
           %>
+
           <img class="checkmark-inline" src="/images/check-<%= imageValue %>.png">
+
           <%= shareText %>
 
-          <% if (preventSharing) { %>
-            <% if (originalValue) { %>
-              <span style="color: red">WARNING: story is not shared</span>
-            <% } else { %>
-              (story is not shared)
-            <% } %>
+          <% if (showSourceWarning) { %>
+            <span style="color: red">WARNING: story is not shared</span>
           <% } %>
 
         <!-- everything else -->
 
         <% } else { %>
           <%= originalValue %>
-          <% if (locals.currentValueTitle) { %>
-          - <%= currentValueTitle %>
-          <% } %>
         <% } %>
       </div>
 

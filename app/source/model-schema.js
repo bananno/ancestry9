@@ -11,7 +11,8 @@ module.exports = [
     type: Boolean,
     inputType: 'toggle',
     defaultValue: false,
-    onlyShareableIf: source => source.canBeShared(),
+    onlyEditableIf: source => source.sharing || source.canBeShared(),
+    showDisabledWhenNotEditable: true,
   },
   {
     name: 'story',

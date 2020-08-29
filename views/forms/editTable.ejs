@@ -1,8 +1,11 @@
 <table class="edit-form-frame">
   <% fields.forEach(field => { %>
     <%
-      if ((field.onlyEditableIf && !field.onlyEditableIf(item))
-          || field.inputType === 'none') {
+      const itemIsEditable = field.onlyEditableIf
+        ? field.onlyEditableIf(item)
+        : field.inputType !== 'none';
+
+      if (!itemIsEditable && !field.showDisabledWhenNotEditable) {
         return;
       }
 
@@ -11,7 +14,9 @@
         attr: field.name,
         editPath: rootPath + '/edit/' + field.name,
         dataType: field.dataType,
+        inputType: field.inputType,
         useToggleButton: field.inputType === 'toggle',
+        toggleValueTextList: field.valueNames,
       };
 
       const filename = field.multi ? './tableRowMulti' : './tableRowSingle';
@@ -23,13 +28,7 @@
         data.tagValues = item.tagValues;
       }
 
-      if (field.preventSharing) {
-        data.preventSharing = field.preventSharing(item);
-      }
-
-      if (field.useToggleButton && field.valueNames) {
-        data.currentValueTitle = field.valueNames[data.values];
-      }
+      data.isDisabled = !itemIsEditable;
     %>
     <%- include(filename, data) %>
   <% }); %>
