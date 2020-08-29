@@ -44,9 +44,7 @@ function createModel(modelName) {
       spec.type = prop.type;
     }
 
-    if (prop.defaultValue) {
-      spec.default = prop.defaultValue;
-    }
+    spec.default = prop.defaultValue;
 
     modelSchema[prop.name] = prop.isArray ? [spec] : spec;
   });

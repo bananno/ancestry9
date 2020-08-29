@@ -14,9 +14,11 @@ const updatedModels = [
   'Citation',
   'Event',
   'Image',
+  'Location',
   'Notation',
   'Story',
   'Source',
+  'Tag',
 ];
 
 const createModel = require('./tools/createModel');
@@ -27,9 +29,7 @@ module.exports = models;
 // OLD VERSIONS
 
 const models2 = [
-  'Location',
   'Person',
-  'Tag',
 ];
 
 models2.forEach(model => {
