@@ -97,7 +97,7 @@ async function storyEdit(req, res) {
 
 async function storyEntries(req, res) {
   req.story = await Story.findById(req.params.id);
-  await req.story.populateEntries();
+  await req.story.populateEntries({populateImages: true});
   req.story.entries.sort((a, b) => a.title < b.title ? -1 : 1);
   res.renderStory('entries');
 }

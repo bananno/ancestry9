@@ -25,8 +25,10 @@ methods.entriesCanHaveLocation = function() {
 };
 
 // Return list of sources that belong to THIS story.
-methods.getEntries = async function() {
-  const entries = await mongoose.model('Source').find({story: this});
+methods.getEntries = async function(options = {}) {
+  const entries = options.populateImages
+    ? await mongoose.model('Source').find({story: this}).populate('images')
+    : await mongoose.model('Source').find({story: this});
   entries.forEach(entry => entry.story = this);
   return entries;
 };
@@ -38,8 +40,8 @@ methods.populateCiteText = async function() {
 };
 
 // Assign list of sources that belong to THIS story.
-methods.populateEntries = async function() {
-  this.entries = await this.getEntries();
+methods.populateEntries = async function(options) {
+  this.entries = await this.getEntries(options);
 };
 
 // Assign list of sources that are attached to this story, but don't belong to it.
