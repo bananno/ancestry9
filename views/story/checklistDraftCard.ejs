@@ -1,0 +1,104 @@
+<br>
+<br>
+
+<div class="column">
+  <h2>done</h2>
+
+  <%- include('../person/_list', {format: 'bullet', people: peopleLists.done}) %>
+</div>
+
+<div class="column">
+  <h2>missing draft card</h2>
+
+  <p>
+    (shows age in <%= draftStart %> and <%= draftEnd %>)
+  </p>
+
+  <ul id="listOfPeople" class="bullet-list">
+    <% peopleLists.missingCard.forEach(person => { %>
+      <li class="person_row">
+        <%- include('../person/_link', {person}) %>
+        - <%= draftStart - person.getBirthYear() %>,
+        <%= draftEnd - person.getBirthYear() %>
+      </li>
+    <% }) %>
+  </ul>
+</div>
+
+<div class="column">
+  <h2>missing birth and death dates</h2>
+
+  <%- include('../person/_list', {format: 'bullet', people: peopleLists.missingDates}) %>
+</div>
+
+<hr>
+
+<div class="column">
+  <h2>living during draft, but too young</h2>
+
+  <p>
+    (shows age in <%= draftEnd %>)
+  </p>
+
+  <ul id="listOfPeople" class="bullet-list">
+    <% peopleLists.tooYoung.forEach(person => { %>
+      <li class="person_row">
+        <%- include('../person/_link', {person}) %>
+        - <%= draftEnd - person.getBirthYear() %>
+      </li>
+    <% }) %>
+  </ul>
+</div>
+
+<div class="column">
+  <h2>living during draft, but too old</h2>
+
+  <p>
+    (shows age in <%= draftStart %>)
+  </p>
+
+  <ul id="listOfPeople" class="bullet-list">
+    <% peopleLists.tooOld.forEach(person => { %>
+      <li class="person_row">
+        <%- include('../person/_link', {person}) %>
+        - <%= draftStart - person.getBirthYear() %>
+      </li>
+    <% }) %>
+  </ul>
+</div>
+
+<hr>
+
+<div class="column">
+  <h2>died before draft</h2>
+
+  <p>
+    (shows year of death)
+  </p>
+
+  <ul id="listOfPeople" class="bullet-list">
+    <% peopleLists.diedBefore.forEach(person => { %>
+      <li class="person_row">
+        <%- include('../person/_link', {person}) %>
+        - <%= person.getDeathYear() %>
+      </li>
+    <% }) %>
+  </ul>
+</div>
+
+<div class="column">
+  <h2>born after draft</h2>
+
+  <p>
+    (shows year of birth)
+  </p>
+
+  <ul id="listOfPeople" class="bullet-list">
+    <% peopleLists.bornAfter.forEach(person => { %>
+      <li class="person_row">
+        <%- include('../person/_link', {person}) %>
+        - <%= person.getBirthYear() %>
+      </li>
+    <% }) %>
+  </ul>
+</div>

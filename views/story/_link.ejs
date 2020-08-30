@@ -1,5 +1,8 @@
 <%
   let path = story._id || story;
+  if (locals.linkSubview) {
+    path += '/' + linkSubview;
+  }
   let text = story.title || ('story ' + story);
 %>
 <a href="/story/<%= path %>"><%= text %></a>

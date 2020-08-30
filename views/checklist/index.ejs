@@ -12,6 +12,16 @@
   <li><a href="/checklist/profileSummary">profile summary</a></li>
 </ul>
 
+<h2>stories</h2>
+
+<ul class="bullet-list">
+  <% storiesWithChecklist.forEach(story => { %>
+    <li>
+      <%- include('../story/_link', {story, linkSubview: 'checklist'}) %>
+    </li>
+  <% }); %>
+</ul>
+
 <h2>sources</h2>
 
 <ul class="bullet-list">

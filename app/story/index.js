@@ -4,17 +4,19 @@ const {
   Story,
   Source,
   Tag,
-  createModelRoutes,
+  createController,
 } = require('../import');
 
 const constants = require('./constants');
 const storyTools = require('./tools');
+const storyChecklist = require('./checklist');
+
 module.exports = createRoutes;
 
 function createRoutes(router) {
   router.use(storyTools.createRenderStory);
 
-  createModelRoutes({
+  createController({
     Model: Story,
     modelName: 'story',
     modelNamePlural: 'stories',
@@ -27,6 +29,7 @@ function createRoutes(router) {
       'entries': storyEntries,
       'newEntry': storyNewEntry,
       'notations': storyNotations,
+      'checklist': storyChecklist,
     },
     fields: constants.fields,
   });
@@ -96,19 +99,19 @@ async function storyEdit(req, res) {
 }
 
 async function storyEntries(req, res) {
-  req.story = await Story.findById(req.params.id);
+  req.story = await Story.findById(req.params.id).populate('tags');
   await req.story.populateEntries({populateImages: true});
   req.story.entries.sort((a, b) => a.title < b.title ? -1 : 1);
   res.renderStory('entries');
 }
 
 async function storyNewEntry(req, res) {
-  req.story = await Story.findById(req.params.id);
+  req.story = await Story.findById(req.params.id).populate('tags');
   res.renderStory('newEntry', {actionPath: '/sources/new'});
 }
 
 async function storyNotations(req, res) {
-  req.story = await Story.findById(req.params.id);
+  req.story = await Story.findById(req.params.id).populate('tags');
   await req.story.populateNotations();
 
   const notations = {};

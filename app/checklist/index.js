@@ -33,10 +33,14 @@ function createRenderChecklist(req, res, next) {
 }
 
 async function checklistIndex(req, res) {
+  const hasOwnChecklistTag = await Tag.findOne({title: 'has own checklist'});
+  const storiesWithChecklist = await Story.find({tags: hasOwnChecklistTag});
+
   const checklistMetatag = await Tag.findOne({title: 'checklist'});
   const checklistTags = await Tag.find({tags: checklistMetatag});
   Tag.sortByTitle(checklistTags);
-  res.renderChecklist('index', {checklistTags});
+
+  res.renderChecklist('index', {checklistTags, storiesWithChecklist});
 }
 
 async function checklistVitals(req, res) {

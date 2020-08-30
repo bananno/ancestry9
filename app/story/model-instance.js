@@ -33,6 +33,11 @@ methods.getEntries = async function(options = {}) {
   return entries;
 };
 
+// Whether to show a checklist view as one of the story's subtabs.
+methods.hasChecklist = function() {
+  return this.hasTag('has own checklist');
+};
+
 // Get official text about story origin (e.g., MLA) NOT the citation model.
 methods.populateCiteText = async function() {
   const notations = await mongoose.model('Notation').getCitesForStory(this);
