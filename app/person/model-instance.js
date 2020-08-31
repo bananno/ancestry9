@@ -9,12 +9,18 @@ methods.getRelativesList = getRelativesList;
 methods.getTagTitles = tools.getTagTitles;
 methods.getTagValue = tools.getTagValue;
 
-// These two methods only to be used after populateBirthAndDeath()
+// These birth/death methods only to be used after populateBirthAndDeath()
 methods.getBirthYear = function() {
   return this.birth && this.birth.date ? this.birth.date.year : undefined;
 };
 methods.getDeathYear = function() {
   return this.death && this.death.date ? this.death.date.year : undefined;
+};
+methods.getBirthCountry = function() {
+  return this.birth && this.birth.location ? this.birth.location.country : undefined;
+};
+methods.getDeathCountry = function() {
+  return this.death && this.death.location ? this.death.location.country : undefined;
 };
 
 methods.addRelative = async function(relationship, relative) {

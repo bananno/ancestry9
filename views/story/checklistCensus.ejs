@@ -1,0 +1,83 @@
+<br>
+<br>
+
+<div class="column">
+  <h2>done</h2>
+  <%- include('../person/_list', {format: 'bullet', people: peopleLists.done}) %>
+</div>
+
+<div class="column">
+  <h2>missing census</h2>
+
+  <p>
+    (shows age in <%= censusYear %>)
+  </p>
+
+  <ul id="listOfPeople" class="bullet-list">
+    <% peopleLists.missingStory.forEach(person => { %>
+      <li class="person_row">
+        <%- include('../person/_link', {person}) %>
+        - <%= censusYear - person.getBirthYear() %>
+      </li>
+    <% }) %>
+  </ul>
+
+  <hr>
+
+  <h2>maybe not in country</h2>
+
+  <p>
+    (shows age in <%= censusYear %>)
+  </p>
+
+  <ul id="listOfPeople" class="bullet-list">
+    <% peopleLists.maybeNotInCountry.forEach(person => { %>
+      <li class="person_row">
+        <%- include('../person/_link', {person}) %>
+        - <%= censusYear - person.getBirthYear() %>
+      </li>
+    <% }) %>
+  </ul>
+</div>
+
+<div class="column">
+  <h2>missing birth and death dates</h2>
+
+  <%- include('../person/_list', {format: 'bullet', people: peopleLists.missingDates}) %>
+</div>
+
+<hr>
+
+<div class="column">
+  <h2>died before census</h2>
+
+  <p>
+    (shows year of death)
+  </p>
+
+  <ul id="listOfPeople" class="bullet-list">
+    <% peopleLists.diedBefore.forEach(person => { %>
+      <li class="person_row">
+        <%- include('../person/_link', {person}) %>
+        - <%= person.getDeathYear() %>
+      </li>
+    <% }) %>
+  </ul>
+</div>
+
+<div class="column">
+  <h2>born after census</h2>
+
+  <p>
+    (shows year of birth)
+  </p>
+
+  <ul id="listOfPeople" class="bullet-list">
+    <% peopleLists.bornAfter.forEach(person => { %>
+      <li class="person_row">
+        <%- include('../person/_link', {person}) %>
+        - <%= person.getBirthYear() %>
+      </li>
+    <% }) %>
+  </ul>
+</div>

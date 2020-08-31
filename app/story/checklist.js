@@ -8,9 +8,80 @@ module.exports = renderStoryChecklist;
 async function renderStoryChecklist(req, res) {
   req.story = await Story.findById(req.params.id).populate('tags');
 
+  if (req.story.title.match('Census USA')) {
+    return storyChecklistUnitedStatesCensus(req, res);
+  }
+
   if (['World War I draft', 'World War II draft'].includes(req.story.title)) {
     return storyChecklistWorldWarDraftCards(req, res);
   }
+}
+
+async function storyChecklistUnitedStatesCensus(req, res) {
+  await req.story.populateEntries();
+
+  const censusYear = req.story.date.year;
+
+  const peopleWithEntry = {};
+
+  req.story.entries.forEach(source => {
+    source.people.forEach(person => {
+      const personId = '' + person;
+      peopleWithEntry[personId] = true;
+    });
+  });
+
+  const people = await Person.find({});
+
+  await Person.populateBirthAndDeath(people);
+
+  const peopleLists = {
+    done: [],
+    missingDates: [],
+    diedBefore: [],
+    bornAfter: [],
+    maybeNotInCountry: [],
+    missingStory: [],
+  };
+
+  for (let i in people) {
+    const person = people[i];
+
+    const status = (() => {
+      if (peopleWithEntry['' + person._id]) {
+        return 'done';
+      }
+
+      const birthYear = person.getBirthYear();
+      const deathYear = person.getDeathYear();
+
+      if (!birthYear && !deathYear) {
+        return 'missingDates';
+      }
+
+      if (deathYear && deathYear < censusYear) {
+        return 'diedBefore';
+      }
+
+      if (birthYear && birthYear > censusYear) {
+        return 'bornAfter';
+      }
+
+      const birthCountry = person.getBirthCountry();
+      const deathCountry = person.getDeathCountry();
+
+      if ((birthCountry && birthCountry != 'United States')
+          || (deathCountry && person.getDeathCountry() != 'United States')) {
+        return 'maybeNotInCountry'
+      }
+
+      return 'missingStory';
+    })();
+
+    peopleLists[status].push(person);
+  }
+
+  res.renderStory('checklistCensus', {censusYear, peopleLists});
 }
 
 async function storyChecklistWorldWarDraftCards(req, res) {
