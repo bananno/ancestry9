@@ -113,17 +113,28 @@ function createLifeEventsChecklist(birthYear, deathYear) {
 function createSourceChecklist(sources, person, birthYear, deathYear) {
   const sourceChecklist = [];
 
-  const checkForStory = (attr, title, strikeLiving) => {
-    const foundSource = !!sources.find(source => source.story[attr] === title);
+  const checkForStory = (options = {}) => {
+    // options.attr = what story attribute to find (title or type)
+    // options.title = what story attribute value to find
+    // options.strikeLiving = show as non-applicable if the person is living
+    // options.notFindable = show as non-applicable because probably not findable
+
+    const {attr, title} = options;
+
+    const foundSource = sources.some(source => source.story[attr] === title);
+
+    const notFindable = !foundSource && options.notFindable;
 
     sourceChecklist.push({
       complete: foundSource,
-      strikeLiving,
+      strikeLiving: options.strikeLiving,
+      strike: notFindable,
       title,
+      note: notFindable ? 'not found; probably not findable' : options.note,
     });
   };
 
-  checkForStory('type', 'cemetery', true);
+  checkForStory({attr: 'type', title: 'cemetery', strikeLiving: true});
 
   for (let year = 1840; year <= 1940; year += 10) {
     if (birthYear && birthYear > year) {
@@ -138,15 +149,19 @@ function createSourceChecklist(sources, person, birthYear, deathYear) {
       continue;
     }
 
-    checkForStory('title', 'Census USA ' + year);
+    checkForStory({
+      attr: 'title',
+      title: 'Census USA ' + year,
+      notFindable: year === 1890
+    });
   }
 
   if (birthYear != null && deathYear != null && person.gender != 1) {
     if (birthYear < 1900 && deathYear > 1917) {
-      checkForStory('title', 'World War I draft');
+      checkForStory({attr: 'title', title: 'World War I draft'});
     }
     if (birthYear < 1925 && deathYear > 1940) {
-      checkForStory('title', 'World War II draft');
+      checkForStory({attr: 'title', title: 'World War II draft'});
     }
   }
 
