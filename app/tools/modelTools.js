@@ -46,6 +46,9 @@ tools.getTagTitles = function() {
 
 tools.getTagValue = function(tagInput) {
   const tag = tagInput.title ? tagInput : this.tags.find(tag => tag.title === tagInput);
+  if (!tag) {
+    return undefined;
+  }
   const itemTagIds = this.tags.map(tag => tag._id || tag);
   const idx = itemTagIds.indexOf(tag._id);
   return this.tagValues[idx];
