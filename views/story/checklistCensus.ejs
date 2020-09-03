@@ -1,5 +1,30 @@
-<br>
-<br>
+<h1>entries</h1>
+
+<table class="nice-table">
+  <tr>
+    <th>entry</th>
+    <% checkItems.forEach(attr => { %>
+      <th>
+        <%= attr %>
+      </th>
+    <% }); %>
+  </tr>
+  <% sourceList.forEach(sourceChecklist => { %>
+    <tr>
+      <td>
+        <%- include('../source/_link', {source: sourceChecklist.source}) %>
+      </td>
+      <% checkItems.forEach(attr => { %>
+        <% const isChecked = sourceChecklist[attr] || false; %>
+        <td>
+          <img class="checkmark-inline" src="/images/check-<%= isChecked %>.png">
+        </td>
+      <% }); %>
+    </tr>
+  <% }); %>
+</table>
+
+<h1>people</h1>
 
 <div class="column">
   <h2>done</h2>

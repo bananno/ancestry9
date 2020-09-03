@@ -18,13 +18,36 @@ async function renderStoryChecklist(req, res) {
 }
 
 async function storyChecklistUnitedStatesCensus(req, res) {
-  await req.story.populateEntries();
+  const story = req.story;
+  const censusYear = story.date.year;
 
-  const censusYear = req.story.date.year;
+  await story.populateEntries();
+
+  const checkItems = [
+    'sharing', 'content', 'summary', 'image',
+    'Ancestry', 'FamilySearch', 'citation',
+  ];
+
+  for (let i in story.entries) {
+    await story.entries[i].populateCiteText({includeStory: false});
+  }
+
+  const sourceList = story.entries.map(source => {
+    return {
+      source,
+      sharing: source.sharing,
+      content: !!source.content,
+      summary: !!source.summary,
+      image: source.images.length > 0,
+      Ancestry: source.links.some(link => link.match(' Ancestry')),
+      FamilySearch: source.links.some(link => link.match(' FamilySearch')),
+      citation: source.citeText.length > 0,
+    };
+  });
 
   const peopleWithEntry = {};
 
-  req.story.entries.forEach(source => {
+  story.entries.forEach(source => {
     source.people.forEach(person => {
       const personId = '' + person;
       peopleWithEntry[personId] = true;
@@ -81,7 +104,7 @@ async function storyChecklistUnitedStatesCensus(req, res) {
     peopleLists[status].push(person);
   }
 
-  res.renderStory('checklistCensus', {censusYear, peopleLists});
+  res.renderStory('checklistCensus', {checkItems, sourceList, censusYear, peopleLists});
 }
 
 async function storyChecklistWorldWarDraftCards(req, res) {
