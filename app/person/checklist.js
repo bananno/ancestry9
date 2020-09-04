@@ -15,6 +15,8 @@ async function renderPersonChecklist(req, res) {
 
   const sources = await Source.find({people: person}).populate('story');
 
+  const incompleteSourceList = await createIncompleteSourceList(sources);
+
   res.renderPersonProfile('checklist', {
     checklistSections: [
       {
@@ -34,7 +36,7 @@ async function renderPersonChecklist(req, res) {
         items: createSourceChecklist(sources, person, birthYear, deathYear)
       },
     ],
-    incompleteSourceList: createIncompleteSourceList(sources),
+    incompleteSourceList,
   });
 }
 
@@ -168,10 +170,16 @@ function createSourceChecklist(sources, person, birthYear, deathYear) {
   return sourceChecklist;
 }
 
-function createIncompleteSourceList(sourceList) {
+async function createIncompleteSourceList(sourceList) {
   const list = [];
 
-  sourceList.forEach(source => {
+  for (let i in sourceList) {
+    await handleSource(sourceList[i]);
+  }
+
+  return list;
+
+  async function handleSource(source) {
     const missingContent = source.content == null || source.content == '';
     const missingImage = source.images.length == 0;
     const missingSummary = (source.summary || '').length == 0;
@@ -190,6 +198,19 @@ function createIncompleteSourceList(sourceList) {
       missing.push('summary');
     }
 
+    if (isCensus) {
+      await source.populateCiteText({includeStory: false});
+      if (source.citeText.length === 0) {
+        missing.push('citation text');
+      }
+      if (!source.links.some(link => link.match(' Ancestry'))) {
+        missing.push('Ancestry link');
+      }
+      if (!source.links.some(link => link.match(' FamilySearch'))) {
+        missing.push('FamilySearch link');
+      }
+    }
+
     if (missing.length) {
       let text1;
 
@@ -205,7 +226,5 @@ function createIncompleteSourceList(sourceList) {
 
       list.push([source, text1, missing.join(', ')]);
     }
-  });
-
-  return list;
+  }
 }
