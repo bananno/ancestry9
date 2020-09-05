@@ -36,13 +36,22 @@
     <% } %>
     <%= source.citeText.join(' ') %>
     <%
-      let familySearch = source.links.filter(url => url.match('FamilySearch'))[0];
-      if (familySearch) {
-        familySearch = familySearch.split(' ')[0];
+      let ancestryLink = source.links.find(url => url.match('Ancestry'));
+      let familysearchLink = source.links.find(url => url.match('FamilySearch'));
+      if (ancestryLink) {
+        ancestryLink = ancestryLink.split(' ')[0];
+      }
+      if (familysearchLink) {
+        familysearchLink = familysearchLink.split(' ')[0];
       }
     %>
-    <% if (familySearch) { %>
-      (<a href="<%= familySearch %>" target="_blank"><%= familySearch %></a>)
+    <% if (ancestryLink && familysearchLink) { %>
+      ([<a href="<%= ancestryLink %>" target="_blank"><%= ancestryLink %> Ancestry.com</a>],
+      [<a href="<%= familysearchLink %>" target="_blank"><%= familysearchLink %> FamilySearch.org</a>])
+    <% } else if (ancestryLink) { %>
+      ([<a href="<%= ancestryLink %>" target="_blank"><%= ancestryLink %> Ancestry.com</a>])
+    <% } else if (familysearchLink) { %>
+      ([<a href="<%= familysearchLink %>" target="_blank"><%= familysearchLink %> FamilySearch.org</a>])
     <% } %>
   </p>
 <% }); %>
