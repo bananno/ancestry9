@@ -30,6 +30,7 @@ module.exports = [
   {
     name: 'notes',
     type: String,
+    inputType: 'textarea',
     includeInExport: true,
   },
   {

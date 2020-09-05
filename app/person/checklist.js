@@ -12,6 +12,7 @@ async function renderPersonChecklist(req, res) {
   await person.populateBirthAndDeath();
   const birthYear = person.getBirthYear();
   const deathYear = person.getDeathYear();
+  const immigrationYear = await person.getImmigrationYear();
 
   const sources = await Source.find({people: person}).populate('story');
 
@@ -33,7 +34,7 @@ async function renderPersonChecklist(req, res) {
       },
       {
         title: 'Sources',
-        items: createSourceChecklist(sources, person, birthYear, deathYear)
+        items: createSourceChecklist({sources, person, birthYear, deathYear, immigrationYear})
       },
     ],
     incompleteSourceList,
@@ -112,27 +113,29 @@ function createLifeEventsChecklist(birthYear, deathYear) {
   ];
 }
 
-function createSourceChecklist(sources, person, birthYear, deathYear) {
+function createSourceChecklist({sources, person, birthYear, deathYear, immigrationYear}) {
   const sourceChecklist = [];
 
   const checkForStory = (options = {}) => {
     // options.attr = what story attribute to find (title or type)
     // options.title = what story attribute value to find
     // options.strikeLiving = show as non-applicable if the person is living
-    // options.notFindable = show as non-applicable because probably not findable
+    // options.isNotFindable = show as non-applicable because probably not findable
+    // options.notFindableNote = note to show if item is not found
+    // options.note = note to show if item is found
 
     const {attr, title} = options;
 
     const foundSource = sources.some(source => source.story[attr] === title);
 
-    const notFindable = !foundSource && options.notFindable;
+    const isNotFindable = !foundSource && options.isNotFindable;
 
     sourceChecklist.push({
       complete: foundSource,
       strikeLiving: options.strikeLiving,
-      strike: notFindable,
+      strike: isNotFindable,
       title,
-      note: notFindable ? 'not found; probably not findable' : options.note,
+      note: isNotFindable ? options.notFindableNote : options.note,
     });
   };
 
@@ -151,10 +154,21 @@ function createSourceChecklist(sources, person, birthYear, deathYear) {
       continue;
     }
 
+    let isNotFindable, notFindableNote;
+
+    if (immigrationYear && immigrationYear > year) {
+      isNotFindable = true;
+      notFindableNote = 'not found; probably before immigration';
+    } if (year === 1890) {
+      isNotFindable = true;
+      notFindableNote = 'not found; probably destroyed';
+    }
+
     checkForStory({
       attr: 'title',
       title: 'Census USA ' + year,
-      notFindable: year === 1890
+      isNotFindable,
+      notFindableNote,
     });
   }
 

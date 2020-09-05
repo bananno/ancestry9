@@ -23,6 +23,14 @@ methods.getDeathCountry = function() {
   return this.death && this.death.location ? this.death.location.country : undefined;
 };
 
+methods.getImmigrationYear = async function() {
+  if (!this.immigration) {
+    const Event = mongoose.model('Event');
+    this.immigration = await Event.findOne({people: this, title: 'immigration'});
+  }
+  return this.immigration && this.immigration.date ? this.immigration.date.year : undefined;
+};
+
 methods.addRelative = async function(relationship, relative) {
   const updatedPerson = {
     [relationship]: (this[relationship] || []).concat(relative)
