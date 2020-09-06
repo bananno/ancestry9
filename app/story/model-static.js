@@ -30,11 +30,11 @@ methods.getAllByType = async function(type) {
   return await Story.find({type}).populate('tags');
 };
 
-methods.getAllSharedData = async () => {
+methods.getAllSharedData = async (imageMap) => {
   const stories = await mongoose.model('Story').find({sharing: true})
-    .populate('people').populate('images');
+    .populate('people').populate('tags');
 
-  return stories.map(story => story.toSharedObject());
+  return stories.map(story => story.toSharedObject({imageMap}));
 };
 
 // Return a list of stories with "Census USA ___" title.

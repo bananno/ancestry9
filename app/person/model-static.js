@@ -10,7 +10,7 @@ methods.findInList = findInList;
 methods.isSame = isSame;
 
 methods.getAllSharedData = async () => {
-  const rawPeople = await mongoose.model('Person').find({});
+  const rawPeople = await mongoose.model('Person').find({}).populate('tags');
   const ancestors = {};
 
   const anna = rawPeople.find(person => person.name === 'Anna Peterson');

@@ -9,7 +9,7 @@ methods.sortByDate = tools.sorting.sortByDate;
 
 methods.getAllSharedData = async () => {
   const Event = mongoose.model('Event');
-  const rawList = await Event.find({}).populate('people');
+  const rawList = await Event.find({}).populate('people').populate('tags');
 
   const eventList = rawList.map(event => {
     // A historical event with NO people in the list is a global event. Always include.

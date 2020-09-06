@@ -63,7 +63,7 @@ methods.shouldHaveCiteText = async function() {
   return !['event', 'place'].includes(this.type);
 };
 
-methods.toSharedObject = function() {
+methods.toSharedObject = function({imageMap}) {
   const story = tools.reduceToExportData(this, constants.fieldNames);
 
   // Remove non-shared people and then un-populate people.
@@ -71,9 +71,12 @@ methods.toSharedObject = function() {
     .filter(person => person.isPublic())
     .map(person => person._id);
 
+  story.tags = tools.convertTags(this);
+
+  // Populate images manually; otherwise image tags would not be populated.
   // No need to un-populate images because they only exist as attributes
   // of their parent story or source.
-  story.images = story.images.map(image => image.toSharedObject());
+  story.images = story.images.map(imageId => imageMap[imageId].toSharedObject());
 
   return story;
 }

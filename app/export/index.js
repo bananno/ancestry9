@@ -64,12 +64,16 @@ async function getFullData() {
 async function getSharedData() {
   const data = {};
 
+  const images = await Image.find({}).populate('tags');
+  const imageMap = {};
+  images.forEach(image => imageMap[image._id] = image);
+
   data.citations = await Citation.getAllSharedData();
   data.events = await Event.getAllSharedData();
   data.notations = await Notation.getAllSharedData();
   data.people = await Person.getAllSharedData();
-  data.stories = await Story.getAllSharedData();
-  data.sources = await Source.getAllSharedData();
+  data.stories = await Story.getAllSharedData(imageMap);
+  data.sources = await Source.getAllSharedData(imageMap);
   data.countryList = Person.getAllCountriesOfOrigin(data.people);
 
   return data;

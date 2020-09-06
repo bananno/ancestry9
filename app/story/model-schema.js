@@ -62,6 +62,7 @@ module.exports = [
     specialType: 'tags',
     references: 'Tag',
     isArray: true,
+    includeInExport: true,
   },
   {
     name: 'notes',

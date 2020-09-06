@@ -49,15 +49,17 @@ function createModel(modelName) {
     modelSchema[prop.name] = prop.isArray ? [spec] : spec;
   });
 
-  const citationSchema = new mongoose.Schema(modelSchema);
+  const mongooseSchema = new mongoose.Schema(modelSchema);
 
   for (let methodName in instanceMethods) {
-    citationSchema.methods[methodName] = instanceMethods[methodName];
+    mongooseSchema.methods[methodName] = instanceMethods[methodName];
   }
 
   for (let methodName in staticMethods) {
-    citationSchema.statics[methodName] = staticMethods[methodName];
+    mongooseSchema.statics[methodName] = staticMethods[methodName];
   }
 
-  mongoose.model(modelName, citationSchema);
+  mongooseSchema.methods.getModelName = () => modelName;
+
+  mongoose.model(modelName, mongooseSchema);
 }

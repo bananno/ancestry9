@@ -3,11 +3,11 @@ const tools = require('../tools/modelTools');
 const methods = {};
 module.exports = methods;
 
-methods.getAllSharedData = async () => {
+methods.getAllSharedData = async (imageMap) => {
   const sources = await mongoose.model('Source').find({sharing: true})
-    .populate('people').populate('story').populate('images');
+    .populate('people').populate('story').populate('tags');
 
-  return sources.map(source => source.toSharedObject());
+  return sources.map(source => source.toSharedObject({imageMap}));
 };
 
 methods.getFormDataNew = req => {

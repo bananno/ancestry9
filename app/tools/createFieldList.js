@@ -3,7 +3,9 @@ module.exports = createFieldList;
 function createFieldList(modelName, options = {}) {
   const modelSchema = require(`../${modelName}/model-schema`);
 
-  const fieldNames = modelSchema.filter(prop => prop.includeInExport);
+  const fieldNames = modelSchema
+    .filter(prop => prop.includeInExport)
+    .map(prop => prop.name);
 
   const fields = modelSchema
     .filter(prop => {

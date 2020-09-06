@@ -16,17 +16,12 @@ const tools = {
 
 module.exports = tools;
 
-function convertTags(obj) {
-  const tags = {};
-  obj.tags.forEach(tag => {
-    if (tag.match('=')) {
-      let [key, value] = tag.split('=').map(s => s.trim());
-      tags[key] = value;
-    } else {
-      tags[tag] = true;
-    }
+function convertTags({tags, tagValues}) {
+  const convertedTags = {};
+  tags.forEach((tag, i) => {
+    convertedTags[tag.title] = tag.getValueFor(tagValues[i]);
   });
-  return tags;
+  return convertedTags;
 }
 
 function reduceListToExportData(list, fields) {

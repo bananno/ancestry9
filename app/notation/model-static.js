@@ -7,7 +7,7 @@ module.exports = methods;
 
 methods.getAllSharedData = async () => {
   const notations = await mongoose.model('Notation').find({sharing: true})
-    .populate('people');
+    .populate('people').populate('tags');
 
   return notations.map(notation => {
     // Remove non-shared people from the notation.

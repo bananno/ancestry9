@@ -106,7 +106,7 @@ methods.populateStory = async function() {
   }
 };
 
-methods.toSharedObject = function() {
+methods.toSharedObject = function({imageMap}) {
   const source = tools.reduceToExportData(this, constants.fieldNames);
 
   // Remove non-shared people and then un-populate people.
@@ -118,9 +118,12 @@ methods.toSharedObject = function() {
   source.fullTitle = source.story.title + ' - ' + source.title;
   source.story = source.story._id;
 
+  source.tags = tools.convertTags(this);
+
+  // Populate images manually; otherwise image tags would not be populated.
   // No need to un-populate images because they only exist as attributes
   // of their parent story or source.
-  source.images = source.images.map(image => image.toSharedObject());
+  source.images = source.images.map(imageId => imageMap[imageId].toSharedObject());
 
   return source;
 }
