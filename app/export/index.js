@@ -4,8 +4,9 @@ const {
   Image,
   Notation,
   Person,
-  Story,
   Source,
+  Story,
+  Tag,
 } = require('../import');
 
 const fs = require('fs');
@@ -20,13 +21,14 @@ function createRoutes(router) {
 async function exportAndRenderEverything(req, res) {
   const data = await getFullData();
 
-  await saveFullDataFile(data, 'people');
-  await saveFullDataFile(data, 'stories');
-  await saveFullDataFile(data, 'sources');
-  await saveFullDataFile(data, 'events');
   await saveFullDataFile(data, 'citations');
-  await saveFullDataFile(data, 'notations');
+  await saveFullDataFile(data, 'events');
   await saveFullDataFile(data, 'images');
+  await saveFullDataFile(data, 'notations');
+  await saveFullDataFile(data, 'people');
+  await saveFullDataFile(data, 'sources');
+  await saveFullDataFile(data, 'stories');
+  await saveFullDataFile(data, 'tags');
 
   res.render('export/index', data);
 }
@@ -52,8 +54,9 @@ async function getFullData() {
   data.images = await Image.find({});
   data.notations = await Notation.find({});
   data.people = await Person.find({});
-  data.stories = await Story.find({});
   data.sources = await Source.find({});
+  data.stories = await Story.find({});
+  data.tags = await Tag.find({});
 
   return data;
 }
