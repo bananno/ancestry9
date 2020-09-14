@@ -94,17 +94,19 @@ methods.getFormDataNew = req => {
   return newPerson;
 };
 
-async function populateAncestors(personId, people, safety) {
-  safety = safety || 0;
-
+function populateAncestors(rootPerson, people, options = {}, safety = 0) {
   if (safety > 30) {
-    return personId;
+    return rootPerson;
   }
 
-  const person = findInList(people, personId);
+  const person = rootPerson.name ? rootPerson : findInList(people, rootPerson);
 
-  for (let i in person.parents) {
-    person.parents[i] = await populateAncestors(person.parents[i], people, safety + 1);
+  person.parents.forEach((parent, i) => {
+    person.parents[i] = populateAncestors(parent, people, options, safety + 1);
+  });
+
+  if (options.intoList) {
+    options.intoList.push(person);
   }
 
   return person;

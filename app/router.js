@@ -43,4 +43,5 @@ router.get('/shared', (req, res) => { // BROKEN due to relative filepaths
   'source',
   'story',
   'tag',
+  'misc',
 ].forEach(item => require('./' + item)(router));

@@ -1,0 +1,40 @@
+<style>
+th, td {
+  border: 1px solid gray;
+  font-size: 10px;
+}
+th {
+  padding: 5px;
+}
+td.person-block {
+  padding: 5px;
+  background-color: #dfdfdf;
+}
+</style>
+
+<h1>Timeline</h1>
+
+<table>
+  <% for (let year = startYear; year <= endYear; year++) { %>
+    <%
+      let showYear = yearsWithEvents[year]
+        || (yearsWithEvents[year - 1] && yearsWithEvents[year + 1])
+        || (year % 10 === 0);
+
+      const people = peopleBornPerYear[year] || [];
+    %>
+    <tr>
+      <th>
+        <%= showYear ? year : '' %>
+      </th>
+      <% people.forEach((person, i) => { %>
+        <td class="person-block" rowspan="<%= person.age + 1 %>">
+          <%- include('../person/_link', {person}) %>
+        </td>
+      <% }); %>
+      <% for (let i = people.length; i < maxPeoplePerYear; i++) { %>
+        <td></td>
+      <% } %>
+    </tr>
+  <% } %>
+</table>
