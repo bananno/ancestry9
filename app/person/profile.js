@@ -94,16 +94,19 @@ async function personNotations(req, res) {
 }
 
 async function personNationality(req, res) {
-  const people = await Person.find({}).populate('parents');
+  const allPeople = await Person.find({}).populate('parents');
 
-  const person = Person.populateAncestors(req.personId, people);
+  const people = [];
 
-  for (let i in people) {
-    const person = people[i];
-    person.birthCountry = await getPersonBirthCountry(person);
-  }
+  const person = Person.populateAncestors(req.person, allPeople, {intoList: people});
 
-  const nationality = calculateNationality(person, people);
+  await Person.populateBirthAndDeath(people, {populateDeath: false});
+
+  people.forEach(person => {
+    person.birthCountry = person.getBirthCountry() || 'unknown';
+  });
+
+  const nationality = Person.calculateNationality(person, people);
 
   res.renderPersonProfile('nationality', {
     people,
@@ -151,45 +154,4 @@ async function personWikitree(req, res) {
   Source.sortByStory(sources);
 
   res.renderPersonProfile('wikitree', {sources});
-}
-
-async function getPersonBirthCountry(person) {
-  const event = await Event.findOne({title: 'birth', people: person});
-
-  if (event && (event.people[0] + '' === person._id + '')
-      && event.location && event.location.country) {
-    return event.location.country;
-  }
-
-  return 'unknown';
-}
-
-function calculateNationality(person, people, nationality, percentage, safety) {
-  nationality = nationality || {};
-  percentage = percentage || 100;
-  safety = safety || 0;
-  const country = person.birthCountry;
-
-  if (safety > 20) {
-    return nationality;
-  }
-
-  if (country == 'United States') {
-    const parentPercentage = percentage / 2;
-    for (let i = 0; i < 2; i++) {
-      if (i < person.parents.length) {
-        const thisPerson = person.parents[i];
-        nationality = calculateNationality(thisPerson, people, nationality,
-          parentPercentage, safety + 1);
-      } else {
-        nationality['unknown'] = nationality['unknown'] || 0;
-        nationality['unknown'] += parentPercentage;
-      }
-    }
-  } else {
-    nationality[country] = nationality[country] || 0;
-    nationality[country] += percentage;
-  }
-
-  return nationality;
 }

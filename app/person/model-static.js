@@ -131,11 +131,15 @@ methods.populateRelatives = function(people) {
 };
 
 // Given list of people, populate birth and death events for each.
-methods.populateBirthAndDeath = async function(people) {
+methods.populateBirthAndDeath = async function(people, options = {}) {
   const Event = mongoose.model('Event');
 
   const births = await Event.find({title: 'birth'});
-  const deaths = await Event.find({title: 'death'});
+
+  const deaths = options.populateDeath === false
+    ? []
+    : (await Event.find({title: 'death'}));
+
   const combos = await Event.find({title: 'birth and death'});
 
   const birthsMap = {};
@@ -188,3 +192,31 @@ methods.getAllCountriesOfOrigin = people => {
   });
   return Object.keys(countries).sort();
 };
+
+methods.calculateNationality = calculateNationality;
+function calculateNationality(person, people, nationality = {}, percentage = 100, safety = 0) {
+  if (safety > 20) {
+    return nationality;
+  }
+
+  const country = person.birthCountry;
+
+  if (country == 'United States') {
+    const parentPercentage = percentage / 2;
+    for (let i = 0; i < 2; i++) {
+      if (i < person.parents.length) {
+        const thisPerson = person.parents[i];
+        nationality = calculateNationality(thisPerson, people, nationality,
+          parentPercentage, safety + 1);
+      } else {
+        nationality['unknown'] = nationality['unknown'] || 0;
+        nationality['unknown'] += parentPercentage;
+      }
+    }
+  } else {
+    nationality[country] = nationality[country] || 0;
+    nationality[country] += percentage;
+  }
+
+  return nationality;
+}
