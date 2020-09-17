@@ -2,7 +2,9 @@
   const safety = locals.safety || 0;
   const showCountry = locals.showCountry == true;
   let foundNationality = locals.foundNationality || false;
+  let cellNote = '';
   let cellClass = 'treecell';
+  let showMissingParent = false;
 
   if (person.name == null) {
     person = findPersonInList(people, person);
@@ -10,10 +12,14 @@
 
   if (showCountry && person.birthCountry != null) {
     if (person.birthCountry == 'United States') {
-      if (person.parents.length < 2) {
-        cellClass += ' dead-end';
-      } else {
+      if (person.parents.length === 2) {
         cellClass += ' usa';
+      } else if (person.parents.length === 1) {
+        cellClass += ' usa';
+        showMissingParent = true;
+      } else {
+        cellClass += ' dead-end';
+        cellNote = 'USA';
       }
     } else if (person.birthCountry == 'unknown') {
       if (!foundNationality) {
@@ -22,6 +28,7 @@
       } else {
         cellClass += ' unknown';
       }
+      cellNote = person.birthCountry;
     } else {
       if (foundNationality) {
         cellClass += ' old-country';
@@ -29,6 +36,7 @@
         cellClass += ' first-generation';
         foundNationality = true;
       }
+      cellNote = person.birthCountry;
     }
   }
 %>
@@ -46,15 +54,18 @@
             safety: safety + 1,
           }) %>
         </td>
+        <% if (showMissingParent) { %>
+          <td valign="bottom" align="center" class="treecell dead-end">
+            <div>missing</div>
+          </td>
+        <% } %>
       <% }); %>
     </tr>
     <tr>
-      <td colspan="<%= person.parents.length || 1 %>" class="<%= cellClass %>">
+      <td colspan="2" class="<%= cellClass %>">
         <div>
           <%- include('../person/_link', {person}) %>
-          <% if (showCountry && person.birthCountry != 'United States') { %>
-            <%= person.birthCountry %>
-          <% } %>
+          <%= cellNote %>
         </div>
       </td>
     </tr>
