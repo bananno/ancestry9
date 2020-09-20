@@ -165,6 +165,13 @@ methods.populateBirthAndDeath = async function(people, options = {}) {
   // }
 };
 
+// Given list, create a map of id to person.
+methods.createMap = peopleList => {
+  const map = {};
+  peopleList.forEach(person => map[person._id] = person);
+  return map;
+};
+
 function findInList(people, person) {
   return people.find(nextPerson => isSame(person, nextPerson));
 }

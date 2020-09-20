@@ -10,9 +10,18 @@
 <ul class="bullet-list">
   <li><a href="/checklist/vitals">vitals</a> - person birth & death dates</li>
   <li><a href="/checklist/profileSummary">profile summary</a></li>
+  <li>
+    <a href="/checklist/personParentAges">parent ages</a> - analyze for possible mistakes
+  </li>
 </ul>
 
 <h2>stories</h2>
+
+<p>
+  List of all entries and whether they have links, citation text, etc.
+  <br>
+  Also a list of all people that are missing the story.
+</p>
 
 <ul class="bullet-list">
   <% storiesWithChecklist.forEach(story => { %>
@@ -25,7 +34,10 @@
 <h2>sources</h2>
 
 <ul class="bullet-list">
-  <li><a href="/checklist/sourceCensus">census</a></li>
+  <li>
+    <a href="/checklist/sourceCensus">census</a>
+    - list of all US census entries and whether they have links and citation text
+  </li>
 </ul>
 
 <h2>dynamic tag checklists</h2>

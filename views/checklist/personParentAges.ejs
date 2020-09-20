@@ -1,0 +1,51 @@
+<p>
+  <a href="/checklist">checklist</a>
+</p>
+
+<h1>checklist - parent ages</h1>
+
+<p>
+  Confirm that the age of each person's parents is within expected range.
+</p>
+
+<p>
+  This checklist ignores people that are missing birth date.
+  See other checklists for filling in missing info.
+</p>
+
+<h2>youngest & oldest parents</h2>
+
+<ul class="bullet-list">
+  <li>
+    youngest mother:
+    <%- include('../person/_link', {person: birthAges[1].youngestPerson}) %> -
+    <%= birthAges[1].youngestAge %>
+  </li>
+  <li>
+    oldest mother:
+    <%- include('../person/_link', {person: birthAges[1].oldestPerson}) %> -
+    <%= birthAges[1].oldestAge %>
+  </li>
+  <li>
+    youngest father:
+    <%- include('../person/_link', {person: birthAges[2].youngestPerson}) %> -
+    <%= birthAges[2].youngestAge %>
+  </li>
+  <li>
+    oldest father:
+    <%- include('../person/_link', {person: birthAges[2].oldestPerson}) %> -
+    <%= birthAges[2].oldestAge %>
+  </li>
+</ul>
+
+<h2>all parents & age when each child was born</h2>
+
+<ul class="bullet-list">
+  <% people.forEach(person => { %>
+    <li>
+      <%- include('../person/_link', {person}) %>
+      -
+      <%= person.ageWhenChildrenBorn.join(', ') %>
+    </li>
+  <% }); %>
+</ul>

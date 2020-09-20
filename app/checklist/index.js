@@ -17,6 +17,7 @@ function createRoutes(router) {
   router.get('/checklist/vitals', checklistVitals);
   router.get('/checklist/sourceCensus', checklistSourceCensus);
   router.get('/checklist/profileSummary', checklistProfileSummary);
+  router.get('/checklist/personParentAges', checklistPersonParentAges);
   router.get('/checklist/images', checklistImages);
   router.get('/checklist/custom', checklistCustom);
   router.post('/checklist/custom/new', checklistCreateCustom);
@@ -157,6 +158,69 @@ async function checklistProfileSummary(req, res) {
   });
 
   res.renderChecklist('profileSummary', data);
+}
+
+async function checklistPersonParentAges(req, res) {
+  const allPeople = await Person.find();
+
+  await Person.populateBirthAndDeath(allPeople);
+
+  const tmp = [];
+
+  // Don't bother populating parents directly because birth event
+  // needs to be populated manually anyway.
+  const peopleMap = Person.createMap(allPeople);
+
+  const missingItems = {
+    totalNum: allPeople.length,
+    personBirthYear: 0,
+    mother: 0,
+    motherBirthYear: 0,
+  };
+
+  const people = [];
+
+  const birthAges = [
+    null,
+    {youngestPerson: null, youngestAge: 30, oldestPerson: null, oldestAge: 0},
+    {youngestPerson: null, youngestAge: 30, oldestPerson: null, oldestAge: 0},
+  ];
+
+  allPeople.forEach(person => {
+    const personBirthYear = person.getBirthYear();
+
+    if (!personBirthYear) {
+      missingItems.personBirthYear += 1;
+      return;
+    }
+
+    person.ageWhenChildrenBorn = [];
+
+    person.children.forEach(childId => {
+      const childBirthYear = peopleMap[childId].getBirthYear();
+      if (childBirthYear) {
+        person.ageWhenChildrenBorn.push(childBirthYear - personBirthYear);
+      }
+    });
+
+    if (person.ageWhenChildrenBorn.length) {
+      person.ageWhenChildrenBorn.sort();
+      people.push(person);
+
+      const youngest = person.ageWhenChildrenBorn[0];
+      const oldest = person.ageWhenChildrenBorn[person.ageWhenChildrenBorn.length - 1];
+
+      if (birthAges[person.gender].youngestAge > youngest) {
+        birthAges[person.gender].youngestAge = youngest;
+        birthAges[person.gender].youngestPerson = person;
+      } else if (birthAges[person.gender].oldestAge < oldest) {
+        birthAges[person.gender].oldestAge = oldest;
+        birthAges[person.gender].oldestPerson = person;
+      }
+    }
+  });
+
+  res.renderChecklist('personParentAges', {birthAges, people});
 }
 
 async function checklistCustom(req, res) {
