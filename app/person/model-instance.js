@@ -31,6 +31,22 @@ methods.getImmigrationYear = async function() {
   return this.immigration && this.immigration.date ? this.immigration.date.year : undefined;
 };
 
+// Populate tags before using these link methods.
+methods.getMissingLinks = function() {
+  const expectLinks = ['Ancestry', 'FamilySearch'];
+  const wikitreeStatus = this.getTagValue('wikitree');
+  if (wikitreeStatus !== 'ignore') {
+    expectLinks.push('WikiTree');
+  }
+  if (!this.isLiving()) {
+    expectLinks.push('FindAGrave');
+  }
+  return expectLinks.filter(linkTitle => !this.getLink(linkTitle));
+};
+methods.getLink = function(linkType) {
+  return this.links.find(link => link.match(linkType));
+};
+
 methods.addRelative = async function(relationship, relative) {
   const updatedPerson = {
     [relationship]: (this[relationship] || []).concat(relative)

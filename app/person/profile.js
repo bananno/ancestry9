@@ -67,6 +67,7 @@ async function personEdit(req, res) {
     fields: constants.fields,
     rootPath: '/person/' + req.paramPersonId,
     tags,
+    missingLinks: req.person.getMissingLinks(),
   });
 }
 

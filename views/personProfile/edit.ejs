@@ -4,3 +4,14 @@
   rootPath,
   fields,
 }) %>
+
+<% if (missingLinks.length) { %>
+  <h2>add links</h2>
+  <% missingLinks.forEach(linkTitle => { %>
+    <form action="/person/<%= person._id %>/add/namedLink" method="post">
+      <input type="hidden" name="title" value="<%= linkTitle %>">
+      <input type="text" name="url" placeholder="<%= linkTitle %>">
+      <button>add</button>
+    </form>
+  <% }); %>
+<% } %>

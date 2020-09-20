@@ -2,7 +2,7 @@ const {
   Event,
   Notation,
   Person,
-  createModelRoutes,
+  createController,
   reorderList,
 } = require('../import');
 
@@ -19,7 +19,7 @@ function createRoutes(router) {
   router.param('personId', personTools.convertParamPersonId2);
   router.use(personTools.createRenderPersonProfile);
 
-  createModelRoutes({
+  createController({
     Model: Person,
     modelName: 'person',
     modelNamePlural: 'people',
@@ -39,6 +39,7 @@ function createRoutes(router) {
 
   router.post('/person/:id/add/events', createPersonEvent);
   router.post('/person/:id/add/notations', createPersonNotation);
+  router.post('/person/:id/add/namedLink', addNamedLink);
 }
 
 async function peopleIndex(req, res) {
@@ -88,4 +89,15 @@ async function createPersonNotation(req, res) {
   await Notation.create(newNotation);
 
   res.redirect('/person/' + req.paramPersonId + '/notations');
+}
+
+async function addNamedLink(req, res) {
+  const url = req.body.url;
+  if (!url) {
+    return res.send('missing link text');
+  }
+  const newLink = url + ' ' + req.body.title;
+  const links = [...req.person.links, newLink];
+  await Person.updateOne({_id: req.person._id}, {links});
+  res.redirect('/person/' + req.paramPersonId + '/edit');
 }
