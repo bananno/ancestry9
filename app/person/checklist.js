@@ -22,7 +22,7 @@ async function renderPersonChecklist(req, res) {
     checklistSections: [
       {
         title: 'Links',
-        items: createLinkChecklist(person.links)
+        items: createLinkChecklist(person)
       },
       {
         title: 'Relatives',
@@ -41,32 +41,18 @@ async function renderPersonChecklist(req, res) {
   });
 }
 
-function createLinkChecklist(links) {
-  const linksRef = {
-    Ancestry: {},
-    FamilySearch: {},
-    FindAGrave: {strikeLiving: true},
-    Lundberg: {strikeLiving: true},
-    WikiTree: {},
-  };
-
-  links.forEach(url => {
-    if (url.match('lundbergancestry')) {
-      linksRef.Lundberg.complete = true;
-    } else if (url.match('ancestry.com')) {
-      linksRef.Ancestry.complete = true;
-    } else if (url.match('familysearch.org')) {
-      linksRef.FamilySearch.complete = true;
-    } else if (url.match('findagrave')) {
-      linksRef.FindAGrave.complete = true;
-    } else if (url.match('wikitree')) {
-      linksRef.WikiTree.complete = true;
-    }
+function createLinkChecklist(person) {
+  const links = [
+    {title: 'Ancestry'},
+    {title: 'FamilySearch'},
+    {title: 'FindAGrave', strikeLiving: true},
+    {title: 'Lundberg', strikeLiving: true},
+    {title: 'WikiTree'},
+  ];
+  links.forEach(link => {
+    link.complete = !!person.getLink(link.title);
   });
-
-  return Object.keys(linksRef).map(key => {
-    return {...linksRef[key], title: key};
-  });
+  return links;
 }
 
 function createRelativesChecklist(person) {
