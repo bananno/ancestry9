@@ -1,0 +1,54 @@
+<style>
+.column {
+  width: 40%;
+}
+hr {
+  margin: 20px 0;
+}
+</style>
+
+<h1>Year: <%= year %></h1>
+
+<p>
+  <% for (let y = year - 6; y < year; y++ ) { %>
+    &#160; <a href="/year/<%= y %>"><%= y %></a>
+  <% } %>
+  &#160; <%= year %>
+  <% for (let y = year + 1; y <= year + 6; y++ ) { %>
+    &#160; <a href="/year/<%= y %>"><%= y %></a>
+  <% } %>
+</p>
+
+<hr>
+
+<div class="column">
+  <h2>born this year</h2>
+  <%- include('../person/_list', {people: bornThisYear, format: 'bullet'}) %>
+</div>
+
+<div class="column">
+  <h2>died this year</h2>
+  <%- include('../person/_list', {
+    people: diedThisYear,
+    format: 'bullet',
+    showAge: true,
+  }) %>
+</div>
+
+<h2>alive during this year</h2>
+
+<div class="column">
+  <%- include('../person/_list', {
+    people: livedThisYear1,
+    format: 'bullet',
+    showAge: true,
+  }) %>
+</div>
+
+<div class="column">
+  <%- include('../person/_list', {
+    people: livedThisYear2,
+    format: 'bullet',
+    showAge: true,
+  }) %>
+</div>

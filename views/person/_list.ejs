@@ -3,6 +3,7 @@
     <% people.forEach(person => { %>
       <li>
         <%- include('./_link', {person}) %>
+        <%= locals.showAge ? ('(' + person.age + ')') : '' %>
       </li>
     <% }); %>
   </ul>
@@ -11,6 +12,7 @@
     <% people.forEach(person => { %>
       <li>
         <%- include('./_link', {person}) %>
+        <%= locals.showAge ? ('(' + person.age + ')') : '' %>
       </li>
     <% }); %>
   </ul>
