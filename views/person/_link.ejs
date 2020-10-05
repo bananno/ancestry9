@@ -4,8 +4,9 @@
     if (personId == null || locals.useRealId) {
       personId = person._id;
     }
+    const linkText = locals.linkText ? locals.linkText : person.name;
   %>
-  <a href="/person/<%= personId %>"><%= person.name %></a>
+  <a href="/person/<%= personId %>"><%= linkText %></a>
 <% } else { %>
   ________
 <% } %>

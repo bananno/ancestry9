@@ -1,0 +1,75 @@
+<%
+  const person = findPersonInList(people, locals.person);
+
+  const childrenListed = [];
+
+  const safety = (locals.safety || 0) + 1;
+
+  if (safety > 15) {
+    throw `[ERROR] descendants chart reached ${safety} layers`;
+  }
+
+  const children = person.children.map(childId => findPersonInList(people, childId));
+
+  const personMaidenName = person.name.match('\\[')
+    ? person.name.slice(0, person.name.indexOf('['))
+    : person.name;
+
+  const personMarriageEvents = marriageEvents.filter(event => {
+    return findPersonInList(event.people, person);
+  });
+%>
+
+<p class="person-item">
+  <b><%- include('../person/_link', {person, linkText: personMaidenName}) %></b>
+  <span class="life-dates">(<%= getLifeDatesString(person) %>)</span>
+</p>
+
+<% person.spouses.forEach(spouseId => { %>
+  <%
+    const spouse = findPersonInList(people, spouseId);
+    const spouseChildren = children.filter((child, i) => {
+      if (findPersonInList(child.parents, spouse)) {
+        childrenListed.push(child);
+        return true;
+      }
+      return false;
+    });
+    const marriageEvent = personMarriageEvents.find(event => {
+      return findPersonInList(event.people, spouse);
+    });
+  %>
+  <p class="person-item">
+    + <%- include('../person/_link', {person: spouse}) %>
+    <span class="life-dates">
+      (<%= getLifeDatesString(spouse) %>;
+      married <%= formatEventDate(marriageEvent) || 'when?' %>)
+    </span>
+  </p>
+  <ul>
+    <% spouseChildren.forEach(child => { %>
+      <li>
+        <%- include('./_desc', {person: child, safety}) %>
+      </li>
+    <% }); %>
+  </ul>
+<% }); %>
+
+<%
+  const additionalChildren = person.children.filter(child => {
+    return !findPersonInList(childrenListed, child);
+  });
+%>
+
+<% if (additionalChildren.length) { %>
+  <p class="person-item">
+    + unknown spouse
+  </p>
+  <ul>
+    <% additionalChildren.forEach(child => { %>
+      <li>
+        <%- include('./_desc', {person: child, safety}) %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>

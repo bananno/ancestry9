@@ -1,0 +1,36 @@
+<style>
+.descendants-chart {
+  padding: 10px;
+  background-color: white;
+}
+
+.descendants-chart ul,
+.descendants-chart li {
+  /*border: 1px solid red;*/
+}
+
+.descendants-chart ul {
+  margin-left: 50px;
+}
+.descendants-chart .person-item {
+  /*border: 1px solid #ccc;*/
+  margin: 8px 0;
+}
+.descendants-chart .person-item .life-dates {
+  color: #bbb;
+}
+.descendants-chart a {
+  color: black;
+  text-decoration: none;
+}
+.descendants-chart a:hover {
+  color: #00B7FF;
+  text-decoration: underline;
+}
+</style>
+
+<h2>descendants chart</h2>
+
+<div class="descendants-chart">
+  <%- include('./_desc', {person}) %>
+</div>
