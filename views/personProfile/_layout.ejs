@@ -3,6 +3,12 @@
   const profileImage = person.profileImage || '/images/generic-profile-picture.png';
 %>
 
+<style>
+.person-navigation.show-more {
+  display: none;
+}
+</style>
+
 <div class="column">
   <img src="<%= profileImage %>" class="profile-picture">
 </div>
@@ -16,16 +22,26 @@
     <ul class="person-navigation">
       <li><a href="<%= rootPath %>">summary</a></li>
       <li><a href="<%= rootPath %>/edit">edit person</a></li>
+      <li><a href="<%= rootPath %>/checklist">checklist</a></li>
       <li><a href="<%= rootPath %>/timeline">timeline</a></li>
       <li><a href="<%= rootPath %>/sources">sources</a></li>
       <li><a href="<%= rootPath %>/notations">notations</a></li>
+      <li id="navigation-show-more" class="clickable-link">more...</li>
+    </ul>
+    <ul class="person-navigation show-more">
       <li><a href="<%= rootPath %>/nationality">nationality</a></li>
       <li><a href="<%= rootPath %>/relatives">relatives</a></li>
       <li><a href="<%= rootPath %>/connection">connection</a></li>
-      <li><a href="<%= rootPath %>/checklist">checklist</a></li>
       <li><a href="<%= rootPath %>/wikitree">wikitree</a></li>
     </ul>
   <% } %>
 </div>
 
 <%- include('./' + subview) %>
+
+<script>
+  $('#navigation-show-more').click(() => {
+    $('#navigation-show-more').hide();
+    $('.person-navigation.show-more').show();
+  });
+</script>
