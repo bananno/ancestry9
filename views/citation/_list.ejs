@@ -1,21 +1,23 @@
 <%
   const showEditDelete = locals.showDelete || false;
 
-  let citationSortableTables;
+  const citationTables = [];
 
-  const citationTables = [{
-    list: citations,
-    sort: 'item',
-  }];
+  if (locals.citations) {
+    citationTables.push({
+      list: citations,
+      sort: 'item',
+    });
+  }
 
   if (showPerson && locals.citationsByPerson) {
-    citationSortableTables = true;
-
     citationTables.push({
       list: citationsByPerson,
       sort: 'person',
     });
   }
+
+  const citationSortableTables = citationTables.length > 1;
 %>
 
 <% if (citationSortableTables) { %>
@@ -37,10 +39,12 @@
       <% if (showPerson) { %>
         <th>
           person
-          <% if (citationTable.sort == 'person') { %>
-            <span class="already-sorted"><u>[sort]</u></span>
-          <% } else if (citationTable.sort != 'none') { %>
-            <span class="clickable-link" onClick="sortCitationsByPerson()">[sort]</span>
+          <% if (citationSortableTables) { %>
+            <% if (citationTable.sort == 'person') { %>
+              <span class="already-sorted"><u>[sort]</u></span>
+            <% } else if (citationTable.sort != 'none') { %>
+              <span class="clickable-link" onClick="sortCitationsByPerson()">[sort]</span>
+            <% } %>
           <% } %>
         </th>
       <% } %>

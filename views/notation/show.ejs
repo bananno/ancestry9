@@ -87,6 +87,19 @@
   </p>
 <% }); %>
 
+<% if (locals.citations) { %>
+  <h2>citations</h2>
+  <%- include('../citation/_list', {
+    citations,
+    citationsByPerson,
+    showDelete: false,
+    showSource: false,
+    showPerson: true,
+    rootPath: null,
+    groupBy: 'person',
+  }) %>
+<% } %>
+
 <% if (showAppearances) { %>
   <h1>Appearances</h1>
 

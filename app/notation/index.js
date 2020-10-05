@@ -1,4 +1,5 @@
 const {
+  Citation,
   Notation,
   Person,
   Story,
@@ -45,7 +46,24 @@ async function showNotation(req, res) {
   if (!notation) {
     return res.send('Notation not found.');
   }
-  res.render('notation/show', {title: 'Notation', notation});
+
+  // If this notation is an excerpt from a source, show the source's citations
+  // for the tagged people. The notation is probably an excerpt of the relevant
+  // portion of the source for one person.
+  let citations, citationsByPerson;
+  if (notation.title === 'excerpt' && notation.people.length && notation.source) {
+    await notation.source.populateCitations();
+
+    citations = notation.source.citations.filter(citation => {
+      return Person.findInList(notation.people, citation.person);
+    });
+    citationsByPerson = [...citations];
+
+    Citation.sortByItem(citations, notation.people);
+    Citation.sortByPerson(citationsByPerson, notation.people);
+  }
+
+  res.render('notation/show', {title: 'Notation', notation, citations, citationsByPerson});
 }
 
 async function editNotation(req, res) {
