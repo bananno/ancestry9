@@ -62,8 +62,8 @@ methods.getLifeEvents = async function() {
   return events;
 };
 
-methods.isLiving = function() {
-  return this.living;
+methods.isRoot = function() {
+  return this.customId === 'anna-bidstrup';
 };
 
 methods.isPublic = function() {

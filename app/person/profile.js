@@ -132,7 +132,7 @@ async function personRelatives(req, res) {
 async function personConnection(req, res) {
   const people = await Person.find({});
   const person = Person.findInList(people, req.personId);
-  const compare = people.find(nextPerson => nextPerson.name === 'Anna Peterson');
+  const compare = people.find(nextPerson => nextPerson.isRoot());
 
   res.renderPersonProfile('connection', {
     compare,
@@ -164,7 +164,7 @@ async function personDescendants(req, res) {
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
   ];
 
-  const people = await Person.find();
+  const people = await Person.find().populate('tags');
 
   await Person.populateBirthAndDeath(people);
 

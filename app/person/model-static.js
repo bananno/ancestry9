@@ -13,7 +13,7 @@ methods.getAllSharedData = async () => {
   const rawPeople = await mongoose.model('Person').find({}).populate('tags');
   const ancestors = {};
 
-  const anna = rawPeople.find(person => person.name === 'Anna Peterson');
+  const anna = rawPeople.find(person => person.isRoot());
 
   anna.parents.forEach((person, i) => findAncestors(person, i + 1, 1));
 

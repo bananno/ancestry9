@@ -13,7 +13,7 @@ function createRoutes(router) {
 async function showTimeline(req, res) {
   const allPeople = await Person.find({});
 
-  const anna = await Person.findOne({name: 'Anna Peterson'});
+  const anna = allPeople.find(person => person.isRoot());
 
   const listOfAncestors = [];
 

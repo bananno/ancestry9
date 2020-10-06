@@ -45,8 +45,9 @@ async function checklistIndex(req, res) {
 }
 
 async function checklistVitals(req, res) {
-  const people = await Person.find({}).populate('tags');
-  const rootPerson = people.find(person => person.name === 'Anna Peterson');
+  const people = await Person.find();
+  const rootPerson = people.find(person => person.isRoot());
+
   Person.populateConnections(people, rootPerson);
   await Person.populateBirthAndDeath(people);
 

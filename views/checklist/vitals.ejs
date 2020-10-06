@@ -37,7 +37,7 @@
       <td class="center">
         <% if (person.death) { %>
           <img class="checkmark-inline" src="/images/check-true.png">
-        <% } else if (person.isLiving()) { %>
+        <% } else if (person.living) { %>
           -
         <% } else { %>
           <% deathMissing += 1; %>

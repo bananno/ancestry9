@@ -6,7 +6,7 @@
   <div class="checklist">
     <% items.forEach(item => { %>
       <%
-        const canStrike = item.strike || !!(item.strikeLiving && person.isLiving());
+        const canStrike = item.strike || !!(item.strikeLiving && person.living);
 
         // Checked if item is complete OR if non-applicable, e.g. for a living
         // person or too-distant relative.
