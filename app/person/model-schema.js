@@ -32,6 +32,12 @@ module.exports = [
     type: Number,
   },
   {
+    name: 'living',
+    type: Boolean,
+    defaultValue: false,
+    inputType: 'toggle',
+  },
+  {
     name: 'parents',
     references: 'Person',
     isArray: true,

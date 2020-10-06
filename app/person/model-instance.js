@@ -38,7 +38,7 @@ methods.getMissingLinks = function() {
   if (wikitreeStatus !== 'ignore') {
     expectLinks.push('WikiTree');
   }
-  if (!this.isLiving()) {
+  if (!this.living) {
     expectLinks.push('FindAGrave');
   }
   return expectLinks.filter(linkTitle => !this.getLink(linkTitle));
@@ -63,7 +63,7 @@ methods.getLifeEvents = async function() {
 };
 
 methods.isLiving = function() {
-  return this.tags.some(tag => tag.title === 'living');
+  return this.living;
 };
 
 methods.isPublic = function() {

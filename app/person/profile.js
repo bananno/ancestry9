@@ -168,8 +168,6 @@ async function personDescendants(req, res) {
 
   await Person.populateBirthAndDeath(people);
 
-  const isLivingTag = await Tag.findOne({title: 'living'});
-
   const marriageEvents = await Event.find({title: 'marriage'});
 
   res.renderPersonProfile('descendants', {
@@ -181,7 +179,7 @@ async function personDescendants(req, res) {
   });
 
   function getLifeDatesString(person) {
-    const livingStr = person.tags.includes(isLivingTag._id) ? 'living' : undefined;
+    const livingStr = person.living ? 'living' : undefined;
     return [
       formatEventDate(person.birth) || '?',
       formatEventDate(person.death) || livingStr || '?',
