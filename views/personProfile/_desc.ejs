@@ -1,4 +1,8 @@
 <%
+  const options = {
+    showErrors: true,
+  };
+
   const person = findPersonInList(people, locals.person);
 
   const childrenListed = [];
@@ -18,11 +22,24 @@
   const personMarriageEvents = marriageEvents.filter(event => {
     return findPersonInList(event.people, person);
   });
+
+  const numChildrenTagValue = person.getTagValue('number of children');
 %>
 
 <p class="person-item">
   <b><%- include('../person/_link', {person, linkText: personMaidenName}) %></b>
   <span class="life-dates">(<%= getLifeDatesString(person) %>)</span>
+  <% if (options.showErrors) { %>
+    <% if (numChildrenTagValue !== 'done') { %>
+      <span class="error">children?</span>
+    <% } %>
+    <% if (!person.getBirthYear()) { %>
+      <span class="error">birth?</span>
+    <% } %>
+    <% if (!person.living && !person.getDeathYear()) { %>
+      <span class="error">death?</span>
+    <% } %>
+  <% } %>
 </p>
 
 <% person.spouses.forEach(spouseId => { %>
@@ -38,13 +55,25 @@
     const marriageEvent = personMarriageEvents.find(event => {
       return findPersonInList(event.people, spouse);
     });
+    const marriageEventFormat = formatEventDate(marriageEvent);
   %>
   <p class="person-item">
     + <%- include('../person/_link', {person: spouse}) %>
-    <span class="life-dates">
-      (<%= getLifeDatesString(spouse) %>;
-      married <%= formatEventDate(marriageEvent) || 'when?' %>)
-    </span>
+    <% if (options.showErrors) { %>
+      <span class="life-dates">
+        (<%= getLifeDatesString(spouse) %>;
+        married <%= marriageEventFormat || 'when?' %>)
+      </span>
+      <% if (!spouse.getBirthYear()) { %>
+        <span class="error">birth?</span>
+      <% } %>
+      <% if (!spouse.living && !spouse.getDeathYear()) { %>
+        <span class="error">death?</span>
+      <% } %>
+      <% if (!marriageEventFormat) { %>
+        <span class="error">marriage?</span>
+      <% } %>
+    <% } %>
   </p>
   <ul>
     <% spouseChildren.forEach(child => { %>
