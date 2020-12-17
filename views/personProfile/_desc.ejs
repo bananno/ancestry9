@@ -45,6 +45,7 @@
 <% person.spouses.forEach(spouseId => { %>
   <%
     const spouse = findPersonInList(people, spouseId);
+
     const spouseChildren = children.filter((child, i) => {
       if (findPersonInList(child.parents, spouse)) {
         childrenListed.push(child);
@@ -52,17 +53,22 @@
       }
       return false;
     });
-    const marriageEvent = personMarriageEvents.find(event => {
+
+    const marriageEventsFormat = personMarriageEvents.filter(event => {
       return findPersonInList(event.people, spouse);
-    });
-    const marriageEventFormat = formatEventDate(marriageEvent);
+    }).map(event => {
+      if (event.title === 'marriage') {
+        return 'married ' + formatEventDate(event);
+      }
+      return 'divorced ' + formatEventDate(event);
+    }).join('; ');
   %>
   <p class="person-item">
     + <%- include('../person/_link', {person: spouse}) %>
     <% if (options.showErrors) { %>
       <span class="life-dates">
         (<%= getLifeDatesString(spouse) %>;
-        married <%= marriageEventFormat || 'when?' %>)
+        <%= marriageEventsFormat || 'married when?' %>)
       </span>
       <% if (!spouse.getBirthYear()) { %>
         <span class="error">birth?</span>
@@ -70,7 +76,7 @@
       <% if (!spouse.living && !spouse.getDeathYear()) { %>
         <span class="error">death?</span>
       <% } %>
-      <% if (!marriageEventFormat) { %>
+      <% if (!marriageEventsFormat) { %>
         <span class="error">marriage?</span>
       <% } %>
     <% } %>

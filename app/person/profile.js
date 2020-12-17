@@ -168,7 +168,7 @@ async function personDescendants(req, res) {
 
   await Person.populateBirthAndDeath(people);
 
-  const marriageEvents = await Event.find({title: 'marriage'});
+  const marriageEvents = await Event.find({title: {$in: ['divorce', 'marriage']}});
 
   res.renderPersonProfile('descendants', {
     people,
