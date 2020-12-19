@@ -1,20 +1,187 @@
-<h2>Chart</h2>
+<style>
+.nationality-results-chart td {
+  border: 1px solid gray;
+  padding: 5px;
+}
+.nationality-results-chart td.percentage {
+  text-align: right;
+}
+.nationality-tree-box {
+  padding-bottom: 30px;
+}
+.nationality-ledger-information {
+  margin-top: 100px;
+}
+.nationality-ledger-information td {
+  border-top: 1px solid gray;
+  padding: 5px;
+  min-width: 200px;
+}
+</style>
 
-<table border="1">
-  <% for (let country in nationality) { %>
-    <tr>
-      <td>
-        <%= nationality[country] %>
-      </td>
-      <td>
-        <%= country %>
-      </td>
-    </tr>
-  <% } %>
-</table>
+<div class="nationality-results-chart">
+  <h2>Chart</h2>
+  <div class="column">
+    <table>
+      <% nationalityCountries.forEach(({country, percentage}) => { %>
+        <tr>
+          <td>
+            <%= country %>
+          </td>
+          <td class="percentage">
+            <%= percentage.toFixed(2) %> %
+          </td>
+        </tr>
+      <% }); %>
+    </table>
+  </div>
+  <div class="column">
+    <table>
+      <tr>
+        <td>
+          unknown
+        </td>
+        <td class="percentage">
+          <%= unknownPercentage.toFixed(2) %> %
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
 
 <h2>Tree</h2>
 
-<div class="scrollbox">
+<div class="scrollbox nationality-tree-box">
   <%- include('./_tree', {person, people, showCountry: true}) %>
+</div>
+
+<div class="nationality-ledger-information">
+  <h3>Ledger</h3>
+
+  <table>
+    <tr>
+      <td class="treecell usa">
+        <div>USA</div>
+      </td>
+      <td>
+        <p>
+          <b>Not counted.</b>
+        </p>
+        <p>
+          Person was born in the United States, so they are skipped
+          in the nationality calculation.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td class="treecell first-generation">
+        <div>immigrant</div>
+      </td>
+      <td>
+        <p>
+          <b>Counted.</b>
+        </p>
+        <ul class="bullet-list">
+          <li>
+            Person was born outside of the US. They count toward the percentage
+            for their country of birth.
+          </li>
+          <li>
+            All of their descendants (within this tree) were born in the US.
+          </li>
+          <li>
+            None of their ancestors will be counted in the nationality calculation.
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td class="treecell old-country">
+        <div>other country</div>
+      </td>
+      <td>
+        <p>
+          <b>Not counted.</b>
+        </p>
+        <p>
+          Person was born outside of the United States.
+          They may or may not have immigrated to the US.
+        </p>
+        <p>
+          Not counted because one of their descendants is either:
+        </p>
+        <ul class="bullet-list">
+          <li>
+            counted an immigrant ancestor; or
+          </li>
+          <li>
+            counted as unknown country, which needs to be solved before Person can be counted.
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td class="treecell unknown dead-end">
+        <div>country unknown</div>
+      </td>
+      <td>
+        <p>
+          <b>Counted (as unknown).</b>
+        </p>
+        <ul class="bullet-list">
+          <li>
+            Person's country of birth is unknown. They count toward the "unknown" percentage.
+          </li>
+          <li>
+            All of their descendants (within this tree) were born in the US.
+          </li>
+          <li>
+            Even if any of Person's ancestors' birthplaces are known,
+            they are not counted until Person's birthplace is discovered.
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td class="treecell unknown dead-end">
+        <div>missing person</div>
+      </td>
+      <td>
+        <p>
+          <b>Counted (as unknown).</b>
+        </p>
+        <p>
+          This represents an unknown parent, which results in a dead end
+          in the calculation as well as in the tree overall.
+        </p>
+        <p>
+          These are only labeled for <b>US-born ancestors</b> who don't have
+          any <b>counted</b> descendants, because that is the only case where a
+          missing parent affects the nationality calculation.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td class="treecell unknown">
+        <div>country unknown</div>
+      </td>
+      <td>
+        <p>
+          <b>Not counted.</b>
+        </p>
+        <p>
+          Person's country of birth is unknown, but they are not counted
+          because one of their descendants is either:
+        </p>
+        <ul class="bullet-list">
+          <li>
+            counted an immigrant ancestor, so Person is not needed for the calculation; or
+          </li>
+          <li>
+            counted as unknown country, which needs to be solved before Person can be counted.
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </table>
 </div>

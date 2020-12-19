@@ -5,6 +5,7 @@ const {
   Person,
   Source,
   Tag,
+  sorting,
 } = require('../import');
 
 const constants = require('./constants');
@@ -110,9 +111,16 @@ async function personNationality(req, res) {
 
   const nationality = Person.calculateNationality(person, people);
 
+  const nationalityCountries = Object.keys(nationality)
+    .filter(key => key !== 'unknown')
+    .map(country => ({country, percentage: nationality[country]}));
+
+  sorting.sortBy(nationalityCountries, country => 100 - country.percentage);
+
   res.renderPersonProfile('nationality', {
     people,
-    nationality,
+    nationalityCountries,
+    unknownPercentage: nationality.unknown,
     findPersonInList: Person.findInList,
   });
 }

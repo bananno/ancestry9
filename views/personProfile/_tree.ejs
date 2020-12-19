@@ -4,7 +4,7 @@
   let foundNationality = locals.foundNationality || false;
   let cellNote = '';
   let cellClass = 'treecell';
-  let showMissingParent = false;
+  let showMissingParents = 0;
 
   if (person.name == null) {
     person = findPersonInList(people, person);
@@ -12,14 +12,9 @@
 
   if (showCountry && person.birthCountry != null) {
     if (person.birthCountry == 'United States') {
-      if (person.parents.length === 2) {
-        cellClass += ' usa';
-      } else if (person.parents.length === 1) {
-        cellClass += ' usa';
-        showMissingParent = true;
-      } else {
-        cellClass += ' dead-end';
-        cellNote = 'USA';
+      cellClass += ' usa';
+      if (person.parents.length != 2 && !foundNationality) {
+        showMissingParents = 2 - person.parents.length;
       }
     } else if (person.birthCountry == 'unknown') {
       if (!foundNationality) {
@@ -54,12 +49,17 @@
             safety: safety + 1,
           }) %>
         </td>
-        <% if (showMissingParent) { %>
+      <% }); %>
+      <% if (showMissingParents > 0) { %>
+        <td valign="bottom" align="center" class="treecell dead-end">
+          <div>missing</div>
+        </td>
+        <% if (showMissingParents === 2) { %>
           <td valign="bottom" align="center" class="treecell dead-end">
             <div>missing</div>
           </td>
         <% } %>
-      <% }); %>
+      <% } %>
     </tr>
     <tr>
       <td colspan="2" class="<%= cellClass %>">
