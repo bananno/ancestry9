@@ -1,5 +1,5 @@
 <%
-  const selectedId = selectedPerson ? ('' + (selectedPerson._id || selectedPerson)) : null;
+  const selectedId = locals.selectedPerson ? ('' + (selectedPerson._id || selectedPerson)) : null;
 %>
 
 <select name="<%= fieldName %>">

@@ -1,0 +1,32 @@
+<style>
+#new-highlight-select-person {
+  display: none;
+}
+.new-potential-highlight {
+  color: blue;
+}
+.new-potential-highlight.highlight-focus {
+  color: red;
+  text-decoration: underline;
+}
+</style>
+
+<form>
+  <input id="new-highlight-text" placeholder="text to replace" value="smith">
+  <button id="new-highlight-click-preview">see next</button>
+
+  link to:
+  <select id="new-highlight-type">
+    <option>empty</option>
+    <option>person</option>
+  </select>
+
+  <div id="new-highlight-select-person">
+    <%- include('../person/_dropdown', {
+      fieldName: 'person',
+      people: allPeople,
+    }) %>
+  </div>
+
+  <button type="submit">save</button>
+</form>

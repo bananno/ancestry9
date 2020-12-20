@@ -114,7 +114,10 @@ async function renderMentions(req, res) {
   const mentionsTag = await Tag.findOne({title: 'mentions'});
   const notations = await Notation.find({source, tags: mentionsTag}).populate('people');
 
-  res.renderSource('mentions', {notations});
+  const allPeople = await Person.find();
+  Person.sortByName(allPeople);
+
+  res.renderSource('mentions', {notations, allPeople});
 }
 
 async function renderNotations(req, res) {
