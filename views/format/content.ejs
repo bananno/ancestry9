@@ -25,7 +25,7 @@
   if (content) {
     // For easier editing, do not remove extra spacing when saving;
     // but do not print empty paragraphs.
-    fullArr = content.split('\n').map(s => s.trim()).filter(Boolean);
+    fullArr = content.split('\n');
     if (locals.limit) {
       if (content.length > characterLimit) {
         isCropped = true;
@@ -79,7 +79,7 @@
 
         <% if (tableArr.length) { %>
           <%- include('../format/contentTable', {content: tableArr}) %>
-        <% } else { %>
+        <% } else if (str) { %>
           <p style="margin: 10px 0"> <%= str %> </p>
         <% } %>
       <% } %>
@@ -98,8 +98,8 @@
     (() => {
       let html = $('.text-content').html();
       let placeholderText, newHtml;
-      <% mentions.reverse().forEach((mention, i) => { %>
-        placeholderText = 'INSERT-MENTION-<%= i + 1 %>';
+      <% mentions.filter(m => !m.skipHighlight).forEach(mention => { %>
+        placeholderText = 'INSERT-MENTION-<%= mention.i %>';
         <% if (mention.skipTagging) { %>
           newHtml = '<span style="color: blue"><%= mention.replaceText %></span>';
         <% } else if (mention.person) { %>

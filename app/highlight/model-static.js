@@ -30,5 +30,5 @@ methods.createFromForm = req => {
 };
 
 methods.getForSource = source => {
-  return mongoose.model('Highlight').find({source});
+  return mongoose.model('Highlight').find({source}).populate('linkPerson');
 };

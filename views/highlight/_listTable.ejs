@@ -1,6 +1,7 @@
 <table id="highlights-list" class="nice-table">
   <tr>
     <th>id</th>
+    <th>instance</th>
     <th>character index</th>
     <th>actual text</th>
     <th>type</th>
@@ -10,11 +11,12 @@
   <% highlights.forEach(highlight => { %>
     <tr>
       <td><%= highlight._id %></td>
-      <td></td>
+      <td><%= highlight.instance %></td>
+      <td><%= highlight.index %></td>
       <td><%= highlight.text %></td>
       <% if (highlight.linkPerson) { %>
         <td>person</td>
-        <td><%= highlight.linkPerson %></td>
+        <td><%= highlight.linkPerson.name %></td>
       <% } else { %>
         <td>empty</td>
         <td></td>
@@ -30,10 +32,14 @@
       </td>
     </tr>
   <% }); %>
+  <tr>
+    <td colspan="7"> -- </td>
+  </tr>
   <% mentions.forEach(mention => { %>
     <tr>
       <td></td>
       <td><%= mention.index %></td>
+      <td><%= mention.instance %></td>
       <td><%= mention.replaceText %></td>
       <td></td>
       <td>
@@ -43,6 +49,9 @@
           <span style="color: blue;">SKIP</span>
         <% } else { %>
           <span style="color: red;">NONE</span>
+        <% } %>
+        <% if (mention.overlap) { %>
+          <span style="color: red;">ERROR: OVERLAP</span>
         <% } %>
         <% if (mention.notFound) { %>
           <span style="color: red;">NOT FOUND</span>

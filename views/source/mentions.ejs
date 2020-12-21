@@ -16,6 +16,7 @@
 
       if (skipNumber && skipNumber.length) {
         skipNumber = parseInt(skipNumber);
+        mention.instance = skipNumber;
       } else {
         skipNumber = 0;
       }
@@ -45,18 +46,72 @@
     });
   });
 
-  mentions.sort((a, b) => b.index - a.index);
+  highlights.forEach(highlight => {
+    const regex = new RegExp(highlight.text, 'gi');
+    const mention = {};
 
-  let content = source.content;
+    const matches = source.content.match(regex);
+
+    if (!matches) {
+      mentions.push({
+        replaceText: highlight.text,
+        skipTagging: true,
+        index: -1,
+        notFound: true,
+        skipHighlight: true,
+      });
+      return;
+    }
+
+    const inBetweens = source.content.split(regex);
+
+    let index = inBetweens[0].length;
+
+    for (let i = 0; i < highlight.instance; i++) {
+      index += matches[i].length + inBetweens[i + 1].length;
+    }
+
+    highlight.index = index;
+
+    mentions.push({
+      skipTagging: true,
+      replaceText: matches[highlight.instance],
+      index,
+    });
+  });
+
+  mentions.sort((a, b) => a.index - b.index);
+  highlights.sort((a, b) => a.index - b.index);
+
+  let remainingContent = source.content;
+  let contentSoFar = '';
+  let lengthSoFar = 0;
 
   mentions.forEach((mention, i) => {
+    mention.i = i;
+
     if (mention.index < 0) {
       return;
     }
-    content = content.slice(0, mention.index)
-      + 'INSERT-MENTION-' + (mentions.length - i)
-      + content.slice(mention.index + mention.replaceText.length);
+
+    if (mention.index < lengthSoFar) {
+      mention.overlap = true;
+      mention.skipHighlight = true;
+      return;
+    }
+
+    const startIndex = mention.index - lengthSoFar;
+    const endIndex = startIndex + mention.replaceText.length;
+
+    const contentBefore = remainingContent.slice(0, startIndex);
+    remainingContent = remainingContent.slice(endIndex);
+
+    lengthSoFar += contentBefore.length + mention.replaceText.length;
+
+    contentSoFar += contentBefore + 'INSERT-MENTION-' + mention.i;
   });
+
+  const content = contentSoFar + remainingContent;
 %>
 
 <h2>content</h2>
@@ -66,6 +121,6 @@
 
 <script src="/scripts/newHighlights.js"></script>
 
-<h2>mentions</h2>
+<h2>highlights</h2>
 
 <%- include('../highlight/_listTable', {highlights, mentions}) %>
