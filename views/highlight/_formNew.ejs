@@ -1,6 +1,10 @@
 <style>
-#new-highlight-select-person {
-  display: none;
+#new-highlight-text,
+#new-highlight-instance {
+  padding: 5px;
+}
+#new-highlight-instance {
+  width: 50px;
 }
 .new-potential-highlight {
   color: blue;
@@ -11,22 +15,23 @@
 }
 </style>
 
-<form>
-  <input id="new-highlight-text" placeholder="text to replace" value="smith">
+<form action="/source/<%= source._id %>/createHighlight" method="post">
+  <input id="new-highlight-text" placeholder="text to replace" name="text">
+  <input id="new-highlight-instance" name="instance" value="0" type="number">
   <button id="new-highlight-click-preview">see next</button>
 
   link to:
-  <select id="new-highlight-type">
-    <option>empty</option>
+  <select id="new-highlight-type" name="type">
     <option>person</option>
+    <option>empty</option>
   </select>
 
   <div id="new-highlight-select-person">
     <%- include('../person/_dropdown', {
-      fieldName: 'person',
+      fieldName: 'linkPerson',
       people: allPeople,
     }) %>
   </div>
 
-  <button type="submit">save</button>
+  <button id="new-highlight-submit" type="submit" disabled>save</button>
 </form>

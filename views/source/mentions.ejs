@@ -59,44 +59,13 @@
   });
 %>
 
-<style>
-  #mention-list td,
-  #mention-list th {
-    border: 1px solid black;
-    padding: 5px;
-  }
-</style>
-
 <h2>content</h2>
 
 <%- include('../highlight/_formNew') %>
 <%- include('../format/content', {content, mentions}) %>
-<script src="/scripts/newMentions.js"></script>
+
+<script src="/scripts/newHighlights.js"></script>
 
 <h2>mentions</h2>
 
-<table id="mention-list">
-  <tr>
-    <th>character index</th>
-    <th>actual text</th>
-    <th>person name</th>
-  </tr>
-  <% mentions.forEach(mention => { %>
-    <tr>
-      <td><%= mention.index %></td>
-      <td><%= mention.replaceText %></td>
-      <td>
-        <% if (mention.person) { %>
-          <%= mention.person.name %>
-        <% } else if (mention.skipTagging) { %>
-          <span style="color: blue;">SKIP</span>
-        <% } else { %>
-          <span style="color: red;">NONE</span>
-        <% } %>
-        <% if (mention.notFound) { %>
-          <span style="color: red;">NOT FOUND</span>
-        <% } %>
-      </td>
-    </tr>
-  <% }); %>
-</table>
+<%- include('../highlight/_listTable', {highlights, mentions}) %>

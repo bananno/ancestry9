@@ -4,13 +4,17 @@ const $newBox = $('<div class="text-content">');
 $originalBox.after($newBox);
 
 let previousText = null;
-let instanceNum = 0;
 
 const $newHightlightText = $('#new-highlight-text');
 const $newHightlightType = $('#new-highlight-type');
+const $linkPersonId = $('#new-highlight-select-person select');
 
 $newHightlightType.change(toggleMentionType);
 $('#new-highlight-click-preview').click(previewNextInstance);
+
+$newHightlightText.change(guardSubmitButton);
+$newHightlightType.change(guardSubmitButton);
+$linkPersonId.change(guardSubmitButton);
 
 function toggleMentionType() {
   const newType = $newHightlightType.val();
@@ -71,4 +75,23 @@ function getNewPreviewInfo(replaceText) {
   }
 
   return newContent;
+}
+
+function guardSubmitButton() {
+  const valid = (() => {
+    if (!$newHightlightText.val()) {
+      return false;
+    }
+    if ($newHightlightType.val() === 'person') {
+      if ($linkPersonId.val() === '0') {
+        return false;
+      }
+    }
+    return true;
+  })();
+  if (valid) {
+    $('#new-highlight-submit').removeAttr('disabled');
+  } else {
+    $('#new-highlight-submit').prop('disabled', true);
+  }
 }

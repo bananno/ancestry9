@@ -1,4 +1,5 @@
 const {
+  Highlight,
   Notation,
   Source,
   createModelRoutes,
@@ -36,6 +37,7 @@ function createRoutes(router) {
   });
 
   router.post('/source/:id/createCitationNotation', createSourceCiteNotation);
+  router.post('/source/:id/createHighlight', createSourceHighlight);
   router.post('/source/:id/createNotation', createSourceNotation);
 }
 
@@ -78,6 +80,14 @@ async function createSourceCiteNotation(req, res) {
   newNotation.source = req.sourceId;
   await Notation.create(newNotation);
   res.redirect('/source/' + req.sourceId + '/edit');
+}
+
+async function createSourceHighlight(req, res) {
+  const newHighlight = await Highlight.createFromForm(req);
+  if (newHighlight.error) {
+    return res.send(newHighlight);
+  }
+  res.redirect('/source/' + req.sourceId + '/mentions');
 }
 
 async function createSourceNotation(req, res) {

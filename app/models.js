@@ -1,6 +1,7 @@
 module.exports = [
   'Citation',
   'Event',
+  'Highlight',
   'Image',
   'Location',
   'Notation',

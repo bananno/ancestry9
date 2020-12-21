@@ -1,0 +1,43 @@
+<table id="highlights-list" class="nice-table">
+  <tr>
+    <th>id</th>
+    <th>character index</th>
+    <th>actual text</th>
+    <th>type</th>
+    <th>object</th>
+  </tr>
+  <% highlights.forEach(highlight => { %>
+    <tr>
+      <td><%= highlight._id %></td>
+      <td></td>
+      <td><%= highlight.text %></td>
+      <% if (highlight.linkPerson) { %>
+        <td>person</td>
+        <td><%= highlight.linkPerson %></td>
+      <% } else { %>
+        <td>empty</td>
+        <td></td>
+      <% } %>
+    </tr>
+  <% }); %>
+  <% mentions.forEach(mention => { %>
+    <tr>
+      <td></td>
+      <td><%= mention.index %></td>
+      <td><%= mention.replaceText %></td>
+      <td></td>
+      <td>
+        <% if (mention.person) { %>
+          <%= mention.person.name %>
+        <% } else if (mention.skipTagging) { %>
+          <span style="color: blue;">SKIP</span>
+        <% } else { %>
+          <span style="color: red;">NONE</span>
+        <% } %>
+        <% if (mention.notFound) { %>
+          <span style="color: red;">NOT FOUND</span>
+        <% } %>
+      </td>
+    </tr>
+  <% }); %>
+</table>

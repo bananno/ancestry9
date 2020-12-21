@@ -1,5 +1,6 @@
 const {
   Citation,
+  Highlight,
   Notation,
   Person,
   Source,
@@ -117,7 +118,9 @@ async function renderMentions(req, res) {
   const allPeople = await Person.find();
   Person.sortByName(allPeople);
 
-  res.renderSource('mentions', {notations, allPeople});
+  const highlights = await Highlight.getForSource(source);
+
+  res.renderSource('mentions', {notations, allPeople, highlights});
 }
 
 async function renderNotations(req, res) {
