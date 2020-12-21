@@ -5,6 +5,7 @@
     <th>actual text</th>
     <th>type</th>
     <th>object</th>
+    <th>delete</th>
   </tr>
   <% highlights.forEach(highlight => { %>
     <tr>
@@ -18,6 +19,15 @@
         <td>empty</td>
         <td></td>
       <% } %>
+      <td>
+        <form
+          action="/highlight/<%= highlight._id %>/delete"
+          method="post"
+          onsubmit="return confirmDeletion('highlight')"
+        >
+          <button>delete</button>
+        </form>
+      </td>
     </tr>
   <% }); %>
   <% mentions.forEach(mention => { %>
@@ -38,6 +48,7 @@
           <span style="color: red;">NOT FOUND</span>
         <% } %>
       </td>
+      <td></td>
     </tr>
   <% }); %>
 </table>

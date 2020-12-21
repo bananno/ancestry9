@@ -36,6 +36,7 @@ router.get('/shared', (req, res) => { // BROKEN due to relative filepaths
   'citation',
   'event',
   'export',
+  'highlight',
   'image',
   'map',
   'notation',
