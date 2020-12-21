@@ -108,15 +108,22 @@ async function renderFastCitations(req, res) {
 }
 
 async function renderMentions(req, res) {
-  req.source = await Source.findById(req.sourceId).populate('story');
+  req.source = await Source.findById(req.sourceId)
+    .populate('story').populate('people');
 
   const source = req.source;
 
   const mentionsTag = await Tag.findOne({title: 'mentions'});
   const notations = await Notation.find({source, tags: mentionsTag}).populate('people');
 
-  const allPeople = await Person.find();
-  Person.sortByName(allPeople);
+  // arrange dropdown so that attached people appear at top
+  let peopleNotInSource = await Person.find();
+  req.source.people.forEach(person => {
+    peopleNotInSource = Person.removeFromList(peopleNotInSource, person);
+  });
+  Person.sortByName(peopleNotInSource);
+
+  const allPeople = [...req.source.people, ...peopleNotInSource];
 
   const highlights = await Highlight.getForSource(source);
 

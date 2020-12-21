@@ -47,13 +47,17 @@
   });
 
   highlights.forEach(highlight => {
-    const regex = new RegExp(highlight.text, 'gi');
+    let text = highlight.text;
+    text = text.replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+
+    const regex = new RegExp(text, 'gi');
     const mention = {};
 
     const matches = source.content.match(regex);
 
     if (!matches) {
       mentions.push({
+        _id: highlight._id,
         replaceText: highlight.text,
         skipTagging: true,
         index: -1,
@@ -74,9 +78,11 @@
     highlight.index = index;
 
     mentions.push({
-      skipTagging: true,
+      _id: highlight._id,
+      skipTagging: !highlight.linkPerson,
       replaceText: matches[highlight.instance],
       index,
+      person: highlight.linkPerson,
     });
   });
 
