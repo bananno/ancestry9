@@ -10,7 +10,7 @@ const $newHightlightInstance = $('#new-highlight-instance');
 const $newHightlightType = $('#new-highlight-type');
 const $linkPersonId = $('#new-highlight-select-person select');
 
-$newHightlightType.change(toggleMentionType);
+$newHightlightType.change(toggleLinkType);
 $('#new-highlight-click-preview').click(previewNextInstance);
 
 $newHightlightText.change(guardSubmitButton);
@@ -19,7 +19,7 @@ $linkPersonId.change(guardSubmitButton);
 
 $newHightlightInstance.change(updateInstanceByInput);
 
-function toggleMentionType() {
+function toggleLinkType() {
   const newType = $newHightlightType.val();
   $('#new-highlight-select-person').toggle(newType === 'person');
 }

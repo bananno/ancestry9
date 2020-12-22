@@ -14,5 +14,5 @@ async function deleteHighlight(req, res) {
   const highlight = await Highlight.findById(highlightId);
   const sourceId = highlight.source;
   await Highlight.deleteOne({_id: highlightId});
-  res.redirect('/source/' + sourceId + '/mentions');
+  res.redirect('/source/' + sourceId + '/highlights');
 }

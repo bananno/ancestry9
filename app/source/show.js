@@ -15,7 +15,7 @@ module.exports = {
   edit: renderEdit,
   other: {
     fastCitations: renderFastCitations,
-    mentions: renderMentions,
+    highlights: renderHighlights,
     notations: renderNotations,
   }
 };
@@ -107,7 +107,7 @@ async function renderFastCitations(req, res) {
   });
 }
 
-async function renderMentions(req, res) {
+async function renderHighlights(req, res) {
   req.source = await Source.findById(req.sourceId)
     .populate('story').populate('people');
 
@@ -122,7 +122,7 @@ async function renderMentions(req, res) {
   Person.sortByName(peopleNotInSource);
   const allPeople = [...req.source.people, ...peopleNotInSource];
 
-  res.renderSource('mentions', {allPeople, highlights});
+  res.renderSource('highlights', {allPeople, highlights});
 }
 
 async function renderNotations(req, res) {

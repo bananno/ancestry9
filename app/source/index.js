@@ -87,7 +87,7 @@ async function createSourceHighlight(req, res) {
   if (newHighlight.error) {
     return res.send(newHighlight);
   }
-  res.redirect('/source/' + req.sourceId + '/mentions');
+  res.redirect('/source/' + req.sourceId + '/highlights');
 }
 
 async function createSourceNotation(req, res) {
