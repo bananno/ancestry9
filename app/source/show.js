@@ -111,23 +111,18 @@ async function renderMentions(req, res) {
   req.source = await Source.findById(req.sourceId)
     .populate('story').populate('people');
 
-  const source = req.source;
-
-  const mentionsTag = await Tag.findOne({title: 'mentions'});
-  const notations = await Notation.find({source, tags: mentionsTag}).populate('people');
+  const highlights = await Highlight.getForSource(req.source);
 
   // arrange dropdown so that attached people appear at top
+  // TO DO: combine with getPeopleForNewCitations()
   let peopleNotInSource = await Person.find();
   req.source.people.forEach(person => {
     peopleNotInSource = Person.removeFromList(peopleNotInSource, person);
   });
   Person.sortByName(peopleNotInSource);
-
   const allPeople = [...req.source.people, ...peopleNotInSource];
 
-  const highlights = await Highlight.getForSource(source);
-
-  res.renderSource('mentions', {notations, allPeople, highlights});
+  res.renderSource('mentions', {allPeople, highlights});
 }
 
 async function renderNotations(req, res) {

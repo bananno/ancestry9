@@ -1,51 +1,6 @@
 <%
   const mentions = [];
 
-  notations.filter(notation => notation.text).forEach(notation => {
-    let personNumber = 0;
-    const peopleList = notation.people.length ? notation.people : source.people;
-
-    notation.text.split('\r\n').forEach(text => {
-      let [replaceText, skipNumber] = text.split('\|').map(s => s.trim());
-      const mention = {replaceText};
-
-      if (skipNumber && skipNumber.match('skip')) {
-        skipNumber = skipNumber.replace('skip', '').trim();
-        mention.skipTagging = true;
-      }
-
-      if (skipNumber && skipNumber.length) {
-        skipNumber = parseInt(skipNumber);
-        mention.instance = skipNumber;
-      } else {
-        skipNumber = 0;
-      }
-
-      mention.index = source.content.indexOf(replaceText);
-
-      while (skipNumber > 0) {
-        const tempContent = source.content.slice(mention.index + 1);
-        const newIndex = tempContent.indexOf(replaceText);
-
-        if (newIndex == -1) {
-          mention.index = -1;
-          mention.notFound = true;
-          break;
-        }
-
-        mention.index += newIndex + 1;
-        skipNumber -= 1;
-      }
-
-      if (!mention.skipTagging) {
-        mention.person = peopleList[personNumber];
-        personNumber += 1;
-      }
-
-      mentions.push(mention);
-    });
-  });
-
   highlights.forEach(highlight => {
     let text = highlight.text;
     text = text.replace(/\(/g, '\\(').replace(/\)/g, '\\)');
