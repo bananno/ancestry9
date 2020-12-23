@@ -128,7 +128,8 @@
 <h2>citations</h2>
 
 <%- include('../citation/_list', {
-  citationsByPerson: source.citations,
+  citations: source.citations,
+  citationsByPerson,
   showDelete: false,
   showSource: false,
   showPerson: true,

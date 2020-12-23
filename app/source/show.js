@@ -58,7 +58,9 @@ async function renderEdit(req, res) {
   Citation.sortByItem(source.citations, source.people);
   Citation.sortByPerson(citationsByPerson, source.people);
 
-  const people = await source.getPeopleForNewCitations();
+  await source.populateHighlights();
+
+  const {allPeople, unlinkedPeople} = await source.getPeopleForDropdown();
 
   const tags = await Tag.find({});
   Tag.sortByTitle(tags);
@@ -67,7 +69,8 @@ async function renderEdit(req, res) {
     title: 'Edit Source',
     rootPath: '/source/' + source._id,
     fields: constants.fields,
-    people,
+    people: allPeople,
+    unlinkedPeople,
     stories,
     citationsByPerson,
     needCitationText: source.story.title.match('Census')
@@ -84,16 +87,6 @@ async function renderFastCitations(req, res) {
 
   const source = req.source;
 
-  let people = await Person.find({});
-
-  source.people.forEach(thisPerson => {
-    people = Person.removeFromList(people, thisPerson);
-  });
-
-  Person.sortByName(people);
-
-  people = [...source.people, ...people];
-
   await source.populateCitations();
   const citationsByPerson = [...source.citations];
   Citation.sortByItem(source.citations, source.people);
@@ -101,7 +94,6 @@ async function renderFastCitations(req, res) {
 
   res.renderSource('fastCitations', {
     title: 'Edit Source',
-    people,
     citationsByPerson,
   });
 }
@@ -110,16 +102,10 @@ async function renderHighlights(req, res) {
   req.source = await Source.findById(req.sourceId)
     .populate('story').populate('people');
 
+  await req.source.populateCitations();
   await req.source.populateAndProcessHighlights();
 
-  // arrange dropdown so that attached people appear at top
-  // TO DO: combine with getPeopleForNewCitations()
-  let peopleNotInSource = await Person.find();
-  req.source.people.forEach(person => {
-    peopleNotInSource = Person.removeFromList(peopleNotInSource, person);
-  });
-  Person.sortByName(peopleNotInSource);
-  const allPeople = [...req.source.people, ...peopleNotInSource];
+  const {allPeople} = await req.source.getPeopleForDropdown();
 
   res.renderSource('highlights', {allPeople});
 }

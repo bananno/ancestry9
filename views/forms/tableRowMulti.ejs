@@ -6,9 +6,13 @@
 
   if (dataType == 'people') {
     const peopleIds = values.map(person => '' + person._id);
-    peopleDropdownList = people.filter(person => {
-      return !peopleIds.includes('' + person._id);
-    });
+    if (locals.unlinkedPeople) {
+      peopleDropdownList = unlinkedPeople;
+    } else {
+      peopleDropdownList = people.filter(person => {
+        return !peopleIds.includes('' + person._id);
+      });
+    }
   }
 %>
 

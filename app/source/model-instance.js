@@ -37,12 +37,13 @@ methods.canHaveLocation = function() {
       || this.location.notes));
 };
 
-// Get list of people sorted for the dropdown for creating new citations
-// for this source. Contains all people in the database in a specific order:
+// Get list of people sorted for the dropdown for creating new citations,
+// creating new highlights, or attaching additional people for this source.
+// Contains all people in the database in a specific order:
 //   1. People attached to the source, in the order of attachment.
-//   2. People that are not attached but who have a citation here already.
+//   2. People that are not attached but who have a citation or highlight here already.
 //   3. Everyone else, in alphabetical order.
-methods.getPeopleForNewCitations = async function() {
+methods.getPeopleForDropdown = async function() {
   const Person = mongoose.model('Person');
   const personRef = {};
 
@@ -50,22 +51,41 @@ methods.getPeopleForNewCitations = async function() {
 
   this.people.forEach(person => {
     remainingPeople = Person.removeFromList(remainingPeople, person);
-    personRef['' + (person._id || person)] = true;
+    setPersonCovered(person);
   });
 
-  Person.sortByName(remainingPeople);
-
-  const citationsPeople = [];
+  const additionalPeople = [];
 
   this.citations.forEach(({person}) => {
-    if (!personRef['' + (person._id || person)]) {
-      citationsPeople.push(person);
+    if (!isPersonCovered(person)) {
+      additionalPeople.push(person);
       remainingPeople = Person.removeFromList(remainingPeople, person);
-      personRef['' + (person._id || person)] = true;
+      setPersonCovered(person);
     }
   });
 
-  return [...this.people, ...citationsPeople, ...remainingPeople];
+  this.highlights.forEach(({linkPerson}) => {
+    if (linkPerson && !isPersonCovered(linkPerson)) {
+      additionalPeople.push(linkPerson);
+      remainingPeople = Person.removeFromList(remainingPeople, linkPerson);
+      setPersonCovered(linkPerson);
+    }
+  });
+
+  Person.sortByName(additionalPeople);
+  Person.sortByName(remainingPeople);
+
+  const unlinkedPeople = [...additionalPeople, ...remainingPeople];
+  const allPeople = [...this.people, ...unlinkedPeople];
+
+  return {allPeople, unlinkedPeople};
+
+  function isPersonCovered(person) {
+    return personRef['' + (person._id || person)];
+  }
+  function setPersonCovered(person) {
+    personRef['' + (person._id || person)] = true;
+  }
 };
 
 methods.populateCitations = async function() {
@@ -94,9 +114,14 @@ methods.populateCiteText = async function(options = {}) {
   this.citeText = notations.map(notation => notation.text);
 };
 
-methods.populateAndProcessHighlights = async function() {
+methods.populateHighlights = async function() {
   const Highlight = mongoose.model('Highlight');
   this.highlights = await Highlight.find({source: this}).populate('linkPerson');
+}
+
+methods.populateAndProcessHighlights = async function() {
+  const Highlight = mongoose.model('Highlight');
+  await this.populateHighlights();
   this.highlightedContent = Highlight.processForContent(this.content, this.highlights);
 };
 
