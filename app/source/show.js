@@ -1,6 +1,5 @@
 const {
   Citation,
-  Highlight,
   Notation,
   Person,
   Source,
@@ -111,7 +110,7 @@ async function renderHighlights(req, res) {
   req.source = await Source.findById(req.sourceId)
     .populate('story').populate('people');
 
-  const highlights = await Highlight.getForSource(req.source);
+  await req.source.populateAndProcessHighlights();
 
   // arrange dropdown so that attached people appear at top
   // TO DO: combine with getPeopleForNewCitations()
@@ -122,7 +121,7 @@ async function renderHighlights(req, res) {
   Person.sortByName(peopleNotInSource);
   const allPeople = [...req.source.people, ...peopleNotInSource];
 
-  res.renderSource('highlights', {allPeople, highlights});
+  res.renderSource('highlights', {allPeople});
 }
 
 async function renderNotations(req, res) {

@@ -93,19 +93,17 @@
   <% } %>
 </div>
 
-<% if (locals.mentions) { %>
+<% if (locals.highlights) { %>
   <script>
     (() => {
       let html = $('.text-content').html();
       let placeholderText, newHtml;
-      <% mentions.filter(m => !m.skipHighlight).forEach(mention => { %>
-        placeholderText = 'INSERT-MENTION-<%= mention.i %>';
-        <% if (mention.skipTagging) { %>
-          newHtml = '<span style="color: blue"><%= mention.replaceText %></span>';
-        <% } else if (mention.person) { %>
-          newHtml = '<a href="/person/<%= mention.person._id %>"><%= mention.replaceText %></a>';
+      <% highlights.forEach(highlight => { %>
+        placeholderText = '<%= highlight.placeholderId %>';
+        <% if (highlight.linkPath) { %>
+          newHtml = '<a href="<%= highlight.linkPath %>"><%= highlight.actualText %></a>';
         <% } else { %>
-          newHtml = '<span style="color: red"><%= mention.replaceText %></span>';
+          newHtml = '<span style="color: blue"><%= highlight.actualText %></span>';
         <% } %>
         html = html.replace(placeholderText, newHtml);
       <% }); %>

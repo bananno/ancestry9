@@ -1,24 +1,40 @@
 <table id="highlights-list" class="nice-table">
   <tr>
-    <th>id</th>
     <th>instance</th>
     <th>character index</th>
     <th>actual text</th>
-    <th>type</th>
+    <th>link type</th>
     <th>object</th>
     <th>delete</th>
   </tr>
   <% highlights.forEach(highlight => { %>
     <tr>
-      <td><%= highlight._id %></td>
-      <td><%= highlight.instance %></td>
-      <td><%= highlight.index %></td>
-      <td><%= highlight.text %></td>
+      <td>
+        <%= highlight.instance %>
+      </td>
+      <td>
+        <%= highlight.characterIndex %>
+        <% if (highlight.overlap) { %>
+          <span class="error">ERROR: OVERLAP</span>
+        <% } %>
+      </td>
+      <td>
+        <%= highlight.actualText %>
+        <% if (highlight.notFound) { %>
+          <span class="error">TEXT NOT FOUND</span>
+        <% } %>
+      </td>
       <% if (highlight.linkPerson) { %>
-        <td>person</td>
-        <td><%= highlight.linkPerson.name %></td>
+        <td>
+          person
+        </td>
+        <td>
+          <%= highlight.linkPerson.name %>
+        </td>
       <% } else { %>
-        <td>empty</td>
+        <td>
+          <i>(none)</i>
+        </td>
         <td></td>
       <% } %>
       <td>
@@ -30,34 +46,11 @@
           <button>delete</button>
         </form>
       </td>
-    </tr>
-  <% }); %>
-  <tr>
-    <td colspan="7"> -- </td>
-  </tr>
-  <% mentions.forEach(mention => { %>
-    <tr>
-      <td></td>
-      <td><%= mention.index %></td>
-      <td><%= mention.instance %></td>
-      <td><%= mention.replaceText %></td>
-      <td></td>
-      <td>
-        <% if (mention.person) { %>
-          <%= mention.person.name %>
-        <% } else if (mention.skipTagging) { %>
-          <span style="color: blue;">SKIP</span>
-        <% } else { %>
-          <span style="color: red;">NONE</span>
-        <% } %>
-        <% if (mention.overlap) { %>
-          <span style="color: red;">ERROR: OVERLAP</span>
-        <% } %>
-        <% if (mention.notFound) { %>
-          <span style="color: red;">NOT FOUND</span>
-        <% } %>
-      </td>
-      <td></td>
+      <% if (highlight.errors) { %>
+        <td class="error">
+          <%= highlight.join(' / ') %>
+        </td>
+      <% } %>
     </tr>
   <% }); %>
 </table>

@@ -94,6 +94,12 @@ methods.populateCiteText = async function(options = {}) {
   this.citeText = notations.map(notation => notation.text);
 };
 
+methods.populateAndProcessHighlights = async function() {
+  const Highlight = mongoose.model('Highlight');
+  this.highlights = await Highlight.find({source: this}).populate('linkPerson');
+  this.highlightedContent = Highlight.processForContent(this.content, this.highlights);
+};
+
 // Populate citations for this source, but only for one person.
 // Used for person profile routes.
 methods.populatePersonCitations = async function(person) {
