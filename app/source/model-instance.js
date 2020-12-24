@@ -157,7 +157,9 @@ methods.getFastCitationToDoList = function() {
 
 methods.populateHighlights = async function() {
   const Highlight = mongoose.model('Highlight');
-  this.highlights = await Highlight.find({source: this}).populate('linkPerson');
+  this.highlights = await Highlight.find({source: this})
+    .populate('linkPerson')
+    .populate('linkStory');
 }
 
 methods.populateAndProcessHighlights = async function() {

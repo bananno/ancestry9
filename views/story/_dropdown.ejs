@@ -68,6 +68,11 @@
       $story.val('0');
       const currentType = $type.val();
 
+      if (!currentType) {
+        $story.find('option').show();
+        return;
+      }
+
       if (currentType == 'other') {
         $story.find('option[story-type]').each((i, option) => {
           const storyType = $(option).attr('story-type');
@@ -82,7 +87,9 @@
       });
     });
 
-    $story.find('option[story-type]')
-      .not(':selected, [story-type="<%= selectedType %>"]').hide();
+    <% if (selectedType) { %>
+      $story.find('option[story-type]')
+        .not(':selected, [story-type="<%= selectedType %>"]').hide();
+    <% } %>
   })();
 </script>

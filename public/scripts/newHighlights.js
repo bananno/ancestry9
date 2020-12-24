@@ -9,6 +9,7 @@ const $newHightlightText = $('#new-highlight-text');
 const $newHightlightInstance = $('#new-highlight-instance');
 const $newHightlightType = $('#new-highlight-type');
 const $linkPersonId = $('#new-highlight-select-person select');
+const $linkStoryId = $('#story-selector-linkStory');
 
 $newHightlightType.change(toggleLinkType);
 $('#new-highlight-click-preview').click(previewNextInstance);
@@ -16,12 +17,14 @@ $('#new-highlight-click-preview').click(previewNextInstance);
 $newHightlightText.change(guardSubmitButton);
 $newHightlightType.change(guardSubmitButton);
 $linkPersonId.change(guardSubmitButton);
+$linkStoryId.change(guardSubmitButton);
 
 $newHightlightInstance.change(updateInstanceByInput);
 
 function toggleLinkType() {
   const newType = $newHightlightType.val();
   $('#new-highlight-select-person').toggle(newType === 'person');
+  $('#new-highlight-select-story').toggle(newType === 'story');
 }
 
 function previewNextInstance(event) {
@@ -109,9 +112,10 @@ function guardSubmitButton() {
       return false;
     }
     if ($newHightlightType.val() === 'person') {
-      if ($linkPersonId.val() === '0') {
-        return false;
-      }
+      return $linkPersonId.val() !== '0';
+    }
+    if ($newHightlightType.val() === 'story') {
+      return $linkStoryId.val() !== '0';
     }
     return true;
   })();

@@ -31,6 +31,13 @@
         <td>
           <%= highlight.linkPerson.name %>
         </td>
+      <% } else if (highlight.linkStory) { %>
+        <td>
+          story
+        </td>
+        <td>
+          <%= highlight.linkStory.title %>
+        </td>
       <% } else { %>
         <td>
           <i>(none)</i>

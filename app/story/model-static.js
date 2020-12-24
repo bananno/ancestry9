@@ -4,6 +4,13 @@ const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
+methods.getAllSortedByTitle = async () => {
+  const Story = mongoose.model('Story');
+  const stories = await Story.find();
+  stories.sort((a, b) => a.title < b.title ? -1 : 1);
+  return stories;
+};
+
 // Given list of stories, return a list of all their entry sources.
 methods.getAllEntries = async function(stories) {
   let entries = [];

@@ -48,5 +48,7 @@ methods.processForContent = function(content) {
   // in the text but won't contain a link.
   if (this.linkPerson) {
     this.linkPath = '/person/' + this.linkPerson._id;
+  } else if (this.linkStory) {
+    this.linkPath = '/story/' + this.linkStory._id;
   }
 };

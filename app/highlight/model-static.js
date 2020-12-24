@@ -24,6 +24,8 @@ methods.createFromForm = req => {
 
   if (type === 'person') {
     newHighlight.linkPerson = req.body.linkPerson;
+  } else if (type === 'story') {
+    newHighlight.linkStory = req.body.linkStory;
   }
 
   return mongoose.model('Highlight').create(newHighlight);

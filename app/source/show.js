@@ -41,8 +41,7 @@ async function renderEdit(req, res) {
   const source = req.source;
   await source.populateCiteText({includeStory: false});
 
-  const stories = await Story.find({});
-  stories.sort((a, b) => a.title < b.title ? -1 : 1);
+  const stories = await Story.getAllSortedByTitle();
 
   await source.populateAndSortCitations();
 
@@ -88,8 +87,9 @@ async function renderHighlights(req, res) {
   await req.source.populateAndProcessHighlights();
 
   const {allPeople} = await req.source.getPeopleForDropdown();
+  const stories = await Story.getAllSortedByTitle();
 
-  res.renderSource('highlights', {allPeople});
+  res.renderSource('highlights', {allPeople, stories});
 }
 
 async function renderNotations(req, res) {

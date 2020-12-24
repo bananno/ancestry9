@@ -13,6 +13,9 @@
   color: red;
   text-decoration: underline;
 }
+#new-highlight-select-story {
+  display: none;
+}
 </style>
 
 <form action="/source/<%= source._id %>/createHighlight" method="post">
@@ -24,6 +27,7 @@
   link to:
   <select id="new-highlight-type" name="type">
     <option>person</option>
+    <option>story</option>
     <option>empty</option>
   </select>
 
@@ -31,6 +35,13 @@
     <%- include('../person/_dropdown', {
       fieldName: 'linkPerson',
       people: allPeople,
+    }) %>
+  </div>
+
+  <div id="new-highlight-select-story">
+    <%- include('../story/_dropdown', {
+      fieldName: 'linkStory',
+      stories,
     }) %>
   </div>
 

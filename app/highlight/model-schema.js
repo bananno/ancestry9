@@ -20,4 +20,9 @@ module.exports = [
     name: 'linkPerson',
     references: 'Person',
   },
+  {
+    // Highlighted text links to this story.
+    name: 'linkStory',
+    references: 'Story',
+  },
 ];
