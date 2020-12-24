@@ -20,6 +20,7 @@ function createRenderSource(req, res, next) {
       subview,
       title,
       source: req.source,
+      rootPath: '/source/' + req.source._id,
       ...options
     });
   };

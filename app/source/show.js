@@ -1,7 +1,4 @@
 const {
-  Citation,
-  Notation,
-  Person,
   Source,
   Story,
   Tag,
@@ -27,16 +24,10 @@ async function renderSummary(req, res) {
     .populate('images')
     .populate('tags');
 
-  const source = req.source;
+  await req.source.populateCiteText({storyFirst: true});
+  await req.source.populateAndSortCitations();
 
-  await source.populateCiteText({storyFirst: true});
-
-  await source.populateCitations();
-  const citationsByPerson = [...source.citations];
-  Citation.sortByItem(source.citations, source.people);
-  Citation.sortByPerson(citationsByPerson, source.people);
-
-  res.renderSource('show', {citationsByPerson});
+  res.renderSource('show');
 }
 
 async function renderEdit(req, res) {
@@ -53,13 +44,10 @@ async function renderEdit(req, res) {
   const stories = await Story.find({});
   stories.sort((a, b) => a.title < b.title ? -1 : 1);
 
-  await source.populateCitations();
-  const citationsByPerson = [...source.citations];
-  Citation.sortByItem(source.citations, source.people);
-  Citation.sortByPerson(citationsByPerson, source.people);
+  await source.populateAndSortCitations();
 
-  await source.populateHighlights();
-
+  // allPeople - the dropdown for new notations.
+  // unlinkedPeople - the dropdown for linking additional people to the source.
   const {allPeople, unlinkedPeople} = await source.getPeopleForDropdown();
 
   const tags = await Tag.find({});
@@ -67,12 +55,10 @@ async function renderEdit(req, res) {
 
   res.renderSource('edit', {
     title: 'Edit Source',
-    rootPath: '/source/' + source._id,
     fields: constants.fields,
     people: allPeople,
     unlinkedPeople,
     stories,
-    citationsByPerson,
     needCitationText: source.story.title.match('Census')
       && source.citeText.length == 0,
     citationTextPath: '/source/' + source._id + '/createCitationNotation',
@@ -85,22 +71,18 @@ async function renderFastCitations(req, res) {
     .populate('story')
     .populate('people');
 
-  const source = req.source;
-
-  await source.populateCitations();
-  const citationsByPerson = [...source.citations];
-  Citation.sortByItem(source.citations, source.people);
-  Citation.sortByPerson(citationsByPerson, source.people);
+  await req.source.populateAndSortCitations();
 
   res.renderSource('fastCitations', {
     title: 'Edit Source',
-    citationsByPerson,
+    sourceCitationToDoList: req.source.getFastCitationToDoList(),
   });
 }
 
 async function renderHighlights(req, res) {
   req.source = await Source.findById(req.sourceId)
-    .populate('story').populate('people');
+    .populate('story')
+    .populate('people');
 
   await req.source.populateCitations();
   await req.source.populateAndProcessHighlights();
@@ -113,11 +95,7 @@ async function renderHighlights(req, res) {
 async function renderNotations(req, res) {
   req.source = await Source.findById(req.sourceId).populate('story');
 
-  const source = req.source;
+  await req.source.populateNotationsInCategories();
 
-  const notations = await Notation.find({source})
-    .populate('people')
-    .populate('stories');
-
-  res.renderSource('notations', {notations});
+  res.renderSource('notations');
 }

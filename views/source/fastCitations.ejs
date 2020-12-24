@@ -1,76 +1,3 @@
-<%
-  const rootPath = '/source/' + source._id;
-  const addCitationPath = rootPath + '/add/citations';
-
-  const existingCitations = {};
-  const toDoList = [];
-
-  let year = '';
-  let residence = '';
-
-  if (source.date && source.date.year) {
-    year = source.date.year + ' - ';
-  }
-
-  source.citations.forEach(citation => {
-    let key = citation.person._id + citation.item;
-    existingCitations[key] = true;
-
-    if (citation.item == 'residence') {
-      residence = citation.information;
-    }
-  });
-
-  const censusItemsForParents = [
-    'number of children', 'father - birthplace', 'mother - birthplace',
-    'marriage - date',
-  ];
-
-  const citationItems = ['name'];
-
-  if (source.story.title.match('Census')) {
-    citationItems.push('birth - date');
-    citationItems.push('birth - place');
-    citationItems.push('residence');
-    citationItems.push('occupation');
-    censusItemsForParents.forEach(item => citationItems.push(item));
-  } else if (source.story.type == 'cemetery') {
-    citationItems.push('birth - date');
-    citationItems.push('death - date');
-  } else {
-    citationItems.push('birth - date');
-    citationItems.push('birth - place');
-    citationItems.push('death - date');
-    citationItems.push('death - place');
-  }
-
-  citationItems.forEach(item => {
-    source.people.forEach((person, i) => {
-      if (i > 0 && ['occupation'].includes(item)) {
-        return;
-      }
-
-      if (i > 1 && censusItemsForParents.includes(item)) {
-        return;
-      }
-
-      let key = person._id + item;
-      if (existingCitations[key]) {
-        return;
-      }
-
-      let value = '';
-      if (item == 'residence') {
-        value = residence || year;
-      } else if (['occupation', 'number of children'].includes(item)) {
-        value = year;
-      }
-
-      toDoList.push([person, item, value]);
-    });
-  });
-%>
-
 <div>
   <div class="column">
     <h2>people</h2>
@@ -94,7 +21,7 @@
     <th>item</th>
     <th>information</th>
   </tr>
-  <% toDoList.forEach(([person, item, value]) => { %>
+  <% sourceCitationToDoList.forEach(([person, item, value]) => { %>
     <tr class="citation-row-show">
       <td class="citation-cell">
         <%= person.name %>
@@ -103,7 +30,7 @@
         <%= item %>
       </td>
       <td class="citation-cell">
-        <form action="<%= addCitationPath %>" method="POST">
+        <form action="<%= rootPath %>/add/citations" method="post">
           <input type="hidden" name="person" value="<%= person._id %>">
           <input type="hidden" name="item" value="<%= item %>">
           <input type="hidden" name="fastCitations" value="true">
@@ -123,6 +50,7 @@
 
 <%- include('../citation/_list', {
   citations: source.citations,
+  citationsByPerson: source.citationsByPerson,
   showDelete: false,
   showSource: false,
   showPerson: true,

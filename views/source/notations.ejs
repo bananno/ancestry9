@@ -1,15 +1,3 @@
-<%
-  const citations = notations.filter(notation => notation.title == 'source citation');
-  const excerpts = notations.filter(notation => {
-    return notation.title == 'excerpt' || notation.hasTag('excerpt');
-  });
-  const otherNotations = notations.filter(notation => {
-    return notation.title != 'source citation'
-      && notation.title != 'excerpt'
-      && !notation.hasTag('excerpt');
-  });
-%>
-
 <style>
   hr {
     margin: 20px 0;
@@ -44,13 +32,13 @@
 
 <h2>Source Citation</h2>
 
-<% if (citations.length == 0) { %>
+<% if (source.notationGroups.citations.length == 0) { %>
   <p>
     <i>(none)</i>
   </p>
 <% } %>
 
-<% citations.forEach(notation => { %>
+<% source.notationGroups.citations.forEach(notation => { %>
   <div class="notation">
     <p>
       <a href="/notation/<%= notation._id %>"><%= notation.title %></a>
@@ -65,14 +53,14 @@
 
 <h2>Excerpts</h2>
 
-<% if (excerpts.length == 0) { %>
+<% if (source.notationGroups.excerpts.length == 0) { %>
   <hr>
   <p>
     <i>(none)</i>
   </p>
 <% } %>
 
-<% excerpts.forEach(notation => { %>
+<% source.notationGroups.excerpts.forEach(notation => { %>
   <div class="notation">
     <hr>
     <p>
@@ -99,12 +87,12 @@
   </div>
 <% }); %>
 
-<% if (otherNotations.length) { %>
+<% if (source.notationGroups.other.length) { %>
   <hr>
 
   <h2>Other</h2>
 
-  <% otherNotations.forEach(notation => { %>
+  <% source.notationGroups.other.forEach(notation => { %>
     <div class="notation">
       <hr>
       <p>
