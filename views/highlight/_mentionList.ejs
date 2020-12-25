@@ -24,7 +24,13 @@
       }) %>
     </p>
     <p>
-      Text: <i><%= mention.text %></i>
+      <% if (mention.excerpt) { %>
+        <b>"</b>
+        <i><%= mention.excerpt %></i>
+        <b>"</b>
+      <% } else { %>
+        Text: <i><%= mention.text %></i>
+      <% } %>
     </p>
   <% }); %>
 </div>

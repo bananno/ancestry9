@@ -5,6 +5,7 @@
     <th>actual text</th>
     <th>link type</th>
     <th>object</th>
+    <th>excerpt</th>
     <th>delete</th>
   </tr>
   <% highlights.forEach(highlight => { %>
@@ -44,6 +45,9 @@
         </td>
         <td></td>
       <% } %>
+      <td style="font-size: 10px; max-width: 300px;">
+        <%= highlight.excerpt %>
+      </td>
       <td>
         <form
           action="/highlight/<%= highlight._id %>/delete"

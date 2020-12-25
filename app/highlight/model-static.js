@@ -7,6 +7,7 @@ methods.createFromForm = req => {
     source: req.sourceId,
     text: (req.body.text || '').trim(),
     instance: parseInt(req.body.instance),
+    excerpt: req.body.excerpt.trim(),
   };
 
   if (!newHighlight.text) {
