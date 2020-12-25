@@ -21,6 +21,7 @@ module.exports = {
     connection: personConnection,
     wikitree: personWikitree,
     descendants: personDescendants,
+    mentions: personMentions,
   }
 };
 
@@ -203,4 +204,9 @@ async function personDescendants(req, res) {
       return [monthNames[month], day, year].filter(Boolean).join(' ');
     }
   }
+}
+
+async function personMentions(req, res) {
+  await req.person.populateHighlightMentions();
+  res.renderPersonProfile('mentions');
 }

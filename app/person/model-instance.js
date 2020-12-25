@@ -109,6 +109,11 @@ methods.populateSiblings = async function() {
   }
 };
 
+methods.populateHighlightMentions = async function() {
+  this.mentions = await mongoose.model('Highlight')
+    .getMentionsForItem({linkPerson: this});
+}
+
 // RELATIVES
 
 methods.attachParent = async function(relativeId) {

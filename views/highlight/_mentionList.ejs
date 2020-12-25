@@ -1,0 +1,30 @@
+<style>
+.mentions-list hr {
+  margin: 20px 0;
+}
+.mentions-list p {
+  margin: 5px 0;
+}
+</style>
+
+<div class="mentions-list">
+  <% if (!mentions.length) { %>
+    <hr>
+    <p>
+      <i>None.</i>
+    </p>
+  <% } %>
+
+  <% mentions.forEach(mention => { %>
+    <hr>
+    <p>
+      <%- include('../source/_link', {
+        source: mention.source,
+        showStory: true,
+      }) %>
+    </p>
+    <p>
+      Text: <i><%= mention.text %></i>
+    </p>
+  <% }); %>
+</div>

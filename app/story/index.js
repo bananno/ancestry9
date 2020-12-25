@@ -26,10 +26,11 @@ function createRoutes(router) {
     show: storyShowMain,
     edit: storyEdit,
     otherRoutes: {
-      'entries': storyEntries,
-      'newEntry': storyNewEntry,
-      'notations': storyNotations,
-      'checklist': storyChecklist,
+      entries: storyEntries,
+      newEntry: storyNewEntry,
+      notations: storyNotations,
+      checklist: storyChecklist,
+      mentions: storyHighlightMentions,
     },
     fields: constants.fields,
   });
@@ -122,6 +123,12 @@ async function storyNotations(req, res) {
   });
 
   res.renderStory('notations', {notations});
+}
+
+async function storyHighlightMentions(req, res) {
+  req.story = await Story.findById(req.params.id);
+  await req.story.populateHighlightMentions();
+  res.renderStory('mentions');
 }
 
 function storiesWithSources(req, res) {

@@ -69,3 +69,21 @@ methods.processForContent = (content, highlights) => {
 
   return contentSoFar;
 };
+
+// Get a list of highlights that mention (i.e., link to) an item (e.g., story or person).
+// Populate source and source.story for each highlight.
+methods.getMentionsForItem = async (findByObj) => {
+  const Highlight = mongoose.model('Highlight');
+  const Story = mongoose.model('Story');
+
+  const mentions = await mongoose.model('Highlight')
+    .find(findByObj)
+    .populate('source');
+
+  for (let i in mentions) {
+    const storyId = mentions[i].source.story;
+    mentions[i].source.story = await Story.findById(storyId);
+  }
+
+  return mentions;
+};
