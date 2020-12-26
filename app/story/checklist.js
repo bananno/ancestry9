@@ -78,15 +78,15 @@ async function storyChecklistUnitedStatesCensus(req, res) {
       const birthYear = person.getBirthYear();
       const deathYear = person.getDeathYear();
 
-      if (!birthYear && !deathYear) {
-        return 'missingDates';
-      }
-
       if (deathYear && deathYear < censusYear) {
         return 'diedBefore';
       }
 
-      if (birthYear && birthYear > censusYear) {
+      if (!birthYear) {
+        return 'missingDates';
+      }
+
+      if (birthYear > censusYear) {
         return 'bornAfter';
       }
 
