@@ -26,6 +26,7 @@ async function renderSummary(req, res) {
 
   await req.source.populateCiteText({storyFirst: true});
   await req.source.populateAndSortCitations();
+  await req.source.populateAndProcessHighlights();
 
   res.renderSource('show');
 }

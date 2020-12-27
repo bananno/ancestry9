@@ -109,8 +109,8 @@
 <h2>content</h2>
 
 <%- include('../format/content', {
-  content: source.content,
-  limit: false,
+  content: source.highlightedContent,
+  highlights: source.highlights,
 }) %>
 
 <% if (source.citeText.length) { %>
