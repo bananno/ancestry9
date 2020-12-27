@@ -8,6 +8,7 @@ const {
 const constants = require('./constants');
 const sourceTools = require('./tools');
 const sourceProfile = require('./show');
+const sourceForm = require('./forms');
 
 module.exports = createRoutes;
 
@@ -39,6 +40,10 @@ function createRoutes(router) {
   router.post('/source/:id/createCitationNotation', createSourceCiteNotation);
   router.post('/source/:id/createHighlight', createSourceHighlight);
   router.post('/source/:id/createNotation', createSourceNotation);
+
+  router.get('/forms/census', sourceForm.getNewSourceForm);
+  router.get('/source/:id/form', sourceForm.getSourceForm);
+  router.post('/source/:id/form', sourceForm.saveSourceForm);
 }
 
 function getSourcesIndex(subview) {

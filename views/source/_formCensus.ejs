@@ -1,0 +1,64 @@
+<h1>new census</h1>
+
+<h3>year</h3>
+
+<input value="<%= year %>">
+
+<h3>head of household</h3>
+
+<input value="<%= headOfHouseholder %>">
+
+<h3>date</h3>
+
+<%- include('../forms/date') %>
+
+<h3>location</h3>
+
+<%- include('../forms/location') %>
+
+<h3>enumerator</h3>
+
+<input value="Sheldon Knight">
+
+<h3>people</h3>
+
+<% if (source.content) { %>
+  <form action="/source/<%= source._id %>/form" method="post">
+    <input type="hidden" name="step" value="newcolumn">
+    <input type="text" name="column" placeholder="column name"> <br>
+    <textarea name="values" placeholder="values"></textarea>
+    <button>add column</button>
+  </form>
+<% } else { %>
+  <form action="/source/<%= source._id %>/form" method="post">
+    <input type="hidden" name="step" value="people">
+    <textarea name="values" placeholder="people"></textarea>
+    <button>save</button>
+  </form>
+<% } %>
+
+<table class="nice-table">
+  <tr>
+    <% columns.forEach(col => { %>
+      <th><%= col %></th>
+    <% }); %>
+  </tr>
+  <% rows.forEach(row => { %>
+    <tr>
+      <% row.forEach(cell => { %>
+        <td>
+          <%= cell %>
+        </td>
+      <% }); %>
+    </tr>
+  <% }); %>
+</table>
+
+<hr style="margin: 30px 0;">
+
+<h2>current content + highlights</h2>
+
+<%- include('../format/content', {
+  content: source.highlightedContent,
+  highlights: source.highlights,
+}) %>
