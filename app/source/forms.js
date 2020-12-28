@@ -18,13 +18,32 @@ methods.getSourceForm = async (req, res) => {
 
   let columns = [];
   const rows = [];
+  let enumerator = '';
 
   if (source.content) {
     const contentLines = source.content.split('\n');
 
-    columns = contentLines[0].split('||').map(s => s.trim()).filter(Boolean);
+    let lastLineBreak = -1;
+    let enumeratorRow;
 
-    contentLines.slice(1).forEach((textLine, i) => {
+    contentLines.forEach((line, i) => {
+      if (line.trim() === '') {
+        lastLineBreak = i;
+        return;
+      }
+      if (line.match(/enumerator/i)) {
+        enumerator = line
+          .replace(/enumerator/gi, '')
+          .replace(/\|/g, '')
+          .trim();
+      }
+    });
+
+    const headerRow = contentLines[lastLineBreak + 1];
+
+    columns = headerRow.split('||').map(s => s.trim()).filter(Boolean);
+
+    contentLines.slice(lastLineBreak + 2).forEach((textLine, i) => {
       const cells = textLine.split('|').slice(1);
       rows.push(cells);
     });
@@ -35,9 +54,10 @@ methods.getSourceForm = async (req, res) => {
   res.render('source/_formCensus', {
     source,
     year,
-    headOfHouseholder,
     columns,
     rows,
+    headOfHouseholder,
+    enumerator,
   });
 };
 
@@ -71,6 +91,19 @@ methods.saveSourceForm = async (req, res) => {
     });
 
     const newContent = newRows.join('\n');
+
+    await Source.updateOne({_id: sourceId}, {content: newContent});
+  } else if (step === 'enumerator') {
+    const rows = source.content.split('\n');
+    const index = rows.map((row, i) => i).find(i => rows[i].match(/enumerator/i));
+
+    if (index === undefined) {
+      return res.send('no enumerator');
+    }
+
+    rows[index] = '|| Enumerator | ' + req.body.newValue;
+
+    const newContent = rows.join('\n');
 
     await Source.updateOne({_id: sourceId}, {content: newContent});
   }

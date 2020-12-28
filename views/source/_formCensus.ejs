@@ -18,7 +18,11 @@
 
 <h3>enumerator</h3>
 
-<input value="Sheldon Knight">
+<form action="/source/<%= source._id %>/form" method="post">
+  <input type="hidden" name="step" value="enumerator">
+  <input name="newValue" value="<%= enumerator %>">
+  <button>update</button>
+</form>
 
 <h3>people</h3>
 
