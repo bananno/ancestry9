@@ -51,6 +51,15 @@ methods.getSourceForm = async (req, res) => {
 
   await source.populateAndProcessHighlights();
 
+  const missingLinks = [];
+
+  if (!source.links.some(link => link.match(' Ancestry'))) {
+    missingLinks.push('Ancestry');
+  }
+  if (!source.links.some(link => link.match(' FamilySearch'))) {
+    missingLinks.push('FamilySearch');
+  }
+
   res.render('source/_formCensus', {
     source,
     year,
@@ -58,6 +67,7 @@ methods.getSourceForm = async (req, res) => {
     rows,
     headOfHouseholder,
     enumerator,
+    missingLinks,
   });
 };
 
@@ -106,6 +116,10 @@ methods.saveSourceForm = async (req, res) => {
     const newContent = rows.join('\n');
 
     await Source.updateOne({_id: sourceId}, {content: newContent});
+  } else if (step === 'links') {
+    const links = source.links;
+    links.push(req.body.url + ' ' + req.body.link);
+    await Source.updateOne({_id: sourceId}, {links});
   }
 
   res.redirect(`/source/${sourceId}/form`);

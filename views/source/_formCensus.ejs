@@ -16,6 +16,18 @@
 
 <%- include('../forms/location') %>
 
+<% if (missingLinks.length) { %>
+  <h3>links</h3>
+  <% missingLinks.forEach(link => { %>
+    <form action="/source/<%= source._id %>/form" method="post">
+      <input type="hidden" name="step" value="links">
+      <input type="hidden" name="link" value="<%= link %>">
+      <input name="url" placeholder="<%= link %>">
+      <button>add</button>
+    </form>
+  <% }); %>
+<% } %>
+
 <h3>enumerator</h3>
 
 <form action="/source/<%= source._id %>/form" method="post">
