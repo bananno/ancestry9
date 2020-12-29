@@ -18,10 +18,10 @@ methods.getSourceForm = async (req, res) => {
 
   const headOfHouseholder = source.title;
 
-  const {columnNames, rows} = getMainTableRows(source.content);
-  const {enumeratorName} = getEnumeratorInfo(source.content);
-
   await source.populateAndProcessHighlights();
+
+  const {columnNames, personRows} = getMainTableRows(source);
+  const {enumeratorName} = getEnumeratorInfo(source.content);
 
   const missingLinks = [];
 
@@ -38,7 +38,7 @@ methods.getSourceForm = async (req, res) => {
     source,
     year,
     columnNames,
-    rows,
+    personRows,
     headOfHouseholder,
     enumerator: enumeratorName || '',
     missingLinks,
@@ -97,15 +97,15 @@ methods.saveSourceForm = async (req, res) => {
     await Source.updateOne({_id: sourceId}, {links});
   } else if (step === 'highlightPerson' || step === 'highlightEmpty') {
     const {
-      rowsAsObj,
+      personRows,
       startLineNumber,
       contentLines,
-    } = getMainTableRows(source.content);
+    } = getMainTableRows(source);
 
     // The row number of the person table, with head of household being 0.
     const rowNumber = parseInt(req.body.rowNumber);
 
-    const personName = rowsAsObj[rowNumber].name;
+    const personName = personRows[rowNumber].name;
 
     // Count the number of times this person's name appears in the table BEFORE
     // their row; usually only when two people have the same name.
@@ -153,7 +153,9 @@ function getEnumeratorInfo(content) {
   }
 }
 
-function getMainTableRows(content) {
+function getMainTableRows(source) {
+  const content = source.content;
+
   if (!content) {
     return {columnNames: [], rows: []};
   }
@@ -174,24 +176,38 @@ function getMainTableRows(content) {
 
   const columnNames = headerRow.split('||').map(s => s.trim()).filter(Boolean);
 
-  const rows = [];
-  const rowsAsObj = [];
-  const linesBeforeTable = [];
+  const personRows = [];
 
   const startLineNumber = lastEmptyLine + 2;
 
+  let characterIndex = contentLines.slice(0, startLineNumber).join('\n').length;
+
   contentLines.slice(startLineNumber).map((textLine, i) => {
-    const personRow = textLine.split('|').slice(1).map(s => s.trim());
-    const obj = {};
-    columnNames.forEach((col, i) => obj[col.toLowerCase()] = personRow[i]);
-    rows.push(personRow);
-    rowsAsObj.push(obj);
+    const row = {};
+
+    const rowValues = textLine.split('|').slice(1).map(s => s.trim());
+    row.values = rowValues;
+    columnNames.forEach((col, i) => row[col.toLowerCase()] = rowValues[i]);
+
+    if (source.highlights) {
+      const startIndex = characterIndex;
+      const endIndex = startIndex + textLine.length + 2; // +2 for newline
+
+      row.highlight = source.highlights.find(highlight => {
+        return highlight.actualText === row.name
+          && highlight.characterIndex >= startIndex
+          && highlight.characterIndex < endIndex;
+        });
+
+      characterIndex = endIndex;
+    }
+
+    personRows.push(row);
   });
 
   return {
     columnNames,
-    rows,
-    rowsAsObj,
+    personRows,
     startLineNumber,
     contentLines,
   };

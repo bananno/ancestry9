@@ -68,27 +68,35 @@
       <th><%= col %></th>
     <% }); %>
   </tr>
-  <% rows.forEach((row, i) => { %>
+  <% personRows.forEach((row, i) => { %>
     <tr>
       <td class="person-row-highlight-attachment">
-        <button class="start-attach">attach person</button>
-        <form action="/source/<%= source._id %>/form" method="post" class="attach-person">
-          <input type="hidden" name="step" value="highlightPerson">
-          <input type="hidden" name="rowNumber" value="<%= i %>">
-          <%- include('../person/_dropdown', {
-            fieldName: 'person',
-            people: peopleDropdownList,
-          }) %>
-          <button>attach</button>
-          <span class="clickable-link attach-cancel">cancel</span>
-        </form>
-        <form action="/source/<%= source._id %>/form" method="post" class="attach-empty">
-          <input type="hidden" name="step" value="highlightEmpty">
-          <input type="hidden" name="rowNumber" value="<%= i %>">
-          <button>save as empty</button>
-        </form>
+        <% if (row.highlight) { %>
+          <% if (row.highlight.linkPerson) { %>
+            <%- include('../person/_link', {person: row.highlight.linkPerson}) %>
+          <% } else { %>
+            <span style="color: blue"><%= row.highlight.actualText %></span>
+          <% } %>
+        <% } else { %>
+          <button class="start-attach">attach person</button>
+          <form action="/source/<%= source._id %>/form" method="post" class="attach-person">
+            <input type="hidden" name="step" value="highlightPerson">
+            <input type="hidden" name="rowNumber" value="<%= i %>">
+            <%- include('../person/_dropdown', {
+              fieldName: 'person',
+              people: peopleDropdownList,
+            }) %>
+            <button>attach</button>
+            <span class="clickable-link attach-cancel">cancel</span>
+          </form>
+          <form action="/source/<%= source._id %>/form" method="post" class="attach-empty">
+            <input type="hidden" name="step" value="highlightEmpty">
+            <input type="hidden" name="rowNumber" value="<%= i %>">
+            <button>save as empty</button>
+          </form>
+        <% } %>
       </td>
-      <% row.forEach(cell => { %>
+      <% row.values.forEach(cell => { %>
         <td>
           <%= cell %>
         </td>
