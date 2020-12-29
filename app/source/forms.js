@@ -12,7 +12,10 @@ methods.getNewSourceForm = (req, res) => {
 };
 
 methods.getSourceForm = async (req, res) => {
-  const source = await Source.findById(req.params.id).populate('people');
+  const source = await Source.findById(req.params.id)
+    .populate('story')
+    .populate('people');
+  req.source = source;
 
   const year = source.date && source.date.year ? source.date.year : '';
 
@@ -34,7 +37,7 @@ methods.getSourceForm = async (req, res) => {
 
   const {allPeople} = await source.getPeopleForDropdown();
 
-  res.render('source/_formCensus', {
+  res.renderSource('form', {
     source,
     year,
     columnNames,

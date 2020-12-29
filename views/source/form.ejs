@@ -4,23 +4,21 @@
 }
 </style>
 
-<h1>new census</h1>
-
 <h3>year</h3>
-
 <input value="<%= year %>">
+<span class="error">make editable later?</span>
 
 <h3>head of household</h3>
-
 <input value="<%= headOfHouseholder %>">
+<span class="error">make editable later?</span>
 
 <h3>date</h3>
-
 <%- include('../forms/date') %>
+<span class="error">make editable later?</span>
 
 <h3>location</h3>
-
 <%- include('../forms/location') %>
+<span class="error">make editable later?</span>
 
 <% if (missingLinks.length) { %>
   <h3>links</h3>

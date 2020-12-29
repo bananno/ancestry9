@@ -16,7 +16,7 @@
     <p>
       <a href="<%= rootPath %>" class="main-link">done</a>
     </p>
-  <% } else if (subview == 'fastCitations') { %>
+  <% } else if (['fastCitations', 'form'].includes(subview)) { %>
     <p>
       <a href="<%= rootPath %>" class="main-link">done</a>
       <a href="<%= rootPath %>/edit" class="main-link">back to edit</a>
@@ -25,6 +25,9 @@
     <p>
       <a href="<%= rootPath %>" class="main-link">summary</a>
       <a href="<%= rootPath %>/edit" class="main-link">edit</a>
+      <% if (source.story.title.match('Census USA')) { %>
+        <a href="<%= rootPath %>/form" class="main-link">edit special</a>
+      <% } %>
       <a href="<%= rootPath %>/notations" class="main-link">notations</a>
       <a href="<%= rootPath %>/highlights" class="main-link">highlights</a>
     </p>
