@@ -1,3 +1,9 @@
+<style>
+.person-row-highlight-attachment form.attach-person {
+  display: none;
+}
+</style>
+
 <h1>new census</h1>
 
 <h3>year</h3>
@@ -55,12 +61,33 @@
 
 <table class="nice-table">
   <tr>
-    <% columns.forEach(col => { %>
+    <th>
+      highlight
+    </th>
+    <% columnNames.forEach(col => { %>
       <th><%= col %></th>
     <% }); %>
   </tr>
-  <% rows.forEach(row => { %>
+  <% rows.forEach((row, i) => { %>
     <tr>
+      <td class="person-row-highlight-attachment">
+        <button class="start-attach">attach person</button>
+        <form action="/source/<%= source._id %>/form" method="post" class="attach-person">
+          <input type="hidden" name="step" value="highlightPerson">
+          <input type="hidden" name="rowNumber" value="<%= i %>">
+          <%- include('../person/_dropdown', {
+            fieldName: 'person',
+            people: peopleDropdownList,
+          }) %>
+          <button>attach</button>
+          <span class="clickable-link attach-cancel">cancel</span>
+        </form>
+        <form action="/source/<%= source._id %>/form" method="post" class="attach-empty">
+          <input type="hidden" name="step" value="highlightEmpty">
+          <input type="hidden" name="rowNumber" value="<%= i %>">
+          <button>save as empty</button>
+        </form>
+      </td>
       <% row.forEach(cell => { %>
         <td>
           <%= cell %>
@@ -78,3 +105,18 @@
   content: source.highlightedContent,
   highlights: source.highlights,
 }) %>
+
+<script>
+  $('.person-row-highlight-attachment').each((i, cell) => {
+    $(cell).find('button.start-attach').click(() => {
+      $(cell).find('form.attach-person').show();
+      $(cell).find('form.attach-empty').hide();
+      $('button.start-attach, form.attach-empty').hide();
+    });
+    $(cell).find('.attach-cancel').click(() => {
+      $(cell).find('form.attach-person').hide();
+      $(cell).find('form.attach-empty').show();
+      $('button.start-attach, form.attach-empty').show();
+    });
+  });
+</script>

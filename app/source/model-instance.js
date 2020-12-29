@@ -239,6 +239,10 @@ methods.getPeopleForDropdown = async function() {
 
   const additionalPeople = [];
 
+  if (!this.citations) {
+    await this.populateCitations();
+  }
+
   this.citations.forEach(({person}) => {
     if (!isPersonCovered(person)) {
       additionalPeople.push(person);
