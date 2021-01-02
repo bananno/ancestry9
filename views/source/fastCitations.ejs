@@ -26,14 +26,13 @@
       <td class="citation-cell">
         <%= person.name %>
       </td>
-      <td class="citation-cell">
-        <%= item %>
-      </td>
-      <td class="citation-cell">
+      <td class="citation-cell" colspan="2">
         <form action="<%= rootPath %>/add/citations" method="post">
           <input type="hidden" name="person" value="<%= person._id %>">
-          <input type="hidden" name="item" value="<%= item %>">
           <input type="hidden" name="fastCitations" value="true">
+          <div class="column">
+            <input type="text" name="item" value="<%= item %>">
+          </div>
           <div class="column">
             <input type="text" name="information" value="<%= value %>">
           </div>
