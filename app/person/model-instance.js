@@ -130,76 +130,151 @@ methods.getDescendantChartInfo = function(data) {
     marriageEvents, // all marriage-related events in the database
     people,
     toDoList,
+    formatEventDate,
   } = data;
 
-  const missingMessages = []; // push strings or objects
   const errors = [];
 
-  const children = this.children.map(childId => findPersonInList(people, childId));
+  const maidenName = this.getMaidenName();
+  const numNameParts = maidenName.split(' ').length;
+  if (numNameParts === 1) {
+    toDoList.push({person: this, missing: 'name?'});
+  } else if (numNameParts === 2) {
+    toDoList.push({person: this, missing: 'middle name?'});
+  }
 
   // Determine if any pieces of the birth event are missing.
-  let birthDateIncomplete = false;
-  const birthYear = this.getBirthYear();
-  if (birthYear) {
-    if (this.birth.date.display) {
-      missingMessages.push('birth date? "' + this.birth.date.display + '"');
-      birthDateIncomplete = true;
-    } else if (!this.birth.date.month || !this.birth.date.month) {
-      missingMessages.push('partial birth date');
-      birthDateIncomplete = true;
-    }
-
-    if (this.birth.location && this.birth.location.country) {
-      // If born outside the US, don't worry about more specific location info for this chart.
-      if (this.birth.location.country === 'United States') {
-        if (!this.birth.location.region1) {
-          missingMessages.push('birth location');
-        } else if (!this.birth.location.region2) {
-          missingMessages.push('birth location - '
-            + (this.birth.location.city ? 'county' : 'city/county'));
-        } else if (!this.birth.location.city) {
-          missingMessages.push('birth location - city');
-        }
-      }
-    } else {
-      missingMessages.push('birth location');
-    }
-  } else {
-    missingMessages.push({message: 'birth event', priority: 1});
-    birthDateIncomplete = true;
-  }
+  const birthDateIncomplete =
+    getEventMissingPieces({person: this, event: this.birth, title: 'birth'});
 
   if (birthDateIncomplete) {
     errors.push('birth?');
   }
 
-  const personMarriageEvents = marriageEvents.filter(event => {
-    return findPersonInList(event.people, this);
-  });
+  if (!this.living) {
+    const deathDateIncomplete =
+      getEventMissingPieces({person: this, event: this.death, title: 'death'});
 
-  if (!this.living && !this.getDeathYear()) {
-    errors.push('death?');
-    missingMessages.push('death event (or still living?)');
+    if (deathDateIncomplete) {
+      errors.push('death?');
+    }
   }
 
   if (this.getTagValue('number of children') !== 'done') {
     errors.push('children?');
-    missingMessages.push('children?');
+    toDoList.push({person: this, missing: 'children?'});
   }
 
-  missingMessages.forEach(item => {
-    if (item.message) {
-      toDoList.push({person: this, missing: item.message, priority: item.priority});
-    } else {
-      toDoList.push({person: this, missing: item});
+  const childrenList = this.children.map(childId => findPersonInList(people, childId));
+
+  const childrenListedSoFar = [];
+
+  const personMarriageEvents = marriageEvents.filter(event =>
+    findPersonInList(event.people, this));
+
+  const spouseList = this.spouses.map(spouseId => {
+    const spouse = findPersonInList(people, spouseId);
+    const spouseErrors = [];
+
+    const spouseChildren = childrenList.filter((child, i) => {
+      if (findPersonInList(child.parents, spouse)) {
+        childrenListedSoFar.push(child);
+        return true;
+      }
+      return false;
+    });
+
+    let foundMarriageEvent = false;
+
+    const marriageEventsFormat = personMarriageEvents.filter(event => {
+      return findPersonInList(event.people, spouse);
+    }).map(event => {
+      if (event.title === 'marriage') {
+        foundMarriageEvent = true;
+        getEventMissingPieces({person: this, event});
+        return 'married ' + formatEventDate(event);
+      }
+      return 'divorced ' + formatEventDate(event);
+    }).join('; ');
+
+    if (!foundMarriageEvent) {
+      toDoList.push({
+        person: spouse,
+        missing: 'marriage event',
+        priority: 2,
+      });
+      spouseErrors.push('marriage?');
     }
+
+    if (!spouse.getBirthYear()) {
+      spouseErrors.push('birth?');
+    }
+
+    if (!spouse.living && !spouse.getDeathYear()) {
+      spouseErrors.push('death?');
+    }
+
+    return {
+      spouse,
+      spouseChildren,
+      marriageEventsFormat,
+      errorMessage: spouseErrors ? spouseErrors.join(' ') : undefined,
+    };
+  });
+
+  const additionalChildren = this.children.filter(child => {
+    if (!findPersonInList(childrenListedSoFar, child)) {
+      toDoList.push({person: child, missing: 'parent', priority: 1});
+      return true;
+    }
+    return false;
   });
 
   return {
-    children,
     errors,
-    personMarriageEvents,
+    maidenName,
+    spouseList,
+    additionalChildren,
   };
+
+  // Add missing pieces of given event's date and location to the to-do list.
+  // Return true if the event is missing any part of the date (not location though).
+  function getEventMissingPieces({person, event, title}) {
+    if (!event || !event.date || !event.date.year) {
+      toDoList.push({person, missing: title + ' event', priority: 1});
+      return true;
+    }
+
+    const eventTitle = title || event.title;
+    let dateIsIncomplete = false;
+
+    if (event.date.display) {
+      toDoList.push({person, missing: `${eventTitle} date? "${event.date.display}"`});
+      dateIsIncomplete = true;
+    } else if (!event.date.month || !event.date.day) {
+      toDoList.push({person, missing: eventTitle + ' - partial date'});
+      dateIsIncomplete = true;
+    }
+
+    if (!event.location) {
+      toDoList.push({person, missing: eventTitle + ' location'});
+    } else if (event.location.country === 'United States') {
+      // For purpose of this chart: if location is outside the US, don't worry about
+      // missing more specific location info.
+      if (!event.location.region1) {
+        toDoList.push({person, missing: eventTitle + ' location'});
+      } else if (!event.location.region2) {
+        toDoList.push({
+          person,
+          missing: eventTitle + ' location - ' + (event.location.city ? 'county' : 'city/county'),
+        });
+      } else if (!event.location.city) {
+        toDoList.push({person, missing: eventTitle + ' - location - city'});
+      }
+    }
+
+    return dateIsIncomplete;
+  }
 };
 
 // RELATIVES

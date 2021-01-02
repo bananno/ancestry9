@@ -1,7 +1,7 @@
 <%
   // Settings will not be modified automatically. Change settings for desired display.
   const settings = {
-    showErrors: true,
+    showErrors: false,
   };
 
   const safety = (locals.safety || 0) + 1;
@@ -17,16 +17,15 @@
     marriageEvents,
     people,
     toDoList,
+    formatEventDate,
   });
-
-  const childrenListed = [];
 %>
 
 <p class="person-item">
   <b>
     <%- include('../person/_link', {
       person,
-      linkText: person.getMaidenName(),
+      linkText: personInfo.maidenName,
     }) %>
   </b>
   <span class="life-dates">(<%= getLifeDatesString(person) %>)</span>
@@ -35,54 +34,27 @@
   <% } %>
 </p>
 
-<% person.spouses.forEach(spouseId => { %>
+<% personInfo.spouseList.forEach(spouseInfo => { %>
   <%
-    const spouse = findPersonInList(people, spouseId);
+    const {
+      spouse,
+      spouseChildren,
+      marriageEventsFormat,
+      errorMessage,
+    } = spouseInfo;
 
-    const spouseChildren = personInfo.children.filter((child, i) => {
-      if (findPersonInList(child.parents, spouse)) {
-        childrenListed.push(child);
-        return true;
-      }
-      return false;
-    });
-
-    let foundMarriageEvent = false;
-
-    const marriageEventsFormat = personInfo.personMarriageEvents.filter(event => {
-      return findPersonInList(event.people, spouse);
-    }).map(event => {
-      if (event.title === 'marriage') {
-        foundMarriageEvent = true;
-        return 'married ' + formatEventDate(event);
-      }
-      return 'divorced ' + formatEventDate(event);
-    }).join('; ');
-
-    if (!foundMarriageEvent) {
-      toDoList.push({
-        person: spouse,
-        missing: 'marriage event',
-        priority: 2,
-      });
+    const eventsList = [getLifeDatesString(spouse)];
+    if (marriageEventsFormat) {
+      eventsList.push(marriageEventsFormat);
     }
   %>
   <p class="person-item">
     + <%- include('../person/_link', {person: spouse}) %>
-    <% if (settings.showErrors) { %>
-      <span class="life-dates">
-        (<%= getLifeDatesString(spouse) %>;
-        <%= marriageEventsFormat || 'married when?' %>)
-      </span>
-      <% if (!spouse.getBirthYear()) { %>
-        <span class="error">birth?</span>
-      <% } %>
-      <% if (!spouse.living && !spouse.getDeathYear()) { %>
-        <span class="error">death?</span>
-      <% } %>
-      <% if (!foundMarriageEvent) { %>
-        <span class="error">marriage?</span>
-      <% } %>
+    <span class="life-dates">
+      (<%= eventsList.join('; ') %>)
+    </span>
+    <% if (settings.showErrors && errorMessage) { %>
+      <span class="error"><%= errorMessage %></span>
     <% } %>
   </p>
   <ul>
@@ -94,26 +66,12 @@
   </ul>
 <% }); %>
 
-<%
-  const additionalChildren = person.children.filter(child => {
-    if (!findPersonInList(childrenListed, child)) {
-      toDoList.push({
-        person: child,
-        missing: 'parent',
-        priority: 1,
-      });
-      return true;
-    }
-    return false;
-  });
-%>
-
-<% if (additionalChildren.length) { %>
+<% if (personInfo.additionalChildren.length) { %>
   <p class="person-item">
     + unknown spouse
   </p>
   <ul>
-    <% additionalChildren.forEach(child => { %>
+    <% personInfo.additionalChildren.forEach(child => { %>
       <li>
         <%- include('./_desc', {person: child, toDoList, safety}) %>
       </li>
