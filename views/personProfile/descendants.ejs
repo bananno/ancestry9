@@ -27,10 +27,43 @@
   color: #00B7FF;
   text-decoration: underline;
 }
+.to-do-list {
+  margin-top: 20px;
+}
 </style>
 
 <h2>descendants chart</h2>
 
+<% const toDoList = []; %>
+
 <div class="descendants-chart">
-  <%- include('./_desc', {person}) %>
+  <%- include('./_desc', {person, toDoList}) %>
 </div>
+
+<% if (toDoList.length) { %>
+  <%
+    sortBy(toDoList, item => item.priority || 10);
+  %>
+  <h2>missing items</h2>
+  <table class="to-do-list nice-table">
+    <tr>
+      <th>person</th>
+      <th>missing item</th>
+    </tr>
+    <% toDoList.forEach(item => { %>
+      <%
+        const person = item.person.name
+          ? item.person
+          : findPersonInList(people, item.person);
+      %>
+      <tr>
+        <td>
+          <%- include('../person/_link', {person}) %>
+        </td>
+        <td>
+          <%= item.missing %>
+        </td>
+      </tr>
+    <% }); %>
+  </table>
+<% } %>

@@ -1,11 +1,8 @@
 <%
-  const options = {
+  // Settings will not be modified automatically. Change settings for desired display.
+  const settings = {
     showErrors: true,
   };
-
-  const person = findPersonInList(people, locals.person);
-
-  const childrenListed = [];
 
   const safety = (locals.safety || 0) + 1;
 
@@ -13,32 +10,28 @@
     throw `[ERROR] descendants chart reached ${safety} layers`;
   }
 
-  const children = person.children.map(childId => findPersonInList(people, childId));
+  const person = findPersonInList(people, locals.person);
 
-  const personMaidenName = person.name.match('\\[')
-    ? person.name.slice(0, person.name.indexOf('['))
-    : person.name;
-
-  const personMarriageEvents = marriageEvents.filter(event => {
-    return findPersonInList(event.people, person);
+  const personInfo = person.getDescendantChartInfo({
+    findPersonInList,
+    marriageEvents,
+    people,
+    toDoList,
   });
 
-  const numChildrenTagValue = person.getTagValue('number of children');
+  const childrenListed = [];
 %>
 
 <p class="person-item">
-  <b><%- include('../person/_link', {person, linkText: personMaidenName}) %></b>
+  <b>
+    <%- include('../person/_link', {
+      person,
+      linkText: person.getMaidenName(),
+    }) %>
+  </b>
   <span class="life-dates">(<%= getLifeDatesString(person) %>)</span>
-  <% if (options.showErrors) { %>
-    <% if (numChildrenTagValue !== 'done') { %>
-      <span class="error">children?</span>
-    <% } %>
-    <% if (!person.getBirthYear()) { %>
-      <span class="error">birth?</span>
-    <% } %>
-    <% if (!person.living && !person.getDeathYear()) { %>
-      <span class="error">death?</span>
-    <% } %>
+  <% if (settings.showErrors && personInfo.errors.length) { %>
+    <span class="error"><%= personInfo.errors.join(' ') %></span>
   <% } %>
 </p>
 
@@ -46,7 +39,7 @@
   <%
     const spouse = findPersonInList(people, spouseId);
 
-    const spouseChildren = children.filter((child, i) => {
+    const spouseChildren = personInfo.children.filter((child, i) => {
       if (findPersonInList(child.parents, spouse)) {
         childrenListed.push(child);
         return true;
@@ -54,18 +47,29 @@
       return false;
     });
 
-    const marriageEventsFormat = personMarriageEvents.filter(event => {
+    let foundMarriageEvent = false;
+
+    const marriageEventsFormat = personInfo.personMarriageEvents.filter(event => {
       return findPersonInList(event.people, spouse);
     }).map(event => {
       if (event.title === 'marriage') {
+        foundMarriageEvent = true;
         return 'married ' + formatEventDate(event);
       }
       return 'divorced ' + formatEventDate(event);
     }).join('; ');
+
+    if (!foundMarriageEvent) {
+      toDoList.push({
+        person: spouse,
+        missing: 'marriage event',
+        priority: 2,
+      });
+    }
   %>
   <p class="person-item">
     + <%- include('../person/_link', {person: spouse}) %>
-    <% if (options.showErrors) { %>
+    <% if (settings.showErrors) { %>
       <span class="life-dates">
         (<%= getLifeDatesString(spouse) %>;
         <%= marriageEventsFormat || 'married when?' %>)
@@ -76,7 +80,7 @@
       <% if (!spouse.living && !spouse.getDeathYear()) { %>
         <span class="error">death?</span>
       <% } %>
-      <% if (!marriageEventsFormat) { %>
+      <% if (!foundMarriageEvent) { %>
         <span class="error">marriage?</span>
       <% } %>
     <% } %>
@@ -84,7 +88,7 @@
   <ul>
     <% spouseChildren.forEach(child => { %>
       <li>
-        <%- include('./_desc', {person: child, safety}) %>
+        <%- include('./_desc', {person: child, toDoList, safety}) %>
       </li>
     <% }); %>
   </ul>
@@ -92,7 +96,15 @@
 
 <%
   const additionalChildren = person.children.filter(child => {
-    return !findPersonInList(childrenListed, child);
+    if (!findPersonInList(childrenListed, child)) {
+      toDoList.push({
+        person: child,
+        missing: 'parent',
+        priority: 1,
+      });
+      return true;
+    }
+    return false;
   });
 %>
 
@@ -103,7 +115,7 @@
   <ul>
     <% additionalChildren.forEach(child => { %>
       <li>
-        <%- include('./_desc', {person: child, safety}) %>
+        <%- include('./_desc', {person: child, toDoList, safety}) %>
       </li>
     <% }); %>
   </ul>

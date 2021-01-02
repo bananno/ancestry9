@@ -185,6 +185,7 @@ async function personDescendants(req, res) {
     findPersonInList: Person.findInList,
     getLifeDatesString,
     formatEventDate,
+    sortBy: sorting.sortBy,
   });
 
   function getLifeDatesString(person) {

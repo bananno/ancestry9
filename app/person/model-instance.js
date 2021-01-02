@@ -38,7 +38,9 @@ methods.getMissingLinks = function() {
   if (wikitreeStatus !== 'ignore') {
     expectLinks.push('WikiTree');
   }
-  if (!this.living) {
+  if (this.living) {
+    expectLinks.push('Facebook profile');
+  } else {
     expectLinks.push('FindAGrave');
   }
   return expectLinks.filter(linkTitle => !this.getLink(linkTitle));
@@ -113,6 +115,92 @@ methods.populateHighlightMentions = async function() {
   this.mentions = await mongoose.model('Highlight')
     .getMentionsForItem({linkPerson: this});
 }
+
+// Remove the added names [brackets] if applicable.
+methods.getMaidenName = function() {
+  return this.name.match('\\[')
+    ? this.name.slice(0, this.name.indexOf('[')).trim()
+    : this.name;
+}
+
+// Get all the info needed for the descendants chart.
+methods.getDescendantChartInfo = function(data) {
+  const {
+    findPersonInList,
+    marriageEvents, // all marriage-related events in the database
+    people,
+    toDoList,
+  } = data;
+
+  const missingMessages = []; // push strings or objects
+  const errors = [];
+
+  const children = this.children.map(childId => findPersonInList(people, childId));
+
+  // Determine if any pieces of the birth event are missing.
+  let birthDateIncomplete = false;
+  const birthYear = this.getBirthYear();
+  if (birthYear) {
+    if (this.birth.date.display) {
+      missingMessages.push('birth date? "' + this.birth.date.display + '"');
+      birthDateIncomplete = true;
+    } else if (!this.birth.date.month || !this.birth.date.month) {
+      missingMessages.push('partial birth date');
+      birthDateIncomplete = true;
+    }
+
+    if (this.birth.location && this.birth.location.country) {
+      // If born outside the US, don't worry about more specific location info for this chart.
+      if (this.birth.location.country === 'United States') {
+        if (!this.birth.location.region1) {
+          missingMessages.push('birth location');
+        } else if (!this.birth.location.region2) {
+          missingMessages.push('birth location - '
+            + (this.birth.location.city ? 'county' : 'city/county'));
+        } else if (!this.birth.location.city) {
+          missingMessages.push('birth location - city');
+        }
+      }
+    } else {
+      missingMessages.push('birth location');
+    }
+  } else {
+    missingMessages.push({message: 'birth event', priority: 1});
+    birthDateIncomplete = true;
+  }
+
+  if (birthDateIncomplete) {
+    errors.push('birth?');
+  }
+
+  const personMarriageEvents = marriageEvents.filter(event => {
+    return findPersonInList(event.people, this);
+  });
+
+  if (!this.living && !this.getDeathYear()) {
+    errors.push('death?');
+    missingMessages.push('death event (or still living?)');
+  }
+
+  if (this.getTagValue('number of children') !== 'done') {
+    errors.push('children?');
+    missingMessages.push('children?');
+  }
+
+  missingMessages.forEach(item => {
+    if (item.message) {
+      toDoList.push({person: this, missing: item.message, priority: item.priority});
+    } else {
+      toDoList.push({person: this, missing: item});
+    }
+  });
+
+  return {
+    children,
+    errors,
+    personMarriageEvents,
+  };
+};
 
 // RELATIVES
 
