@@ -20,8 +20,25 @@
     <th>connection</th>
     <th>degree</th>
     <th>sharing</th>
+    <th>children</th>
   </tr>
   <% people.forEach(person => { %>
+    <%
+      let showChildrenDone = false,
+        showChildrenNotDone = false,
+        childrenNote = '';
+      const numberOfChildrenTag = person.getTagValue('number of children');
+
+      if (!numberOfChildrenTag || numberOfChildrenTag === 'unknown') {
+        showChildrenNotDone = true;
+      } else if (numberOfChildrenTag === 'done') {
+        showChildrenDone = true;
+      } else if (numberOfChildrenTag === 'too distant') {
+        childrenNote = '--';
+      } else {
+        childrenNote = person.children.length + '/' + numberOfChildrenTag;
+      }
+    %>
     <tr>
       <td>
         <%- include('../person/_link', {person}) %>
@@ -57,6 +74,15 @@
           restricted
         <% } else { %>
           <img class="checkmark-inline" src="/images/check-false.png">
+        <% } %>
+      </td>
+      <td class="center">
+        <% if (showChildrenDone) { %>
+          <img class="checkmark-inline" src="/images/check-true.png">
+        <% } else if (showChildrenNotDone) { %>
+          <img class="checkmark-inline" src="/images/check-false.png">
+        <% } else { %>
+          <%= childrenNote %>
         <% } %>
       </td>
     </tr>

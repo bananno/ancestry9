@@ -158,11 +158,11 @@ function createSourceChecklist({sources, person, birthYear, deathYear, immigrati
     });
   }
 
-  if (birthYear != null && deathYear != null && person.gender != 1) {
-    if (birthYear < 1900 && deathYear > 1917) {
+  if (birthYear != null && person.gender != 1) {
+    if (birthYear < 1900 && (!deathYear || deathYear > 1917)) {
       checkForStory({attr: 'title', title: 'World War I draft'});
     }
-    if (birthYear < 1925 && deathYear > 1940) {
+    if (birthYear < 1926 && (!deathYear || deathYear > 1940)) {
       checkForStory({attr: 'title', title: 'World War II draft'});
     }
   }
