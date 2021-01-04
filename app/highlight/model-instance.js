@@ -21,7 +21,7 @@ methods.processForContent = function(content) {
 
   const matches = content.match(regex);
 
-  if (!matches) {
+  if (!matches || this.instance >= matches.length) {
     this.actualText = this.text;
     this.characterIndex = -1;
     this.addError('NOT FOUND');

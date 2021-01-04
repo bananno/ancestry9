@@ -163,6 +163,9 @@ methods.populateHighlights = async function() {
 }
 
 methods.populateAndProcessHighlights = async function() {
+  if (!this.content) {
+    return;
+  }
   const Highlight = mongoose.model('Highlight');
   await this.populateHighlights();
   this.highlightedContent = Highlight.processForContent(this.content, this.highlights);

@@ -110,6 +110,10 @@ methods.saveSourceForm = async (req, res) => {
 
     const personName = personRows[rowNumber].name;
 
+    if (!personName) {
+      return res.send('name column or value is missing');
+    }
+
     // Count the number of times this person's name appears in the table BEFORE
     // their row; usually only when two people have the same name.
     const numberOfInstancesToSkip = getHighlightInstance({
@@ -177,7 +181,9 @@ function getMainTableRows(source) {
 
   const headerRow = contentLines[lastEmptyLine + 1];
 
-  const columnNames = headerRow.split('||').map(s => s.trim()).filter(Boolean);
+  const columnNames = headerRow
+    ? headerRow.split('||').map(s => s.trim()).filter(Boolean)
+    : [];
 
   const personRows = [];
 
