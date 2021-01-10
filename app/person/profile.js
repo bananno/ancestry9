@@ -179,6 +179,8 @@ async function personDescendants(req, res) {
 
   const marriageEvents = await Event.find({title: {$in: ['divorce', 'marriage']}});
 
+  const generationLimit = req.params.generation ? parseInt(req.params.generation) : undefined;
+
   res.renderPersonProfile('descendants', {
     people,
     marriageEvents,
@@ -186,6 +188,7 @@ async function personDescendants(req, res) {
     getLifeDatesString,
     formatEventDate,
     sortBy: sorting.sortBy,
+    generationLimit,
   });
 
   function getLifeDatesString(person) {

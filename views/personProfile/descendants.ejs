@@ -30,16 +30,42 @@
 .to-do-list {
   margin-top: 20px;
 }
+.generations-options {
+  margin-bottom: 20px;
+}
+.generations-options a.selected {
+  font-weight: bold;
+  color: black;
+}
 </style>
 
 <h2>descendants chart</h2>
 
 <%
   const toDoList = [];
+  const generationList = [['all'], [2, 2], [3, 3]];
+  const baseUrl = `/person/${paramPersonId}/descendants`;
 %>
 
+<p class="generations-options">
+  Show generations:
+  <% generationList.forEach(([text, num], i) => { %>
+    <%
+      const path = num ? (baseUrl + '/generation/' + num) : baseUrl;
+      const className = generationLimit === num ? 'selected' : '';
+    %>
+    <%= i > 0 ? '|' : '' %>
+    <a href="<%= path %>" class="<%= className %>"><%= text %></a>
+  <% }); %>
+</p>
+
 <div class="descendants-chart">
-  <%- include('./_desc', {person, toDoList}) %>
+  <%- include('./_desc', {
+    person,
+    toDoList,
+    generation: 0,
+    generationLimit: generationLimit || 20,
+  }) %>
 </div>
 
 <% if (toDoList.length) { %>

@@ -2,13 +2,8 @@
   // Settings will not be modified automatically. Change settings for desired display.
   const settings = {
     showErrors: true,
+    showGeneration: false,
   };
-
-  const safety = (locals.safety || 0) + 1;
-
-  if (safety > 15) {
-    throw `[ERROR] descendants chart reached ${safety} layers`;
-  }
 
   const person = findPersonInList(people, locals.person);
 
@@ -19,10 +14,16 @@
     toDoList,
     formatEventDate,
   });
+
+  // TO DO: use the "number of children" tag information to show "__ children"
+  // when applicable.
 %>
 
 <p class="person-item">
   <b>
+    <% if (settings.showGeneration) { %>
+      [<%= generation %>]
+    <% } %>
     <%- include('../person/_link', {
       person,
       linkText: personInfo.maidenName,
@@ -58,11 +59,22 @@
     <% } %>
   </p>
   <ul>
-    <% spouseChildren.forEach(child => { %>
+    <% if (generation === generationLimit) { %>
       <li>
-        <%- include('./_desc', {person: child, toDoList, safety}) %>
+        <b><%= spouseChildren.length %>
+        <%= spouseChildren.length === 1 ? 'child' : 'children' %></b>
       </li>
-    <% }); %>
+    <% } else { %>
+      <% spouseChildren.forEach(child => { %>
+        <li>
+          <%- include('./_desc', {
+            person: child,
+            toDoList,
+            generation: generation + 1,
+          }) %>
+        </li>
+      <% }); %>
+    <% } %>
   </ul>
 <% }); %>
 
@@ -71,10 +83,21 @@
     + unknown spouse
   </p>
   <ul>
-    <% personInfo.additionalChildren.forEach(child => { %>
+    <% if (generation === generationLimit) { %>
       <li>
-        <%- include('./_desc', {person: child, toDoList, safety}) %>
+        <b><%= personInfo.additionalChildren.length %>
+        <%= personInfo.additionalChildren.length === 1 ? 'child' : 'children' %></b>
       </li>
-    <% }); %>
+    <% } else { %>
+      <% personInfo.additionalChildren.forEach(child => { %>
+        <li>
+          <%- include('./_desc', {
+            person: child,
+            toDoList,
+            generation: generation + 1,
+          }) %>
+        </li>
+      <% }); %>
+    <% } %>
   </ul>
 <% } %>

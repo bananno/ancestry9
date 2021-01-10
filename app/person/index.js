@@ -40,6 +40,9 @@ function createRoutes(router) {
   router.post('/person/:id/add/events', createPersonEvent);
   router.post('/person/:id/add/notations', createPersonNotation);
   router.post('/person/:id/add/namedLink', addNamedLink);
+
+  router.get('/person/:id/descendants/generation/:generation',
+    personProfileRoutes.other.descendants);
 }
 
 async function peopleIndex(req, res) {
