@@ -1,3 +1,6 @@
+$(document).ready(() => {
+  createPersonDropdownFilters();
+});
 
 function toggleLocationOptions() {
   const $country = $('[name="location-country"]');
@@ -51,4 +54,29 @@ function createQuickFilter(options) {
       options.then(searchWords);
     }
   });
+}
+
+function createPersonDropdownFilters() {
+  const $allFilters = $('.person-dropdown-filter');
+
+  $allFilters.each(setupFilter);
+
+  function setupFilter(i, input) {
+    const $input = $(input);
+    const $groupBox = $input.closest('.person-dropdown-group');
+    const $options = $groupBox.find('select option');
+    const $showResults = $groupBox.find('.person-dropdown-show-results');
+
+    $input.keyup(() => {
+      const searchWords = $input.val().trim().toLowerCase().split(' ').filter(Boolean);
+      let count = 0;
+      $options.each((i, item) => {
+        const itemText = $(item).text().toLowerCase();
+        const isMatch = !searchWords.some(word => !itemText.match(word));
+        $(item).toggle(isMatch);
+        count += isMatch ? 1 : 0;
+      });
+      $showResults.text(searchWords.length ? (count + ' result(s)') : '');
+    });
+  }
 }

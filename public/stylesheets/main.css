@@ -8,6 +8,10 @@ table {
   border-collapse: collapse;
 }
 
+textarea {
+  padding: 5px;
+}
+
 /* LINKS */
 
 a, .clickable-link {

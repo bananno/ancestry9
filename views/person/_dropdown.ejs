@@ -2,19 +2,27 @@
   const selectedId = locals.selectedPerson ? ('' + (selectedPerson._id || selectedPerson)) : null;
 %>
 
-<select name="<%= fieldName %>">
-  <option value="0">
-    -- Select --
-  </option>
-  <% people.forEach(person => { %>
-    <% if (selectedId == '' + person._id) { %>
-      <option value="<%= person.id %>" selected="selected">
-        <%= person.name %>
-      </option>
-    <% } else { %>
-      <option value="<%= person.id %>">
-        <%= person.name %>
-      </option>
-    <% } %>
-  <% }); %>
-</select>
+<div class="person-dropdown-group">
+  <% if (locals.useFilter) { %>
+    <input class="person-dropdown-filter" placeholder="filter person dropdown">
+  <% } %>
+  <select class="person-dropdown" name="<%= fieldName %>">
+    <option value="0">
+      -- Select --
+    </option>
+    <% people.forEach(person => { %>
+      <% if (selectedId == '' + person._id) { %>
+        <option value="<%= person.id %>" selected="selected">
+          <%= person.name %>
+        </option>
+      <% } else { %>
+        <option value="<%= person.id %>">
+          <%= person.name %>
+        </option>
+      <% } %>
+    <% }); %>
+  </select>
+  <% if (locals.useFilter) { %>
+    <span class="person-dropdown-show-results"></span>
+  <% } %>
+</div>
