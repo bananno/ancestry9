@@ -277,6 +277,38 @@ methods.getDescendantChartInfo = function(data) {
   }
 };
 
+methods.populateCitations = async function() {
+  const Citation = mongoose.model('Citation');
+  this.citations = await Citation.find({person: this});
+}
+
+// Populate all the sources info needed for the wikitree view.
+methods.populateWikiTreeSources = async function() {
+  const Source = mongoose.model('Source');
+
+  await this.populateCitations();
+  const citationSourceIds = this.citations.map(citation => citation.source);
+
+  // The person is tagged in the source OR has a citation (model) to the source.
+  const sourceFilter = {
+    $or: [
+      {people: this},
+      {_id: {$in: citationSourceIds}},
+    ]
+  };
+
+  const sources = await Source.find(sourceFilter).populate('story');
+
+  // Populate citation text (NOT citation model).
+  // This can be attached to the source or the story.
+  // Eliminate sources that have no citation text.
+  // (Note: All USFC stories have cite text, so they are never eliminated.)
+  await Source.populateCiteText(sources);
+  this.wikiTreeSources = sources.filter(source => source.citeText.length);
+
+  Source.sortByStory(this.wikiTreeSources);
+};
+
 // RELATIVES
 
 methods.attachParent = async function(relativeId) {

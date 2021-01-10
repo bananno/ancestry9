@@ -152,19 +152,8 @@ async function personConnection(req, res) {
 }
 
 async function personWikitree(req, res) {
-  const person = req.person;
-
-  const personSources = await Source.find({people: person}).populate('story');
-
-  await Source.populateCiteText(personSources);
-
-  const sources = personSources.filter(source => {
-    return source.citeText.length || source.story.title.match('Census USA');
-  });
-
-  Source.sortByStory(sources);
-
-  res.renderPersonProfile('wikitree', {sources});
+  await req.person.populateWikiTreeSources();
+  res.renderPersonProfile('wikitree');
 }
 
 async function personDescendants(req, res) {

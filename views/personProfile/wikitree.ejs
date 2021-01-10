@@ -1,3 +1,14 @@
+<%
+  const wikitreeLink = person.links.find(link => link.match('wikitree'));
+  const wikitreeUrl = wikitreeLink ? wikitreeLink.split(' ')[0] : undefined;
+%>
+
+<% if (wikitreeUrl) { %>
+  <p style="margin-top: 20px;">
+    <a href="<%= wikitreeUrl %>" target="_blank">WikiTree profile</a>
+  </p>
+<% } %>
+
 <h2>== Profiles ==</h2>
 
 <% person.links.forEach(link => { %>
@@ -27,7 +38,7 @@
   &lt;references /&gt;
 </p>
 
-<% sources.forEach(source => { %>
+<% person.wikiTreeSources.forEach(source => { %>
   <p style="margin: 10px 0; max-width: 800px;">
     *
     <b>'''<%= source.story.title %>.'''</b>
