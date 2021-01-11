@@ -25,6 +25,7 @@ function convertParamPersonId(req, res, next, paramPersonId) {
     if (!err && person) {
       req.personId = person._id;
       req.person = person;
+      req.rootPath = '/person/' + person._id;
       return next();
     }
 
@@ -39,6 +40,7 @@ function convertParamPersonId(req, res, next, paramPersonId) {
 
       req.personId = people[0]._id;
       req.person = people[0];
+      req.rootPath = '/person/' + paramPersonId;
       next();
     });
   });
@@ -53,6 +55,7 @@ function createRenderPersonProfile(req, res, next) {
       title: person.name,
       personId: req.personId,
       paramPersonId: req.paramPersonId,
+      rootPath: req.rootPath,
       ...options
     });
   }

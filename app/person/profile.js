@@ -5,6 +5,7 @@ const {
   Person,
   Source,
   Tag,
+  getEditTableRows,
   sorting,
 } = require('../import');
 
@@ -65,12 +66,18 @@ async function personEdit(req, res) {
 
   const tags = await Tag.getAvailableForItem(req.person);
 
-  res.renderPersonProfile('edit', {
-    people,
+  const tableRows = getEditTableRows({
+    item: req.person,
+    rootPath: req.rootPath,
     fields: constants.fields,
-    rootPath: '/person/' + req.paramPersonId,
+    people,
     tags,
+  });
+
+  res.renderPersonProfile('edit', {
+    tableRows,
     missingLinks: req.person.getMissingLinks(),
+    itemName: 'person',
   });
 }
 

@@ -1,8 +1,6 @@
 
 function initializeEditForm(currentlyEditingByRoute) {
-  if (!currentlyEditingByRoute) {
-    $('.link-start').show();
-  }
+  $('.link-start').show();
 }
 
 function startEdit(item, val) {

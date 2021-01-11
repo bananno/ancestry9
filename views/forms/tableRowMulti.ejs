@@ -1,126 +1,95 @@
-<%
-  const dataType = locals.dataType || attr;
-  const addItemPath = rootPath + '/add/' + attr;
-
-  let peopleDropdownList = [];
-
-  if (dataType == 'people') {
-    const peopleIds = values.map(person => '' + person._id);
-    if (locals.unlinkedPeople) {
-      peopleDropdownList = unlinkedPeople;
-    } else {
-      peopleDropdownList = people.filter(person => {
-        return !peopleIds.includes('' + person._id);
-      });
-    }
-  }
-%>
-
-<% values.forEach((thisItem, index) => { %>
+<% subRows.forEach((rowInfo, index) => { %>
   <%
-    const itemId = thisItem._id || index;
-    const deleteItemPath = rootPath + '/delete/' + attr + '/' + itemId;
-    const reorderItemPath = rootPath + '/reorder/' + attr + '/' + itemId;
-    const updateItemPath = rootPath + '/update/' + attr;
-
-    let canEditTag;
-
-    const i = index;//get rid of
+    const {
+      itemPaths,
+      itemKey,
+      objectInList,
+      editData,
+      tagValue,
+    } = rowInfo;
   %>
-
   <tr>
     <td>
-      <% if (i == 0) { %>
-        <b><%= attr %></b>
+      <% if (index == 0) { %>
+        <b><%= fieldName %></b>
       <% } %>
     </td>
 
-    <!-- DISPLAY VALUE -->
+    <!-- TAGS - HAS OWN STRUCTURE (3 cells) -->
 
-    <td
-      <%= attr === 'tags' ? '' : 'colspan=2' %>
-    >
-      <% if (dataType == 'links') { %>
-        <%- include('../format/externalLink', {url: thisItem}) %>
-      <% } else if (dataType == 'images') { %>
-        <%- include('../image/_link', {image: thisItem}) %>
-      <% } else if (dataType == 'people') { %>
-        <%- include('../person/_link', {person: thisItem}) %>
-      <% } else if (dataType == 'stories') { %>
-        <%- include('../story/_link', {story: thisItem}) %>
-      <% } else if (dataType == 'tags') { %>
-        <%- include('../tag/_link', {tag: thisItem}) %>
-        <% if (item.tagValues[i]) { %>
-        <% } %>
-      <% } else { %>
-        <%= thisItem %>
-      <% } %>
-    </td>
-
-    <!-- EDITABLE VALUE -->
-
-    <% if (attr === 'tags') { %>
+    <% if (dataType === 'tags') { %>
       <td>
-        <%
-          const tagValue = item.tagValues[i];
-
-          let showDropdown, showTextbox, valueList = [];
-
-          if (thisItem.valueType === 2) {
-            valueList = thisItem.values
-              ? thisItem.values.split('\n').map(s => s.trim())
-              : [];
-            if (!tagValue || valueList.includes(tagValue)) {
-              showDropdown = true;
-            } else {
-              showTextbox = true;
-            }
-            canEditTag = true;
-          } else if (tagValue || thisItem.valueType === 1) {
-            showTextbox = true;
-            canEditTag = true;
-          }
-        %>
-
-        <span item="<%= attr + '-' + i %>" class="value-show"><%= tagValue %></span>
-
-        <form
-          action="<%= updateItemPath %>"
-          method="post"
-          item="<%= attr + '-' + index %>"
-          class="value-edit"
-        >
+        <%- include('../tag/_link', {tag: objectInList}) %>
+      </td>
+      <td item="<%= itemKey %>" class="value-show">
+        <%= tagValue %>
+      </td>
+      <td item="<%= itemKey %>" class="value-edit">
+        <form action="<%= itemPaths.update %>" method="post">
           <input type="hidden" name="index" value="<%= index %>">
           <div>
-            <% if (showDropdown) { %>
+            <% if (editData.showDropdown) { %>
               <select name="newValue">
-                <% valueList.forEach(value => { %>
-                  <%
-                    let selected = value === tagValue ? 'selected' : '';
-                  %>
-                  <option <%= selected %>>
-                    <%= value %>
+                <% editData.dropdownOptions.forEach(option => { %>
+                  <option <%= option.selected ? 'selected' : '' %>>
+                    <%= option.text %>
                   </option>
                 <% }); %>
               </select>
-            <% } else if (showTextbox) { %>
+            <% } else if (editData.showTextbox) { %>
               <input name="newValue" value="<%= tagValue %>">
             <% } %>
           </div>
-
           <button>update</button>
         </form>
       </td>
+
+    <!-- ALL OTHER ATTRIBUTES -->
+
+    <% } else { %>
+
+      <!-- DISPLAY VALUE -->
+
+      <td colspan="2" item="<%= itemKey %>" class="value-show">
+        <% if (dataType == 'links') { %>
+          <%- include('../format/externalLink', {url: objectInList}) %>
+        <% } else if (dataType == 'images') { %>
+          <%- include('../image/_link', {image: objectInList}) %>
+        <% } else if (dataType == 'people') { %>
+          <%- include('../person/_link', {person: objectInList}) %>
+        <% } else if (dataType == 'stories') { %>
+          <%- include('../story/_link', {story: objectInList}) %>
+        <% } else { %>
+          <%= objectInList %>
+        <% } %>
+      </td>
+
+      <!-- EDIT VALUE -->
+
+      <% if (editData) { %>
+        <td colspan="2" item="<%= itemKey %>" class="value-edit">
+          <form
+            action="<%= itemPaths.update %>"
+            method="post"
+            item="<%= itemKey %>"
+            class="value-edit"
+          >
+            <input type="hidden" name="index" value="<%= index %>">
+            <input name="newValue" value="<%= objectInList %>">
+            <button>update</button>
+          </form>
+        </td>
+      <% } %>
     <% } %>
 
     <!-- START EDITING EXISTING VALUE -->
 
     <td>
-      <% if (attr === 'tags' && canEditTag) { %>
+      <% if (editData) { %>
         <span
-          item="<%= attr %>"
+          item="<%= fieldName %>"
           class="clickable-link link-start"
-          onclick="startEdit('<%= attr + '-' + i %>')"
+          onclick="startEdit('<%= itemKey %>')"
         >edit value</span>
       <% } %>
     </td>
@@ -128,8 +97,8 @@
     <!-- REORDER UP -->
 
     <td>
-      <% if (i > 0) { %>
-        <form action="<%= reorderItemPath %>" method="POST">
+      <% if (index > 0) { %>
+        <form action="<%= itemPaths.reorder %>" method="post">
           <button type="submit" class="button-reorder">reorder up</button>
         </form>
       <% } %>
@@ -140,8 +109,8 @@
 
       <form
         method="post"
-        action="<%= deleteItemPath %>"
-        onsubmit="return confirmDeletion('<%= attr %>')"
+        action="<%= itemPaths.delete %>"
+        onsubmit="return confirmDeletion('<%= fieldName %>')"
       >
         <button type="submit" class="button-delete">delete</button>
       </form>
@@ -149,7 +118,7 @@
       <!-- CANCEL EDITING EXISTING VALUE -->
 
       <span
-        item="<%= attr + '-' + i %>"
+        item="<%= itemKey %>"
         class="clickable-link link-cancel"
         onclick="cancelEdit()"
       >cancel</span>
@@ -162,45 +131,43 @@
 <tr>
   <td>
     <% if (values.length == 0) { %>
-      <b><%= attr %></b>
+      <b><%= fieldName %></b>
     <% } %>
   </td>
 
-  <form action="<%= addItemPath %>" method="POST">
+  <form action="<%= addItemPath %>" method="post">
     <td colspan="2">
       <!-- START ADDING -->
 
-      <a class="link-start" onclick="startEdit('<%= attr %>')">add</a>
+      <a class="link-start" onclick="startEdit('<%= fieldName %>')">add</a>
       &#160;
 
       <!-- NEW VALUE -->
 
-      <% if (dataType == 'people') { %>
-        <div item="<%= attr %>" class="value-new">
+      <div item="<%= fieldName %>" class="value-new">
+        <% if (dataType == 'people') { %>
           <%- include('../person/_dropdown', {
-            fieldName: attr,
+            fieldName,
             selectedPerson: null,
-            people: peopleDropdownList,
+            people: dataForDropdown.people,
           }) %>
-        </div>
-      <% } else if (dataType === 'tags') { %>
-        <div item="<%= attr %>" class="value-new">
-          <%- include('../tag/_attach') %>
-        </div>
-      <% } else if (dataType == 'stories') { %>
-        <div item="<%= attr %>" class="value-new">
+        <% } else if (dataType === 'tags') { %>
+          <%- include('../tag/_attach', {
+            tags: dataForDropdown.tags,
+          }) %>
+        <% } else if (dataType == 'stories') { %>
           <%- include('../story/_dropdown', {
             fieldName: 'stories',
           }) %>
-        </div>
-      <% } else { %>
-        <input item="<%= attr %>" class="value-new" type="text" value="" name="<%= attr %>">
-      <% } %>
+        <% } else { %>
+          <input name="<%= fieldName %>" type="text" value="">
+        <% } %>
+      </div>
     </td>
 
     <!-- SUBMIT NEW ITEM -->
     <td>
-      <button item="<%= attr %>" class="button-submit" type="submit">save</button>
+      <button item="<%= fieldName %>" class="button-submit" type="submit">save</button>
       &#160;
     </td>
   </form>
@@ -210,7 +177,7 @@
 
   <!-- CANCEL NEW ITEM -->
   <td>
-    <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
+    <a item="<%= fieldName %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
     &#160;
   </td>
 </tr>

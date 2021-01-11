@@ -26,10 +26,10 @@ module.exports = [
     type: String,
   },
   {
-    // 1 = female, 2 = male, 3 = unknown
-    // (or 0 = not yet specified in database)
     name: 'gender',
     type: Number,
+    inputType: 'dropdown',
+    valueNames: [null, 'female', 'male', 'unknown'], // (0 = not yet specified in database)
   },
   {
     name: 'living',

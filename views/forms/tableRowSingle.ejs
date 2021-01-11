@@ -1,116 +1,66 @@
-<%
-  const attr = locals.attr;
-  const editPath = locals.editPath;
-  const originalValue = locals.originalValue;
-  const inputType = locals.inputType || 'text';
-  const useToggleButton = locals.useToggleButton;
-  const disableToggleButton = useToggleButton && locals.isDisabled;
-  const originalValueText = originalValue ? (originalValue._id || originalValue) : originalValue;
-%>
-
-<form action="<%= editPath %>" method="POST">
+<form action="<%= editPath %>" method="post">
   <tr>
     <td>
-      <b><%= attr %></b>
+      <b><%= fieldName %></b>
     </td>
 
     <td colspan="2">
       <!-- DISPLAY VALUE -->
 
-      <div item="<%= attr %>" class="value-show">
+      <div item="<%= fieldName %>" class="value-show">
 
         <!-- date, location -->
 
-        <% if (attr == 'date') { %>
+        <% if (dataType == 'date') { %>
           <%- include('../format/date', {date: originalValue}) %>
-        <% } else if (attr == 'location') { %>
+        <% } else if (dataType == 'location') { %>
           <%- include('../format/location', {location: originalValue}) %>
 
         <!-- story -->
 
-        <% } else if (attr == 'story') { %>
-          <div item="<%= attr %>" class="value-show">
-            <% if (originalValue) { %>
-              <%- include('../story/_link', {story: originalValue}) %>
-            <% } else { %>
-              none
-            <% } %>
-          </div>
+        <% } else if (dataType == 'story') { %>
+          <% if (originalValue) { %>
+            <%- include('../story/_link', {story: originalValue}) %>
+          <% } else { %>
+            none
+          <% } %>
 
         <!-- source -->
 
-        <% } else if (attr == 'source') { %>
-          <div item="<%= attr %>" class="value-show">
-            <% if (originalValue) { %>
-              <%- include('../source/_link', {source: originalValue}) %>
-            <% } else { %>
-              <i>(none)</i>
-            <% } %>
-          </div>
-
-        <!-- gender -->
-
-        <% } else if (attr == 'gender') { %>
-          <div item="<%= attr %>" class="value-show">
-            <% if ([1, 2, 3].includes(originalValue)) { %>
-              <%= [null, 'female', 'male', 'unknown'][originalValue] %>
-            <% } else { %>
-              <span style="color: red">undefined or error</span>
-              <%= originalValue %>
-            <% } %>
-          </div>
+        <% } else if (dataType == 'source') { %>
+          <% if (originalValue) { %>
+            <%- include('../source/_link', {source: originalValue}) %>
+          <% } else { %>
+            <i>(none)</i>
+          <% } %>
 
         <!-- textarea -->
 
         <% } else if (inputType == 'textarea') { %>
-          <%
-            let valueList = [];
-            if (originalValue && originalValue != '') {
-              valueList = originalValue.split('\n');
-            }
-          %>
           <ul class="bullet-list">
-            <% valueList.forEach(str => { %>
+            <% currentValueAsList.forEach(str => { %>
               <li><%= str %></li>
             <% }); %>
           </ul>
 
         <!-- sharing -->
 
-        <% } else if (attr == 'sharing' || attr == 'shareLevel') { %>
-          <%
-            let imageValue = originalValue === 2 || originalValue === true;
-            let shareText = '';
-            let showSourceWarning;
+        <% } else if (shareInfo) { %>
+          <img
+            class="checkmark-inline"
+            src="/images/check-<%= shareInfo.imageValue %>.png"
+          >
 
-            if (locals.valueOptionList) {
-              shareText = valueOptionList[originalValue];
-            } else {
-              shareText = originalValue ? 'yes' : 'no';
-            }
+          <%= shareInfo.shareText %>
 
-            if (item.canBeShared && !item.canBeShared()) {
-              if (originalValue) {
-                showSourceWarning = true;
-              } else {
-                shareText += ' (story is not shared)';
-              }
-            }
-          %>
-
-          <img class="checkmark-inline" src="/images/check-<%= imageValue %>.png">
-
-          <%= shareText %>
-
-          <% if (showSourceWarning) { %>
+          <% if (shareInfo.showSourceWarning) { %>
             <span style="color: red">WARNING: story is not shared</span>
           <% } %>
 
         <!-- toggle or dropdown: list of preset options -->
 
-        <% } else if (locals.valueOptionList) { %>
-          <%= valueOptionList[originalValue] || 'INVALID VALUE' %>
-          (<%= originalValue %>)
+        <% } else if (fieldValueOptions.length) { %>
+          <%= fieldValueOptions[originalValue] || 'INVALID VALUE' %>
 
         <!-- everything else -->
 
@@ -121,50 +71,32 @@
 
       <!-- EDITABLE FIELD -->
 
-      <% if (attr == 'date') { %>
-        <div item="<%= attr %>" class="value-edit">
+      <div item="<%= fieldName %>" class="value-edit">
+        <% if (dataType == 'date') { %>
           <%- include('../forms/date', {date: originalValue}) %>
-        </div>
-      <% } else if (attr == 'location') { %>
-        <div item="<%= attr %>" class="value-edit">
+        <% } else if (dataType == 'location') { %>
           <%- include('../forms/location', {location: originalValue}) %>
-        </div>
-      <% } else if (attr == 'story') { %>
-        <div item="<%= attr %>" class="value-edit">
-          <%- include('../story/_dropdown', {
-            fieldName: attr,
-            selectedStory: originalValue,
-          }) %>
-        </div>
-      <% } else if (attr == 'gender') { %>
-        <select item="<%= attr %>" class="value-edit" name="<%= attr %>">
-          <% ['female', 'male', 'unknown'].forEach((text, i) => { %>
-            <% if (i + 1 == originalValue) { %>
-              <option value="<%= i + 1 %>" selected><%= text %></option>
-            <% } else { %>
-              <option value="<%= i + 1 %>"><%= text %></option>
-            <% } %>
-          <% }); %>
-        </select>
-      <% } else if (inputType == 'textarea') { %>
-        <textarea item="<%= attr %>" class="value-edit" name="<%= attr %>"><%= originalValue %></textarea>
-      <% } else if (inputType == 'dropdown') { %>
-        <select item="<%= attr %>" class="value-edit" name="<%= attr %>">
-          <option>-- select --</option>
-          <% locals.valueOptionList.forEach((text, value) => { %>
-            <option
-              value="<%= value %>"
-              <%= originalValue === value ? 'selected' : '' %>
-            ><%= text %></option>
-          <% }); %>
-        </select>
-      <% } else { %>
-        <input item="<%= attr %>" class="value-edit" type="text" value="<%= originalValueText %>" name="<%= attr %>">
-      <% } %>
+        <% } else if (dataType == 'story') { %>
+          <%- include('../story/_dropdown', {fieldName, selectedStory: originalValue}) %>
+        <% } else if (inputType == 'textarea') { %>
+          <textarea name="<%= fieldName %>"><%= originalValue %></textarea>
+        <% } else if (inputType == 'dropdown') { %>
+          <select name="<%= fieldName %>">
+            <option>-- select --</option>
+            <% valueDropownOptions.forEach(({text, value, selected}) => { %>
+              <option value="<%= value %>" <%= selected ? 'selected' : '' %>>
+                <%= text %>
+              </option>
+            <% }); %>
+          </select>
+        <% } else { %>
+          <input type="text" value="<%= originalValueText %>" name="<%= fieldName %>">
+        <% } %>
+      </div>
 
       <!-- HIDDEN ORIGINAL VALUE -->
 
-      <input item="<%= attr %>" class="value-original" type="hidden" value="<%= originalValueText %>">
+      <input item="<%= fieldName %>" class="value-original" type="hidden" value="<%= originalValueText %>">
     </td>
     <td>
       <!-- filler cell to line up with multi value version -->
@@ -172,20 +104,19 @@
     <td>
       <!-- SUBMIT EDIT -->
 
-      <input type="hidden" value="PUT" name="_method">
-      <button item="<%= attr %>" class="button-submit" type="submit">save</button>
+      <button item="<%= fieldName %>" class="button-submit" type="submit">save</button>
 
       <!-- TOGGLE SHOW/EDIT -->
 
       <% if (useToggleButton) { %>
-        <button item="<%= attr %>" class="link-start" type="submit"
+        <button item="<%= fieldName %>" class="link-start" type="submit"
           <%= disableToggleButton ? " disabled" : "" %>>toggle</button>
       <% } else { %>
-        <a item="<%= attr %>" class="link-start" onclick="startEdit('<%= attr %>')">edit</a>
+        <a item="<%= fieldName %>" class="link-start" onclick="startEdit('<%= fieldName %>')">edit</a>
       <% } %>
     </td>
     <td>
-      <a item="<%= attr %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
+      <a item="<%= fieldName %>" class="link-cancel" onclick="cancelEdit()">cancel</a>
     </td>
   </tr>
 </form>

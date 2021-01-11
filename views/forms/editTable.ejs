@@ -1,36 +1,10 @@
+<% if (!locals.tableRows) { %>
+  <p class="error">need to update this view to use buildEditTable</p>
+<% } %>
+
 <table class="edit-form-frame">
-  <% fields.forEach(field => { %>
-    <%
-      const itemIsEditable = field.onlyEditableIf
-        ? field.onlyEditableIf(item)
-        : field.inputType !== 'none';
-
-      if (!itemIsEditable && !field.showDisabledWhenNotEditable) {
-        return;
-      }
-
-      const data = {
-        item,
-        attr: field.name,
-        editPath: rootPath + '/edit/' + field.name,
-        dataType: field.dataType,
-        inputType: field.inputType,
-        useToggleButton: field.inputType === 'toggle',
-        valueOptionList: field.valueNames,
-      };
-
-      const filename = field.multi ? './tableRowMulti' : './tableRowSingle';
-
-      data.values = field.getValue ? field.getValue(item) : item[field.name];
-      data.originalValue = data.values;
-
-      if (field.dataType === 'tags') {
-        data.tagValues = item.tagValues;
-      }
-
-      data.isDisabled = !itemIsEditable;
-    %>
-    <%- include(filename, data) %>
+  <% (locals.tableRows || []).forEach(rowData => { %>
+    <%- include(rowData.filename, rowData) %>
   <% }); %>
 </table>
 
@@ -51,7 +25,5 @@
 <% } %>
 
 <script>
-  $(document).ready(() => {
-    initializeEditForm();
-  });
+  $(document).ready(initializeEditForm);
 </script>
