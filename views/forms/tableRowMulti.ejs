@@ -16,13 +16,16 @@
   }
 %>
 
-<% values.forEach((thisItem, i) => { %>
+<% values.forEach((thisItem, index) => { %>
   <%
-    const itemId = thisItem._id || i;
+    const itemId = thisItem._id || index;
     const deleteItemPath = rootPath + '/delete/' + attr + '/' + itemId;
     const reorderItemPath = rootPath + '/reorder/' + attr + '/' + itemId;
+    const updateItemPath = rootPath + '/update/' + attr;
 
     let canEditTag;
+
+    const i = index;//get rid of
   %>
 
   <tr>
@@ -81,26 +84,36 @@
 
         <span item="<%= attr + '-' + i %>" class="value-show"><%= tagValue %></span>
 
-        <div item="<%= attr + '-' + i %>" class="value-edit">
-          <% if (showDropdown) { %>
-            <select>
-              <% valueList.forEach(value => { %>
-                <%
-                  let selected = value === tagValue ? 'selected' : '';
-                %>
-                <option <%= selected %>>
-                  <%= value %>
-                </option>
-              <% }); %>
-            </select>
-          <% } else if (showTextbox) { %>
-            <input value="<%= tagValue %>">
-          <% } %>
-        </div>
+        <form
+          action="<%= updateItemPath %>"
+          method="post"
+          item="<%= attr + '-' + index %>"
+          class="value-edit"
+        >
+          <input type="hidden" name="index" value="<%= index %>">
+          <div>
+            <% if (showDropdown) { %>
+              <select name="newValue">
+                <% valueList.forEach(value => { %>
+                  <%
+                    let selected = value === tagValue ? 'selected' : '';
+                  %>
+                  <option <%= selected %>>
+                    <%= value %>
+                  </option>
+                <% }); %>
+              </select>
+            <% } else if (showTextbox) { %>
+              <input name="newValue" value="<%= tagValue %>">
+            <% } %>
+          </div>
+
+          <button>update</button>
+        </form>
       </td>
     <% } %>
 
-    <!-- EDIT VALUE -->
+    <!-- START EDITING EXISTING VALUE -->
 
     <td>
       <% if (attr === 'tags' && canEditTag) { %>
@@ -117,23 +130,23 @@
     <td>
       <% if (i > 0) { %>
         <form action="<%= reorderItemPath %>" method="POST">
-          <input type="hidden" value="PUT" name="_method">
           <button type="submit" class="button-reorder">reorder up</button>
         </form>
       <% } %>
     </td>
 
-    <!-- DELETE -->
-
     <td>
+      <!-- DELETE ROW -->
+
       <form
         method="post"
         action="<%= deleteItemPath %>"
         onsubmit="return confirmDeletion('<%= attr %>')"
       >
-        <input type="hidden" value="PUT" name="_method">
         <button type="submit" class="button-delete">delete</button>
       </form>
+
+      <!-- CANCEL EDITING EXISTING VALUE -->
 
       <span
         item="<%= attr + '-' + i %>"
@@ -187,7 +200,6 @@
 
     <!-- SUBMIT NEW ITEM -->
     <td>
-      <input type="hidden" value="PUT" name="_method">
       <button item="<%= attr %>" class="button-submit" type="submit">save</button>
       &#160;
     </td>

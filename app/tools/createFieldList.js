@@ -11,6 +11,9 @@ function createFieldList(modelName, options = {}) {
     .filter(prop => {
       return prop.showInEditTable !== false;
     }).map(prop => {
+      if (prop.specialType === 'tags') {
+        prop.allowUpdatingExistingValues = true;
+      }
       return {
         multi: prop.isArray,
         dataType: (options.useDataType && prop.references === 'Person')

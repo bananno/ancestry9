@@ -59,6 +59,9 @@ class Controller {
         this.addListAttribute(field);
         this.deleteListAttribute(field);
         this.reorderListAttribute(field);
+        if (field.allowUpdatingExistingValues) {
+          this.updateListAttribute(field);
+        }
       } else if (field.inputType === 'toggle') {
         this.toggleAttribute(field);
       } else {
@@ -67,7 +70,7 @@ class Controller {
     });
   }
 
-  redirect(req, res, item, itemId, updatedObj, fieldName) {
+  redirect({req, res, item, itemId, updatedObj, fieldName}) {
     let redirectId;
 
     if (this.modelName == 'person') {
@@ -122,7 +125,7 @@ class Controller {
         updatedObj[field.name] = !currentValue;
         await item.update(updatedObj);
       }
-      this.redirect(req, res, item, itemId);
+      this.redirect({req, res, item, itemId});
     });
   }
 
@@ -146,7 +149,7 @@ class Controller {
       }
 
       await item.update(updatedObj);
-      this.redirect(req, res, item, itemId, updatedObj, field.name);
+      this.redirect({req, res, item, itemId, updatedObj, fieldName: field.name});
     });
   }
 
@@ -190,7 +193,7 @@ class Controller {
         await item.update(updatedObj);
       }
 
-      this.redirect(req, res, item, itemId);
+      this.redirect({req, res, item, itemId});
     });
   }
 
@@ -228,7 +231,7 @@ class Controller {
         await item.update(updatedObj);
       }
 
-      this.redirect(req, res, item, itemId);
+      this.redirect({req, res, item, itemId});
     });
   }
 
@@ -249,7 +252,27 @@ class Controller {
       }
 
       await item.update(updatedObj);
-      this.redirect(req, res, item, itemId, updatedObj);
+      this.redirect({req, res, item, itemId, updatedObj});
+    });
+  }
+
+  updateListAttribute(field) {
+    const routePath = '/' + this.modelName + '/:id/update/' + field.name;
+    this.router.post(routePath, async (req, res) => {
+      const {item, itemId} = await this.getItem(req);
+
+      const attrName = field.dataType || field.name;
+      const updatedObj = {};
+      const index = parseInt(req.body.index);
+      const newValue = req.body.newValue.trim();
+
+      if (attrName === 'tags') {
+        updatedObj.tagValues = item.tagValues;
+        updatedObj.tagValues[index] = newValue;
+      }
+
+      await item.update(updatedObj);
+      this.redirect({req, res, item, itemId});
     });
   }
 }
