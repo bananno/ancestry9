@@ -17,7 +17,26 @@
 
   // OPTIONS FOR EDITING THE VALUE
 
-  inputType // options: textarea, toggle; default: text
+  inputType: String
+    /*
+      Defines how the attribute is edited.
+      Must correspond with "type" property.
+      Possible values:
+        1. text
+          HTML: <input>
+          This is the default when "inputType" is undefined.
+        2. textarea
+          HTML: <textarea>
+          Honors newlines. Saved attribute value will be displayed as <ul>.
+        3. dropdown
+          HTML: <select>
+          The "type" property should be Number.
+          Use "valueNames" property to define dropdown options.
+        4. toggle
+          Click a button to rotate through options.
+          The "type" property should be Number or Boolean.
+          For Number, use "valueNames" property to define the list of options.
+    */
 
   showInEditTable // default true
 

@@ -17,7 +17,7 @@ module.exports = [
   {
     name: 'valueType',
     type: Number,
-    inputType: 'toggle',
+    inputType: 'dropdown',
     defaultValue: 0,
     maxValue: 2,
     valueNames: [

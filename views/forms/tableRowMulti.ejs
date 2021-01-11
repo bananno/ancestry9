@@ -64,7 +64,9 @@
           let showDropdown, showTextbox, valueList = [];
 
           if (thisItem.valueType === 2) {
-            valueList = thisItem.values.split('\n').map(s => s.trim());
+            valueList = thisItem.values
+              ? thisItem.values.split('\n').map(s => s.trim())
+              : [];
             if (!tagValue || valueList.includes(tagValue)) {
               showDropdown = true;
             } else {
