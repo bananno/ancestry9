@@ -14,7 +14,7 @@ function createRenderStory(req, res, next) {
       subview,
       title: story.title,
       story,
-      rootPath: '/story/' + story._id,
+      rootPath: req.rootPath || '/story/' + story._id,
       ...options
     });
   };

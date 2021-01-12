@@ -18,6 +18,7 @@ tools.convertParamTagId = (req, res, next, paramTagId) => {
     if (!err && tag) {
       req.tagId = tag._id;
       req.tag = tag;
+      req.rootPath = '/tag/' + req.tagId;
       return next();
     }
 
@@ -27,6 +28,7 @@ tools.convertParamTagId = (req, res, next, paramTagId) => {
       if (!err && tag) {
         req.tagId = tag._id;
         req.tag = tag;
+        req.rootPath = '/tag/' + req.tagId;
         return next();
       }
 
@@ -41,7 +43,7 @@ tools.createRenderTag = function(req, res, next) {
       subview,
       tag: req.tag,
       title: 'Tag: ' + req.tag.title,
-      rootPath: '/tag/' + req.tag._id,
+      rootPath: req.roothPath || '/tag/' + req.tag._id,
       ...options
     });
   };

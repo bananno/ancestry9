@@ -2,8 +2,9 @@ const {
   Event,
   Person,
   Tag,
-  createModelRoutes,
+  createController,
   modelFields,
+  getEditTableRows,
 } = require('../import');
 
 const constants = require('./constants');
@@ -12,7 +13,7 @@ module.exports = createRoutes;
 function createRoutes(router) {
   router.use(createRenderEvent);
 
-  createModelRoutes({
+  createController({
     Model: Event,
     modelName: 'event',
     router,
@@ -29,7 +30,7 @@ function createRenderEvent(req, res, next) {
   res.renderEvent = (subview, options = {}) => {
     res.render('event/_layout', {
       subview,
-      rootPath: '/event/' + req.event._id,
+      rootPath: req.rootPath || '/event/' + req.event._id,
       title: options.title || 'Event',
       event: req.event,
       ...options
@@ -91,16 +92,26 @@ async function editEvent(req, res) {
     return res.send('event not found');
   }
 
-  const people = await Person.find({});
+  req.rootPath = '/event/' + req.event._id
+
+  const people = await Person.find();
   Person.sortByName(people);
 
-  const tags = await Tag.find({});
+  const tags = await Tag.find();
   Tag.sortByTitle(tags);
 
-  res.renderEvent('edit', {
-    title: 'Edit Event',
+  const tableRows = getEditTableRows({
+    item: req.event,
+    rootPath: req.rootPath,
     fields: constants.fields,
     people,
     tags,
+  });
+
+  res.renderEvent('edit', {
+    title: 'Edit Event',
+    itemName: 'event',
+    canDelete: true,
+    tableRows,
   });
 }

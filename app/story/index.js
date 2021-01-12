@@ -5,6 +5,7 @@ const {
   Source,
   Tag,
   createController,
+  getEditTableRows,
 } = require('../import');
 
 const constants = require('./constants');
@@ -90,13 +91,26 @@ async function storyEdit(req, res) {
     .populate('images')
     .populate('tags');
 
-  const people = await Person.find({});
+  req.rootPath = '/story/' + req.story._id;
+
+  const people = await Person.find();
   Person.sortByName(people);
 
-  const tags = await Tag.find({});
+  const tags = await Tag.find();
   Tag.sortByTitle(tags);
 
-  res.renderStory('edit', {fields: constants.fields, people, tags});
+  const tableRows = getEditTableRows({
+    item: req.story,
+    rootPath: req.rootPath,
+    fields: constants.fields,
+    people,
+    tags,
+  });
+
+  res.renderStory('edit', {
+    itemName: 'story',
+    tableRows,
+  });
 }
 
 async function storyEntries(req, res) {

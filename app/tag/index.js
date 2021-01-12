@@ -1,6 +1,7 @@
 const {
   Tag,
-  createModelRoutes,
+  createController,
+  getEditTableRows,
 } = require('../import');
 
 const constants = require('./constants');
@@ -12,7 +13,7 @@ function createRoutes(router) {
   router.use(tagTools.createRenderTag);
   router.param('id', tagTools.convertParamTagId);
 
-  createModelRoutes({
+  createController({
     Model: Tag,
     modelName: 'tag',
     modelNamePlural: 'tags',
@@ -95,15 +96,21 @@ async function showTag(req, res) {
 }
 
 async function editTag(req, res) {
-  const editParams = {
-    item: req.tag,
-    itemName: 'tag',
-    fields: constants.fields,
-    canDelete: await req.tag.canBeDeleted(),
-    tags: await Tag.getAvailableForItem(req.tag),
-  };
+  const canDelete = await req.tag.canBeDeleted();
+  const tags = await Tag.getAvailableForItem(req.tag);
 
-  res.renderTag('edit', {editParams});
+  const tableRows = getEditTableRows({
+    item: req.tag,
+    rootPath: req.rootPath,
+    fields: constants.fields,
+    tags,
+  });
+
+  res.renderTag('edit', {
+    itemName: 'tag',
+    canDelete,
+    tableRows,
+  });
 }
 
 async function deleteTag(req, res) {
