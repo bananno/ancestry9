@@ -20,7 +20,7 @@ function createRenderSource(req, res, next) {
       subview,
       title,
       source: req.source,
-      rootPath: '/source/' + req.source._id,
+      rootPath: req.rootPath,
       ...options
     });
   };
@@ -30,12 +30,14 @@ function createRenderSource(req, res, next) {
 async function convertParamSourceId1(req, res, next, sourceId) { // :id
   if (req.originalUrl.slice(0, 7) === '/source') {
     req.sourceId = sourceId;
+    req.rootPath = '/source/' + sourceId;
   }
   next();
 }
 
 async function convertParamSourceId2(req, res, next, sourceId) { // :sourceId
   req.sourceId = sourceId;
+  req.rootPath = '/source/' + sourceId;
   next();
 }
 

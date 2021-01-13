@@ -2,6 +2,7 @@ const {
   Source,
   Story,
   Tag,
+  getEditTableRows,
 } = require('../import');
 
 const constants = require('./constants');
@@ -46,23 +47,32 @@ async function renderEdit(req, res) {
 
   await source.populateAndSortCitations();
 
-  // allPeople - the dropdown for new notations.
+  // allPeople - the dropdown for new notations (not part of EditTable).
   // unlinkedPeople - the dropdown for linking additional people to the source.
   const {allPeople, unlinkedPeople} = await source.getPeopleForDropdown();
 
-  const tags = await Tag.find({});
+  const tags = await Tag.find();
   Tag.sortByTitle(tags);
+
+  const tableRows = getEditTableRows({
+    item: req.source,
+    rootPath: req.rootPath,
+    fields: constants.fields,
+    unlinkedPeople,
+    tags,
+    stories,
+  });
 
   res.renderSource('edit', {
     title: 'Edit Source',
-    fields: constants.fields,
+    itemName: 'source',
     people: allPeople,
     unlinkedPeople,
-    stories,
     needCitationText: source.story.title.match('Census')
       && source.citeText.length == 0,
     citationTextPath: '/source/' + source._id + '/createCitationNotation',
-    tags,
+    tableRows,
+    canDelete: req.source.canBeDeleted(),
   });
 }
 

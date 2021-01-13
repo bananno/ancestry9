@@ -1,6 +1,5 @@
 const {
   Highlight,
-  createModelRoutes,
 } = require('../import');
 
 module.exports = createRoutes;

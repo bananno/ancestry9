@@ -157,7 +157,8 @@
           }) %>
         <% } else if (dataType == 'stories') { %>
           <%- include('../story/_dropdown', {
-            fieldName: 'stories',
+            fieldName,
+            stories: dataForDropdown.stories,
           }) %>
         <% } else { %>
           <input name="<%= fieldName %>" type="text" value="">

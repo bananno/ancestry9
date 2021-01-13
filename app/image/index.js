@@ -1,14 +1,15 @@
 const {
   Image,
   Tag,
-  createModelRoutes,
+  createController,
+  getEditTableRows,
 } = require('../import');
 
 const constants = require('./constants');
 module.exports = createRoutes;
 
 function createRoutes(router) {
-  createModelRoutes({
+  createController({
     Model: Image,
     modelName: 'image',
     router: router,
@@ -21,6 +22,7 @@ function createRoutes(router) {
 async function showImage(req, res) {
   const imageId = req.params.id;
   const image = await Image.findById(imageId).populate('tags');
+  req.rootPath = '/image/' + image._id;
 
   if (!image) {
     return res.send('Image not found.');
@@ -28,14 +30,21 @@ async function showImage(req, res) {
 
   await image.populateParent();
 
-  const tags = await Tag.find({});
+  const tags = await Tag.find();
   Tag.sortByTitle(tags);
+
+  const tableRows = getEditTableRows({
+    item: image,
+    rootPath: req.rootPath,
+    fields: constants.fields,
+    tags,
+  });
 
   res.render('image/show', {
     title: 'Image',
     image,
-    fields: constants.fields,
-    rootPath: '/image/' + image._id,
-    tags,
+    rootPath: req.rootPath,
+    itemName: 'image',
+    tableRows,
   });
 }

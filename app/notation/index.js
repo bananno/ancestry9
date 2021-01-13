@@ -4,14 +4,20 @@ const {
   Person,
   Story,
   Tag,
-  createModelRoutes,
+  createController,
+  getEditTableRows,
 } = require('../import');
 
 const constants = require('./constants');
+const notationTools = require('./tools');
 module.exports = createRoutes;
 
 function createRoutes(router) {
-  createModelRoutes({
+  router.param('id', notationTools.convertParamNotationId);
+
+  router.use(notationTools.createRenderNotation);
+
+  createController({
     Model: Notation,
     modelName: 'notation',
     router,
@@ -42,10 +48,7 @@ function createNotation(req, res) {
 }
 
 async function showNotation(req, res) {
-  const notation = await getNotation(req.params.id);
-  if (!notation) {
-    return res.send('Notation not found.');
-  }
+  const notation = req.notation;
 
   // If this notation is an excerpt from a source, show the source's citations
   // for the tagged people. The notation is probably an excerpt of the relevant
@@ -63,45 +66,29 @@ async function showNotation(req, res) {
     Citation.sortByPerson(citationsByPerson, notation.people);
   }
 
-  res.render('notation/show', {title: 'Notation', notation, citations, citationsByPerson});
+  res.renderNotation('show', {citations, citationsByPerson});
 }
 
 async function editNotation(req, res) {
-  const notation = await getNotation(req.params.id);
-  if (!notation) {
-    return res.send('Notation not found.');
-  }
-
-  const people = await Person.find({});
+  const people = await Person.find();
   Person.sortByName(people);
 
-  const stories = await Story.find({});
+  const stories = await Story.find();
 
-  const tags = await Tag.find({});
+  const tags = await Tag.find();
   Tag.sortByTitle(tags);
 
-  res.render('notation/edit', {
-    title: 'Notation',
-    notation,
+  const tableRows = getEditTableRows({
+    item: req.notation,
+    rootPath: req.rootPath,
+    fields: constants.fields,
     people,
     stories,
-    rootPath: '/notation/' + notation._id,
-    fields: constants.fields,
     tags,
   });
-}
 
-async function getNotation(notationId) {
-  const notation = await Notation
-    .findById(notationId)
-    .populate('source')
-    .populate('people')
-    .populate('stories')
-    .populate('tags');
-
-  if (notation && notation.source) {
-    await notation.source.populateStory();
-  }
-
-  return notation;
+  res.renderNotation('edit', {
+    itemName: 'notation',
+    tableRows,
+  });
 }

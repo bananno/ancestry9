@@ -8,13 +8,7 @@
   }
 </style>
 
-<%- include('../forms/editTable', {
-  item: source,
-  itemName: 'source',
-  rootPath,
-  fields,
-  canDelete: source.canBeDeleted(),
-}) %>
+<%- include('../forms/editTable') %>
 
 <% if (needCitationText) { %>
   <h2>citation text</h2>

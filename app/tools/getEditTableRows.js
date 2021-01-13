@@ -46,8 +46,16 @@ function mapFieldRow(field, data) {
   tableRowData.disableToggleButton = tableRowData.useToggleButton
     && tableRowData.isDisabled;
 
+  assignDataForDropdowns();
+
   if (field.multi) {
-    assignMiscMultiRowData();
+    tableRowData.values = itemAttrValue;
+    tableRowData.valueDropownOptions = field.valueNames; // Is this ever used for multi?
+
+    if (dataType === 'tags') {
+      // The tag values that correspond with the actual tags for this item.
+      tableRowData.tagValues = item.tagValues;
+    }
 
     // If this attribute is a list, there is additional info needed for each
     // entry in the list.
@@ -88,14 +96,11 @@ function mapFieldRow(field, data) {
     return subRowData;
   }
 
-  function assignMiscMultiRowData() {
-    tableRowData.values = itemAttrValue;
-    tableRowData.valueDropownOptions = field.valueNames; // Is this ever used for multi?
-
+  function assignDataForDropdowns() {
     if (dataType == 'people') {
       // Get people that are available to be attached.
       // Use the list of unlinkedPeople if it has already been created.
-      // Otherwise remove the already-linked people from the dropdown.
+      // Otherwise remove the already-linked people from the list.
       if (data.unlinkedPeople) {
         tableRowData.dataForDropdown.people = data.unlinkedPeople;
       } else {
@@ -105,11 +110,16 @@ function mapFieldRow(field, data) {
           return !peopleIdMap['' + person._id];
         });
       }
-    } else if (dataType === 'tags') {
-      // Get tags that are available to be attached.
+      return;
+    }
+    // consolidate these into one data type?
+    if (dataType === 'stories' || dataType === 'story') {
+      tableRowData.dataForDropdown.stories = data.stories;
+      return;
+    }
+    if (dataType === 'tags') {
       tableRowData.dataForDropdown.tags = data.tags;
-      // The tag values that correspond with the actual tags for this item.
-      tableRowData.tagValues = item.tagValues;
+      return;
     }
   }
 

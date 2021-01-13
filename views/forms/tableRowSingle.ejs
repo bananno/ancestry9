@@ -77,7 +77,11 @@
         <% } else if (dataType == 'location') { %>
           <%- include('../forms/location', {location: originalValue}) %>
         <% } else if (dataType == 'story') { %>
-          <%- include('../story/_dropdown', {fieldName, selectedStory: originalValue}) %>
+          <%- include('../story/_dropdown', {
+            fieldName,
+            selectedStory: originalValue,
+            stories: dataForDropdown.stories,
+          }) %>
         <% } else if (inputType == 'textarea') { %>
           <textarea name="<%= fieldName %>"><%= originalValue %></textarea>
         <% } else if (inputType == 'dropdown') { %>

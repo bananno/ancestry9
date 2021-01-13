@@ -31,6 +31,3 @@ models.forEach(modelName => {
 tools.forEach(tool => {
   module.exports[tool] = require('./tools/' + tool);
 });
-
-// phase out
-module.exports.createModelRoutes = require('./tools/createController');

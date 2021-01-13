@@ -2,7 +2,7 @@ const {
   Highlight,
   Notation,
   Source,
-  createModelRoutes,
+  createController,
 } = require('../import');
 
 const constants = require('./constants');
@@ -18,7 +18,7 @@ function createRoutes(router) {
 
   router.use(sourceTools.createRenderSource);
 
-  createModelRoutes({
+  createController({
     Model: Source,
     modelName: 'source',
     router,
