@@ -96,15 +96,11 @@ async function storyEdit(req, res) {
   const people = await Person.find();
   Person.sortByName(people);
 
-  const tags = await Tag.find();
-  Tag.sortByTitle(tags);
-
-  const tableRows = getEditTableRows({
+  const tableRows = await getEditTableRows({
     item: req.story,
     rootPath: req.rootPath,
     fields: constants.fields,
     people,
-    tags,
   });
 
   res.renderStory('edit', {

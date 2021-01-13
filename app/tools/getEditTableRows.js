@@ -1,7 +1,15 @@
+const mongoose = require('mongoose');
+const Tag = mongoose.model('Tag');
+
 module.exports = getEditTableRows;
 
-function getEditTableRows(data) {
-  return data.fields.map(field => mapFieldRow(field, data)).filter(Boolean);
+async function getEditTableRows(data) {
+  const rows = [];
+  for (let i in data.fields) {
+    const value = await mapFieldRow(data.fields[i], data);
+    rows.push(value);
+  }
+  return rows.filter(Boolean);
 }
 
 /*
@@ -10,7 +18,7 @@ function getEditTableRows(data) {
   rootPath = the item's home path ("/person/personId") taking into account
     which type of ID (actual vs. custom) is already in the url.
 */
-function mapFieldRow(field, data) {
+async function mapFieldRow(field, data) {
   const {
     item,
     rootPath,
@@ -46,7 +54,7 @@ function mapFieldRow(field, data) {
   tableRowData.disableToggleButton = tableRowData.useToggleButton
     && tableRowData.isDisabled;
 
-  assignDataForDropdowns();
+  await assignDataForDropdowns();
 
   if (field.multi) {
     tableRowData.values = itemAttrValue;
@@ -96,7 +104,7 @@ function mapFieldRow(field, data) {
     return subRowData;
   }
 
-  function assignDataForDropdowns() {
+  async function assignDataForDropdowns() {
     if (dataType == 'people') {
       // Get people that are available to be attached.
       // Use the list of unlinkedPeople if it has already been created.
@@ -118,7 +126,8 @@ function mapFieldRow(field, data) {
       return;
     }
     if (dataType === 'tags') {
-      tableRowData.dataForDropdown.tags = data.tags;
+      tableRowData.dataForDropdown.tags = data.tags ||
+        await Tag.getAvailableForItem(data.item);
       return;
     }
   }

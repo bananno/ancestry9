@@ -30,14 +30,10 @@ async function showImage(req, res) {
 
   await image.populateParent();
 
-  const tags = await Tag.find();
-  Tag.sortByTitle(tags);
-
-  const tableRows = getEditTableRows({
+  const tableRows = await getEditTableRows({
     item: image,
     rootPath: req.rootPath,
     fields: constants.fields,
-    tags,
   });
 
   res.render('image/show', {

@@ -97,13 +97,11 @@ async function showTag(req, res) {
 
 async function editTag(req, res) {
   const canDelete = await req.tag.canBeDeleted();
-  const tags = await Tag.getAvailableForItem(req.tag);
 
-  const tableRows = getEditTableRows({
+  const tableRows = await getEditTableRows({
     item: req.tag,
     rootPath: req.rootPath,
     fields: constants.fields,
-    tags,
   });
 
   res.renderTag('edit', {

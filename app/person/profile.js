@@ -64,14 +64,11 @@ async function personEdit(req, res) {
   const people = Person.removeFromList(allPeople, req.person);
   Person.sortByName(people);
 
-  const tags = await Tag.getAvailableForItem(req.person);
-
-  const tableRows = getEditTableRows({
+  const tableRows = await getEditTableRows({
     item: req.person,
     rootPath: req.rootPath,
     fields: constants.fields,
     people,
-    tags,
   });
 
   res.renderPersonProfile('edit', {

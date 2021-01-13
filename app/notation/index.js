@@ -75,16 +75,12 @@ async function editNotation(req, res) {
 
   const stories = await Story.find();
 
-  const tags = await Tag.find();
-  Tag.sortByTitle(tags);
-
-  const tableRows = getEditTableRows({
+  const tableRows = await getEditTableRows({
     item: req.notation,
     rootPath: req.rootPath,
     fields: constants.fields,
     people,
     stories,
-    tags,
   });
 
   res.renderNotation('edit', {

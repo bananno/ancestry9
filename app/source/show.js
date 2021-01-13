@@ -51,15 +51,11 @@ async function renderEdit(req, res) {
   // unlinkedPeople - the dropdown for linking additional people to the source.
   const {allPeople, unlinkedPeople} = await source.getPeopleForDropdown();
 
-  const tags = await Tag.find();
-  Tag.sortByTitle(tags);
-
-  const tableRows = getEditTableRows({
+  const tableRows = await getEditTableRows({
     item: req.source,
     rootPath: req.rootPath,
     fields: constants.fields,
     unlinkedPeople,
-    tags,
     stories,
   });
 

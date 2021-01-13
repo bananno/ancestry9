@@ -97,15 +97,11 @@ async function editEvent(req, res) {
   const people = await Person.find();
   Person.sortByName(people);
 
-  const tags = await Tag.find();
-  Tag.sortByTitle(tags);
-
-  const tableRows = getEditTableRows({
+  const tableRows = await getEditTableRows({
     item: req.event,
     rootPath: req.rootPath,
     fields: constants.fields,
     people,
-    tags,
   });
 
   res.renderEvent('edit', {
