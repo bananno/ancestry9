@@ -92,16 +92,12 @@ async function editEvent(req, res) {
     return res.send('event not found');
   }
 
-  req.rootPath = '/event/' + req.event._id
-
-  const people = await Person.find();
-  Person.sortByName(people);
+  req.rootPath = '/event/' + req.event._id;
 
   const tableRows = await getEditTableRows({
     item: req.event,
     rootPath: req.rootPath,
     fields: constants.fields,
-    people,
   });
 
   res.renderEvent('edit', {

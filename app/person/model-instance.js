@@ -49,6 +49,17 @@ methods.getLink = function(linkType) {
   return this.links.find(link => link.match(linkType));
 };
 
+// Get the list of people that are not directly attached to this person
+// as a parent, spouse, or child. For the dropdown lists on edit view.
+methods.getNonRelatives = async function() {
+  const Person = mongoose.model('Person');
+  const people = await Person.find({
+    _id: {$nin: [...this.parents, ...this.spouses, ...this.children]}
+  });
+  Person.sortByName(people);
+  return people;
+}
+
 methods.addRelative = async function(relationship, relative) {
   const updatedPerson = {
     [relationship]: (this[relationship] || []).concat(relative)

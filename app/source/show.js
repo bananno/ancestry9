@@ -43,12 +43,11 @@ async function renderEdit(req, res) {
   const source = req.source;
   await source.populateCiteText({includeStory: false});
 
-  const stories = await Story.getAllSortedByTitle();
-
   await source.populateAndSortCitations();
 
-  // allPeople - the dropdown for new notations (not part of EditTable).
-  // unlinkedPeople - the dropdown for linking additional people to the source.
+  // 1. allPeople - the dropdown for new notations (not part of EditTable).
+  // 2. unlinkedPeople - the dropdown for linking additional people to the source.
+  // Both lists are specially sorted.
   const {allPeople, unlinkedPeople} = await source.getPeopleForDropdown();
 
   const tableRows = await getEditTableRows({
@@ -56,14 +55,12 @@ async function renderEdit(req, res) {
     rootPath: req.rootPath,
     fields: constants.fields,
     unlinkedPeople,
-    stories,
   });
 
   res.renderSource('edit', {
     title: 'Edit Source',
     itemName: 'source',
     people: allPeople,
-    unlinkedPeople,
     needCitationText: source.story.title.match('Census')
       && source.citeText.length == 0,
     citationTextPath: '/source/' + source._id + '/createCitationNotation',

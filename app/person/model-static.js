@@ -112,6 +112,16 @@ function populateAncestors(rootPerson, people, options = {}, safety = 0) {
   return person;
 }
 
+// Given an item, get the list of people that are available to be attached
+// to that item to populate dropdown on edit table.
+methods.getAvailableForItem = async function(item, fieldName) {
+  const Person = mongoose.model('Person');
+  const peopleAlreadyInList = item[fieldName || 'people'];
+  const people = await Person.find({_id: {$nin: peopleAlreadyInList}});
+  Person.sortByName(people);
+  return people;
+};
+
 // Given list of people, populate all parents/spouses/children.
 methods.populateRelatives = function(people) {
   const personRef = {};

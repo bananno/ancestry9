@@ -60,15 +60,13 @@ async function personEdit(req, res) {
     .populate('children')
     .populate('tags');
 
-  const allPeople = await Person.find({});
-  const people = Person.removeFromList(allPeople, req.person);
-  Person.sortByName(people);
+  const unlinkedPeople = await req.person.getNonRelatives();
 
   const tableRows = await getEditTableRows({
     item: req.person,
     rootPath: req.rootPath,
     fields: constants.fields,
-    people,
+    unlinkedPeople,
   });
 
   res.renderPersonProfile('edit', {

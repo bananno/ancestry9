@@ -93,14 +93,10 @@ async function storyEdit(req, res) {
 
   req.rootPath = '/story/' + req.story._id;
 
-  const people = await Person.find();
-  Person.sortByName(people);
-
   const tableRows = await getEditTableRows({
     item: req.story,
     rootPath: req.rootPath,
     fields: constants.fields,
-    people,
   });
 
   res.renderStory('edit', {

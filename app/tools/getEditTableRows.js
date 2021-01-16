@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const Person = mongoose.model('Person');
+const Story = mongoose.model('Story');
 const Tag = mongoose.model('Tag');
 
 module.exports = getEditTableRows;
@@ -106,28 +108,27 @@ async function mapFieldRow(field, data) {
 
   async function assignDataForDropdowns() {
     if (dataType == 'people') {
-      // Get people that are available to be attached.
       // Use the list of unlinkedPeople if it has already been created.
-      // Otherwise remove the already-linked people from the list.
-      if (data.unlinkedPeople) {
-        tableRowData.dataForDropdown.people = data.unlinkedPeople;
-      } else {
-        const peopleIdMap = {};
-        itemAttrValue.forEach(person => peopleIdMap['' + person._id] = true);
-        tableRowData.dataForDropdown.people = data.people.filter(person => {
-          return !peopleIdMap['' + person._id];
-        });
+      // (E.g., contains special requirements, is specially sorted,
+      // or was already needed for something else.)
+      // Otherwise get the default list of not-already-linked people.
+      tableRowData.dataForDropdown.people = data.unlinkedPeople
+        || await Person.getAvailableForItem(item);
+      return;
+    }
+    // Source has 2 story attributes: belongs to 1 story + can be linked to many
+    // other stories. Use the same list for both dropdowns; do not populate twice.
+    // The single story must be in the list as the "current value". The many
+    // stories are not in the list.
+    // (Maybe consolidate these two fields with one single data type?)
+    if (dataType === 'stories' || dataType === 'story') {
+      if (!tableRowData.dataForDropdown.stories) {
+        tableRowData.dataForDropdown.stories = await Story.getAvailableForItem(item);
       }
       return;
     }
-    // consolidate these into one data type?
-    if (dataType === 'stories' || dataType === 'story') {
-      tableRowData.dataForDropdown.stories = data.stories;
-      return;
-    }
     if (dataType === 'tags') {
-      tableRowData.dataForDropdown.tags = data.tags ||
-        await Tag.getAvailableForItem(data.item);
+      tableRowData.dataForDropdown.tags = await Tag.getAvailableForItem(item);
       return;
     }
   }

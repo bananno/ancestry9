@@ -70,17 +70,10 @@ async function showNotation(req, res) {
 }
 
 async function editNotation(req, res) {
-  const people = await Person.find();
-  Person.sortByName(people);
-
-  const stories = await Story.find();
-
   const tableRows = await getEditTableRows({
     item: req.notation,
     rootPath: req.rootPath,
     fields: constants.fields,
-    people,
-    stories,
   });
 
   res.renderNotation('edit', {

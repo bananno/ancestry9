@@ -38,6 +38,16 @@ methods.getAllByType = async function(type) {
   return await Story.find({type}).populate('tags');
 };
 
+// Given an item, get the list of stories that are available to be attached
+// to that item to populate dropdown on edit table.
+methods.getAvailableForItem = async function(item, fieldName) {
+  const Story = mongoose.model('Story');
+  const alreadyInList = item[fieldName || 'stories'] || [];
+  const stories = await Story.find({_id: {$nin: alreadyInList}});
+  Story.sortByTitle(stories);
+  return stories;
+};
+
 methods.getAllSharedData = async (imageMap) => {
   const stories = await mongoose.model('Story').find({sharing: true})
     .populate('people').populate('tags');
@@ -71,6 +81,10 @@ methods.getFormDataNew = req => {
   }
 
   return newStory;
+};
+
+methods.sortByTitle = function(stories) {
+  tools.sortBy(stories, story => story.title);
 };
 
 // Sort by type, then title.

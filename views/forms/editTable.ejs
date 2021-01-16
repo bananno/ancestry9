@@ -1,9 +1,5 @@
-<% if (!locals.tableRows) { %>
-  <p class="error">need to update this view to use buildEditTable</p>
-<% } %>
-
 <table class="edit-form-frame">
-  <% (locals.tableRows || []).forEach(rowData => { %>
+  <% locals.tableRows.forEach(rowData => { %>
     <%- include(rowData.filename, rowData) %>
   <% }); %>
 </table>
