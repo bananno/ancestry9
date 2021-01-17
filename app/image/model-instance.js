@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const tools = require('../tools/modelTools');
-const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
@@ -9,7 +8,8 @@ methods.getTagValue = tools.getTagValue;
 methods.hasTag = tools.hasTag;
 
 methods.toSharedObject = function() {
-  return tools.reduceToExportData(this, constants.fieldNames);
+  const {exportFieldNames} = this.constants();
+  return tools.reduceToExportData(this, exportFieldNames);
 }
 
 methods.populateParent = async function() {

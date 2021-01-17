@@ -39,7 +39,8 @@ methods.hasChecklist = function() {
 };
 
 methods.toSharedObject = function({imageMap}) {
-  const story = tools.reduceToExportData(this, constants.fieldNames);
+  const {exportFieldNames} = this.constants();
+  const story = tools.reduceToExportData(this, exportFieldNames);
 
   // Remove non-shared people and then un-populate people.
   story.people = story.people

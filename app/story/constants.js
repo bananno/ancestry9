@@ -9,8 +9,3 @@ constants.mainStoryTypes = [
 constants.noEntryStoryTypes = [
   'artifact', 'event', 'landmark', 'place'
 ];
-
-const createFieldList = require('../tools/createFieldList');
-const fieldInfo = createFieldList('story');
-constants.fieldNames = fieldInfo.fieldNames;
-constants.fields = fieldInfo.fields;

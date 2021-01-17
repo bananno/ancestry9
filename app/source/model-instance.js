@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const tools = require('../tools/modelTools');
-const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
@@ -38,7 +37,8 @@ methods.canHaveLocation = function() {
 };
 
 methods.toSharedObject = function({imageMap}) {
-  const source = tools.reduceToExportData(this, constants.fieldNames);
+  const {exportFieldNames} = this.constants();
+  const source = tools.reduceToExportData(this, exportFieldNames);
 
   // Remove non-shared people and then un-populate people.
   source.people = source.people

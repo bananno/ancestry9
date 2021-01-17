@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const tools = require('../tools/modelTools');
-const constants = require('./constants');
 
 const methods = {};
 module.exports = methods;
@@ -9,6 +8,7 @@ methods.sortByDate = tools.sorting.sortByDate;
 
 methods.getAllSharedData = async () => {
   const Event = mongoose.model('Event');
+  const {exportFieldNames} = Event.constants();
   const rawList = await Event.find({}).populate('people').populate('tags');
 
   const eventList = rawList.map(event => {
@@ -32,7 +32,7 @@ methods.getAllSharedData = async () => {
     return false;
   }).filter(Boolean);
 
-  const newList = tools.reduceListToExportData(eventList, constants.fieldNames);
+  const newList = tools.reduceListToExportData(eventList, exportFieldNames);
 
   Event.sortByDate(newList);
 

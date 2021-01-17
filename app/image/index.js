@@ -4,7 +4,6 @@ const {
   getEditTableRows,
 } = require('../import');
 
-const constants = require('./constants');
 module.exports = createRoutes;
 
 function createRoutes(router) {

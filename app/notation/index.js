@@ -8,7 +8,6 @@ const {
   getEditTableRows,
 } = require('../import');
 
-const constants = require('./constants');
 const notationTools = require('./tools');
 module.exports = createRoutes;
 
