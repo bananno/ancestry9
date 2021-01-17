@@ -22,18 +22,19 @@ function createRoutes(router) {
     modelName: 'story',
     modelNamePlural: 'stories',
     router: router,
-    index: storyIndex,
-    create: createStory,
-    show: storyShowMain,
-    edit: storyEdit,
-    otherRoutes: {
-      entries: storyEntries,
-      newEntry: storyNewEntry,
-      notations: storyNotations,
-      checklist: storyChecklist,
-      mentions: storyHighlightMentions,
+    routes: {
+      index: storyIndex,
+      create: createStory,
+      show: storyShowMain,
+      edit: storyEdit,
+      other: {
+        entries: storyEntries,
+        newEntry: storyNewEntry,
+        notations: storyNotations,
+        checklist: storyChecklist,
+        mentions: storyHighlightMentions,
+      },
     },
-    fields: constants.fields,
   });
 
   router.post('/story/:id/createNotation', createStoryNotation);
@@ -96,7 +97,6 @@ async function storyEdit(req, res) {
   const tableRows = await getEditTableRows({
     item: req.story,
     rootPath: req.rootPath,
-    fields: constants.fields,
   });
 
   res.renderStory('edit', {

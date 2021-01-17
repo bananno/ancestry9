@@ -53,7 +53,6 @@ async function renderEdit(req, res) {
   const tableRows = await getEditTableRows({
     item: req.source,
     rootPath: req.rootPath,
-    fields: constants.fields,
     unlinkedPeople,
   });
 

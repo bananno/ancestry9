@@ -16,45 +16,47 @@ class Controller {
     this.Model = specs.Model;
     this.modelName = specs.modelName;
     this.modelNamePlural = specs.modelNamePlural || (specs.modelName + 's');
-    this.redirectTo = '';
 
-    if (specs.editView !== false) {
-      this.redirectTo = '/edit';
+    // Where to redirect after submitting a form on the edit view.
+    this.redirectTo = specs.editFromMainShowView ? '' : '/edit';
+
+    const routes = specs.routes;
+
+    const basePathGet = '/' + this.modelName + '/:id/';
+
+    if (routes.index) {
+      this.router.get('/' + this.modelNamePlural, routes.index);
     }
 
-    let basePathGet = '/' + this.modelName + '/:id/';
-
-    if (specs.index) {
-      this.router.get('/' + this.modelNamePlural, specs.index);
+    if (routes.new) {
+      this.router.get('/' + this.modelNamePlural + '/new', routes.new);
     }
 
-    if (specs.new) {
-      this.router.get('/' + this.modelNamePlural + '/new', specs.new);
+    if (routes.create) {
+      this.router.post('/' + this.modelNamePlural + '/new', routes.create);
     }
 
-    if (specs.create) {
-      this.router.post('/' + this.modelNamePlural + '/new', specs.create);
+    if (routes.show) {
+      this.router.get(basePathGet, routes.show);
     }
 
-    if (specs.show) {
-      this.router.get(basePathGet, specs.show);
+    if (routes.edit) {
+      this.router.get(basePathGet + 'edit', routes.edit);
     }
 
-    if (specs.edit) {
-      this.router.get(basePathGet + 'edit', specs.edit);
+    if (routes.delete) {
+      this.router.post('/' + this.modelName + '/:id/delete', routes.delete);
     }
 
-    if (specs.delete) {
-      this.router.post('/' + this.modelName + '/:id/delete', specs.delete);
-    }
-
-    if (specs.otherRoutes) {
-      for (let path in specs.otherRoutes) {
-        this.router.get(basePathGet + path, specs.otherRoutes[path]);
+    if (routes.other) {
+      for (let path in routes.other) {
+        this.router.get(basePathGet + path, routes.other[path]);
       }
     }
 
-    specs.fields.forEach(field => {
+    const {fields} = this.Model.constants();
+
+    fields.forEach(field => {
       if (field.multi) {
         this.addListAttribute(field);
         this.deleteListAttribute(field);

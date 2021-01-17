@@ -24,17 +24,18 @@ function createRoutes(router) {
     modelName: 'person',
     modelNamePlural: 'people',
     router,
-    index: peopleIndex,
-    create: createPerson,
-    show: personProfileRoutes.show,
-    edit: personProfileRoutes.edit,
-    delete: null,
-    otherRoutes: {
-      timeline: personTimeline,
-      checklist: personChecklist,
-      ...personProfileRoutes.other,
+    routes: {
+      index: peopleIndex,
+      create: createPerson,
+      show: personProfileRoutes.show,
+      edit: personProfileRoutes.edit,
+      delete: null,
+      other: {
+        timeline: personTimeline,
+        checklist: personChecklist,
+        ...personProfileRoutes.other,
+      },
     },
-    fields: constants.fields,
   });
 
   router.post('/person/:id/add/events', createPersonEvent);

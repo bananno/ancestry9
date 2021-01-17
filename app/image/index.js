@@ -1,6 +1,5 @@
 const {
   Image,
-  Tag,
   createController,
   getEditTableRows,
 } = require('../import');
@@ -13,9 +12,10 @@ function createRoutes(router) {
     Model: Image,
     modelName: 'image',
     router: router,
-    show: showImage,
-    editView: false,
-    fields: constants.fields,
+    routes: {
+      show: showImage,
+    },
+    editFromMainShowView: true,
   });
 }
 
@@ -33,7 +33,6 @@ async function showImage(req, res) {
   const tableRows = await getEditTableRows({
     item: image,
     rootPath: req.rootPath,
-    fields: constants.fields,
   });
 
   res.render('image/show', {

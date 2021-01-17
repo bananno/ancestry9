@@ -10,9 +10,26 @@ function createModel(modelName) {
   const instanceMethods = require(dir + 'model-instance');
   const staticMethods = require(dir + 'model-static');
 
+  const exportFieldNames = modelProperties
+    .filter(prop => prop.includeInExport)
+    .map(prop => prop.name);
+
   const modelSchema = {};
+  const fields = [];
 
   modelProperties.forEach(prop => {
+    if (prop.showInEditTable !== false) {
+      if (prop.specialType === 'tags') {
+        prop.allowUpdatingExistingValues = true;
+      }
+
+      fields.push({
+        multi: prop.isArray,
+        dataType: prop.references === 'Person' ? 'people' : undefined,
+        ...prop
+      });
+    }
+
     if (prop.includeInSchema === false) {
       return;
     }
@@ -49,6 +66,12 @@ function createModel(modelName) {
     modelSchema[prop.name] = prop.isArray ? [spec] : spec;
   });
 
+  const constants = {
+    modelName,
+    fields,
+    exportFieldNames,
+  };
+
   const mongooseSchema = new mongoose.Schema(modelSchema);
 
   for (let methodName in instanceMethods) {
@@ -59,7 +82,8 @@ function createModel(modelName) {
     mongooseSchema.statics[methodName] = staticMethods[methodName];
   }
 
-  mongooseSchema.methods.getModelName = () => modelName;
+  mongooseSchema.methods.constants = () => constants;
+  mongooseSchema.statics.constants = () => constants;
 
   mongoose.model(modelName, mongooseSchema);
 }

@@ -21,11 +21,12 @@ function createRoutes(router) {
     Model: Notation,
     modelName: 'notation',
     router,
-    index: notationsIndex,
-    create: createNotation,
-    show: showNotation,
-    edit: editNotation,
-    fields: constants.fields,
+    routes: {
+      index: notationsIndex,
+      create: createNotation,
+      show: showNotation,
+      edit: editNotation,
+    },
   });
 }
 
@@ -73,7 +74,6 @@ async function editNotation(req, res) {
   const tableRows = await getEditTableRows({
     item: req.notation,
     rootPath: req.rootPath,
-    fields: constants.fields,
   });
 
   res.renderNotation('edit', {

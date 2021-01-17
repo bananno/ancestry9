@@ -18,12 +18,13 @@ function createRoutes(router) {
     modelName: 'tag',
     modelNamePlural: 'tags',
     router,
-    index: tagIndex,
-    create: createTag,
-    delete: deleteTag,
-    show: showTag,
-    edit: editTag,
-    fields: constants.fields,
+    routes: {
+      index: tagIndex,
+      create: createTag,
+      delete: deleteTag,
+      show: showTag,
+      edit: editTag,
+    },
   });
 
   router.get('/tags/:indexFormat', tagIndex);
@@ -101,7 +102,6 @@ async function editTag(req, res) {
   const tableRows = await getEditTableRows({
     item: req.tag,
     rootPath: req.rootPath,
-    fields: constants.fields,
   });
 
   res.renderTag('edit', {

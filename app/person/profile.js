@@ -65,7 +65,6 @@ async function personEdit(req, res) {
   const tableRows = await getEditTableRows({
     item: req.person,
     rootPath: req.rootPath,
-    fields: constants.fields,
     unlinkedPeople,
   });
 

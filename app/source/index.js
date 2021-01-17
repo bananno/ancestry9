@@ -22,15 +22,16 @@ function createRoutes(router) {
     Model: Source,
     modelName: 'source',
     router,
-    index: getSourcesIndex('none'),
-    create: createSource,
-    delete: deleteSource,
-    show: sourceProfile.summary,
-    edit: sourceProfile.edit,
-    otherRoutes: {
-      ...sourceProfile.other
+    routes: {
+      index: getSourcesIndex('none'),
+      create: createSource,
+      delete: deleteSource,
+      show: sourceProfile.summary,
+      edit: sourceProfile.edit,
+      other: {
+        ...sourceProfile.other,
+      },
     },
-    fields: constants.fields,
   });
 
   constants.mainSourceTypes.forEach(sourceType => {

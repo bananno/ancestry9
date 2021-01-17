@@ -7,8 +7,9 @@ module.exports = getEditTableRows;
 
 async function getEditTableRows(data) {
   const rows = [];
-  for (let i in data.fields) {
-    const value = await mapFieldRow(data.fields[i], data);
+  const {fields} = data.item.constants();
+  for (let i in fields) {
+    const value = await mapFieldRow(fields[i], data);
     rows.push(value);
   }
   return rows.filter(Boolean);

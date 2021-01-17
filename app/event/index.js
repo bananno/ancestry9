@@ -17,12 +17,13 @@ function createRoutes(router) {
     Model: Event,
     modelName: 'event',
     router,
-    index: eventIndex,
-    create: createEvent,
-    delete: deleteEvent,
-    show: showEvent,
-    edit: editEvent,
-    fields: constants.fields,
+    routes: {
+      index: eventIndex,
+      create: createEvent,
+      delete: deleteEvent,
+      show: showEvent,
+      edit: editEvent,
+    },
   });
 }
 
@@ -97,7 +98,6 @@ async function editEvent(req, res) {
   const tableRows = await getEditTableRows({
     item: req.event,
     rootPath: req.rootPath,
-    fields: constants.fields,
   });
 
   res.renderEvent('edit', {
