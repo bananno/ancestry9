@@ -27,17 +27,15 @@ async function mapFieldRow(field, data) {
     rootPath,
   } = data;
 
-  const itemIsEditable = field.onlyEditableIf
-    ? field.onlyEditableIf(item)
-    : field.inputType !== 'none';
+  const itemIsEditableNow = field.showInEditTable(item);
 
-  if (!itemIsEditable && !field.showDisabledWhenNotEditable) {
+  if (!itemIsEditableNow && !field.showDisabledWhenNotEditable) {
     return false;
   }
 
   const itemAttrValue = field.getValue ? field.getValue(item) : item[field.name];
 
-  const dataType = field.dataType || field.name;
+  const dataType = field.dataType;
 
   const tableRowData = {
     dataType,
@@ -45,25 +43,25 @@ async function mapFieldRow(field, data) {
     dataForDropdown: {},
     editPath: rootPath + '/edit/' + field.name,
     fieldName: field.name,
-    filename: field.multi ? './tableRowMulti' : './tableRowSingle',
-    inputType: field.inputType || 'text',
-    isDisabled: !itemIsEditable, // when "showDisabledWhenNotEditable"
+    filename: field.isList ? './tableRowMulti' : './tableRowSingle',
+    inputType: field.inputType,
+    isDisabled: !itemIsEditableNow, // when "showDisabledWhenNotEditable"
     item,
     shareInfo: false,
     useToggleButton: field.inputType === 'toggle',
-    fieldValueOptions: field.valueNames || [],
+    fieldValueOptions: field.valueNames,
   };
 
   tableRowData.disableToggleButton = tableRowData.useToggleButton
     && tableRowData.isDisabled;
 
-  await assignDataForDropdowns();
+  await populateDataForRefDropdowns();
 
-  if (field.multi) {
+  if (field.isList) {
     tableRowData.values = itemAttrValue;
-    tableRowData.valueDropownOptions = field.valueNames; // Is this ever used for multi?
+    tableRowData.valueDropownOptions = field.valueNames;
 
-    if (dataType === 'tags') {
+    if (dataType === 'tag') {
       // The tag values that correspond with the actual tags for this item.
       tableRowData.tagValues = item.tagValues;
     }
@@ -96,7 +94,7 @@ async function mapFieldRow(field, data) {
     };
 
     if (field.allowUpdatingExistingValues) {
-      if (dataType === 'tags') {
+      if (dataType === 'tag') {
         subRowData.tagValue = item.tagValues[index];
         subRowData.editData = objectInList.getEditTableSettings(subRowData.tagValue);
       } else {
@@ -107,8 +105,8 @@ async function mapFieldRow(field, data) {
     return subRowData;
   }
 
-  async function assignDataForDropdowns() {
-    if (dataType == 'people') {
+  async function populateDataForRefDropdowns() {
+    if (dataType === 'person') {
       // Use the list of unlinkedPeople if it has already been created.
       // (E.g., contains special requirements, is specially sorted,
       // or was already needed for something else.)
@@ -121,14 +119,13 @@ async function mapFieldRow(field, data) {
     // other stories. Use the same list for both dropdowns; do not populate twice.
     // The single story must be in the list as the "current value". The many
     // stories are not in the list.
-    // (Maybe consolidate these two fields with one single data type?)
-    if (dataType === 'stories' || dataType === 'story') {
+    if (dataType === 'story') {
       if (!tableRowData.dataForDropdown.stories) {
         tableRowData.dataForDropdown.stories = await Story.getAvailableForItem(item);
       }
       return;
     }
-    if (dataType === 'tags') {
+    if (dataType === 'tag') {
       tableRowData.dataForDropdown.tags = await Tag.getAvailableForItem(item);
       return;
     }
@@ -141,21 +138,23 @@ async function mapFieldRow(field, data) {
       ? (itemAttrValue._id || itemAttrValue)
       : itemAttrValue;
 
-    if (tableRowData.inputType === 'textarea') {
+    if (field.inputType === 'textarea') {
       tableRowData.currentValueAsList = itemAttrValue
         ? itemAttrValue.split('\n')
         : [];
     }
 
-    tableRowData.valueDropownOptions = tableRowData.fieldValueOptions
-      .map((text, value) => {
-        if (text) {
-          return {text, value, selected: itemAttrValue === value};
-        }
-        // If there is no text, then that index should not be selected.
-        // Example: person gender should be 1, 2, or 3, not 0.
-        return false;
-      }).filter(Boolean);
+    if (field.valueNames) {
+      tableRowData.valueDropownOptions = field.valueNames
+        .map((text, value) => {
+          if (text) {
+            return {text, value, selected: itemAttrValue === value};
+          }
+          // If there is no text, then that index should not be selected.
+          // Example: person gender should be 1, 2, or 3, not 0.
+          return false;
+        }).filter(Boolean);
+    }
   }
 
   function assignShareData() {
@@ -163,7 +162,7 @@ async function mapFieldRow(field, data) {
       imageValue: itemAttrValue === 2 || itemAttrValue === true,
     };
 
-    if (tableRowData.fieldValueOptions.length) {
+    if (tableRowData.fieldValueOptions) {
       tableRowData.shareInfo.shareText = tableRowData.fieldValueOptions[itemAttrValue];
     } else {
       tableRowData.shareInfo.shareText = itemAttrValue ? 'yes' : 'no';

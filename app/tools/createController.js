@@ -57,7 +57,7 @@ class Controller {
     const {fields} = this.Model.constants();
 
     fields.forEach(field => {
-      if (field.multi) {
+      if (field.isList) {
         this.addListAttribute(field);
         this.deleteListAttribute(field);
         this.reorderListAttribute(field);
@@ -115,9 +115,9 @@ class Controller {
       }
       if (field.onUpdate) {
         await field.onUpdate(item);
-      } else if (field.maxValue) {
+      } else if (field.valueNames) {
         let newValue = (item[field.name] || 0) + 1;
-        if (newValue > field.maxValue) {
+        if (newValue >= field.valueNames.length) {
           newValue = 0;
         }
         await item.update({[field.name]: newValue});

@@ -11,14 +11,14 @@
 
         <!-- date, location -->
 
-        <% if (dataType == 'date') { %>
+        <% if (dataType === 'date') { %>
           <%- include('../format/date', {date: originalValue}) %>
-        <% } else if (dataType == 'location') { %>
+        <% } else if (dataType === 'location') { %>
           <%- include('../format/location', {location: originalValue}) %>
 
         <!-- story -->
 
-        <% } else if (dataType == 'story') { %>
+        <% } else if (dataType === 'story') { %>
           <% if (originalValue) { %>
             <%- include('../story/_link', {story: originalValue}) %>
           <% } else { %>
@@ -27,7 +27,7 @@
 
         <!-- source -->
 
-        <% } else if (dataType == 'source') { %>
+        <% } else if (dataType === 'source') { %>
           <% if (originalValue) { %>
             <%- include('../source/_link', {source: originalValue}) %>
           <% } else { %>
@@ -59,7 +59,7 @@
 
         <!-- toggle or dropdown: list of preset options -->
 
-        <% } else if (fieldValueOptions.length) { %>
+        <% } else if (fieldValueOptions) { %>
           <%= fieldValueOptions[originalValue] || 'INVALID VALUE' %>
 
         <!-- everything else -->
@@ -72,11 +72,11 @@
       <!-- EDITABLE FIELD -->
 
       <div item="<%= fieldName %>" class="value-edit">
-        <% if (dataType == 'date') { %>
+        <% if (dataType === 'date') { %>
           <%- include('../forms/date', {date: originalValue}) %>
-        <% } else if (dataType == 'location') { %>
+        <% } else if (dataType === 'location') { %>
           <%- include('../forms/location', {location: originalValue}) %>
-        <% } else if (dataType == 'story') { %>
+        <% } else if (dataType === 'story') { %>
           <%- include('../story/_dropdown', {
             fieldName,
             selectedStory: originalValue,
@@ -103,7 +103,7 @@
       <input item="<%= fieldName %>" class="value-original" type="hidden" value="<%= originalValueText %>">
     </td>
     <td>
-      <!-- filler cell to line up with multi value version -->
+      <!-- filler cell to line up with multi/list value version -->
     </td>
     <td>
       <!-- SUBMIT EDIT -->

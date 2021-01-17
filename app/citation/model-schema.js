@@ -1,18 +1,18 @@
 module.exports = [
   {
     name: 'person',
-    references: 'Person',
+    dataType: 'person',
   },
   {
     name: 'source',
-    references: 'Source',
+    dataType: 'source',
   },
   {
     name: 'item',
-    type: String,
+    dataType: String,
   },
   {
     name: 'information',
-    type: String,
+    dataType: String,
   },
 ];

@@ -6,65 +6,184 @@ module.exports = createModel;
 function createModel(modelName) {
   const dir = '../' + modelName.toLowerCase() + '/';
 
-  const modelProperties = require(dir + 'model-schema');
+  const rawFieldList = require(dir + 'model-schema');
   const instanceMethods = require(dir + 'model-instance');
   const staticMethods = require(dir + 'model-static');
 
-  const exportFieldNames = modelProperties
-    .filter(prop => prop.includeInExport)
-    .map(prop => prop.name);
+  // For schema validation
+  const propFieldsUsed = [];
 
+  // The schema for the actual mongoose model.
+  // Usually each field will add ONE property to the mongoose schema,
+  // but sometimes it will add ZERO or TWO properties.
   const modelSchema = {};
+
+  // Fields will be a cleaned-up version of rawFieldList.
+  // Default values will be filled in, etc.
   const fields = [];
 
-  modelProperties.forEach(prop => {
-    if (prop.showInEditTable !== false) {
-      if (prop.specialType === 'tags') {
-        prop.allowUpdatingExistingValues = true;
+  rawFieldList.forEach(fieldData => {
+    const keysDone = [];
+    propFieldsUsed.push(keysDone);
+
+    // Track used keys to determine if the property contains any invalid combinations
+    // or redundant/unused keys. Do not use getPropKey() or push to keysDone unless
+    // the key is actually needed and valid.
+    function getPropKey(key, options = {}) {
+      const value = fieldData[key];
+
+      if (options.defaultTo !== undefined) {
+        if (value === undefined) {
+          return options.defaultTo;
+        }
+        // Make sure the value isn't equal to the default value.
+        // If it is, then it isn't "used" because it isn't necessary.
+        if (value !== options.defaultTo) {
+          keysDone.push(key);
+        }
+        return value;
       }
 
-      fields.push({
-        multi: prop.isArray,
-        dataType: prop.references === 'Person' ? 'people' : undefined,
-        ...prop
-      });
-    }
+      if (options.expectOneOf) {
+        if (options.expectOneOf.includes(options.defaultTo)) {
+          keysDone.push(key);
+          return value;
+        }
+        throw 'unexpected value for schema property key';
+      }
 
-    if (prop.includeInSchema === false) {
+      if (value === undefined) {
+        if (options.required) {
+          throw 'required value is missing';
+        }
+      } else {
+        keysDone.push(key);
+      }
+
+      return value;
+    };
+
+    const field = {
+      name: getPropKey('name', {required: true}),
+      includeInExport: getPropKey('includeInExport', {defaultTo: true}),
+    };
+
+    fields.push(field);
+
+    const includeInSchema = getPropKey('includeInSchema', {defaultTo: true});
+
+    if (!includeInSchema) {
+      field.showInEditTable = () => false;
+      field.showDisabledWhenNotEditable = getPropKey('showDisabledWhenNotEditable');
       return;
     }
 
-    if (prop.specialType) {
-      if (prop.specialType === 'date') {
-        modelSchema[prop.name] = tools.dateStructure;
-        return;
-      }
+    // DATA TYPE
 
-      if (prop.specialType === 'location') {
-        modelSchema[prop.name] = tools.locationStructure;
-        return;
-      }
+    field.dataType = getPropKey('dataType', {required: true});
 
-      if (prop.specialType === 'tags') {
-        modelSchema.tags = [{type: mongoose.Schema.Types.ObjectId, ref: 'Tag'}];
-        modelSchema.tagValues = [String];
-        return;
-      }
-    }
+    // EDITABILITY
 
-    const spec = {};
+    const isEditable = getPropKey('isEditable', {defaultTo: true});
 
-    if (prop.references) {
-      spec.type = mongoose.Schema.Types.ObjectId;
-      spec.ref = prop.references;
+    if (typeof isEditable === Function) {
+      field.showInEditTable = isEditable;
+      field.showDisabledWhenNotEditable = getPropKey('showDisabledWhenNotEditable', {defaultTo: false});
+    } else if (isEditable === true) {
+      field.showInEditTable = () => true;
     } else {
-      spec.type = prop.type;
+      field.showInEditTable = () => false;
+      field.showDisabledWhenNotEditable = getPropKey('showDisabledWhenNotEditable', {defaultTo: false});
     }
 
-    spec.default = prop.defaultValue;
+    // SPECIAL TYPES
 
-    modelSchema[prop.name] = prop.isArray ? [spec] : spec;
+    if (field.dataType === 'date') {
+      modelSchema[field.name] = tools.dateStructure;
+      return;
+    }
+    if (field.dataType === 'location') {
+      modelSchema[field.name] = tools.locationStructure;
+      return;
+    }
+
+    // LIST OPTIONS - applies for both basic & reference types
+
+    const mongoSpec = {};
+
+    field.isList = getPropKey('isList', {defaultTo: false});
+
+    if (field.isList) {
+      field.onAdd = getPropKey('onAdd');
+      field.onDelete = getPropKey('onDelete');
+    }
+
+    // BASIC TYPE
+
+    const isBasicType = [String, Boolean, Number].includes(field.dataType);
+
+    if (isBasicType) {
+      mongoSpec.type = field.dataType;
+
+      const defaultValue = getPropKey('defaultValue');
+      if (defaultValue !== undefined) {
+        mongoSpec.default = defaultValue;
+      }
+
+      if (field.dataType === String) {
+        field.inputType = getPropKey('inputType', {
+          defaultTo: 'text',
+          expectOneOf: ['textarea', 'text'],
+        });
+
+      } else if (field.dataType === Number) {
+        field.inputType = getPropKey('inputType', {
+          defaultTo: 'text',
+          expectOneOf: ['text', 'dropdown', 'toggle'],
+        });
+
+        if (field.inputType !== 'text') {
+          field.valueNames = getPropKey('valueNames', {required: true});
+        }
+
+      } else {
+        field.inputType = 'toggle';
+      }
+
+
+    // REFERENCE TYPE
+
+    } else {
+      const refableModels = ['image', 'person', 'source', 'story', 'tag'];
+
+      if (!refableModels.includes(field.dataType)) {
+        throw "invalid data type: " + field.dataType;
+      }
+
+      const otherModelName = capitalize(field.dataType);
+
+      mongoSpec.type = mongoose.Schema.Types.ObjectId;
+      mongoSpec.ref = otherModelName;
+
+      field.referenceModel = otherModelName;
+
+      if (field.dataType === 'tag') {
+        const tagValueAttrName = field.name === 'tags'
+          ? 'tagValues'
+          : (field.name + 'Values');
+        modelSchema[tagValueAttrName] = field.isList ? [String] : String;
+        field.allowUpdatingExistingValues = true;
+      }
+    }
+
+    modelSchema[field.name] = field.isList ? [mongoSpec] : mongoSpec;
   });
+
+  checkForUnusedKeys(modelName, rawFieldList, propFieldsUsed);
+
+  const exportFieldNames = fields
+    .filter(field => field.includeInExport)
+    .map(field => field.name);
 
   const constants = {
     modelName,
@@ -86,4 +205,20 @@ function createModel(modelName) {
   mongooseSchema.statics.constants = () => constants;
 
   mongoose.model(modelName, mongooseSchema);
+}
+
+function capitalize(str) {
+  return str.slice(0, 1).toUpperCase() + str.slice(1);
+}
+
+function checkForUnusedKeys(modelName, rawFieldList, propFieldsUsed) {
+  rawFieldList.forEach((prop, i) => {
+    const propKeys = Object.keys(prop).sort();
+    const keysUsed = propFieldsUsed[i].sort();
+    if (propKeys.join(',') != keysUsed.join(',')) {
+      const missing = propKeys.filter(key => !keysUsed.includes(key));
+      const extra = keysUsed.filter(key => !propKeys.includes(key));
+      console.log('EXTRA KEYS', modelName, prop.name, missing, extra);
+    }
+  });
 }

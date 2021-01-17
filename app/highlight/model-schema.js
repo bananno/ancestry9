@@ -1,18 +1,18 @@
 module.exports = [
   {
-    // Highlight text within this source.
+    // Highlight belongs to this source and it points to text within this source.
     name: 'source',
-    references: 'Source',
+    dataType: 'source',
   },
   {
-    // The text to be replaced with a link
+    // The text to be replaced with a link; not case sensitive.
     name: 'text',
-    type: String,
+    dataType: String,
   },
   {
-    // Aka, the number of instances of the text to be skipped
+    // AKA, the number of instances of the text to be skipped.
     name: 'instance',
-    type: Number,
+    dataType: Number,
     defaultValue: 0,
   },
   {
@@ -21,7 +21,7 @@ module.exports = [
     // Can contain [paraphasing] and ... ellipses.
     // Length: anywhere between a few words and a paragraph.
     name: 'excerpt',
-    type: String,
+    dataType: String,
   },
 
   // Below: options for the "object" of the link.
@@ -29,11 +29,11 @@ module.exports = [
   {
     // Highlighted text links to this person.
     name: 'linkPerson',
-    references: 'Person',
+    dataType: 'person',
   },
   {
     // Highlighted text links to this story.
     name: 'linkStory',
-    references: 'Story',
+    dataType: 'story',
   },
 ];

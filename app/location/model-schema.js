@@ -1,33 +1,33 @@
 module.exports = [
   {
     name: 'country',
-    type: String,
+    dataType: String,
   },
   {
     // province or state
     name: 'region1',
-    type: String,
+    dataType: String,
   },
   {
     // county
     name: 'region2',
-    type: String,
+    dataType: String,
   },
   {
     name: 'city',
-    type: String,
+    dataType: String,
   },
   {
     name: 'latitude',
-    type: Number,
+    dataType: Number,
   },
   {
     name: 'longitude',
-    type: Number,
+    dataType: Number,
   },
   {
     name: 'zoom',
-    type: Number,
+    dataType: Number,
     defaultValue: 0,
   },
 ]

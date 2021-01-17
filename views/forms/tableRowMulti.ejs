@@ -17,7 +17,7 @@
 
     <!-- TAGS - HAS OWN STRUCTURE (3 cells) -->
 
-    <% if (dataType === 'tags') { %>
+    <% if (dataType === 'tag') { %>
       <td>
         <%- include('../tag/_link', {tag: objectInList}) %>
       </td>
@@ -51,13 +51,13 @@
       <!-- DISPLAY VALUE -->
 
       <td colspan="2" item="<%= itemKey %>" class="value-show">
-        <% if (dataType == 'links') { %>
+        <% if (fieldName === 'links') { %>
           <%- include('../format/externalLink', {url: objectInList}) %>
-        <% } else if (dataType == 'images') { %>
+        <% } else if (dataType === 'image') { %>
           <%- include('../image/_link', {image: objectInList}) %>
-        <% } else if (dataType == 'people') { %>
+        <% } else if (dataType === 'person') { %>
           <%- include('../person/_link', {person: objectInList}) %>
-        <% } else if (dataType == 'stories') { %>
+        <% } else if (dataType === 'story') { %>
           <%- include('../story/_link', {story: objectInList}) %>
         <% } else { %>
           <%= objectInList %>
@@ -145,17 +145,17 @@
       <!-- NEW VALUE -->
 
       <div item="<%= fieldName %>" class="value-new">
-        <% if (dataType == 'people') { %>
+        <% if (dataType == 'person') { %>
           <%- include('../person/_dropdown', {
             fieldName,
             selectedPerson: null,
             people: dataForDropdown.people,
           }) %>
-        <% } else if (dataType === 'tags') { %>
+        <% } else if (dataType === 'tag') { %>
           <%- include('../tag/_attach', {
             tags: dataForDropdown.tags,
           }) %>
-        <% } else if (dataType == 'stories') { %>
+        <% } else if (dataType == 'story') { %>
           <%- include('../story/_dropdown', {
             fieldName,
             stories: dataForDropdown.stories,

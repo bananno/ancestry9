@@ -3,22 +3,16 @@
 
 module.exports = [
   {
-    // _id should be included in the export; that's the only reason it is in this list
     name: '_id',
     includeInSchema: false,
-    showInEditTable: false,
-    includeInExport: true,
   },
   {
     name: 'url',
-    type: String,
-    includeInExport: true,
+    dataType: String,
   },
   {
     name: 'tags',
-    specialType: 'tags',
-    references: 'Tag',
-    isArray: true,
-    includeInExport: true,
+    dataType: 'tag',
+    isList: true,
   },
 ];

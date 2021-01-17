@@ -3,23 +3,22 @@ const modelsThatHaveTags = require('./constants-modelsThatHaveTags');
 module.exports = [
   {
     name: 'title',
-    type: String,
+    dataType: String,
   },
   {
     name: 'definition',
-    type: String,
+    dataType: String,
     inputType: 'textarea',
   },
   {
     name: 'category',
-    type: String,
+    dataType: String,
   },
   {
     name: 'valueType',
-    type: Number,
+    dataType: Number,
     inputType: 'dropdown',
     defaultValue: 0,
-    maxValue: 2,
     valueNames: [
       'tag value not applicable',
       'use text text input',
@@ -28,21 +27,19 @@ module.exports = [
   },
   {
     name: 'values',
-    type: String,
+    dataType: String,
     inputType: 'textarea',
-    onlyEditableIf: tag => tag.valueType === 2 || tag.values,
-  },
-  {
-    name: 'restrictModels',
-    type: Boolean,
-    inputType: 'toggle',
-    defaultValue: false,
+    isEditable: tag => tag.valueType === 2 || tag.values,
   },
   {
     name: 'tags',
-    specialType: 'tags',
-    references: 'Tag',
-    isArray: true,
+    dataType: 'tag',
+    isList: true,
+  },
+  {
+    name: 'restrictModels',
+    dataType: Boolean,
+    defaultValue: false,
   },
   ...modelsThatHaveTags.map(getFieldNameForAllowingModels),
 ];
@@ -50,9 +47,8 @@ module.exports = [
 function getFieldNameForAllowingModels(otherModel) {
   return {
     name: 'allow' + otherModel.name,
-    type: Boolean,
-    inputType: 'toggle',
+    dataType: Boolean,
     defaultValue: false,
-    onlyEditableIf: tag => tag.restrictModels,
+    isEditable: tag => tag.restrictModels,
   };
 }

@@ -1,60 +1,49 @@
 module.exports = [
   {
-    // _id should be included in the export; that's the only reason it is in this list
     name: '_id',
     includeInSchema: false,
-    showInEditTable: false,
-    includeInExport: true,
   },
   {
     name: 'sharing',
-    type: Boolean,
+    dataType: Boolean,
     defaultValue: false,
-    inputType: 'toggle',
+    includeInExport: false,
   },
   {
     name: 'title',
-    type: String,
-    includeInExport: true,
+    dataType: String,
   },
   {
+    // Notation may belong to a source.
     name: 'source',
-    references: 'Source',
-    includeInExport: true,
+    dataType: 'source',
   },
   {
     name: 'date',
-    specialType: 'date',
-    includeInExport: true,
+    dataType: 'date',
   },
   {
     name: 'location',
-    specialType: 'location',
-    includeInExport: true,
+    dataType: 'location',
   },
   {
     name: 'people',
-    references: 'Person',
-    isArray: true,
-    includeInExport: true,
+    dataType: 'person',
+    isList: true,
   },
   {
     name: 'stories',
-    references: 'Story',
-    isArray: true,
-    includeInExport: true,
+    dataType: 'story',
+    isList: true,
   },
   {
     name: 'text',
-    type: String,
+    dataType: String,
     inputType: 'textarea',
-    includeInExport: true,
   },
   {
     name: 'tags',
-    specialType: 'tags',
-    references: 'Tag',
-    isArray: true,
-    includeInExport: true,
+    dataType: 'tag',
+    isList: true,
   },
 ];
