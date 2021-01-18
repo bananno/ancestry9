@@ -1,6 +1,7 @@
 
 function initializeEditForm(currentlyEditingByRoute) {
   $('.link-start').show();
+  setupExternalLinkFields();
 }
 
 function startEdit(item, val) {
@@ -35,4 +36,34 @@ function cancelEdit(item) {
   $('.button-reorder').show();
   $('.citation-row-show').show();
   $('.citation-row-edit').hide();
+}
+
+function setupExternalLinkFields() {
+  $('.external-link-form-new').each((i, box) => {
+    const $linkUrlBox = $(box).find('.external-link-form-url');
+    const $linkTextBox = $(box).find('.external-link-form-text');
+    $linkUrlBox.change(() => {
+      const newValue = $linkUrlBox.val();
+      const linkText = (() => {
+        if (newValue.match(/ancestry.com/i)) {
+          return 'Ancestry';
+        }
+        if (newValue.match(/familysearch.org/i)) {
+          return 'FamilySearch';
+        }
+        if (newValue.match(/wikitree.com/i)) {
+          return 'FamilySearch';
+        }
+        if (newValue.match(/facebook.com/i)) {
+          return 'Facebook profile';
+        }
+        if (newValue.match(/findagrave.com/i)) {
+          return 'FindAGrave';
+        }
+      })();
+      if (linkText) {
+        $linkTextBox.val(linkText);
+      }
+    });
+  });
 }

@@ -1,6 +1,6 @@
 
-function reorderList(valuelist, orderId, attr) {
-  if (['people', 'images'].includes(attr)) {
+function reorderList(valuelist, orderId, dataType) {
+  if (['person', 'image'].includes(dataType)) {
     for (let i = 1; i < valuelist.length; i++) {
       const nextItem = valuelist[i];
       if (isSameItem(nextItem, orderId)) {
@@ -9,7 +9,7 @@ function reorderList(valuelist, orderId, attr) {
         break;
       }
     }
-  } else if (['links', 'images', 'tags'].includes(attr)) {
+  } else if (['link', 'image', 'tag'].includes(dataType)) {
     if (orderId > 0 && valuelist.length > orderId) {
       const temp = valuelist[orderId - 1];
       valuelist[orderId - 1] = valuelist[orderId];

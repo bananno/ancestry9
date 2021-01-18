@@ -96,7 +96,7 @@ function createModel(modelName) {
       field.showDisabledWhenNotEditable = getPropKey('showDisabledWhenNotEditable', {defaultTo: false});
     }
 
-    // SPECIAL TYPES
+    // SPECIAL TYPES - date/location
 
     if (field.dataType === 'date') {
       modelSchema[field.name] = tools.dateStructure;
@@ -107,9 +107,7 @@ function createModel(modelName) {
       return;
     }
 
-    // LIST OPTIONS - applies for both basic & reference types
-
-    const mongoSpec = {};
+    // LIST OPTIONS
 
     field.isList = getPropKey('isList', {defaultTo: false});
 
@@ -118,7 +116,17 @@ function createModel(modelName) {
       field.onDelete = getPropKey('onDelete');
     }
 
+    // SPECIAL TYPE - links
+
+    if (field.dataType === 'link') {
+      modelSchema[field.name] = field.isList ? [String] : String;
+      field.allowUpdatingExistingValues = true;
+      return;
+    }
+
     // BASIC TYPE
+
+    const mongoSpec = {};
 
     const isBasicType = [String, Boolean, Number].includes(field.dataType);
 

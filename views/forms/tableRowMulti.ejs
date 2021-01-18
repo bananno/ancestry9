@@ -51,7 +51,7 @@
       <!-- DISPLAY VALUE -->
 
       <td colspan="2" item="<%= itemKey %>" class="value-show">
-        <% if (fieldName === 'links') { %>
+        <% if (dataType === 'link') { %>
           <%- include('../format/externalLink', {url: objectInList}) %>
         <% } else if (dataType === 'image') { %>
           <%- include('../image/_link', {image: objectInList}) %>
@@ -75,7 +75,11 @@
             class="value-edit"
           >
             <input type="hidden" name="index" value="<%= index %>">
-            <input name="newValue" value="<%= objectInList %>">
+            <% if (dataType === 'link') { %>
+              <%- include('../forms/_link', {fieldName, value: objectInList}) %>
+            <% } else { %>
+              <input name="newValue" value="<%= objectInList %>">
+            <% } %>
             <button>update</button>
           </form>
         </td>
@@ -145,7 +149,9 @@
       <!-- NEW VALUE -->
 
       <div item="<%= fieldName %>" class="value-new">
-        <% if (dataType == 'person') { %>
+        <% if (dataType === 'link') { %>
+          <%- include('../forms/_link', {fieldName}) %>
+        <% } else if (dataType == 'person') { %>
           <%- include('../person/_dropdown', {
             fieldName,
             selectedPerson: null,
@@ -155,7 +161,7 @@
           <%- include('../tag/_attach', {
             tags: dataForDropdown.tags,
           }) %>
-        <% } else if (dataType == 'story') { %>
+        <% } else if (dataType === 'story') { %>
           <%- include('../story/_dropdown', {
             fieldName,
             stories: dataForDropdown.stories,

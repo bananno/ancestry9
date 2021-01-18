@@ -167,7 +167,7 @@ class Controller {
 
       if (field.onAdd) {
         await field.onAdd(item, newValue);
-      } else if (field.name === 'tags') {
+      } else if (field.dataType === 'tag') {
         if (item.tags.includes(newValue)) {
           return res.send('error - tag is already in the list');
         }
@@ -185,9 +185,14 @@ class Controller {
           [field.name]: (item[field.name] || [])
         };
 
-        if (field.name === 'images') {
+        if (field.dataType === 'image') {
           const newItem = await Image.create({url: newValue});
           updatedObj[field.name].push(newItem);
+        } else if (field.dataType === 'link') {
+          const linkUrl = newValue;
+          const linkText = req.body[field.name + 'Text'].trim();
+          const newLink = linkUrl + (linkText ? ' ' + linkText : '');
+          updatedObj[field.name].push(newLink);
         } else {
           updatedObj[field.name].push(newValue);
         }
@@ -209,13 +214,13 @@ class Controller {
         await field.onDelete(item, deleteId);
       } else {
         const updatedObj = {};
-        const attrName = field.dataType || field.name;
+        const dataType = field.dataType;
 
-        if (['people', 'stories', 'images'].includes(attrName)) {
+        if (['person', 'story', 'image'].includes(dataType)) {
           updatedObj[field.name] = item[field.name].filter(item => {
             return ('' + (item._id || item)) != deleteId;
           });
-        } else if (attrName === 'tags') {
+        } else if (dataType === 'tag') {
           const idx = item.tags.indexOf(deleteId);
           updatedObj.tags = item.tags.filter((item, i) => i != idx);
           updatedObj.tagValues = item.tagValues.filter((item, i) => i != idx);
@@ -225,7 +230,7 @@ class Controller {
           });
         }
 
-        if (attrName === 'images') {
+        if (dataType === 'image') {
           const image = await Image.findById(deleteId);
           await image.remove();
         }
@@ -243,14 +248,14 @@ class Controller {
       const {item, itemId} = await this.getItem(req);
       const updatedObj = {};
       const orderId = req.params.orderId;
-      const attrName = field.dataType || field.name;
+      const dataType = field.dataType;
 
-      if (attrName === 'tags') {
+      if (dataType === 'tag') {
         const idx = item.tags.indexOf(orderId);
-        updatedObj.tags = reorderList(item.tags, idx, attrName);
-        updatedObj.tagValues = reorderList(item.tagValues, idx, attrName);
+        updatedObj.tags = reorderList(item.tags, idx, dataType);
+        updatedObj.tagValues = reorderList(item.tagValues, idx, dataType);
       } else {
-        updatedObj[field.name] = reorderList(item[field.name], orderId, attrName);
+        updatedObj[field.name] = reorderList(item[field.name], orderId, dataType);
       }
 
       await item.update(updatedObj);
@@ -263,14 +268,20 @@ class Controller {
     this.router.post(routePath, async (req, res) => {
       const {item, itemId} = await this.getItem(req);
 
-      const attrName = field.dataType || field.name;
       const updatedObj = {};
       const index = parseInt(req.body.index);
-      const newValue = req.body.newValue.trim();
 
-      if (attrName === 'tags') {
+      if (field.dataType === 'tag') {
+        const newValue = req.body.newValue.trim();
         updatedObj.tagValues = item.tagValues;
         updatedObj.tagValues[index] = newValue;
+      } else if (field.dataType === 'link') {
+        const linkUrl = req.body[field.name].trim();
+        const linkText = req.body[field.name + 'Text'].trim();
+        updatedObj[field.name] = item[field.name];
+        updatedObj[field.name][index] = linkUrl + (linkText ? ' ' + linkText : '');
+      } else {
+        return res.send(`Route not implemented: update existing ${field.name} value`);
       }
 
       await item.update(updatedObj);

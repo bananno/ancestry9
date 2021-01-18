@@ -35,7 +35,7 @@ module.exports = [
   },
   {
     name: 'links',
-    dataType: String,
+    dataType: 'link',
     isList: true,
   },
   {

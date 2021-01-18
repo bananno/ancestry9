@@ -1,0 +1,35 @@
+<%
+  const fieldName = locals.fieldName || 'links';
+
+  let urlValue = '';
+  let textValue = '';
+
+  const boxClass = ['external-link-form'];
+
+  if (locals.value) {
+    const words = locals.value.split(' ');
+    urlValue = words.shift();
+    textValue = words.join(' ');
+  } else {
+    boxClass.push('external-link-form-new');
+  }
+
+  // running on front end: setupExternalLinkFields()
+%>
+<div class="<%= boxClass.join(' ') %>">
+  <input
+    type="text"
+    class="external-link-form-url"
+    name="<%= fieldName %>"
+    placeholder="url"
+    value="<%= urlValue %>"
+  >
+  <br>
+  <input
+    type="text"
+    class="external-link-form-text"
+    name="<%= fieldName %>Text"
+    placeholder="link text"
+    value="<%= textValue %>"
+  >
+</div>
