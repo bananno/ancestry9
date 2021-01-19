@@ -86,7 +86,7 @@ function createModel(modelName) {
 
     const isEditable = getPropKey('isEditable', {defaultTo: true});
 
-    if (typeof isEditable === Function) {
+    if (typeof isEditable === 'function') {
       field.showInEditTable = isEditable;
       field.showDisabledWhenNotEditable = getPropKey('showDisabledWhenNotEditable', {defaultTo: false});
     } else if (isEditable === true) {
