@@ -60,6 +60,9 @@ function setupExternalLinkFields() {
         if (newValue.match(/findagrave.com/i)) {
           return 'FindAGrave';
         }
+        if (newValue.match(/newspapers.com/i)) {
+          return 'Newspapers.com';
+        }
       })();
       if (linkText) {
         $linkTextBox.val(linkText);

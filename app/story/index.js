@@ -40,6 +40,7 @@ function createRoutes(router) {
   router.post('/story/:id/createNotation', createStoryNotation);
   router.get('/stories/with-sources', storiesWithSources);
   router.get('/stories/:type', storyIndex);
+  router.get('/story/:id/entries/region1/:region1', storyEntries);
 }
 
 async function storyIndex(req, res) {
@@ -107,9 +108,37 @@ async function storyEdit(req, res) {
 
 async function storyEntries(req, res) {
   req.story = await Story.findById(req.params.id).populate('tags');
+  req.rootPath = '/story/' + req.story._id;
   await req.story.populateEntries({populateImages: true});
   req.story.entries.sort((a, b) => a.title < b.title ? -1 : 1);
-  res.renderStory('entries');
+  let placeList;
+  const region1 = req.params.region1;
+
+  if (req.story.title.match('Census USA 1880') || region1) {
+    const places = {};
+
+    req.story.entries.forEach(source => {
+      const state = source.location ? source.location.region1 : undefined;
+      places[state] = true;
+    });
+    const regionNameList = Object.keys(places).sort();
+    const entriesUrl = req.rootPath + '/entries';
+
+    placeList = [
+      [entriesUrl, 'all'],
+      ...regionNameList.map(place => [entriesUrl + '/region1/' + place, place])
+    ];
+
+    // Can't filter these out in the original Source.find() because need to know
+    // the list of places.
+    if (region1) {
+      req.story.entries = req.story.entries.filter(source =>
+        source.location && source.location.region1 === region1
+      );
+    }
+  }
+
+  res.renderStory('entries', {placeList});
 }
 
 async function storyNewEntry(req, res) {
