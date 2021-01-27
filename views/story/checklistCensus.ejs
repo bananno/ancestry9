@@ -26,6 +26,10 @@
 
 <h1>people</h1>
 
+<div>
+  filter: <input id="people-list-filter" type="text">
+</div>
+
 <div class="column">
   <h2>done</h2>
   <%- include('../person/_list', {format: 'bullet', people: peopleLists.done}) %>
@@ -38,9 +42,9 @@
     (shows age in <%= censusYear %>)
   </p>
 
-  <ul id="listOfPeople" class="bullet-list">
+  <ul class="person-list bullet-list">
     <% peopleLists.missingStory.forEach(person => { %>
-      <li class="person_row">
+      <li class="person-row" person-name="<%= person.name.toLowerCase() %>">
         <%- include('../person/_link', {person}) %>
         - <%= censusYear - person.getBirthYear() %>
       </li>
@@ -55,9 +59,9 @@
     (shows age in <%= censusYear %>)
   </p>
 
-  <ul id="listOfPeople" class="bullet-list">
+  <ul class="person-list bullet-list">
     <% peopleLists.maybeNotInCountry.forEach(person => { %>
-      <li class="person_row">
+      <li class="person-row" person-name="<%= person.name.toLowerCase() %>">
         <%- include('../person/_link', {person}) %>
         - <%= censusYear - person.getBirthYear() %>
       </li>
@@ -80,9 +84,9 @@
     (shows year of death)
   </p>
 
-  <ul id="listOfPeople" class="bullet-list">
+  <ul class="person-list bullet-list">
     <% peopleLists.diedBefore.forEach(person => { %>
-      <li class="person_row">
+      <li class="person-row" person-name="<%= person.name.toLowerCase() %>">
         <%- include('../person/_link', {person}) %>
         - <%= person.getDeathYear() %>
       </li>
@@ -97,12 +101,21 @@
     (shows year of birth)
   </p>
 
-  <ul id="listOfPeople" class="bullet-list">
+  <ul class="person-list bullet-list">
     <% peopleLists.bornAfter.forEach(person => { %>
-      <li class="person_row">
+      <li class="person-row" person-name="<%= person.name.toLowerCase() %>">
         <%- include('../person/_link', {person}) %>
         - <%= person.getBirthYear() %>
       </li>
     <% }) %>
   </ul>
 </div>
+
+<script>
+  createQuickFilter({
+    input: '#people-list-filter',
+    items: '.person-list .person-row',
+    getItemText: $item => $item.attr('person-name'),
+    startFocus: false,
+  });
+</script>

@@ -1,16 +1,16 @@
 <% if (locals.format == 'bullet') { %>
-  <ul class="bullet-list">
+  <ul class="person-list bullet-list">
     <% people.forEach(person => { %>
-      <li>
+      <li class="person-row" person-name="<%= person.name.toLowerCase() %>">
         <%- include('./_link', {person}) %>
         <%= locals.showAge ? ('(' + person.age + ')') : '' %>
       </li>
     <% }); %>
   </ul>
 <% } else if (locals.format == 'list') { %>
-  <ul class="no-bullet-list">
+  <ul class="person-list no-bullet-list">
     <% people.forEach(person => { %>
-      <li>
+      <li class="person-row" person-name="<%= person.name.toLowerCase() %>">
         <%- include('./_link', {person}) %>
         <%= locals.showAge ? ('(' + person.age + ')') : '' %>
       </li>
