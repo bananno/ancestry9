@@ -9,8 +9,6 @@ const {
 const constants = require('./constants');
 const personTools = require('./tools');
 const personProfileRoutes = require('./profile');
-const personTimeline = require('./timeline');
-const personChecklist = require('./checklist');
 
 module.exports = createRoutes;
 
@@ -30,11 +28,7 @@ function createRoutes(router) {
       show: personProfileRoutes.show,
       edit: personProfileRoutes.edit,
       delete: null,
-      other: {
-        timeline: personTimeline,
-        checklist: personChecklist,
-        ...personProfileRoutes.other,
-      },
+      other: personProfileRoutes.other,
     },
   });
 

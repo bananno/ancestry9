@@ -1,6 +1,5 @@
 const {
   Citation,
-  Event,
   Notation,
   Person,
   Source,
@@ -15,14 +14,16 @@ module.exports = {
   show: personSummary,
   edit: personEdit,
   other: {
-    sources: personSources,
-    notations: personNotations,
-    nationality: personNationality,
-    relatives: personRelatives,
+    checklist: require('./profile.checklist'),
     connection: personConnection,
-    wikitree: personWikitree,
-    descendants: personDescendants,
+    descendants: require('./profile.descendants'),
     mentions: personMentions,
+    nationality: personNationality,
+    notations: personNotations,
+    relatives: personRelatives,
+    sources: personSources,
+    timeline: require('./profile.timeline'),
+    wikitree: personWikitree,
   }
 };
 
@@ -155,49 +156,6 @@ async function personConnection(req, res) {
 async function personWikitree(req, res) {
   await req.person.populateWikiTreeSources();
   res.renderPersonProfile('wikitree');
-}
-
-async function personDescendants(req, res) {
-  const monthNames = [
-    null, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-  ];
-
-  const people = await Person.find().populate('tags');
-
-  await Person.populateBirthAndDeath(people);
-
-  const marriageEvents = await Event.find({title: {$in: ['divorce', 'marriage']}});
-
-  const generationLimit = req.params.generation ? parseInt(req.params.generation) : undefined;
-
-  res.renderPersonProfile('descendants', {
-    people,
-    marriageEvents,
-    findPersonInList: Person.findInList,
-    getLifeDatesString,
-    formatEventDate,
-    sortBy: sorting.sortBy,
-    generationLimit,
-  });
-
-  function getLifeDatesString(person) {
-    const livingStr = person.living ? 'living' : undefined;
-    return [
-      formatEventDate(person.birth) || '?',
-      formatEventDate(person.death) || livingStr || '?',
-    ].join('-');
-  }
-
-  function formatEventDate(event) {
-    if (event && event.date) {
-      if (event.date.display) {
-        return event.date.display;
-      }
-      const {day, month, year} = event.date;
-      return [monthNames[month], day, year].filter(Boolean).join(' ');
-    }
-  }
 }
 
 async function personMentions(req, res) {
