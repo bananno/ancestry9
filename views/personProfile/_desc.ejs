@@ -13,6 +13,7 @@
     people,
     toDoList,
     formatEventDate,
+    taglineNotations,
   });
 
   // TO DO: use the "number of children" tag information to show "__ children"
@@ -32,6 +33,11 @@
   <span class="life-dates">(<%= getLifeDatesString(person) %>)</span>
   <% if (settings.showErrors && personInfo.errors.length) { %>
     <span class="error"><%= personInfo.errors.join(' ') %></span>
+  <% } %>
+  <% if (personInfo.tagline) { %>
+    <span class="tagline">
+      <%= personInfo.tagline %>
+    </span>
   <% } %>
 </p>
 

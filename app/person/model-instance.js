@@ -142,6 +142,7 @@ methods.getDescendantChartInfo = function(data) {
     people,
     toDoList,
     formatEventDate,
+    taglineNotations, // all descendant chart tagline notations in the database
   } = data;
 
   const errors = [];
@@ -241,11 +242,17 @@ methods.getDescendantChartInfo = function(data) {
     return false;
   });
 
+  const tagline = taglineNotations
+    .filter(event => findPersonInList(event.people, this))
+    .map(event => event.text)
+    .join(' ');
+
   return {
     errors,
     maidenName,
     spouseList,
     additionalChildren,
+    tagline,
   };
 
   // Add missing pieces of given event's date and location to the to-do list.

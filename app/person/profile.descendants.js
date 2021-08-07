@@ -1,5 +1,6 @@
 const {
   Event,
+  Notation,
   Person,
   sorting,
 } = require('../import');
@@ -17,6 +18,7 @@ async function personDescendants(req, res) {
   await Person.populateBirthAndDeath(people);
 
   const marriageEvents = await Event.find({title: {$in: ['divorce', 'marriage']}});
+  const taglineNotations = await Notation.find({title: 'descendants chart tagline'});
 
   const generationLimit = req.params.generation ? parseInt(req.params.generation) : undefined;
 
@@ -28,6 +30,7 @@ async function personDescendants(req, res) {
     formatEventDate,
     sortBy: sorting.sortBy,
     generationLimit,
+    taglineNotations,
   });
 
   function getLifeDatesString(person) {
