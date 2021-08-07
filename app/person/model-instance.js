@@ -134,6 +134,11 @@ methods.getMaidenName = function() {
     : this.name;
 }
 
+methods.isATwin = function() {
+  const twinTagId = '5f7bc8cdd6f3b71554d575fc'; // HARDCODED_ID
+  return this.tags.map(t => '' + t._id).includes(twinTagId);
+}
+
 // Get all the info needed for the descendants chart.
 methods.getDescendantChartInfo = function(data) {
   const {

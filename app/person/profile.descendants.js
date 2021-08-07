@@ -35,10 +35,16 @@ async function personDescendants(req, res) {
 
   function getLifeDatesString(person) {
     const livingStr = person.living ? 'living' : undefined;
-    return [
+    const items = [];
+    if (person.isATwin()) {
+      items.push('twin');
+    }
+    const lifeDates = [
       formatEventDate(person.birth) || '?',
       formatEventDate(person.death) || livingStr || '?',
     ].join('-');
+    items.push(lifeDates);
+    return items.join('; ');
   }
 
   function formatEventDate(event) {
