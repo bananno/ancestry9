@@ -1,5 +1,6 @@
 const {
   Citation,
+  Highlight,
   Notation,
   Person,
   Source,
@@ -85,6 +86,7 @@ async function personSources(req, res) {
   for (let i in sources) {
     const source = sources[i];
     await source.populatePersonCitations(person);
+    source.highlights = await Highlight.find({linkPerson: person, source});
     Citation.sortByItem(source.citations);
   }
 

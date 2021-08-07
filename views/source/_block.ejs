@@ -92,7 +92,17 @@
   </div>
 
   <div class="column column2" filter="source-details" filter-set="content">
-    <h3>content</h3>
+    <% if (locals.showExcerpts && source.highlights && source.highlights.length) { %>
+      <h3>excerpts</h3>
+      <% source.highlights.forEach(highlight => { %>
+        <p>
+          <i><%= highlight.excerpt %></i>
+        </p>
+      <% }); %>
+      <h3>full content</h3>
+    <% } else { %>
+      <h3>content</h3>
+    <% } %>
 
     <%- include('../format/content', {
       content: source.content,
