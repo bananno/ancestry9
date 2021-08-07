@@ -3,7 +3,9 @@ const tools = require('./modelTools');
 
 module.exports = createModel;
 
-function createModel(modelName) {
+function createModel(resource) {
+  const modelName = resource.modelName;
+
   const dir = '../' + modelName.toLowerCase() + '/';
 
   const rawFieldList = require(dir + 'model-schema');
@@ -212,7 +214,7 @@ function createModel(modelName) {
   mongooseSchema.methods.constants = () => constants;
   mongooseSchema.statics.constants = () => constants;
 
-  mongoose.model(modelName, mongooseSchema);
+  resource.Model = mongoose.model(modelName, mongooseSchema);
 }
 
 function capitalize(str) {

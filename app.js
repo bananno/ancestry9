@@ -14,9 +14,9 @@ mongoose.connect('mongodb://localhost/ancestry', {
   console.log('\nIs mongod instance running?');
 });
 
-const models = require('./app/models');
+const resources = require('./app/resources');
 const createModel = require('./app/tools/createModel');
-models.forEach(createModel);
+resources.filter(resource => resource.hasModel).forEach(createModel);
 
 const app = express();
 

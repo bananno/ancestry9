@@ -3,6 +3,7 @@ const router = express.Router();
 module.exports = router;
 
 const routerTools = require('./tools/routerTools');
+const resources = require('./resources');
 
 router.use((req, res, next) => {
   res.renderOriginal = res.render;
@@ -31,18 +32,8 @@ router.get('/shared', (req, res) => { // BROKEN due to relative filepaths
   res.renderOriginal('../shared/index.html');
 });
 
-[
-  'checklist',
-  'citation',
-  'event',
-  'export',
-  'highlight',
-  'image',
-  'map',
-  'notation',
-  'person',
-  'source',
-  'story',
-  'tag',
-  'misc',
-].forEach(item => require('./' + item)(router));
+resources.forEach(({name, hasRoutes}) => {
+  if (hasRoutes) {
+    require(`./${name}`)(router);
+  };
+});
