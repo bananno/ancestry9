@@ -29,7 +29,7 @@
 </div>
 
 <% people.forEach(person => { %>
-  <div class="person-highlights-citation-box">
+  <div class="person-highlights-citation-box" id="anchor-<%= person._id %>">
     <div class="column">
       <h3 class="person-link-header">
         <%- include('../person/_link', {person}) %>
@@ -48,6 +48,14 @@
         showPerson: false,
         groupBy: 'item',
       }) %>
+      <form action="/source/<%= source._id %>/add/citations" method="post">
+        <input type="hidden" name="highlightCitation" value="true">
+        <input type="hidden" name="sourceId" value="<%= source._id %>">
+        <input type="hidden" name="person" value="<%= person._id %>">
+        <input type="text" name="item" placeholder="item">
+        <input type="text" name="information" placeholder="information">
+        <button>add citation</button>
+      </form>
     </div>
   </div>
 <% }); %>

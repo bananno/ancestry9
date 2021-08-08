@@ -14,13 +14,15 @@ function createRoutes(router) {
 
 async function createCitation(req, res) {
   const newCitation = Citation.getFormData(req);
-
   const citation = await Citation.create(newCitation);
+  const baseUrl = `/source/${req.sourceId}`;
 
   if (req.body.fastCitations) {
-    res.redirect('/source/' + req.sourceId + '/fastCitations');
+    res.redirect(`${baseUrl}/fastCitations`);
+  } if (req.body.highlightCitation) {
+    res.redirect(`${baseUrl}/highlightCitations#anchor-${citation.person}`);
   } else {
-    res.redirect('/source/' + req.sourceId + '/edit');
+    res.redirect(`${baseUrl}/edit`);
   }
 }
 
