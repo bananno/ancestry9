@@ -60,7 +60,12 @@ function createRelativesChecklist(person) {
 
   const childrenTagValue = person.getTagValue('number of children');
   if (!childrenTagValue) {
-    numberOfChildren.note = 'status not specified';
+    if (person.living && person.isUnderAge20()) {
+      numberOfChildren.strike = true;
+      numberOfChildren.note = 'living & under age 20; ignore for now';
+    } else {
+      numberOfChildren.note = 'status not specified';
+    }
   } else if (childrenTagValue === 'unknown') {
     numberOfChildren.note = 'incomplete';
   } else if (childrenTagValue === 'too distant') {

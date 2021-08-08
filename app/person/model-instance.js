@@ -22,6 +22,16 @@ methods.getBirthCountry = function() {
 methods.getDeathCountry = function() {
   return this.death && this.death.location ? this.death.location.country : undefined;
 };
+methods.isUnderAge20 = function() {
+  // Method does not need to be exact. Find out if the person is approximately
+  // under age 20, and only if their birth year is known.
+  const birthYear = this.getBirthYear();
+  if (!birthYear) {
+    return undefined;
+  }
+  const currentYear = new Date().getYear() + 1900;
+  return currentYear - birthYear < 20;
+}
 
 methods.getImmigrationYear = async function() {
   if (!this.immigration) {
@@ -54,7 +64,7 @@ methods.getLink = function(linkType) {
 methods.getNonRelatives = async function() {
   const Person = mongoose.model('Person');
   const people = await Person.find({
-    _id: {$nin: [...this.parents, ...this.spouses, ...this.children]}
+    _id: {$nin: [this, ...this.parents, ...this.spouses, ...this.children]}
   });
   Person.sortByName(people);
   return people;
@@ -177,7 +187,10 @@ methods.getDescendantChartInfo = function(data) {
     }
   }
 
-  if (this.getTagValue('number of children') !== 'done') {
+  if (
+    this.getTagValue('number of children') !== 'done' &&
+    (!this.living || !this.isUnderAge20())
+  ) {
     errors.push('children?');
     toDoList.push({person: this, missing: 'children?'});
   }
