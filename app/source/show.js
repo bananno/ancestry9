@@ -13,6 +13,7 @@ module.exports = {
   other: {
     fastCitations: renderFastCitations,
     highlights: renderHighlights,
+    highlightCitations: renderHighlightCitations,
     notations: renderNotations,
   }
 };
@@ -93,6 +94,16 @@ async function renderHighlights(req, res) {
   const stories = await Story.getAllSortedByTitle();
 
   res.renderSource('highlights', {allPeople, stories});
+}
+
+async function renderHighlightCitations(req, res) {
+  req.source = await Source.findById(req.sourceId)
+    .populate('story')
+    .populate('people');
+
+  const people = await req.source.getPeopleForHighlightCitationComparison();
+
+  res.renderSource('highlightCitations', {people});
 }
 
 async function renderNotations(req, res) {

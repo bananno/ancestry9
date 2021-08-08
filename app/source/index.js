@@ -28,9 +28,7 @@ function createRoutes(router) {
       delete: deleteSource,
       show: sourceProfile.summary,
       edit: sourceProfile.edit,
-      other: {
-        ...sourceProfile.other,
-      },
+      other: sourceProfile.other,
     },
   });
 

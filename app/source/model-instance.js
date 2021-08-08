@@ -223,6 +223,30 @@ methods.populateNotationsInCategories = async function() {
 
 // =============================== people
 
+// Get a list of people that are NOT attached to this source but are associated
+// through a citation or a highlight. List contains no duplicates and is sorted
+// by name.
+methods.getAssociatedPeople = async function() {
+  const extraCitations = await mongoose.model('Citation').find({
+    source: this,
+    person: {$nin: this.people}
+  });
+  const extraHighlights = await mongoose.model('Highlight').find({
+    source: this,
+    linkPerson: {$ne: null, $nin: this.people}
+  });
+  const associatedPersonIds = [
+    ...extraCitations.map(citation => citation.person),
+    ...extraHighlights.map(highlight => highlight.linkPerson),
+  ];
+
+  const Person = mongoose.model('Person');
+  const people = await Person.find({_id: {$in: associatedPersonIds}});
+  Person.sortByName(people);
+
+  return people;
+}
+
 // Get list of people sorted for the dropdown for creating new citations,
 // creating new highlights, or attaching additional people for this source.
 // Contains all people in the database in a specific order:
@@ -281,6 +305,25 @@ methods.getPeopleForDropdown = async function() {
     personRef['' + (person._id || person)] = true;
   }
 };
+
+// Get a list of all attached & associated people for this source.
+// Populate this source's citations and highlights for each person.
+methods.getPeopleForHighlightCitationComparison = async function() {
+  const Citation = mongoose.model('Citation');
+  const Highlight = mongoose.model('Highlight');
+
+  const additionalPeople = await this.getAssociatedPeople();
+  const people = [...this.people, ...additionalPeople];
+
+  for (let i in people) {
+    const person = people[i];
+    person.citations = await Citation.find({person, source: this});
+    person.highlights = await Highlight.find({linkPerson: person, source: this});
+    Citation.sortByItem(person.citations);
+  }
+
+  return people;
+}
 
 // =============================== stories
 

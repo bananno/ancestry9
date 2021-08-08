@@ -1,0 +1,53 @@
+<style>
+.person-highlights-citation-box {
+  border: 1px solid gray; margin: 5px; padding: 10px;
+}
+.person-highlights-citation-header .column,
+.person-highlights-citation-box .column {
+  width: 45%;
+}
+.person-highlights-citation-header h2 {
+  padding-left: 10px;
+}
+.person-link-header a {
+  color: black;
+  text-decoration: none;
+}
+.person-link-header a:hover {
+  color: #00B7FF;
+  text-decoration: underline;
+}
+</style>
+
+<div class="person-highlights-citation-header">
+  <div class="column">
+    <h2>person + excerpt</h2>
+  </div>
+  <div class="column">
+    <h2>citations</h2>
+  </div>
+</div>
+
+<% people.forEach(person => { %>
+  <div class="person-highlights-citation-box">
+    <div class="column">
+      <h3 class="person-link-header">
+        <%- include('../person/_link', {person}) %>
+      </h3>
+      <% person.highlights.forEach(highlight => { %>
+        <p>
+          <%= highlight.excerpt %>
+        </p>
+      <% }); %>
+    </div>
+    <div class="column">
+      <%- include('../citation/_list', {
+        citations: person.citations,
+        showDelete: false,
+        showSource: false,
+        showPerson: false,
+        groupBy: 'item',
+      }) %>
+    </div>
+  </div>
+<% }); %>
