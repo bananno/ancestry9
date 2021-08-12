@@ -3,6 +3,7 @@
   const settings = {
     showErrors: true,
     showGeneration: false,
+    showLinks: false,
   };
 
   const person = findPersonInList(people, locals.person);
@@ -25,10 +26,14 @@
     <% if (settings.showGeneration) { %>
       [<%= generation %>]
     <% } %>
-    <%- include('../person/_link', {
-      person,
-      linkText: personInfo.maidenName,
-    }) %>
+    <% if (settings.showLinks) { %>
+      <%- include('../person/_link', {
+        person,
+        linkText: personInfo.maidenName,
+      }) %>
+    <% } else { %>
+      <%= personInfo.maidenName %>
+    <% } %>
   </b>
   <span class="life-dates">(<%= getLifeDatesString(person) %>)</span>
   <% if (settings.showErrors && personInfo.errors.length) { %>
@@ -56,7 +61,14 @@
     }
   %>
   <p class="person-item">
-    + <%- include('../person/_link', {person: spouse}) %>
+    <% if (settings.showLinks) { %>
+      + <%- include('../person/_link', {
+        person: spouse,
+        linkText: spouse.modifiedName,
+      }) %>
+    <% } else { %>
+      + <%= spouse.modifiedName %>
+    <% } %>
     <span class="life-dates">
       (<%= eventsList.join('; ') %>)
     </span>

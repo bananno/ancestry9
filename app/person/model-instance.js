@@ -144,6 +144,25 @@ methods.getMaidenName = function() {
     : this.name;
 }
 
+// Given a spouse, remove that spouse's last name if this person has it in brackets.
+// Example 1: this = Jane Doe [Miller], spouse = Jack Miller, result = Jane Doe
+// Example 2: this = Jane Doe [Smith Miller], spouse = Jack Miller, result = Jane Doe [Smith]
+methods.getNamesExceptMarriedName = function(spouse) {
+  if (!this.name.match('\\[') || spouse.name.match('\\[')) {
+    return this.name;
+  }
+  const spouseLastName = spouse.name.split(' ').reverse()[0];
+  const thisBracketNames = this.name
+    .split('\[')[1] // the portion after the opening bracket
+    .slice(0, -1) // remove the closing bracket
+    .split(' ')
+    .filter(name => name !== spouseLastName); // remove the married name
+  if (thisBracketNames.length) {
+    return this.getMaidenName() + ' [' + thisBracketNames.join(' ') + ']';
+  }
+  return this.getMaidenName();
+}
+
 methods.isATwin = function() {
   const twinTagId = '5f7bc8cdd6f3b71554d575fc'; // HARDCODED_ID
   return this.tags.map(t => '' + t._id).includes(twinTagId);
@@ -151,6 +170,7 @@ methods.isATwin = function() {
 
 // Get all the info needed for the descendants chart.
 methods.getDescendantChartInfo = function(data) {
+  const Event = mongoose.model('Event');
   const {
     findPersonInList,
     marriageEvents, // all marriage-related events in the database
@@ -201,9 +221,11 @@ methods.getDescendantChartInfo = function(data) {
 
   const personMarriageEvents = marriageEvents.filter(event =>
     findPersonInList(event.people, this));
+  Event.sortByDate(personMarriageEvents);
 
   const spouseList = this.spouses.map(spouseId => {
     const spouse = findPersonInList(people, spouseId);
+    spouse.modifiedName = spouse.getNamesExceptMarriedName(this);
     const spouseErrors = [];
 
     const spouseChildren = childrenList.filter((child, i) => {
