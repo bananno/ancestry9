@@ -171,6 +171,7 @@ methods.isATwin = function() {
 // Get all the info needed for the descendants chart.
 methods.getDescendantChartInfo = function(data) {
   const Event = mongoose.model('Event');
+  const Person = mongoose.model('Person');
   const {
     findPersonInList,
     marriageEvents, // all marriage-related events in the database
@@ -216,6 +217,7 @@ methods.getDescendantChartInfo = function(data) {
   }
 
   const childrenList = this.children.map(childId => findPersonInList(people, childId));
+  Person.sortByBirth(childrenList);
 
   const childrenListedSoFar = [];
 

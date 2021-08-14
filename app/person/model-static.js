@@ -196,6 +196,27 @@ methods.removeFromList = function(people, person) {
   return people.filter(nextPerson => !isSame(person, nextPerson));
 };
 
+methods.sortByBirth = people => {
+  people.sort((a, b) => {
+    if (!a.birth || !a.birth.date || !a.birth.date.year) {
+      if (!b.birth || !b.birth.date || !b.birth.date.year) {
+        return 0;
+      }
+      return 1;
+    }
+    if (!b.birth || !b.birth.date || !b.birth.date.year) {
+      return -1;
+    }
+    if (a.birth.date.year === b.birth.date.year) {
+      if (a.birth.date.month === b.birth.date.month) {
+        return a.birth.date.day - b.birth.date.day;
+      }
+      return a.birth.date.month - b.birth.date.month;
+    }
+    return a.birth.date.year - b.birth.date.year;
+  });
+}
+
 methods.sortByName = function(people) {
   people.sort((a, b) => a.name < b.name ? -1 : 1);
 };
