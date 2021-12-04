@@ -42,7 +42,7 @@
           unknown
         </td>
         <td class="percentage">
-          <%= unknownPercentage.toFixed(2) %> %
+          <%= unknownPercentage > 0 ? unknownPercentage.toFixed(2) : 0 %> %
         </td>
       </tr>
     </table>
