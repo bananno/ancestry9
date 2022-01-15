@@ -10,6 +10,9 @@
         <% if (tagValues[i]) { %>
           - <%= tagValues[i] %>
         <% } %>
+        <% if (locals.showDefinitions) { %>
+          <i>- <%= tag.definition %></i>
+        <% } %>
       </li>
     <% }); %>
   </ul>
