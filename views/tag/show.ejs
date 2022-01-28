@@ -56,18 +56,10 @@
 
 <h1>items with tag</h1>
 
-<% if (tag.title === 'number of children') { %>
+<% if (data.specialView) { %>
+  <%- include(`./special/${data.specialView}`) %>
+<% } else if (tag.title === 'number of children') { %>
   <%- include('./special/number-of-children', {people: data.people, getTagValue}) %>
-<% } else if (tag.title === 'findagrave') { %>
-  <%- include('./special/person-links', {
-    people: data.people,
-    getTagValue,
-    linkType: 'FindAGrave'}) %>
-<% } else if (tag.title === 'wikitree') { %>
-  <%- include('./special/person-links', {
-    people: data.people,
-    getTagValue,
-    linkType: 'WikiTree'}) %>
 <% } else if (data.groupByValue) { %>
   <% modelsThatHaveTags
     .filter(model => model.name != 'Image')
@@ -148,7 +140,7 @@
   <% }); %>
 <% } %>
 
-<% if (data.images.length > 0) { %>
+<% if (data.images && data.images.length > 0) { %>
   <h2>images</h2>
   <% data.images.forEach(image => { %>
     <div style="display: inline-block; width: 200px;">

@@ -4,6 +4,7 @@ const {
 } = require('../import');
 
 const constants = require('./constants');
+const getTagDataFindagraveWikitree = require('./tools-findagrave-wikitree');
 const tools = {};
 module.exports = tools;
 
@@ -79,6 +80,12 @@ tools.getTagIndexData = async tags => {
 };
 
 tools.getTagShowData = async function(tag) {
+  if (tag.title === 'findagrave') {
+    return getTagDataFindagraveWikitree({tag, isFindAGrave: true});
+  } else if (tag.title === 'wikitree') {
+    return getTagDataFindagraveWikitree({tag, isWikitree: true});
+  }
+
   const data = {};
 
   const metatagTitles = tag.getTagTitles();

@@ -1,0 +1,14 @@
+<% data.sections.forEach(({title, people}) => { %>
+  <h2><%= title %></h2>
+  <ul class="bullet-list">
+    <% people.forEach(({person, link}) => { %>
+      <li>
+        <% if (link) { %>
+          <a href="<%= link.split(' ')[0] %>" target="_blank">link</a>
+          -
+        <% } %>
+        <%- include('../../person/_link', {person}) %>
+      </li>
+    <% }); %>
+  </ul>
+<% }); %>
