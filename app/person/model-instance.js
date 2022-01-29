@@ -8,6 +8,7 @@ module.exports = methods;
 methods.getRelativesList = getRelativesList;
 methods.getTagTitles = tools.getTagTitles;
 methods.getTagValue = tools.getTagValue;
+methods.hasTag = tools.hasTag;
 
 // These birth/death methods only to be used after populateBirthAndDeath()
 methods.getBirthYear = function() {
