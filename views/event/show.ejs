@@ -27,3 +27,12 @@
 
 <h2>tags</h2>
 <%- include('../tag/_list', {item: event}) %>
+
+<hr>
+<% if (locals.showMoreInfo) { %>
+  <%- include('./extraInfo') %>
+<% } else { %>
+  <p>
+    There is no extra info for this event type.
+  </p>
+<% } %>

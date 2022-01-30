@@ -1,7 +1,7 @@
 <h2>event:</h2>
 <h1><%= event.title %></h1>
 
-<% if (subview == 'edit') { %>
+<% if (subview === 'edit') { %>
   <p>
     <a href="<%= rootPath %>" class="main-link">done</a>
   </p>
@@ -11,4 +11,4 @@
   </p>
 <% } %>
 
-<%- include('./' + subview) %>
+<%- include(`./${subview}`) %>

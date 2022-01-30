@@ -7,6 +7,8 @@ const {
   getEditTableRows,
 } = require('../import');
 
+const eventTools = require('./tools');
+
 module.exports = createRoutes;
 
 function createRoutes(router) {
@@ -80,7 +82,8 @@ async function showEvent(req, res) {
   if (!req.event) {
     return res.send('event not found');
   }
-  res.renderEvent('show');
+  const data = await eventTools.getShowEventInfo(req.event);
+  res.renderEvent('show', data);
 }
 
 async function editEvent(req, res) {
