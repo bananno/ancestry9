@@ -121,12 +121,25 @@
   </ul>
 <% } %>
 
+<hr style="margin-top: 20px;">
+
 <% if (story.nonEntrySources.length) { %>
   <h2>sources</h2>
   <ul class="bullet-list">
     <% story.nonEntrySources.forEach(source => { %>
       <li>
         <%- include('../source/_link', {source, showStory: true}) %>
+      </li>
+    <% }); %>
+  </ul>
+<% } %>
+
+<% if (locals.storiesInLocation) { %>
+  <h2>newspapers, cemeteries, landmarks</h2>
+  <ul class="bullet-list">
+    <% locals.storiesInLocation.forEach(otherStory => { %>
+      <li>
+        <%- include('../story/_link', {story: otherStory}) %>
       </li>
     <% }); %>
   </ul>

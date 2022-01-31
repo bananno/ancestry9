@@ -1,7 +1,12 @@
+const {
+  Story,
+} = require('../import');
+
 const constants = require('./constants');
 
 module.exports = {
   createRenderStory,
+  getShowStoryInfo,
 };
 
 function createRenderStory(req, res, next) {
@@ -19,4 +24,17 @@ function createRenderStory(req, res, next) {
     });
   };
   next();
+}
+
+async function getShowStoryInfo(story) {
+  const data = {};
+
+  if (story.type === 'place') {
+    data.storiesInLocation = await Story.find({
+      type: {$in: ['cemetery', 'landmark', 'newspaper']},
+      location: story.location,
+    });
+  }
+
+  return data;
 }

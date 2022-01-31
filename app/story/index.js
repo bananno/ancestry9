@@ -84,7 +84,8 @@ async function storyShowMain(req, res) {
     .populate('tags');
   await req.story.populateCiteText();
   await req.story.populateNonEntrySources();
-  res.renderStory('show');
+  const data = await storyTools.getShowStoryInfo(req.story);
+  res.renderStory('show', data);
 }
 
 async function storyEdit(req, res) {
