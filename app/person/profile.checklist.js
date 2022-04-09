@@ -132,7 +132,7 @@ function createSourceChecklist({sources, person, birthYear, deathYear, immigrati
 
   checkForStory({attr: 'type', title: 'cemetery', strikeLiving: true});
 
-  for (let year = 1840; year <= 1940; year += 10) {
+  for (let year = 1840; year <= 1950; year += 10) {
     if (birthYear && birthYear > year) {
       continue;
     }
