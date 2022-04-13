@@ -1,0 +1,34 @@
+<div class="checklist">
+  <% locals.items.forEach(item => { %>
+    <%
+      const canStrike = item.strike || !!(item.strikeLiving && person.living);
+
+      // Checked if item is complete OR if non-applicable, e.g. for a living
+      // person or too-distant relative.
+      const isChecked = !!item.complete || canStrike;
+
+      // If item is actually complete, show it as complete instead of N/A.
+      const showStrike = canStrike && !item.complete;
+    %>
+    <div class="checklist-item checklist-<%= isChecked %>">
+      <div class="checkmark">
+        <img src="/images/check-<%= isChecked %>.png">
+      </div>
+      <div class="info">
+        <p>
+          <% if (showStrike) { %>
+            <b><strike><%= item.title %></strike></b>
+            <% if (item.strikeLiving) { %>
+              <i>(living)</i>
+            <% } %>
+          <% } else { %>
+            <b><%= item.title %></b>
+          <% } %>
+          <% if (item.note) { %>
+            <i>(<%= item.note %>)</i>
+          <% } %>
+        </p>
+      </div>
+    </div>
+  <% }); %>
+</div>

@@ -1,6 +1,7 @@
 const {
   Citation,
   Highlight,
+  sorting,
   Source,
 } = require('../import');
 
@@ -15,12 +16,17 @@ async function renderPersonSources(req, res) {
   let sources = await Source.find({people: person})
     .populate('story').populate('images');
 
-  Source.sortByStory(sources);
-
   sources = filterSourcesForSubview(subview, sources);
 
-  let previousSourceType;
+  let checklistItems, previousSourceType;
   const sourceItems = [];
+
+  if (subview === 'census') {
+    Source.sortByStoryYear(sources);
+    checklistItems = await getCensusChecklist(person, sources);
+  } else {
+    Source.sortByStory(sources);
+  }
 
   for (let i in sources) {
     const source = sources[i];
@@ -38,8 +44,10 @@ async function renderPersonSources(req, res) {
   }
 
   res.renderPersonProfile('sources', {
+    checklistItems,
     showGroupTitles: !subview || subview === 'other',
     sourceItems,
+    pageTitle: subview ? `Sources - ${subview}` : 'Sources',
   });
 }
 
@@ -62,4 +70,52 @@ function filterSourcesForSubview(subview, sources) {
   }
   return sources.filter(source => !['cemetery', 'document', 'newspaper']
     .includes(source.story.type));
+}
+
+async function getCensusChecklist(person, sources) {
+  await person.populateBirthAndDeath();
+  const birthYear = person.getBirthYear();
+  const deathYear = person.getDeathYear();
+  const immigrationYear = await person.getImmigrationYear();
+  const listItems = [];
+
+  for (let year = 1840; year <= 1950; year += 10) {
+    if (birthYear > year || immigrationYear > year) {
+      continue;
+    }
+    if (!deathYear) {
+      if (birthYear && year - birthYear > 90) {
+        continue;
+      }
+    } else if (deathYear < year) {
+      continue;
+    }
+
+    const result = {
+      complete: sources.some(source => source.story.date.year === year),
+      title: `Census USA ${year}`,
+      year,
+    };
+
+    if (!result.complete && year === 1890) {
+      result.strike = true;
+      result.note = 'not found; probably destroyed';
+    }
+
+    listItems.push(result);
+  }
+
+  sources.forEach(source => {
+    if (!source.story.title.match('Census USA')) {
+      listItems.push({
+        complete: true,
+        title: source.story.title,
+        year: source.story.date.year,
+      });
+    }
+  });
+
+  sorting.sortBy(listItems, item => item.year);
+
+  return listItems;
 }

@@ -11,6 +11,8 @@
   ];
 %>
 
+<h2><%= locals.pageTitle %></h2>
+
 <ul class="person-navigation">
   <% personSourcesSubnav.forEach(([path, text]) => { %>
     <li>
@@ -18,6 +20,10 @@
     </li>
   <% }); %>
 </ul>
+
+<% if (locals.checklistItems) { %>
+  <%- include('./_checklistSection', {items: checklistItems}) %>
+<% } %>
 
 <% locals.sourceItems.forEach(({groupTitle, source}) => { %>
   <% if (locals.showGroupTitles && groupTitle) { %>
