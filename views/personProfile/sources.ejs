@@ -1,24 +1,26 @@
 <%
-  const rootPath = '/person/' + paramPersonId;
-  let previousSourceType = '';
+  const rootPath = `/person/${paramPersonId}/sources`;
+
+  const personSourcesSubnav = [
+    ['', 'all'],
+    ['grave'],
+    ['census'],
+    ['newspapers'],
+    ['documents', 'other documents'],
+    ['other'],
+  ];
 %>
 
-<% sources.forEach(source => { %>
-  <%
-    const notesList = source.notes ? source.notes.split('\n') : null;
+<ul class="person-navigation">
+  <% personSourcesSubnav.forEach(([path, text]) => { %>
+    <li>
+      <a href="<%= rootPath %>/<%= path %>"><%= text || path %></a>
+    </li>
+  <% }); %>
+</ul>
 
-    let groupTitle;
-
-    if (source.story.type != previousSourceType) {
-      groupTitle = {
-        cemetery: 'grave',
-        index: 'web index',
-      }[source.story.type] || (source.story.type + 's');
-      previousSourceType = source.story.type;
-    }
-  %>
-
-  <% if (groupTitle) { %>
+<% locals.sourceItems.forEach(({groupTitle, source}) => { %>
+  <% if (locals.showGroupTitles && groupTitle) { %>
     <h2><%= groupTitle %></h2>
   <% } %>
 
@@ -32,8 +34,13 @@
       showDelete: false,
       showSource: false,
       showPerson: false,
-      rootPath: rootPath,
       groupBy: 'item',
     },
   }); %>
 <% }); %>
+
+<% if (locals.sourceItems.length === 0) { %>
+  <p>
+    No sources.
+  </p>
+<% } %>

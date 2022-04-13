@@ -22,7 +22,8 @@ module.exports = {
     nationality: personNationality,
     notations: personNotations,
     relatives: personRelatives,
-    sources: personSources,
+    sources: require('./profile.sources'),
+    'sources/:subview': require('./profile.sources'),
     timeline: require('./profile.timeline'),
     wikitree: personWikitree,
   }
@@ -75,24 +76,6 @@ async function personEdit(req, res) {
     missingLinks: req.person.getMissingLinks(),
     itemName: 'person',
   });
-}
-
-async function personSources(req, res) {
-  const person = req.person;
-
-  const sources = await Source.find({people: person})
-    .populate('story').populate('images');
-
-  for (let i in sources) {
-    const source = sources[i];
-    await source.populatePersonCitations(person);
-    source.highlights = await Highlight.find({linkPerson: person, source});
-    Citation.sortByItem(source.citations);
-  }
-
-  Source.sortByStory(sources);
-
-  res.renderPersonProfile('sources', {sources});
 }
 
 async function personNotations(req, res) {
