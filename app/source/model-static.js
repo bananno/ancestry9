@@ -38,3 +38,7 @@ methods.sortByStory = sources => {
     return [source.story.type, source.story.title, source.title].join(' - ');
   });
 };
+
+methods.sortByStoryYear = sources => {
+  tools.sortBy(sources, source => source.story.date.year);
+};

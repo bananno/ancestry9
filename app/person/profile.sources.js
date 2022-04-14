@@ -43,8 +43,19 @@ async function renderPersonSources(req, res) {
     sourceItems.push({groupTitle, source});
   }
 
+  let mentions;
+  if (subview === 'newspapers') {
+    await req.person.populateHighlightMentions();
+    mentions = req.person.mentions.filter(highlight => {
+      const highlightSourceId = `${highlight.source._id}`;
+      return highlight.source.story.type === 'newspaper' &&
+        sources.every(source => `${source._id}` !== highlightSourceId);
+    });
+  }
+
   res.renderPersonProfile('sources', {
     checklistItems,
+    mentions,
     showGroupTitles: !subview || subview === 'other',
     sourceItems,
     pageTitle: subview ? `Sources - ${subview}` : 'Sources',

@@ -50,3 +50,10 @@
     No sources.
   </p>
 <% } %>
+
+<% if (locals.mentions && locals.mentions.length > 0) { %>
+  <h2>other mentions</h2>
+  <%- include('../highlight/_mentionList', {
+    mentions: locals.mentions,
+  }) %>
+<% } %>
