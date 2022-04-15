@@ -1,0 +1,40 @@
+<h1>Obituaries</h1>
+
+<div>
+  filter: <input id="people-list-filter" type="text">
+</div>
+
+<div class="column">
+  <h2>people with obituary (<%= peopleLists.peopleWithObituary.length %>)</h2>
+  <%- include('../person/_list', {format: 'bullet', people: peopleLists.peopleWithObituary}) %>
+</div>
+
+<div class="column">
+  <h2>no obituary (<%= peopleLists.peopleWithoutObituary.length %>)</h2>
+  <%- include('../person/_list', {
+    format: 'bullet',
+    people: peopleLists.peopleWithoutObituary,
+    showDeathYear: true,
+  }) %>
+</div>
+
+<hr>
+
+<div class="column">
+  <h2>missing death year (<%= peopleLists.missingDeathDate.length %>)</h2>
+  <%- include('../person/_list', {format: 'bullet', people: peopleLists.missingDeathDate}) %>
+</div>
+
+<div class="column">
+  <h2>living people (<%= peopleLists.living.length %>)</h2>
+  <%- include('../person/_list', {format: 'bullet', people: peopleLists.living}) %>
+</div>
+
+<script>
+  createQuickFilter({
+    input: '#people-list-filter',
+    items: '.person-list .person-row',
+    getItemText: $item => $item.attr('person-name'),
+    startFocus: false,
+  });
+</script>

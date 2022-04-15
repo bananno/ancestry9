@@ -8,6 +8,8 @@ const {
   sortBy,
 } = require('../import');
 
+const {getObituaryChecklistData} = require('./checklist.tools');
+
 module.exports = createRoutes;
 
 function createRoutes(router) {
@@ -20,6 +22,7 @@ function createRoutes(router) {
   router.get('/checklist/personParentAges', checklistPersonParentAges);
   router.get('/checklist/images', checklistImages);
   router.get('/checklist/custom', checklistCustom);
+  router.get('/checklist/obituaries', renderChecklistObituaries);
   router.post('/checklist/custom/new', checklistCreateCustom);
 }
 
@@ -235,4 +238,9 @@ async function checklistCreateCustom(req, res) {
     text: req.body.text.trim()
   });
   res.redirect('/checklist/custom');
+}
+
+async function renderChecklistObituaries(req, res) {
+  const data = await getObituaryChecklistData();
+  res.renderChecklist('obituaries', data);
 }

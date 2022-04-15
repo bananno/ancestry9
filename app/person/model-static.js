@@ -144,7 +144,9 @@ methods.populateRelatives = function(people) {
 methods.populateBirthAndDeath = async function(people, options = {}) {
   const Event = mongoose.model('Event');
 
-  const births = await Event.find({title: 'birth'});
+  const births = options.populateBirth === false
+    ? []
+    : (await Event.find({title: 'birth'}));
 
   const deaths = options.populateDeath === false
     ? []
@@ -156,11 +158,11 @@ methods.populateBirthAndDeath = async function(people, options = {}) {
   const deathsMap = {};
 
   [...births, ...combos].forEach(event => {
-    event.people.forEach(person => birthsMap[person] = event);
+    event.people.forEach(personId => birthsMap[personId] = event);
   });
 
   [...deaths, ...combos].forEach(event => {
-    event.people.forEach(person => deathsMap[person] = event);
+    event.people.forEach(personId => deathsMap[personId] = event);
   });
 
   people.forEach(person => {
