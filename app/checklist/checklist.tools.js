@@ -12,9 +12,11 @@ module.exports = {
 async function getObituaryChecklistData() {
   const obituaries = await Source.findObituaries(); // populates people
 
-  // only interested in the first person in each source; it should be THEIR obituary
+  // Only interested in the first person in each source; it should be THEIR
+  // obituary. (Note that some sources have no linked people.)
   const peopleWithObituary = removeDuplicatesFromList(
-    obituaries.map(source => source.people[0]));
+    obituaries.map(source => source.people[0]).filter(Boolean)
+  );
 
   const peopleWithObituaryIds = peopleWithObituary.map(person => person._id);
   const people = await Person.find({_id: {$nin: peopleWithObituaryIds}});
