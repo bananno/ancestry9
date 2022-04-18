@@ -3,7 +3,7 @@
     <% people.forEach(person => { %>
       <li class="person-row" person-name="<%= person.name.toLowerCase() %>">
         <%- include('./_link', {person}) %>
-        <%= locals.showAge ? ('(' + person.age + ')') : '' %>
+        <%= locals.hideNotes ? '' : person.listNote %>
         <%= locals.showDeathYear && ' - ' + person.getDeathYear() %>
       </li>
     <% }); %>
@@ -13,7 +13,7 @@
     <% people.forEach(person => { %>
       <li class="person-row" person-name="<%= person.name.toLowerCase() %>">
         <%- include('./_link', {person}) %>
-        <%= locals.showAge ? ('(' + person.age + ')') : '' %>
+        <%= locals.hideNotes ? '' : person.listNote %>
         <%= locals.showDeathYear && ' - ' + person.getDeathYear() %>
       </li>
     <% }); %>

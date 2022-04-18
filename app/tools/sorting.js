@@ -26,8 +26,13 @@ function padZero(str, length) {
   return str;
 }
 
-function sortBy(list, callback) {
-  list.forEach(item => item.sortBy = callback(item));
+// sortingTool = a function or a string
+function sortBy(list, sortingTool) {
+  if (typeof sortingTool === 'string') {
+    list.forEach(item => item.sortBy = item[sortingTool]);
+  } else {
+    list.forEach(item => item.sortBy = sortingTool(item));
+  }
   list.sort((a, b) => a.sortBy === b.sortBy ? 0 : a.sortBy < b.sortBy ? -1 : 1);
   list.forEach(item => delete item.sortBy);
 }
