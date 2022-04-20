@@ -116,10 +116,35 @@ function populateAncestors(rootPerson, people, options = {}, safety = 0) {
 // to that item to populate dropdown on edit table.
 methods.getAvailableForItem = async function(item, fieldName) {
   const Person = mongoose.model('Person');
+
+  // In the case of a marriage event, the spouses should be at the top of the
+  // dropdown (if the event has one person, and if that person has a spouse.)
+  if (treatAsMarriageEvent()) {
+    return getForMarriageEvent();
+  }
+
+  // In all other cases, the dropdown should contain all the people not yet
+  // attached, sorted by name.
   const peopleAlreadyInList = item[fieldName || 'people'];
   const people = await Person.find({_id: {$nin: peopleAlreadyInList}});
   Person.sortByName(people);
   return people;
+
+  function treatAsMarriageEvent() {
+    return item instanceof mongoose.model('Event') &&
+      item.title === 'marriage' &&
+      item.people.length === 1 &&
+      item.people[0].spouses.length > 0;
+  }
+
+  async function getForMarriageEvent() {
+    const Person = mongoose.model('Person');
+    const spouses = await Person.find({_id: {$in: item.people[0].spouses}});
+    const idsToIgnore = [item.people[0]._id, ...item.people[0].spouses];
+    const remainingPeople = await Person.find({_id: {$nin: idsToIgnore}});
+    Person.sortByName(remainingPeople);
+    return [...spouses, ...remainingPeople];
+  }
 };
 
 // Given list of people, populate all parents/spouses/children.

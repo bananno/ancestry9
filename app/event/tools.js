@@ -1,8 +1,11 @@
 const {
   Citation,
+  Event,
+  getEditTableRows,
 } = require('../import');
 
 module.exports = {
+  getEditEventInfo,
   getShowEventInfo,
 };
 
@@ -15,6 +18,28 @@ const eventTypesWithCitations = [
   'marriage',
   'death',
 ];
+
+async function getEditEventInfo(eventId) {
+  const event = await Event.findById(eventId).populate('people').populate('tags');
+
+  if (!event) {
+    return {};
+  }
+
+  const rootPath = `/event/${eventId}`;
+  const tableRows = await getEditTableRows({item: event, rootPath});
+
+  return {
+    event,
+    rootPath,
+    data: {
+      title: 'Edit Event',
+      itemName: 'event',
+      canDelete: true,
+      tableRows,
+    },
+  };
+}
 
 async function getShowEventInfo(event) {
   const data = {

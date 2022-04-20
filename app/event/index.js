@@ -87,25 +87,11 @@ async function showEvent(req, res) {
 }
 
 async function editEvent(req, res) {
-  req.event = await Event.findById(req.params.id)
-    .populate('people')
-    .populate('tags');
-
-  if (!req.event) {
+  const {event, rootPath, data} = await eventTools.getEditEventInfo(req.params.id);
+  if (!event) {
     return res.send('event not found');
   }
-
-  req.rootPath = '/event/' + req.event._id;
-
-  const tableRows = await getEditTableRows({
-    item: req.event,
-    rootPath: req.rootPath,
-  });
-
-  res.renderEvent('edit', {
-    title: 'Edit Event',
-    itemName: 'event',
-    canDelete: true,
-    tableRows,
-  });
+  req.event = event;
+  req.rootPath = rootPath;
+  res.renderEvent('edit', data);
 }
