@@ -84,9 +84,8 @@ async function getYearInfo(year) {
     addPersonToYearCategories(peopleLists, person, year);
   });
 
-  sorting.sortBy(peopleLists.diedThisYear, 'age');
-  sorting.sortBy(peopleLists.livedThisYear, 'age');
-  peopleLists.livedThisYear.reverse();
+  sorting.sortBy(peopleLists.diedThisYear, person => person.age);
+  sorting.sortBy(peopleLists.livedThisYear, person => -person.age);
 
   // split livedThisYear into two columns
   const split = Math.round(peopleLists.livedThisYear.length / 2);
@@ -104,7 +103,8 @@ function addPersonToYearCategories(peopleLists, person, year) {
   const deathYear = person.getDeathYear();
 
   if (birthYear && deathYear) {
-    person.listNote = '(' + (year - birthYear) + ')';
+    person.age = year - birthYear;
+    person.listNote = `(${person.age})`;
   }
 
   // born this year - applicable even if the death date is missing

@@ -7,7 +7,7 @@ hr {
 }
 </style>
 
-<h1>Year: <%= year %></h1>
+<h1>Year: <%= locals.year %></h1>
 
 <p>
   <% for (let y = year - 6; y < year; y++ ) { %>
@@ -23,15 +23,18 @@ hr {
 
 <div class="column">
   <h2>born this year</h2>
-  <%- include('../person/_list', {people: bornThisYear, format: 'bullet'}) %>
+  <%- include('../person/_list', {
+    people: locals.peopleLists.bornThisYear,
+    format: 'bullet',
+    hideNotes: true,
+  }) %>
 </div>
 
 <div class="column">
   <h2>died this year</h2>
   <%- include('../person/_list', {
-    people: diedThisYear,
+    people: locals.peopleLists.diedThisYear,
     format: 'bullet',
-    showAge: true,
   }) %>
 </div>
 
@@ -39,16 +42,14 @@ hr {
 
 <div class="column">
   <%- include('../person/_list', {
-    people: livedThisYear1,
+    people: locals.peopleLists.livedThisYear1,
     format: 'bullet',
-    showAge: true,
   }) %>
 </div>
 
 <div class="column">
   <%- include('../person/_list', {
-    people: livedThisYear2,
+    people: locals.peopleLists.livedThisYear2,
     format: 'bullet',
-    showAge: true,
   }) %>
 </div>
