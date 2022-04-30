@@ -31,5 +31,9 @@ async function getObituaryChecklistData() {
 
   sortBy(peopleLists.peopleWithoutObituary, person => -person.getDeathYear());
 
+  peopleLists.peopleWithoutObituary.forEach(person => {
+    person.listNote = ` - ${person.getDeathYear()}`;
+  });
+
   return {obituaries, peopleLists};
 }
