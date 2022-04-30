@@ -6,7 +6,17 @@
     }
     const linkText = locals.linkText ? locals.linkText : person.name;
   %>
-  <a href="/person/<%= personId %>"><%= linkText %></a>
+  <% if (locals.format === 'photo') { %>
+    <%
+      const profileImage = person.profileImage || '/images/generic-profile-picture.png';
+    %>
+    <div class="person-link-with-photo">
+      <a href="/person/<%= personId %>"
+        ><img src="<%= profileImage %>" class="item-icon"><%= linkText %></a>
+    </div>
+  <% } else { %>
+    <a href="/person/<%= personId %>"><%= linkText %></a>
+  <% } %>
 <% } else { %>
   ________
 <% } %>

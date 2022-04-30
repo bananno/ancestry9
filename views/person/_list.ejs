@@ -16,6 +16,15 @@
       </li>
     <% }); %>
   </ul>
+<% } else if (locals.format == 'photo') { %>
+  <ul class="person-list no-bullet-list">
+    <% people.forEach(person => { %>
+      <li class="person-row" person-name="<%= person.name.toLowerCase() %>">
+        <%- include('./_link', {person, format: 'photo'}) %>
+        <%= locals.hideNotes ? '' : person.listNote %>
+      </li>
+    <% }); %>
+  </ul>
 <% } else { %>
   (specify peopleList format)
 <% } %>

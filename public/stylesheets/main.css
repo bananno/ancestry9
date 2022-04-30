@@ -252,26 +252,6 @@ tr.citation-row-edit {
   width: 500px;
 }
 
-.family-list-block {
-  padding: 10px;
-  vertical-align: text-top;
-  width: 300px;
-  display: inline-block;
-}
-
-.family-list-block ul {
-  margin-left: 25px;
-}
-
-.person-navigation {
-  list-style: none;
-}
-
-.person-navigation li {
-  display: inline-block;
-  margin: 10px;
-}
-
 .scrollbox {
   width: 100%;
   overflow: scroll;
@@ -305,7 +285,7 @@ img.checkmark-inline {
   vertical-align: text-top;
 }
 
-.profile-picture {
+.item-icon.profile-picture {
   max-height: 100px;
   max-width: 100px;
   border-radius: 100px;
