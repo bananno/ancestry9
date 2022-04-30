@@ -8,6 +8,7 @@ const {
   sortBy,
 } = require('../import');
 
+const getChecklistPlacesInfo = require('./checklist.places');
 const {getObituaryChecklistData} = require('./checklist.tools');
 
 module.exports = createRoutes;
@@ -21,6 +22,7 @@ function createRoutes(router) {
   router.get('/checklist/profileSummary', checklistProfileSummary);
   router.get('/checklist/personParentAges', checklistPersonParentAges);
   router.get('/checklist/images', checklistImages);
+  router.get('/checklist/places', checklistPlaces);
   router.get('/checklist/custom', checklistCustom);
   router.get('/checklist/obituaries', renderChecklistObituaries);
   router.post('/checklist/custom/new', checklistCreateCustom);
@@ -93,6 +95,11 @@ async function checklistImages(req, res) {
   const images = await Image.getAllByParent();
   Image.sortByTags(images);
   res.renderChecklist('images', {images});
+}
+
+async function checklistPlaces(req, res) {
+  const data = await getChecklistPlacesInfo(req);
+  res.renderChecklist('places', data);
 }
 
 async function checklistProfileSummary(req, res) {

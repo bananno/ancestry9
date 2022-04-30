@@ -1,0 +1,20 @@
+<h1>Checklist - places</h1>
+
+<hr>
+
+<h2>cities listed in more than one county in the same state</h2>
+
+<% if (citiesWithMultipleCounties.length === 0) { %>
+  <p>
+    <i>Warning list is empty</i>
+  </p>
+<% } %>
+
+<% citiesWithMultipleCounties.forEach(({cityAndState, countyList}) => { %>
+  <h3><%= cityAndState %></h3>
+  <ul class="bullet-list">
+    <% countyList.forEach(county => { %>
+      <li><%= county %></li>
+    <% }); %>
+  </ul>
+<% }); %>
