@@ -3,4 +3,4 @@
   const path = [loc.country, loc.region1, loc.region2, loc.city].join('/');
   const linkText = locals.linkText || path;
 %>
-<a href="/place/<%= path %>"><%= linkText %></a>
+<a href="/place/<%= path %>"><%= linkText %></a><%= locals.punctuation %>

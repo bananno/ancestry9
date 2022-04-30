@@ -41,9 +41,24 @@
   }
 
   const displayLocation = locationComponents.join(', ');
+
+  const showLink = locals.showLinkIfComplete &&
+    location.country &&
+    location.region1 &&
+    location.region2 &&
+    location.city;
 %>
 
-<%= displayLocation %>
+<% if (showLink) { %>
+  <%- include('../place/_link', {
+    location,
+    linkText: locationComponents.shift(),
+    punctuation: ',',
+  }) %>
+  <%= locationComponents.join(', ') %>
+<% } else { %>
+  <%= displayLocation %>
+<% } %>
 
 <% if (location.notes) { %>
   <br><i>(<%= location.notes %>)</i>

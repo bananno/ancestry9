@@ -55,7 +55,10 @@
         <%- include('../format/date', {date: event.date}) %>
       </td>
       <td>
-        <%- include('../format/location', {location: event.location}) %>
+        <%- include('../format/location', {
+          location: event.location,
+          showLinkIfComplete: true,
+        }) %>
       </td>
       <td>
         <%- include('../person/_list', {
