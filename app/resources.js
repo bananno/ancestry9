@@ -40,6 +40,11 @@ module.exports = [
     modelName: 'Location',
   },
   {
+    name: 'place',
+    hasRoutes: true,
+    hasModel: false,
+  },
+  {
     name: 'map',
     hasRoutes: true,
     hasModel: false,

@@ -1,0 +1,10 @@
+<h2>Place</h2>
+<h1><%= locals.title %></h1>
+
+<hr>
+<h2>Events</h2>
+
+<%- include('../event/_list', {
+  events: locals.events,
+  showPeople: false,
+}) %>

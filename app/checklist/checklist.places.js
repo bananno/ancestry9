@@ -29,11 +29,15 @@ async function getChecklistPlacesInfo() {
   Object.keys(cityAndStateToCountiesMap).forEach(cityAndState => {
     const counties = Object.keys(cityAndStateToCountiesMap[cityAndState]);
     if (counties.length > 1) {
-      const countyList = counties.map(county => {
-        const itemsWithThisLocation = cityAndStateToCountiesMap[cityAndState][county];
-        return `${county} - ${itemsWithThisLocation} item(s)`;
+      const [city, region2] = cityAndState.split(', ');
+      citiesWithMultipleCounties.push({
+        cityAndState,
+        countyList: counties.map(countyName => ({
+          countyName,
+          location: {country: 'United States', region2, region1: countyName, city},
+          numItems: cityAndStateToCountiesMap[cityAndState][countyName]
+        }))
       });
-      citiesWithMultipleCounties.push({cityAndState, countyList});
     }
   });
 

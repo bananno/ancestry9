@@ -13,8 +13,11 @@
 <% citiesWithMultipleCounties.forEach(({cityAndState, countyList}) => { %>
   <h3><%= cityAndState %></h3>
   <ul class="bullet-list">
-    <% countyList.forEach(county => { %>
-      <li><%= county %></li>
+    <% countyList.forEach(({countyName, location, numItems}) => { %>
+      <li>
+        <%- include('../place/_link', {linkText: countyName, location}) %>
+         - <%= numItems %> item(s)
+      </li>
     <% }); %>
   </ul>
 <% }); %>

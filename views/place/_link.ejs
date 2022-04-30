@@ -1,0 +1,6 @@
+<%
+  const loc = locals.location || {};
+  const path = [loc.country, loc.region1, loc.region2, loc.city].join('/');
+  const linkText = locals.linkText || path;
+%>
+<a href="/place/<%= path %>"><%= linkText %></a>
