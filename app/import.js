@@ -6,11 +6,11 @@ const modelTools = require('./tools/modelTools');
 
 const tools = [
   'createController',
+  'dateStructure',
   'getEditTableRows',
+  'locationTools',
   'removeDuplicatesFromList',
   'reorderList',
-  'dateStructure',
-  'locationStructure',
   'sorting',
 ];
 

@@ -105,7 +105,7 @@ function createModel(resource) {
       return;
     }
     if (field.dataType === 'location') {
-      modelSchema[field.name] = tools.locationStructure;
+      modelSchema[field.name] = tools.locationTools.locationStructure;
       return;
     }
 

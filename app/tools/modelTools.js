@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 const sorting = require('./sorting');
 const dateStructure = require('./dateStructure');
-const locationStructure = require('./locationStructure');
+const locationTools = require('./locationTools');
 
 const tools = {
   mongoose,
+  convertTags,
   dateStructure,
-  locationStructure,
+  locationTools,
   sorting,
   ...sorting,
-  convertTags,
   reduceListToExportData,
   reduceToExportData,
 };
