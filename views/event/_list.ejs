@@ -28,7 +28,9 @@
   <tr>
     <th>title</th>
     <th>date</th>
-    <th>location</th>
+    <% if (locals.showLocation !== false) { %>
+      <th>location</th>
+    <% } %>
     <th>people</th>
     <th>notes</th>
     <% if (locals.showTags) { %>
@@ -54,12 +56,14 @@
       <td>
         <%- include('../format/date', {date: event.date}) %>
       </td>
-      <td>
-        <%- include('../format/location', {
-          location: event.location,
-          showLinkIfComplete: true,
-        }) %>
-      </td>
+      <% if (locals.showLocation !== false) { %>
+        <td>
+          <%- include('../format/location', {
+            location: event.location,
+            showLinkIfComplete: true,
+          }) %>
+        </td>
+      <% } %>
       <td>
         <%- include('../person/_list', {
           people: event.people,
