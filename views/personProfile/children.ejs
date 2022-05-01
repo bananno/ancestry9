@@ -1,0 +1,39 @@
+<h1>Children</h1>
+
+<% if (locals.neverHadChildren) { %>
+  <p>
+    <%= person.name %> never had any children.
+  </p>
+<% } %>
+
+<% if (locals.allChildrenInDatabase) { %>
+  <p style="padding: 10px;">
+    <img src="/images/check-true.png" class="checkmark-inline">
+    All children are in database.
+  </p>
+<% } %>
+
+<% locals.children.forEach((child, i) => { %>
+  <div class="person-children-view-block">
+    <div>
+      <%= i + 1 %>
+      <%- include('../person/_link', {person: child, format: 'photo'}) %>
+      (<%= child.getBirthYear() || '?' %> - <%= child.getDeathYear() || '?' %>)
+    </div>
+  </div>
+<% }); %>
+
+<% if (locals.children.length > 0) { %>
+  <h3 style="color: red">
+    to do:
+  </h3>
+  <ul class="bullet-list" style="color: red">
+    <li>
+      to do: add special notation type, e.g., "summary for parent profile";
+      show here for each person
+    </li>
+    <li>
+      more notes based on 'number of children' tag
+    </li>
+  </ul>
+<% } %>

@@ -67,7 +67,10 @@
 
   <% if (person.children.length) { %>
     <div class="family-list-block">
-      <h3>children</h3>
+      <h3>
+        children
+        <a style="font-size: 12px;" href="<%= rootPath %>/children">details</a>
+      </h3>
       <%- include('../person/_list', {
         people: person.children,
         format: 'photo',

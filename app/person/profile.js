@@ -16,6 +16,7 @@ module.exports = {
   edit: personEdit,
   other: {
     checklist: require('./profile.checklist'),
+    children: require('./profile.children'),
     connection: personConnection,
     descendants: require('./profile.descendants'),
     mentions: personMentions,
