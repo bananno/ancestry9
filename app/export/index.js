@@ -1,6 +1,7 @@
 const {
   Citation,
   Event,
+  Highlight,
   Image,
   Notation,
   Person,
@@ -23,6 +24,7 @@ async function exportAndRenderEverything(req, res) {
 
   await saveFullDataFile(data, 'citations');
   await saveFullDataFile(data, 'events');
+  await saveFullDataFile(data, 'highlights');
   await saveFullDataFile(data, 'images');
   await saveFullDataFile(data, 'notations');
   await saveFullDataFile(data, 'people');
@@ -51,6 +53,7 @@ async function getFullData() {
 
   data.citations = await Citation.find({});
   data.events = await Event.find({});
+  data.highlights = await Highlight.find({});
   data.images = await Image.find({});
   data.notations = await Notation.find({});
   data.people = await Person.find({});
