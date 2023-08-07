@@ -1,4 +1,5 @@
 const {
+  Notation,
   Person,
 } = require('../import');
 
@@ -30,8 +31,25 @@ async function renderPersonChecklist(req, res) {
     data.children = [...person.children];
     await Person.populateBirthAndDeath(data.children);
     Person.sortByBirth(data.children);
+
+    // this line = INCOMPLETE?
+    await getParentProfileSummaryNotations(data.children);
   }
 
   res.renderPersonProfile('children', data);
 }
 
+// this function = INCOMPLETE?
+async function getParentProfileSummaryNotations(children) {
+  const notations = await Notation.find({
+    title: 'parent profile summary',
+    people: {$in: children.map(person => person._id)},
+  });
+
+  notations.forEach(notation => {
+    const person = children.find(child => child._id === notation.people[0]);
+    person.parentSummaryNotation = notation;
+  });
+
+  // console.log(notations)
+}
