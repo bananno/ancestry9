@@ -343,6 +343,21 @@ methods.populateCitations = async function() {
   this.citations = await Citation.find({person: this});
 }
 
+// Returns the converted tags but does not modify the instance itself.
+// TO DO: move this somewhere more general & make applicable for all models? Merge with
+// the other/original convertTags usage as well (for db export)?
+methods.convertTags = function({asList} = {}) {
+  const tagObj = tools.convertTags(this);
+  if (!asList) {
+    return tagObj;
+  }
+  return this.tags.map((tag, i) => ({
+    title: tag.title,
+    id: tag._id,
+    value: tagObj[tag.title],
+  }));
+}
+
 // Populate all the sources info needed for the wikitree view.
 methods.populateWikiTreeSources = async function() {
   const Source = mongoose.model('Source');
