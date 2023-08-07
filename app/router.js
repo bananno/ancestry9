@@ -28,10 +28,6 @@ router.get('/', (req, res) => {
   res.render('index', {title: null});
 });
 
-router.get('/shared', (req, res) => { // BROKEN due to relative filepaths
-  res.renderOriginal('../shared/index.html');
-});
-
 resources.forEach(({name, hasRoutes}) => {
   if (hasRoutes) {
     require(`./${name}`)(router);

@@ -1,5 +1,10 @@
 module.exports = [
   {
+    name: 'api',
+    hasRoutes: true,
+    hasModel: false,
+  },
+  {
     name: 'checklist',
     hasRoutes: true,
     hasModel: false,
