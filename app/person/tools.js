@@ -18,32 +18,22 @@ function convertParamPersonId2(req, res, next, paramPersonId) { // :personId
   convertParamPersonId(req, res, next, paramPersonId);
 }
 
-function convertParamPersonId(req, res, next, paramPersonId) {
+async function convertParamPersonId(req, res, next, paramPersonId) {
+  const person = await Person.findByAnyId(paramPersonId);
+
+  if (!person) {
+    return renderPersonNotFound(res, paramPersonId);
+  }
+
+  if (Array.isArray(person)) {
+    return renderPersonDuplicateId(res, paramPersonId, person);
+  }
+
   req.paramPersonId = paramPersonId;
-
-  Person.findById(paramPersonId, (err, person) => {
-    if (!err && person) {
-      req.personId = person._id;
-      req.person = person;
-      req.rootPath = '/person/' + person._id;
-      return next();
-    }
-
-    Person.find({customId: paramPersonId}, (err, people) => {
-      if (err || people.length === 0) {
-        return renderPersonNotFound(res, paramPersonId);
-      }
-
-      if (people.length > 1) {
-        return renderPersonDuplicateId(res, paramPersonId, people);
-      }
-
-      req.personId = people[0]._id;
-      req.person = people[0];
-      req.rootPath = '/person/' + paramPersonId;
-      next();
-    });
-  });
+  req.personId = person._id;
+  req.person = person;
+  req.rootPath = `/person/${paramPersonId}`;
+  next();
 }
 
 function createRenderPersonProfile(req, res, next) {

@@ -7,6 +7,7 @@ const tools = {
   mongoose,
   convertTags,
   dateStructure,
+  isValidMongooseId: mongoose.Types.ObjectId.isValid,
   locationTools,
   sorting,
   ...sorting,

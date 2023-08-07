@@ -209,6 +209,31 @@ methods.createMap = peopleList => {
   return map;
 };
 
+// Given an ID, find the person, whether it's their real ID or their custom ID.
+methods.findByAnyId = async(personId) => {
+  const Person = mongoose.model('Person');
+
+  if (tools.isValidMongooseId(personId)) {
+    const person = await Person.findById(personId);
+    if (person) {
+      return person;
+    }
+  }
+
+  const people = await Person.find({customId: personId});
+
+  if (people.length === 0) {
+    return null;
+  }
+
+  // multiple people with the same custom ID (show an error in the UI)
+  if (people.length > 1) {
+    return people;
+  }
+
+  return people[0];
+};
+
 function findInList(people, person) {
   return people.find(nextPerson => isSame(person, nextPerson));
 }
