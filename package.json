@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon --ignore './shared/' --ignore './database-backup/' server.js"
+    "start": "nodemon --ignore './client/' --ignore './shared/' --ignore './database-backup/' server.js"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
