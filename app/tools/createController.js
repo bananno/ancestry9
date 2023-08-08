@@ -116,16 +116,18 @@ class Controller {
       if (field.onUpdate) {
         await field.onUpdate(item);
       } else if (field.valueNames) {
+        const updatedObj = {};
         let newValue = (item[field.name] || 0) + 1;
         if (newValue >= field.valueNames.length) {
           newValue = 0;
         }
-        await item.update({[field.name]: newValue});
+        updatedObj[field.name] = newValue;
+        await this.updateItem(item, updatedObj);
       } else {
         const updatedObj = {};
         const currentValue = item[field.name] || false;
         updatedObj[field.name] = !currentValue;
-        await item.update(updatedObj);
+        await this.updateItem(item, updatedObj);
       }
       this.redirect({req, res, item, itemId});
     });
@@ -150,7 +152,7 @@ class Controller {
         updatedObj[field.name] = null;
       }
 
-      await item.update(updatedObj);
+      await this.updateItem(item, updatedObj);
       this.redirect({req, res, item, itemId, updatedObj, fieldName: field.name});
     });
   }
@@ -179,7 +181,7 @@ class Controller {
         updatedObj.tags[idx] = newValue;
         updatedObj.tagValues[idx] = tagValue;
 
-        await item.update(updatedObj);
+        await this.updateItem(item, updatedObj);
       } else {
         const updatedObj = {
           [field.name]: (item[field.name] || [])
@@ -197,7 +199,7 @@ class Controller {
           updatedObj[field.name].push(newValue);
         }
 
-        await item.update(updatedObj);
+        await this.updateItem(item, updatedObj);
       }
 
       this.redirect({req, res, item, itemId});
@@ -235,7 +237,7 @@ class Controller {
           await image.remove();
         }
 
-        await item.update(updatedObj);
+        await this.updateItem(item, updatedObj)
       }
 
       this.redirect({req, res, item, itemId});
@@ -258,7 +260,7 @@ class Controller {
         updatedObj[field.name] = reorderList(item[field.name], orderId, dataType);
       }
 
-      await item.update(updatedObj);
+      await this.updateItem(item, updatedObj)
       this.redirect({req, res, item, itemId, updatedObj});
     });
   }
@@ -284,8 +286,12 @@ class Controller {
         return res.send(`Route not implemented: update existing ${field.name} value`);
       }
 
-      await item.update(updatedObj);
+      await this.updateItem(item, updatedObj)
       this.redirect({req, res, item, itemId});
     });
+  }
+
+  updateItem(item, updatedObj) {
+    return this.Model.findOneAndUpdate({_id: item._id}, updatedObj);
   }
 }
