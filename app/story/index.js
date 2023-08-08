@@ -57,16 +57,15 @@ async function storyIndex(req, res) {
   });
 }
 
-function createStory(req, res) {
+async function createStory(req, res) {
   const newStory = Story.getFormDataNew(req);
 
   if (!newStory) {
     return res.send('error');
   }
 
-  Story.create(newStory, (err, story) => {
-    res.redirect('/story/' + story._id + '/edit');
-  });
+  const story = await Story.create(newStory);
+  res.redirect(`/story/${story._id}/edit`);
 }
 
 async function createStoryNotation(req, res) {

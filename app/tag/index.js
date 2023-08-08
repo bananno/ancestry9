@@ -76,16 +76,15 @@ async function tagIndex(req, res) {
   res.render('tag/index', pageData);
 }
 
-function createTag(req, res) {
+async function createTag(req, res) {
   const newTag = Tag.getFormDataNew(req);
 
   if (!newTag) {
     return res.send('error');
   }
 
-  Tag.create(newTag, (err, tag) => {
-    res.redirect('/tag/' + tag._id + '/edit');
-  });
+  const tag = await Tag.create(newTag);
+  res.redirect(`/tag/${tag._id}/edit`);
 }
 
 async function showTag(req, res) {

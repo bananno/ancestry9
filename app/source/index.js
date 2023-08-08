@@ -58,20 +58,15 @@ function getSourcesIndex(subview) {
   };
 }
 
-function createSource(req, res) {
+async function createSource(req, res) {
   const newSource = Source.getFormDataNew(req);
 
   if (!newSource) {
     return res.send('error');
   }
 
-  Source.create(newSource, (err, source) => {
-    if (err) {
-      return res.send('There was a problem adding the information to the '
-        + 'database.<br>' + err);
-    }
-    res.redirect('/source/' + source._id + '/edit');
-  });
+  const source = await Source.create(newSource);
+  res.redirect(`/source/${source._id}/edit`);
 }
 
 async function deleteSource(req, res) {
