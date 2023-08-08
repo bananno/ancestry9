@@ -46,7 +46,7 @@ methods.toSharedObject = function({imageMap}) {
     .map(person => person._id);
 
   // Use story to create full title and then un-populate story.
-  source.fullTitle = source.story.title + ' - ' + source.title;
+  source.populateFullTitle();
   source.story = source.story._id;
 
   source.tags = tools.convertTags(this);
@@ -58,6 +58,11 @@ methods.toSharedObject = function({imageMap}) {
 
   return source;
 }
+
+// Must populate story first
+methods.populateFullTitle = function() {
+  this.fullTitle = `${this.story.title} - ${this.title}`;
+};
 
 
 // =============================== citations

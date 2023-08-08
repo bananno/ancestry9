@@ -109,7 +109,7 @@ methods.populateBirthAndDeath = async function() {
   }
 };
 
-methods.populateSiblings = async function() {
+methods.populateSiblings = async function({sortByBirthDate} = {}) {
   const Person = mongoose.model('Person');
   const done = {};
   done[this._id] = true;
@@ -130,6 +130,13 @@ methods.populateSiblings = async function() {
       const sibling = await Person.findById(childId);
       this.siblings.push(sibling);
     }
+  }
+
+  if (sortByBirthDate) {
+    for (let i = 0; i < this.siblings.length; i++) {
+      await this.siblings[i].populateBirthAndDeath();
+    }
+    Person.sortByBirth(this.siblings);
   }
 };
 
