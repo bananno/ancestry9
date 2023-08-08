@@ -34,3 +34,20 @@ methods.getFormDataNew = req => {
 
   return newTag;
 };
+
+// Given an ID or a title, find the tag. Populate its meta tags.
+methods.findByIdOrTitle = async(tagId) => {
+  const Tag = mongoose.model('Tag');
+
+  if (tools.isValidMongooseId(tagId)) {
+    const tag = await Tag.findById(tagId);
+    if (tag) {
+      return tag;
+    }
+  }
+
+  const tryTitle = tagId.replace(/_/g, ' ').replace(/%20/g, ' ');
+  const tagByName = await Tag.findOne({title: tryTitle});
+
+  return tagByName;
+};

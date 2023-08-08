@@ -8,34 +8,22 @@ const getTagDataFindagraveWikitree = require('./tools-findagrave-wikitree');
 const tools = {};
 module.exports = tools;
 
-tools.convertParamTagId = (req, res, next, paramTagId) => {
+tools.convertParamTagId = async (req, res, next, paramTagId) => {
   if (req.originalUrl.slice(0, 4) !== '/tag') {
     return next();
   }
 
+  const tag = await Tag.findByIdOrTitle(paramTagId);
+
+  if (!tag) {
+    return res.send('tag not found');
+  }
+
   req.paramTagId = paramTagId;
-
-  Tag.findById(paramTagId).populate('tags').exec((err, tag) => {
-    if (!err && tag) {
-      req.tagId = tag._id;
-      req.tag = tag;
-      req.rootPath = '/tag/' + req.tagId;
-      return next();
-    }
-
-    const tryTitle = paramTagId.replace(/_/g, ' ').replace(/%20/g, ' ');
-
-    Tag.findOne({title: tryTitle}).populate('tags').exec((err, tag) => {
-      if (!err && tag) {
-        req.tagId = tag._id;
-        req.tag = tag;
-        req.rootPath = '/tag/' + req.tagId;
-        return next();
-      }
-
-      res.send('tag not found');
-    });
-  });
+  req.tagId = tag._id;
+  req.tag = tag;
+  req.rootPath = `/tag/${req.tagId}`;
+  next();
 }
 
 tools.createRenderTag = function(req, res, next) {
