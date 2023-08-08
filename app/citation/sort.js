@@ -16,6 +16,8 @@ const citationItemOrder = [
   'marriage 2',
   'marriage 2 - spouse',
   'spouse 2',
+  'marriage 3',
+  'marriage 3 - spouse',
   'divorce',
   'immigration',
   'naturalization',

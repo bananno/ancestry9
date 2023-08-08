@@ -45,20 +45,15 @@ async function peopleIndex(req, res) {
   res.render('person/index', {title: 'All People', people});
 }
 
-function createPerson(req, res) {
+async function createPerson(req, res) {
   const newPerson = Person.getFormDataNew(req);
 
   if (!newPerson) {
     return res.send('error');
   }
 
-  Person.create(newPerson, function(err, person) {
-    if (err) {
-      res.send('There was a problem adding the information to the database.');
-    } else {
-      res.redirect('/person/' + person.customId + '/edit');
-    }
-  });
+  const person = await Person.create(newPerson);
+  res.redirect(`/person/${person.customId}/edit`);
 }
 
 async function createPersonEvent(req, res) {

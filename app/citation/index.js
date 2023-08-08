@@ -19,7 +19,7 @@ async function createCitation(req, res) {
 
   if (req.body.fastCitations) {
     res.redirect(`${baseUrl}/fastCitations`);
-  } if (req.body.highlightCitation) {
+  } else if (req.body.highlightCitation) {
     res.redirect(`${baseUrl}/highlightCitations#anchor-${citation.person}`);
   } else {
     res.redirect(`${baseUrl}/edit`);
@@ -32,12 +32,12 @@ async function updateCitation(req, res) {
     // Data is invalid; page spins. Has actually proven to be convenient.
     return;
   }
-  await req.citation.update(updatedItem);
+  await Citation.findOneAndUpdate({_id: req.citation._id}, updatedItem);
   res.redirect('/source/' + req.sourceId + '/edit');
 }
 
 async function deleteCitation(req, res) {
-  await req.citation.delete();
+  await Citation.deleteOne({_id: req.citation._id});
   res.redirect('/source/' + req.sourceId + '/edit');
 }
 

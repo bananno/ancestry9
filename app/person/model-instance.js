@@ -435,7 +435,7 @@ async function _attachRelative(person, relationship, relative) {
     [relationship]: person[relationship].concat(relative)
   };
 
-  await person.update(updatedPerson);
+  await person.updateSelf(updatedPerson);
 }
 
 async function _detachRelative(person, relationship, relative) {
@@ -444,5 +444,9 @@ async function _detachRelative(person, relationship, relative) {
       .removeFromList(person[relationship], relative)
   };
 
-  await person.update(updatedPerson);
+  await person.updateSelf(updatedPerson);
 }
+
+methods.updateSelf = function(updatedObj) {
+  return mongoose.model('Person').updateOne({_id: this._id}, updatedObj);
+};
