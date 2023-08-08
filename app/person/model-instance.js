@@ -9,6 +9,7 @@ methods.getRelativesList = getRelativesList;
 methods.getTagTitles = tools.getTagTitles;
 methods.getTagValue = tools.getTagValue;
 methods.hasTag = tools.hasTag;
+methods.convertTags = tools.convertTags2;
 
 // These birth/death methods only to be used after populateBirthAndDeath()
 methods.getBirthYear = function() {
@@ -348,21 +349,6 @@ methods.getDescendantChartInfo = function(data) {
 methods.populateCitations = async function() {
   const Citation = mongoose.model('Citation');
   this.citations = await Citation.find({person: this});
-}
-
-// Returns the converted tags but does not modify the instance itself.
-// TO DO: move this somewhere more general & make applicable for all models? Merge with
-// the other/original convertTags usage as well (for db export)?
-methods.convertTags = function({asList} = {}) {
-  const tagObj = tools.convertTags(this);
-  if (!asList) {
-    return tagObj;
-  }
-  return this.tags.map((tag, i) => ({
-    title: tag.title,
-    id: tag._id,
-    value: tagObj[tag.title],
-  }));
 }
 
 // Populate all the sources info needed for the wikitree view.

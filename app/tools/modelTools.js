@@ -6,6 +6,7 @@ const locationTools = require('./locationTools');
 const tools = {
   mongoose,
   convertTags,
+  convertTags2, // TO DO: merge these two methods somehow
   dateStructure,
   isValidMongooseId: mongoose.Types.ObjectId.isValid,
   locationTools,
@@ -23,6 +24,20 @@ function convertTags({tags, tagValues}) {
     convertedTags[tag.title] = tag.getValueFor(tagValues[i]);
   });
   return convertedTags;
+}
+
+// Returns the converted tags but does not modify the instance itself.
+// Must populate tags before calling.
+function convertTags2({asList} = {}) {
+  const tagObj = tools.convertTags(this);
+  if (!asList) {
+    return tagObj;
+  }
+  return this.tags.map((tag, i) => ({
+    title: tag.title,
+    id: tag._id,
+    value: tagObj[tag.title],
+  }));
 }
 
 function reduceListToExportData(list, fields) {

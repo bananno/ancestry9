@@ -14,7 +14,9 @@ function createRoutes(router) {
   router.get('/api/people-index', peopleIndex);
   router.get('/api/person-profile/:id', personProfile);
   router.get('/api/source-index', sourceIndex);
+  router.get('/api/source-profile/:id', sourceProfile);
   router.get('/api/story-index', storyIndex);
+  router.get('/api/story-profile/:id', storyProfile);
 }
 
 async function eventIndex(req, res) {
@@ -66,8 +68,6 @@ async function personProfile(req, res) {
       return {url: arr.shift(), text: arr.join(' ')};
     }),
     tags: person.convertTags({asList: true}),
-    tagsOriginal: person.tags,
-    tagValues: person.tags,
   };
 
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -86,12 +86,65 @@ async function sourceIndex(req, res) {
   res.send({data});
 }
 
+async function sourceProfile(req, res) {
+  const source = await Source.findById(req.params.id)
+    .populate('people')
+    .populate('story');
+  const data = {
+    id: source._id,
+    date: source.date,
+    links: source.links.map(link => {
+      const arr = link.split(' ');
+      return {url: arr.shift(), text: arr.join(' ')};
+    }),
+    location: source.location,
+    people: source.people.map(person => ({
+      id: person._id,
+      name: person.name,
+    })),
+    sharing: source.sharing,
+    tags: source.convertTags({asList: true}),
+    title: source.title,
+    story: {
+      id: source.story._id,
+      title: source.story.title,
+      type: source.story.type,
+    },
+  };
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send({data});
+}
+
 async function storyIndex(req, res) {
   const stories = await Story.find();
   const data = stories.map(story => ({
     id: story._id,
     title: story.title,
   }));
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send({data});
+}
+
+async function storyProfile(req, res) {
+  const story = await Story.findById(req.params.id).populate('tags');
+  const data = {
+    id: story._id,
+    date: story.date,
+    links: story.links.map(link => {
+      const arr = link.split(' ');
+      return {url: arr.shift(), text: arr.join(' ')};
+    }),
+    location: story.location,
+    people: story.people.map(person => ({
+      id: person._id,
+      name: person.name,
+    })),
+    sharing: story.sharing,
+    tags: story.convertTags({asList: true}),
+    title: story.title,
+    type: story.type,
+    sources: [], // TO DO
+  };
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.send({data});
 }
