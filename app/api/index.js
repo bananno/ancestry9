@@ -11,6 +11,7 @@ module.exports = createRoutes;
 function createRoutes(router) {
   router.get('/api/event-index', eventIndex);
   router.get('/api/notation-index', notationIndex);
+  router.get('/api/notation-profile/:id', notationProfile);
   router.get('/api/people-index', peopleIndex);
   router.get('/api/person-profile/:id', personProfile);
   router.get('/api/source-index', sourceIndex);
@@ -39,6 +40,25 @@ async function notationIndex(req, res) {
   res.send({data});
 }
 
+async function notationProfile(req, res) {
+  const notation = await Notation
+    .findById(req.params.id)
+    .populate('people')
+    .populate('stories')
+    .populate('tags');
+  const data = {
+    id: notation._id,
+    title: notation.title,
+    sharing: notation.sharing,
+    text: notation.text,
+    people: mapPeopleToNameAndId(notation.people),
+    stories: notation.stories.map(story => ({id: story._id, title: story.title})),
+    tags: notation.convertTags({asList: true}),
+  };
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send({data});
+}
+
 async function peopleIndex(req, res) {
   const people = await Person.find();
   const data = people.map(person => ({
@@ -59,14 +79,11 @@ async function personProfile(req, res) {
   const data = {
     name: person.name,
     shareLevel: person.shareLevel,
-    parents: person.parents.map(parent => ({id: parent._id, name: parent.name})),
-    siblings: person.siblings.map(sibling => ({id: sibling._id, name: sibling.name})),
-    spouses: person.spouses.map(spouse => ({id: spouse._id, name: spouse.name})),
-    children: person.children.map(child => ({id: child._id, name: child.name})),
-    links: person.links.map(link => {
-      const arr = link.split(' ');
-      return {url: arr.shift(), text: arr.join(' ')};
-    }),
+    parents: mapPeopleToNameAndId(person.parents),
+    siblings: mapPeopleToNameAndId(person.siblings),
+    spouses: mapPeopleToNameAndId(person.spouses),
+    children: mapPeopleToNameAndId(person.children),
+    links: mapLinks(person.links),
     tags: person.convertTags({asList: true}),
   };
 
@@ -93,15 +110,9 @@ async function sourceProfile(req, res) {
   const data = {
     id: source._id,
     date: source.date,
-    links: source.links.map(link => {
-      const arr = link.split(' ');
-      return {url: arr.shift(), text: arr.join(' ')};
-    }),
+    links: mapLinks(source.links),
     location: source.location,
-    people: source.people.map(person => ({
-      id: person._id,
-      name: person.name,
-    })),
+    people: mapPeopleToNameAndId(source.people),
     sharing: source.sharing,
     tags: source.convertTags({asList: true}),
     title: source.title,
@@ -130,15 +141,9 @@ async function storyProfile(req, res) {
   const data = {
     id: story._id,
     date: story.date,
-    links: story.links.map(link => {
-      const arr = link.split(' ');
-      return {url: arr.shift(), text: arr.join(' ')};
-    }),
+    links: mapLinks(story.links),
     location: story.location,
-    people: story.people.map(person => ({
-      id: person._id,
-      name: person.name,
-    })),
+    people: mapPeopleToNameAndId(story.people),
     sharing: story.sharing,
     tags: story.convertTags({asList: true}),
     title: story.title,
@@ -147,4 +152,17 @@ async function storyProfile(req, res) {
   };
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.send({data});
+}
+
+////////////////////
+
+function mapLinks(links) {
+  return links.map(link => {
+    const arr = link.split(' ');
+    return {url: arr.shift(), text: arr.join(' ')};
+  });
+}
+
+function mapPeopleToNameAndId(people) {
+  return people.map(person => ({id: person._id, name: person.name}));
 }
