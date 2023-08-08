@@ -15,24 +15,23 @@ async function convertParamNotationId(req, res, next, notationId) {
   req.notationId = notationId;
   req.rootPath = '/notation/' + notationId;
 
-  Notation
+  const notation = await Notation
     .findById(notationId)
     .populate('source')
     .populate('people')
     .populate('stories')
-    .populate('tags')
-    .exec(async (err, notation) => {
-      if (!notation) {
-        return res.send('Notation not found.');
-      }
+    .populate('tags');
 
-      if (notation.source) {
-        await notation.source.populateStory();
-      }
+  if (!notation) {
+    return res.send('Notation not found.');
+  }
 
-      req.notation = notation;
-      next();
-    });
+  if (notation.source) {
+    await notation.source.populateStory();
+  }
+
+  req.notation = notation;
+  next();
 }
 
 function createRenderNotation(req, res, next) {
