@@ -90,15 +90,7 @@ async function personProfile(req, res) {
     children: mapPeopleToNameAndId(person.children),
     links: mapLinks(person.links),
     tags: person.convertTags({asList: true}),
-    citations: person.citations.map(citation => ({
-      id: citation._id,
-      item: citation.item,
-      information: citation.information,
-      source: {
-        id: citation.source._id,
-        fullTitle: citation.source.fullTitle,
-      },
-    }))
+    citations: mapCitationsIncludeSource(person.citations),
   };
 
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -138,15 +130,7 @@ async function sourceProfile(req, res) {
       title: source.story.title,
       type: source.story.type,
     },
-    citations: source.citations.map(citation => ({
-      id: citation._id,
-      item: citation.item,
-      information: citation.information,
-      person: {
-        id: citation.person._id,
-        name: citation.person.name,
-      },
-    }))
+    citations: mapCitationsIncludePerson(source.citationsByPerson),
   };
 
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -182,6 +166,35 @@ async function storyProfile(req, res) {
 }
 
 ////////////////////
+
+function mapCitationsIncludePerson(citations) {
+  return citations.map(citation => ({
+    id: citation._id,
+    information: citation.information,
+    ...splitCitationItem(citation),
+    person: {
+      id: citation.person._id,
+      name: citation.person.name,
+    },
+  }));
+}
+
+function mapCitationsIncludeSource(citations) {
+  return citations.map(citation => ({
+    id: citation._id,
+    information: citation.information,
+    ...splitCitationItem(citation),
+    source: {
+      id: citation.source._id,
+      fullTitle: citation.source.fullTitle,
+    },
+  }));
+}
+
+function splitCitationItem(citation) {
+  const arr = citation.item.split(' - ');
+  return {itemPart1: arr.shift(), itemPart2: arr.join(' ')};
+}
 
 function mapLinks(links) {
   return links.map(link => {
