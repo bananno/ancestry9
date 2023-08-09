@@ -1,4 +1,5 @@
 const {
+  Citation,
   Event,
   Notation,
   Person,
@@ -12,7 +13,7 @@ function createRoutes(router) {
   router.get('/api/event-index', eventIndex);
   router.get('/api/notation-index', notationIndex);
   router.get('/api/notation-profile/:id', notationProfile);
-  router.get('/api/people-index', peopleIndex);
+  router.get('/api/person-index', personIndex);
   router.get('/api/person-profile/:id', personProfile);
   router.get('/api/source-index', sourceIndex);
   router.get('/api/source-profile/:id', sourceProfile);
@@ -59,7 +60,7 @@ async function notationProfile(req, res) {
   res.send({data});
 }
 
-async function peopleIndex(req, res) {
+async function personIndex(req, res) {
   const people = await Person.find();
   const data = people.map(person => ({
     id: person._id,
@@ -76,6 +77,10 @@ async function personProfile(req, res) {
     .populate('children').populate('tags');
   await person.populateSiblings({sortByBirthDate: true});
 
+  await person.populateCitations({populateSources: true});
+  await Citation.populateStories(person.citations);
+  Citation.sortByItem(person.citations);
+
   const data = {
     name: person.name,
     shareLevel: person.shareLevel,
@@ -85,6 +90,15 @@ async function personProfile(req, res) {
     children: mapPeopleToNameAndId(person.children),
     links: mapLinks(person.links),
     tags: person.convertTags({asList: true}),
+    citations: person.citations.map(citation => ({
+      id: citation._id,
+      item: citation.item,
+      source: {
+        id: citation.source._id,
+        fullTitle: citation.source.fullTitle,
+      },
+      information: citation.information,
+    }))
   };
 
   res.setHeader('Access-Control-Allow-Origin', '*');

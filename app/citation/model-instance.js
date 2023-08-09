@@ -10,6 +10,7 @@ methods.populateStory = async function() {
     this.source.story = await mongoose.model('Story')
       .findById(this.source.story);
   }
+  this.source.populateFullTitle();
 };
 
 methods.toSharedObject = function() {
