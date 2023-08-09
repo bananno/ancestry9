@@ -93,11 +93,11 @@ async function personProfile(req, res) {
     citations: person.citations.map(citation => ({
       id: citation._id,
       item: citation.item,
+      information: citation.information,
       source: {
         id: citation.source._id,
         fullTitle: citation.source.fullTitle,
       },
-      information: citation.information,
     }))
   };
 
@@ -121,6 +121,9 @@ async function sourceProfile(req, res) {
   const source = await Source.findById(req.params.id)
     .populate('people')
     .populate('story');
+
+  await source.populateAndSortCitations();
+
   const data = {
     id: source._id,
     date: source.date,
@@ -135,7 +138,17 @@ async function sourceProfile(req, res) {
       title: source.story.title,
       type: source.story.type,
     },
+    citations: source.citations.map(citation => ({
+      id: citation._id,
+      item: citation.item,
+      information: citation.information,
+      person: {
+        id: citation.person._id,
+        name: citation.person.name,
+      },
+    }))
   };
+
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.send({data});
 }
