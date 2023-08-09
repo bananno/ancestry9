@@ -118,6 +118,8 @@ async function sourceProfile(req, res) {
 
   const data = {
     id: source._id,
+    citations: mapCitationsIncludePerson(source.citationsByPerson),
+    content: source.content,
     date: source.date,
     links: mapLinks(source.links),
     location: source.location,
@@ -130,7 +132,6 @@ async function sourceProfile(req, res) {
       title: source.story.title,
       type: source.story.type,
     },
-    citations: mapCitationsIncludePerson(source.citationsByPerson),
   };
 
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -151,15 +152,16 @@ async function storyProfile(req, res) {
   const story = await Story.findById(req.params.id).populate('tags');
   const data = {
     id: story._id,
+    content: story.content,
     date: story.date,
     links: mapLinks(story.links),
     location: story.location,
     people: mapPeopleToNameAndId(story.people),
     sharing: story.sharing,
+    sources: [], // TO DO
     tags: story.convertTags({asList: true}),
     title: story.title,
     type: story.type,
-    sources: [], // TO DO
   };
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.send({data});
