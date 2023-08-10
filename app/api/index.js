@@ -16,6 +16,7 @@ function createRoutes(router) {
   router.get('/api/person-index', personIndex);
   router.get('/api/person-profile/:id', personProfile);
   router.get('/api/source-index', sourceIndex);
+  router.get('/api/source-index/:sourceType', sourceIndex);
   router.get('/api/source-profile/:id', sourceProfile);
   router.get('/api/story-index', storyIndex);
   router.get('/api/story-profile/:id', storyProfile);
@@ -98,13 +99,18 @@ async function personProfile(req, res) {
 }
 
 async function sourceIndex(req, res) {
-  const sources = await Source.find().populate('story');
+  // TO DO: use mainSourceTypes to populate the list on the front end?
+  const sourceType = req.params.sourceType;
+  const sources = await Source.getAllByType(sourceType);
   sources.forEach(source => source.populateFullTitle());
+  Source.sortByStory(sources);
+
   const data = sources.map(source => ({
     id: source._id,
     title: source.title,
     fullTitle: source.fullTitle,
   }));
+
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.send({data});
 }

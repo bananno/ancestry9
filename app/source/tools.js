@@ -41,6 +41,7 @@ async function convertParamSourceId2(req, res, next, sourceId) { // :sourceId
   next();
 }
 
+// TO DO: combine this with the version in the model static methods
 async function getSourcesByType(type) {
   const sources = await Source.find({}).populate('story');
 
