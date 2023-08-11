@@ -166,29 +166,28 @@ async function storyHighlightMentions(req, res) {
   res.renderStory('mentions');
 }
 
-function storiesWithSources(req, res) {
-  Source.find({})
-  .populate('story')
-  .populate('stories')
-  .exec((err, allSources) => {
-    const stories = [];
-    const sourcesByStory = {};
+async function storiesWithSources(req, res) {
+  const allSources = await Source.find({})
+    .populate('story')
+    .populate('stories');
 
-    allSources.forEach(source => {
-      source.stories.forEach(story => {
-        const id = '' + story._id;
-        if (!sourcesByStory[id]) {
-          stories.push(story);
-          sourcesByStory[id] = [];
-        }
-        sourcesByStory[id].push(source);
-      });
-    });
+  const stories = [];
+  const sourcesByStory = {};
 
-    res.render('story/withSources', {
-      title: 'Stories with Sources',
-      stories,
-      sourcesByStory,
+  allSources.forEach(source => {
+    source.stories.forEach(story => {
+      const id = String(story._id);
+      if (!sourcesByStory[id]) {
+        stories.push(story);
+        sourcesByStory[id] = [];
+      }
+      sourcesByStory[id].push(source);
     });
+  });
+
+  res.render('story/withSources', {
+    title: 'Stories with Sources',
+    stories,
+    sourcesByStory,
   });
 }
