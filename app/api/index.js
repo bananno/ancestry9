@@ -131,6 +131,7 @@ async function sourceProfile(req, res) {
     date: source.date,
     links: mapLinks(source.links),
     location: source.location,
+    notes: splitNotes(source.notes),
     people: mapPeopleToNameAndId(source.people),
     sharing: source.sharing,
     tags: source.convertTags({asList: true}),
@@ -173,20 +174,37 @@ async function storyWithNonEntrySource(req, res) {
 }
 
 async function storyProfile(req, res) {
-  const story = await Story.findById(req.params.id).populate('tags');
+  const story = await Story
+    .findById(req.params.id)
+    .populate('people')
+    .populate('tags');
+
+  await story.populateEntries();
+  await story.populateNonEntrySources();
+  story.nonEntrySources.forEach(source => source.populateFullTitle());
+
   const data = {
     id: story._id,
     content: story.content,
     date: story.date,
     links: mapLinks(story.links),
     location: story.location,
+    notes: splitNotes(story.notes),
     people: mapPeopleToNameAndId(story.people),
     sharing: story.sharing,
-    sources: [], // TO DO
     tags: story.convertTags({asList: true}),
     title: story.title,
     type: story.type,
+    entries: story.entries.map(source => ({
+      id: source.id,
+      title: source.title,
+    })),
+    nonEntrySources: story.nonEntrySources.map(source => ({
+      id: source.id,
+      fullTitle: source.fullTitle,
+    })),
   };
+
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.send({data});
 }
@@ -231,4 +249,11 @@ function mapLinks(links) {
 
 function mapPeopleToNameAndId(people) {
   return people.map(person => ({id: person._id, name: person.name}));
+}
+
+function splitNotes(notes) {
+  if (!notes) {
+    return [];
+  }
+  return notes.split('\n').map(s => s.trim()).filter(Boolean);
 }
