@@ -1,12 +1,14 @@
 <%
-  let linkText = '';
-
-  if (locals.showStory) {
-    if (source.story && source.story.title) {
-      linkText = source.story.title + ' - ';
+  const linkText = (() => {
+    if (locals.showStory) {
+      if (source.fullTitle) {
+        return source.fullTitle;
+      }
+      if (source.story && source.story.title) {
+        return `${source.story.title} - ${source.title}`;
+      }
     }
-  }
-
-  linkText += source.title;
+    return source.title;
+  })();
 %>
 <a href="/source/<%= source._id %>"><%= linkText %></a>

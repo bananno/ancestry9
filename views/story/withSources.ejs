@@ -6,7 +6,7 @@
     <%- include('../story/_link', {story}) %>
   </p>
   <ul>
-    <% sourcesByStory[story._id].forEach(source => { %>
+    <% story.sources.forEach(source => { %>
       <li>
         <%- include('../source/_link', {source, showStory: true}) %>
       </li>

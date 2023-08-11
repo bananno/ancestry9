@@ -167,27 +167,10 @@ async function storyHighlightMentions(req, res) {
 }
 
 async function storiesWithSources(req, res) {
-  const allSources = await Source.find({})
-    .populate('story')
-    .populate('stories');
-
-  const stories = [];
-  const sourcesByStory = {};
-
-  allSources.forEach(source => {
-    source.stories.forEach(story => {
-      const id = String(story._id);
-      if (!sourcesByStory[id]) {
-        stories.push(story);
-        sourcesByStory[id] = [];
-      }
-      sourcesByStory[id].push(source);
-    });
-  });
+  const stories = await Story.getWithNonEntrySources();
 
   res.render('story/withSources', {
     title: 'Stories with Sources',
     stories,
-    sourcesByStory,
   });
 }

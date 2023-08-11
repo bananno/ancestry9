@@ -19,6 +19,8 @@ function createRoutes(router) {
   router.get('/api/source-index/:sourceType', sourceIndex);
   router.get('/api/source-profile/:id', sourceProfile);
   router.get('/api/story-index', storyIndex);
+  router.get('/api/story-index/:storyType', storyIndex);
+  router.get('/api/story-non-entry-source', storyWithNonEntrySource);
   router.get('/api/story-profile/:id', storyProfile);
 }
 
@@ -145,10 +147,26 @@ async function sourceProfile(req, res) {
 }
 
 async function storyIndex(req, res) {
-  const stories = await Story.find();
+  // TO DO: use mainStoryTypes to populate the list on the front end?
+  const storyType = req.params.storyType;
+  const stories = await Story.getAllByType(storyType);
   const data = stories.map(story => ({
     id: story._id,
     title: story.title,
+  }));
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send({data});
+}
+
+async function storyWithNonEntrySource(req, res) {
+  const stories = await Story.getWithNonEntrySources();
+  const data = stories.map(story => ({
+    id: story._id,
+    title: story.title,
+    sources: story.sources.map(source => ({
+      id: source._id,
+      fullTitle: source.fullTitle,
+    })),
   }));
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.send({data});
