@@ -221,6 +221,7 @@ async function tagIndex(req, res) {
     id: tag._id,
     category: tag.category,
     definition: tag.definition,
+    restrictedToModels: tag.getRestrictedModelList(),
     title: tag.title,
     usageCount: tag.usageCount,
   }));
@@ -236,8 +237,10 @@ async function tagProfile(req, res) {
     id: tag._id,
     category: tag.category,
     definition: tag.definition,
+    restrictedToModels: tag.getRestrictedModelList(),
     title: tag.title,
     valueType: tag.valueType,
+    valueTypeName: tag.getDropdownFieldValueName('valueType'),
   };
 
   res.setHeader('Access-Control-Allow-Origin', '*');

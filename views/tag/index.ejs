@@ -114,17 +114,6 @@
       <%
         let searchText = tag.title + ' ' + tag.definition;
         searchText = searchText.toLowerCase();
-
-        let modelsAllowed = '';
-        if (tag.restrictModels) {
-          const tempArr = [];
-          modelsThatHaveTags.forEach(({name, plural}) => {
-            if (tag.isModelAllowed(name)) {
-              tempArr.push(plural);
-            }
-          });
-          modelsAllowed = tempArr.join(', ');
-        }
       %>
       <tr class="tag-list-item" filter-text="<%= searchText %>">
         <td>
@@ -137,7 +126,7 @@
           <%= tag.category %>
         </td>
         <td>
-          <%= modelsAllowed %>
+          <%= tag.getRestrictedModelList().join(', ') %>
         </td>
         <td>
           <%= tag.definition %>

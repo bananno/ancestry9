@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const tools = require('../tools/modelTools');
-const constants = require('./constants');
+const {modelsThatHaveTags} = require('./constants');
+const tagModelSchema = require('./model-schema');
 const methods = {};
 module.exports = methods;
 
@@ -12,9 +13,10 @@ methods.isModelAllowed = function(modelName) {
   return !this.restrictModels || this['allow' + modelName];
 };
 
+// A tag can be deleted if it's not attached to any items.
 methods.canBeDeleted = async function() {
-  for (let i in constants.modelsThatHaveTags) {
-    const modelName = constants.modelsThatHaveTags[i].name;
+  for (let i in modelsThatHaveTags) {
+    const modelName = modelsThatHaveTags[i].name;
     const items = await mongoose.model(modelName).find({tags: this});
     if (items.length) {
       return false;
@@ -69,3 +71,25 @@ methods.getEditTableSettings = function(tagValue) {
   // There is no value associated with this tag, so it is not editable.
   return false;
 };
+
+// Get the list of model names that can use this tag to display in the UI.
+// If not restricted, return an empty list.
+methods.getRestrictedModelList = function() {
+  if (!this.restrictModels) {
+    return [];
+  }
+  return modelsThatHaveTags
+    .filter(({name}) => this.isModelAllowed(name))
+    .map(({plural}) => plural);
+};
+
+// Applicable for any any field with inputType=dropdown.
+// Given the name of the field, find the corresponding text of the current value.
+// TO DO: make this more general to use for other models & fields.
+methods.getDropdownFieldValueName = function(fieldName) {
+  const field = tagModelSchema.find(field => field.name === fieldName);
+  if (field.inputType !== 'dropdown') {
+    throw `value name not applicable for this field: ${fieldName}`;
+  }
+  return field.valueNames[this[fieldName]];
+}
