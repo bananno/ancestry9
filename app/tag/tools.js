@@ -1,6 +1,6 @@
 const {
+  mongoose,
   Tag,
-  modelRef,
 } = require('../import');
 
 const constants = require('./constants');
@@ -42,30 +42,11 @@ tools.createRenderTag = function(req, res, next) {
 async function forEachModel(callback) {
   for (let i in constants.modelsThatHaveTags) {
     const modelName = constants.modelsThatHaveTags[i].name;
-    const Model = modelRef[modelName];
+    const Model = mongoose.model(modelName);
     const pluralName = constants.modelsThatHaveTags[i].plural;
     await callback(Model, modelName, pluralName);
   }
 }
-
-tools.getTagIndexData = async tags => {
-  const tagRef = {};
-
-  tags.forEach(tag => {
-    tag.count = 0;
-    tagRef[tag._id] = tag;
-  });
-
-  await forEachModel(async Model => {
-    const items = await Model.find({});
-
-    items.forEach(item => {
-      item.tags.forEach(tagId => {
-        tagRef[tagId].count += 1;
-      });
-    });
-  });
-};
 
 tools.getTagShowData = async function(tag) {
   if (tag.title === 'findagrave') {

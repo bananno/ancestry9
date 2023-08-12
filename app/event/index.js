@@ -1,10 +1,6 @@
 const {
   Event,
-  Person,
-  Tag,
   createController,
-  modelFields,
-  getEditTableRows,
 } = require('../import');
 
 const eventTools = require('./tools');

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const tools = require('../tools/modelTools');
+const {modelsThatHaveTags} = require('./constants');
+
 const methods = {};
 module.exports = methods;
 
@@ -51,3 +53,34 @@ methods.findByIdOrTitle = async(tagId) => {
 
   return tagByName;
 };
+
+// Given a list of tags, populate the usage count for each.
+methods.populateUsageCount = async tags => {
+  const tagRef = {};
+
+  tags.forEach(tag => {
+    tag.usageCount = 0;
+    tagRef[tag._id] = tag;
+  });
+
+  await forEachModel(async Model => {
+    const items = await Model.find({});
+
+    items.forEach(item => {
+      item.tags.forEach(tagId => {
+        tagRef[tagId].usageCount += 1;
+      });
+    });
+  });
+};
+
+/////////////////////
+
+async function forEachModel(callback) {
+  for (let i in modelsThatHaveTags) {
+    const modelName = modelsThatHaveTags[i].name;
+    const Model = mongoose.model(modelName);
+    const pluralName = modelsThatHaveTags[i].plural;
+    await callback(Model, modelName, pluralName);
+  }
+}

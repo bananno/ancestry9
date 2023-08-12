@@ -1,3 +1,5 @@
+// This object is modified by reference in createModel.js
+// and future imports of the file are affected
 module.exports = [
   {
     name: 'api',

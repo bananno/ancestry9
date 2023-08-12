@@ -5,6 +5,7 @@ const {
   Person,
   Source,
   Story,
+  Tag,
 } = require('../import');
 
 module.exports = createRoutes;
@@ -22,6 +23,8 @@ function createRoutes(router) {
   router.get('/api/story-index/:storyType', storyIndex);
   router.get('/api/story-non-entry-source', storyWithNonEntrySource);
   router.get('/api/story-profile/:id', storyProfile);
+  router.get('/api/tag-index', tagIndex);
+  router.get('/api/tag-profile/:id', tagProfile);
 }
 
 async function eventIndex(req, res) {
@@ -203,6 +206,38 @@ async function storyProfile(req, res) {
       id: source.id,
       fullTitle: source.fullTitle,
     })),
+  };
+
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send({data});
+}
+
+async function tagIndex(req, res) {
+  const tags = await Tag.find({});
+  Tag.sortByTitle(tags);
+  await Tag.populateUsageCount(tags);
+
+  const data = tags.map(tag => ({
+    id: tag._id,
+    category: tag.category,
+    definition: tag.definition,
+    title: tag.title,
+    usageCount: tag.usageCount,
+  }));
+
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send({data});
+}
+
+async function tagProfile(req, res) {
+  const tag = await Tag.findById(req.params.id);
+
+  const data = {
+    id: tag._id,
+    category: tag.category,
+    definition: tag.definition,
+    title: tag.title,
+    valueType: tag.valueType,
   };
 
   res.setHeader('Access-Control-Allow-Origin', '*');

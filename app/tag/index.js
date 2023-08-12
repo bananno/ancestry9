@@ -36,7 +36,7 @@ async function tagIndex(req, res) {
   const tags = await Tag.find({});
   Tag.sortByTitle(tags);
 
-  await tagTools.getTagIndexData(tags);
+  await Tag.populateUsageCount(tags);
 
   const pageData = {
     title: 'Tags',
