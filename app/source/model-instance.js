@@ -62,7 +62,8 @@ methods.toSharedObject = function({imageMap}) {
 
 // Must populate story first
 methods.populateFullTitle = function() {
-  this.fullTitle = `${this.story.title} - ${this.title}`;
+  this.fullTitle = this.fullTitle || `${this.story.title} - ${this.title}`;
+  return this.fullTitle;
 };
 
 

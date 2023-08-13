@@ -93,3 +93,47 @@ methods.getDropdownFieldValueName = function(fieldName) {
   }
   return field.valueNames[this[fieldName]];
 }
+
+// TO DO: merge the rest of "getTagShowData" functionality into this method;
+// update old template to use populateAllAttachedItems; delete getTagShowData
+methods.populateAllAttachedItems = async function() {
+  const data = {};
+
+  await forEachModel(async (Model, modelName, pluralName) => {
+    if (!this.isModelAllowed(modelName)) {
+      return;
+    }
+
+    if (pluralName === 'sources') {
+      const rawSources = await Model.find({tags: this._id}).populate('story');
+      data[pluralName] = rawSources.map(source => ({
+        id: source._id,
+        fullTitle: source.populateFullTitle(),
+      }));
+      return;
+    }
+
+    const rawItems = await Model.find({tags: this._id});
+
+    if (['events', 'notations', 'stories', 'tags'].includes(pluralName)) {
+      data[pluralName] = rawItems.map(item => ({id: item._id, title: item.title}));
+    } else if (pluralName === 'people') {
+      data[pluralName] = rawItems.map(person => ({id: person._id, name: person.name}));
+    } else {
+      data[pluralName] = rawItems.map(image => ({id: image._id})); // TO DO: finish this
+    }
+  });
+
+  this.attachedItems = data;
+};
+
+/////////////////////
+
+async function forEachModel(callback) {
+  for (let i in modelsThatHaveTags) {
+    const modelName = modelsThatHaveTags[i].name;
+    const Model = mongoose.model(modelName);
+    const pluralName = modelsThatHaveTags[i].plural;
+    await callback(Model, modelName, pluralName);
+  }
+}

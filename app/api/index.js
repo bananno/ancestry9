@@ -232,13 +232,16 @@ async function tagIndex(req, res) {
 
 async function tagProfile(req, res) {
   const tag = await Tag.findById(req.params.id);
+  await tag.populateAllAttachedItems();
 
   const data = {
     id: tag._id,
     category: tag.category,
     definition: tag.definition,
+    attachedItems: tag.attachedItems,
     restrictedToModels: tag.getRestrictedModelList(),
     title: tag.title,
+    valueOptions: tag.valueType === 2 ? tag.values.split('\n') : [],
     valueType: tag.valueType,
     valueTypeName: tag.getDropdownFieldValueName('valueType'),
   };
