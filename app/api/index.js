@@ -240,6 +240,7 @@ async function tagProfile(req, res) {
     category: tag.category,
     definition: tag.definition?.split('\n') || [],
     groupByValue: tag.hasTag('group by value'),
+    missingItems: tag.missingItems,
     restrictedToModels: tag.getRestrictedModelList(),
     showMissingItems: tag.hasTag('show missing items'),
     tags: tag.convertTags({asList: true}),

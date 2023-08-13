@@ -95,37 +95,67 @@ methods.getDropdownFieldValueName = function(fieldName) {
   return field.valueNames[this[fieldName]];
 }
 
+// Attach lists of all the items that use this tag (and also the items that don't use
+// the tag, if applicable) and populate any additional data needed to display all of
+// this tag's attached items.
 // TO DO: merge the rest of "getTagShowData" functionality into this method;
 // update old template to use populateAllAttachedItems; delete getTagShowData
 methods.populateAllAttachedItems = async function() {
-  const data = {};
+  const metatagTitles = this.getTagTitles();
+
+  this.attachedItems = {};
+  if (metatagTitles.includes('show missing items')) {
+    this.missingItems = {};
+  }
+
+  const mapSourceItem = item => ({
+    id: item._id,
+    tagValue: this.valueType !== 0 ? item.getTagValue(this) : undefined,
+    fullTitle: item.populateFullTitle(),
+  });
+
+  const mapItem = item => ({
+    id: item._id, // all models
+    name: item.name, // people only
+    tagValue: this.valueType !== 0 ? item.getTagValue(this) : undefined, // all models
+    title: item.title, // everything except people & images
+    // TO DO: add whatever's needed for images
+  });
 
   await forEachModel(async (Model, modelName, pluralName) => {
     if (!this.isModelAllowed(modelName)) {
       return;
     }
 
+    let rawItems, rawMissingItems;
+
     if (pluralName === 'sources') {
-      const rawSources = await Model.find({tags: this._id}).populate('story');
-      data[pluralName] = rawSources.map(source => ({
-        id: source._id,
-        fullTitle: source.populateFullTitle(),
-      }));
-      return;
+      rawItems = await Model.find({tags: this._id}).populate('story');
+      this.attachedItems[pluralName] = rawItems.map(mapSourceItem);
+
+      if (this.missingItems) {
+        rawMissingItems = await Model.find({tags: {$nin: this._id}}).populate('story');
+        this.missingItems[pluralName] = rawMissingItems.map(mapSourceItem);
+      }
+    } else {
+      rawItems = await Model.find({tags: this._id});
+      this.attachedItems[pluralName] = rawItems.map(mapItem);
+
+      if (this.missingItems) {
+        rawMissingItems = await Model.find({tags: {$nin: this._id}});
+        this.missingItems[pluralName] = rawMissingItems.map(mapItem);
+      }
     }
 
-    const rawItems = await Model.find({tags: this._id});
-
-    data[pluralName] = rawItems.map(item => ({
-      id: item._id, // all models
-      name: item.name, // people only
-      tagValue: this.valueType !== 0 ? item.getTagValue(this) : undefined, // all models
-      title: item.title, // everything but people & images
-      // TO DO: add whatever's needed for images
-    }));
+    if (this.title === 'number of children') {
+      this.attachedItems[pluralName].forEach((person, i) => {
+        person.numberOfChildrenInDatabase = rawItems[i].children.length;
+      });
+      this.missingItems[pluralName].forEach((person, i) => {
+        person.numberOfChildrenInDatabase = rawMissingItems[i].children.length;
+      });
+    }
   });
-
-  this.attachedItems = data;
 };
 
 /////////////////////
