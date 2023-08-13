@@ -231,15 +231,18 @@ async function tagIndex(req, res) {
 }
 
 async function tagProfile(req, res) {
-  const tag = await Tag.findById(req.params.id);
+  const tag = await Tag.findById(req.params.id).populate('tags');
   await tag.populateAllAttachedItems();
 
   const data = {
     id: tag._id,
-    category: tag.category,
-    definition: tag.definition,
     attachedItems: tag.attachedItems,
+    category: tag.category,
+    definition: tag.definition?.split('\n') || [],
+    groupByValue: tag.hasTag('group by value'),
     restrictedToModels: tag.getRestrictedModelList(),
+    showMissingItems: tag.hasTag('show missing items'),
+    tags: tag.convertTags({asList: true}),
     title: tag.title,
     valueOptions: tag.valueType === 2 ? tag.values.split('\n') : [],
     valueType: tag.valueType,

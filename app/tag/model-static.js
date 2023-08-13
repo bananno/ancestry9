@@ -42,14 +42,14 @@ methods.findByIdOrTitle = async(tagId) => {
   const Tag = mongoose.model('Tag');
 
   if (tools.isValidMongooseId(tagId)) {
-    const tag = await Tag.findById(tagId);
+    const tag = await Tag.findById(tagId).populate('tags');
     if (tag) {
       return tag;
     }
   }
 
   const tryTitle = tagId.replace(/_/g, ' ').replace(/%20/g, ' ');
-  const tagByName = await Tag.findOne({title: tryTitle});
+  const tagByName = await Tag.findOne({title: tryTitle}).populate('tags');
 
   return tagByName;
 };

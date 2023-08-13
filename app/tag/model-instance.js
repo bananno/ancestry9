@@ -8,6 +8,7 @@ module.exports = methods;
 methods.getTagTitles = tools.getTagTitles;
 methods.getTagValue = tools.getTagValue;
 methods.hasTag = tools.hasTag;
+methods.convertTags = tools.convertTags2;
 
 methods.isModelAllowed = function(modelName) {
   return !this.restrictModels || this['allow' + modelName];
@@ -115,13 +116,13 @@ methods.populateAllAttachedItems = async function() {
 
     const rawItems = await Model.find({tags: this._id});
 
-    if (['events', 'notations', 'stories', 'tags'].includes(pluralName)) {
-      data[pluralName] = rawItems.map(item => ({id: item._id, title: item.title}));
-    } else if (pluralName === 'people') {
-      data[pluralName] = rawItems.map(person => ({id: person._id, name: person.name}));
-    } else {
-      data[pluralName] = rawItems.map(image => ({id: image._id})); // TO DO: finish this
-    }
+    data[pluralName] = rawItems.map(item => ({
+      id: item._id, // all models
+      name: item.name, // people only
+      tagValue: this.valueType !== 0 ? item.getTagValue(this) : undefined, // all models
+      title: item.title, // everything but people & images
+      // TO DO: add whatever's needed for images
+    }));
   });
 
   this.attachedItems = data;

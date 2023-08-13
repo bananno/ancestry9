@@ -55,14 +55,37 @@ tools.getTagTitles = function() {
   return this.tags.map(tag => tag.title);
 };
 
+// Given either a tag, tag id, or tag title, get this instance's
+// value for that tag. E.g., given "number of children", return "6".
+// This instance's tags do not have to be populated.
 tools.getTagValue = function(tagInput) {
-  const tag = tagInput.title ? tagInput : this.tags.find(tag => tag.title === tagInput);
-  if (!tag) {
+  if (!this.tags.length) {
     return undefined;
   }
-  const itemTagIds = this.tags.map(tag => tag._id || tag);
-  const idx = itemTagIds.indexOf(tag._id);
-  return this.tagValues[idx];
+
+  // The input might be a tag {_id, title} or just the id or title
+  const lookForTagId = tagInput._id ? String(tagInput._id) : String(tagInput);
+  const lookForTagTitle = tagInput.title || tagInput.title;
+
+  // the tags list might be objects or just ids
+  const areTagsPopulated = !!this.tags[0].title;
+
+  if (areTagsPopulated) {
+    for (let i = 0; i < this.tags.length; i++) {
+      if (this.tags[i].title === lookForTagTitle) {
+        return this.tagValues[i];
+      }
+      if (String(this.tags[i]._id) === lookForTagId) {
+        return this.tagValues[i];
+      }
+    }
+  } else {
+    for (let i = 0; i < this.tags.length; i++) {
+      if (String(this.tags[i]) === lookForTagId) {
+        return this.tagValues[i];
+      }
+    }
+  }
 };
 
 tools.hasTag = function(tagTitle) {
