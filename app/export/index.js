@@ -15,8 +15,6 @@ const fs = require('fs');
 module.exports = createRoutes;
 
 function createRoutes(router) {
-  router.get('/database', exportAndRenderEverything);
-  router.get('/sharing', exportSharedData);
   router.get('/api/export/full', exportDatabaseBackup);
   router.get('/api/export/publish', exportPublishedData);
 }
@@ -38,35 +36,6 @@ async function exportDatabaseBackup(req, res) {
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.send({});
-}
-
-async function exportAndRenderEverything(req, res) {
-  const data = await getFullData();
-
-  await saveFullDataFile(data, 'citations');
-  await saveFullDataFile(data, 'events');
-  await saveFullDataFile(data, 'highlights');
-  await saveFullDataFile(data, 'images');
-  await saveFullDataFile(data, 'notations');
-  await saveFullDataFile(data, 'people');
-  await saveFullDataFile(data, 'sources');
-  await saveFullDataFile(data, 'stories');
-  await saveFullDataFile(data, 'tags');
-
-  res.render('export/index', data);
-}
-
-async function exportSharedData(req, res) {
-  const data = await getSharedData();
-
-  await saveSharedDataFile('people', data.people, data);
-  await saveSharedDataFile('stories', data.stories);
-  await saveSharedDataFile('sources', data.sources);
-  await saveSharedDataFile('events', data.events);
-  await saveSharedDataFile('citations', data.citations);
-  await saveSharedDataFile('notations', data.notations);
-
-  res.redirect('/');
 }
 
 async function exportPublishedData(req, res) {
@@ -135,21 +104,6 @@ function saveFullDataFile(data, itemName) {
   });
 }
 
-function saveSharedDataFile(attr, arr, data) {
-  const filename = 'shared/database/raw-' + attr + '.js';
-
-  const content = (
-    (data ? getStarterContent(data) : '') +
-    'DATABASE.' + attr + ' = [\n' +
-      arr.map(item => '  ' + JSON.stringify(item) + ',').join('\n') +
-    '\n];\n'
-  );
-
-  return new Promise(resolve => {
-    fs.writeFile(filename, content, resolve);
-  });
-}
-
 function savePublishedDataFile(attr, arr) {
   const filename = `client/db/${attr}.json`;
   const stringifiedItems = arr.map(item => JSON.stringify(item));
@@ -163,11 +117,4 @@ function savePublishedDataFile(attr, arr) {
 
 function stringifyData(array) {
   return '[\n' + array.map(s => JSON.stringify(s)).join(',\n') + '\n]';
-}
-
-function getStarterContent(data) {
-  return (
-    'const DATABASE = {};\n\n' +
-    'DATABASE.countryList = ' + JSON.stringify(data.countryList) + ';\n\n'
-  );
 }
