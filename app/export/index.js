@@ -17,6 +17,27 @@ module.exports = createRoutes;
 function createRoutes(router) {
   router.get('/database', exportAndRenderEverything);
   router.get('/sharing', exportSharedData);
+  router.get('/api/export/full', exportDatabaseBackup);
+  router.get('/api/export/publish', exportPublishedData);
+}
+
+async function exportDatabaseBackup(req, res) {
+  const data = await getFullData();
+
+  await Promise.all([
+    saveFullDataFile(data, 'citations'),
+    saveFullDataFile(data, 'events'),
+    saveFullDataFile(data, 'highlights'),
+    saveFullDataFile(data, 'images'),
+    saveFullDataFile(data, 'notations'),
+    saveFullDataFile(data, 'people'),
+    saveFullDataFile(data, 'sources'),
+    saveFullDataFile(data, 'stories'),
+    saveFullDataFile(data, 'tags'),
+  ]);
+
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send({});
 }
 
 async function exportAndRenderEverything(req, res) {
@@ -46,6 +67,27 @@ async function exportSharedData(req, res) {
   await saveSharedDataFile('notations', data.notations);
 
   res.redirect('/');
+}
+
+async function exportPublishedData(req, res) {
+  const data = await getSharedData();
+
+  if (!fs.existsSync('client/db')) {
+    fs.mkdirSync('client/db');
+  }
+
+  await Promise.all([
+    savePublishedDataFile('people', data.people),
+    savePublishedDataFile('stories', data.stories),
+    savePublishedDataFile('sources', data.sources),
+    savePublishedDataFile('events', data.events),
+    savePublishedDataFile('citations', data.citations),
+    savePublishedDataFile('notations', data.notations),
+    savePublishedDataFile('countries', data.countryList),
+  ]);
+
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send({});
 }
 
 async function getFullData() {
@@ -84,8 +126,10 @@ async function getSharedData() {
 
 function saveFullDataFile(data, itemName) {
   const itemData = data[itemName];
-  const filename = 'database-backup/database-' + itemName + '.json';
+  const filename = `database-backup/database-${itemName}.json`;
   const content = stringifyData(itemData);
+
+  // fs.writeFile does not return a promise
   return new Promise(resolve => {
     fs.writeFile(filename, content, resolve);
   });
@@ -101,6 +145,17 @@ function saveSharedDataFile(attr, arr, data) {
     '\n];\n'
   );
 
+  return new Promise(resolve => {
+    fs.writeFile(filename, content, resolve);
+  });
+}
+
+function savePublishedDataFile(attr, arr) {
+  const filename = `client/db/${attr}.json`;
+  const stringifiedItems = arr.map(item => JSON.stringify(item));
+  const content = `[\n  ${stringifiedItems.join(',\n  ')}\n]\n`;
+
+  // fs.writeFile does not return a promise
   return new Promise(resolve => {
     fs.writeFile(filename, content, resolve);
   });

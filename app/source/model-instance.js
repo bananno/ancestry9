@@ -39,30 +39,32 @@ methods.canHaveLocation = function() {
 
 methods.toSharedObject = function({imageMap}) {
   const {exportFieldNames} = this.constants();
-  const source = tools.reduceToExportData(this, exportFieldNames);
+
+  // sourceData is not a Source instance
+  const sourceData = tools.reduceToExportData(this, exportFieldNames);
 
   // Remove non-shared people and then un-populate people.
-  source.people = source.people
+  sourceData.people = sourceData.people
     .filter(person => person.isPublic())
     .map(person => person._id);
 
   // Use story to create full title and then un-populate story.
-  source.populateFullTitle();
-  source.story = source.story._id;
+  sourceData.fullTitle = mongoose.model('Source').getFullTitle(this);
+  sourceData.story = sourceData.story._id;
 
-  source.tags = tools.convertTags(this);
+  sourceData.tags = tools.convertTags(this);
 
   // Populate images manually; otherwise image tags would not be populated.
   // No need to un-populate images because they only exist as attributes
   // of their parent story or source.
-  source.images = source.images.map(imageId => imageMap[imageId].toSharedObject());
+  sourceData.images = sourceData.images.map(imageId => imageMap[imageId].toSharedObject());
 
-  return source;
+  return sourceData;
 }
 
 // Must populate story first
 methods.populateFullTitle = function() {
-  this.fullTitle = this.fullTitle || `${this.story.title} - ${this.title}`;
+  this.fullTitle = this.fullTitle || mongoose.model('Source').getFullTitle(this);
   return this.fullTitle;
 };
 

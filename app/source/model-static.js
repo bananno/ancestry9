@@ -80,3 +80,9 @@ methods.getAllByType = async sourceType => {
 
   return sources.filter(source => source.story.type.toLowerCase() === sourceType);
 };
+
+// Get the full title ("story title - source title") of the given
+// source (or source-based object). Must populate story first.
+methods.getFullTitle = source => {
+  return `${source.story.title} - ${source.title}`;
+};
