@@ -378,7 +378,7 @@ methods.populateWikiTreeSources = async function() {
   Source.sortByStory(this.wikiTreeSources);
 };
 
-// RELATIVES
+// RELATIVES - data modifications
 
 methods.attachParent = async function(relativeId) {
   const relative = await mongoose.model('Person').findById(relativeId);

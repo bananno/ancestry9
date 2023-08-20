@@ -112,6 +112,34 @@ function populateAncestors(rootPerson, people, options = {}, safety = 0) {
   return person;
 }
 
+methods.getAncestorTree = async rootPerson => {
+  const allPeople = await mongoose.model('Person').find().populate('parents');
+
+  return populate(rootPerson, 0);
+
+  function populate(nextPerson, safety) {
+    if (safety > 30) {
+      return;
+    }
+
+    // The nextPerson param is a person object, but it lacks the
+    // populated parents. Find the person in the list to get the parents.
+    const treeParents = findInList(allPeople, nextPerson)
+      .parents
+      .map(parent => populate(parent, safety + 1));
+
+    if (treeParents.length === 1) {
+      treeParents.push(null);
+    }
+
+    return {
+      id: nextPerson._id,
+      name: nextPerson.name,
+      treeParents,
+    };
+  };
+};
+
 // Given an item, get the list of people that are available to be attached
 // to that item to populate dropdown on edit table.
 methods.getAvailableForItem = async function(item, fieldName) {

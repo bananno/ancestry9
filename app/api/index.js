@@ -87,16 +87,20 @@ async function personProfile(req, res) {
   await Citation.populateStories(person.citations);
   Citation.sortByItem(person.citations);
 
+  const ancestorTree = await Person.getAncestorTree(person);
+
   const data = {
+    id: person._id,
+    children: mapPeopleToNameAndId(person.children),
+    citations: mapCitationsIncludeSource(person.citations),
+    links: mapLinks(person.links),
     name: person.name,
-    shareLevel: person.shareLevel,
     parents: mapPeopleToNameAndId(person.parents),
     siblings: mapPeopleToNameAndId(person.siblings),
     spouses: mapPeopleToNameAndId(person.spouses),
-    children: mapPeopleToNameAndId(person.children),
-    links: mapLinks(person.links),
+    shareLevel: person.shareLevel,
     tags: person.convertTags({asList: true}),
-    citations: mapCitationsIncludeSource(person.citations),
+    treeParents: ancestorTree.treeParents,
   };
 
   res.setHeader('Access-Control-Allow-Origin', '*');
