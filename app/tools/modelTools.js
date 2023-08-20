@@ -65,7 +65,7 @@ tools.getTagValue = function(tagInput) {
 
   // The input might be a tag {_id, title} or just the id or title
   const lookForTagId = tagInput._id ? String(tagInput._id) : String(tagInput);
-  const lookForTagTitle = tagInput.title || tagInput.title;
+  const lookForTagTitle = tagInput.title || tagInput.title || tagInput;
 
   // the tags list might be objects or just ids
   const areTagsPopulated = !!this.tags[0].title;

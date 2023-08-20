@@ -10,6 +10,7 @@ const {
 
 const getChecklistPlacesInfo = require('./checklist.places');
 const {getObituaryChecklistData} = require('./checklist.tools');
+const checklistVitals = require('./checklist.vitals');
 
 module.exports = createRoutes;
 
@@ -47,19 +48,6 @@ async function checklistIndex(req, res) {
   Tag.sortByTitle(checklistTags);
 
   res.renderChecklist('index', {checklistTags, storiesWithChecklist});
-}
-
-async function checklistVitals(req, res) {
-  const people = await Person.find().populate('tags');
-  const rootPerson = people.find(person => person.isRoot());
-
-  Person.populateConnections(people, rootPerson);
-  await Person.populateBirthAndDeath(people);
-
-  res.renderChecklist('vitals', {
-    people,
-    connectionTitle: [null, 'start', 'ancestor', 'cousin', 'marriage']
-  });
 }
 
 async function checklistSourceCensus(req, res) {

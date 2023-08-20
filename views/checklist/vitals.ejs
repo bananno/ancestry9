@@ -1,15 +1,11 @@
-<%
-  let birthMissing = 0, deathMissing = 0;
-%>
-
 <h1>Checklist - vitals</h1>
 
 <div>
   Total people: <b><%= people.length %></b>
   <br>
-  Birth events missing: <b><span id="birth-event-result"></span></b>
+  Birth events missing: <b><%= countBirthMissing %></b>
   <br>
-  Death events missing: <b><span id="death-event-result"></span></b>
+  Death events missing: <b><%= countDeathMissing %></b>
 </div>
 
 <table class="nice-table" style="margin-top: 20px">
@@ -23,41 +19,23 @@
     <th>children</th>
   </tr>
   <% people.forEach(person => { %>
-    <%
-      let showChildrenDone = false,
-        showChildrenNotDone = false,
-        childrenNote = '';
-      const numberOfChildrenTag = person.getTagValue('number of children');
-
-      if (!numberOfChildrenTag || numberOfChildrenTag === 'unknown') {
-        showChildrenNotDone = true;
-      } else if (numberOfChildrenTag === 'done') {
-        showChildrenDone = true;
-      } else if (numberOfChildrenTag === 'too distant') {
-        childrenNote = '--';
-      } else {
-        childrenNote = person.children.length + '/' + numberOfChildrenTag;
-      }
-    %>
     <tr>
       <td>
         <%- include('../person/_link', {person}) %>
       </td>
       <td class="center">
-        <% if (person.birth) { %>
+        <% if (person.birthComplete) { %>
           <img class="checkmark-inline" src="/images/check-true.png">
         <% } else { %>
-          <% birthMissing += 1; %>
           <img class="checkmark-inline" src="/images/check-false.png">
         <% } %>
       </td>
       <td class="center">
-        <% if (person.death) { %>
+        <% if (person.deathComplete) { %>
           <img class="checkmark-inline" src="/images/check-true.png">
         <% } else if (person.living) { %>
           -
         <% } else { %>
-          <% deathMissing += 1; %>
           <img class="checkmark-inline" src="/images/check-false.png">
         <% } %>
       </td>
@@ -77,19 +55,13 @@
         <% } %>
       </td>
       <td class="center">
-        <% if (showChildrenDone) { %>
+        <% if (person.showChildrenDone) { %>
           <img class="checkmark-inline" src="/images/check-true.png">
-        <% } else if (showChildrenNotDone) { %>
+        <% } else if (person.showChildrenNotDone) { %>
           <img class="checkmark-inline" src="/images/check-false.png">
-        <% } else { %>
-          <%= childrenNote %>
         <% } %>
+        <%= person.childrenNote %>
       </td>
     </tr>
   <% }); %>
 </table>
-
-<script>
-  $('#birth-event-result').text('<%= birthMissing %>');
-  $('#death-event-result').text('<%= deathMissing %>');
-</script>

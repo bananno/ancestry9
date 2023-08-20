@@ -2,7 +2,7 @@
   <%
     let personId = person.customId;
     if (personId == null || locals.useRealId) {
-      personId = person._id;
+      personId = person.id || person._id;
     }
     const linkText = locals.linkText ? locals.linkText : person.name;
   %>

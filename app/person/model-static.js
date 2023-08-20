@@ -4,7 +4,6 @@ const constants = require('./constants');
 const methods = {};
 module.exports = methods;
 
-methods.populateConnections = require('./populateConnections');
 methods.populateAncestors = populateAncestors;
 methods.findInList = findInList;
 methods.isSame = isSame;
