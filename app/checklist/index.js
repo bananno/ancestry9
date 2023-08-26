@@ -10,7 +10,7 @@ const {
 
 const getChecklistPlacesInfo = require('./checklist.places');
 const {getObituaryChecklistData} = require('./checklist.tools');
-const checklistVitals = require('./checklist.vitals');
+const getPersonVitalsChecklistData = require('./checklist.vitals');
 
 module.exports = createRoutes;
 
@@ -18,7 +18,8 @@ function createRoutes(router) {
   router.use(createRenderChecklist);
 
   router.get('/checklist', checklistIndex);
-  router.get('/checklist/vitals', checklistVitals);
+  router.get('/checklist/vitals', renderChecklistVitals);
+  router.get('/api/checklist/vitals', apiChecklistVitals);
   router.get('/checklist/sourceCensus', checklistSourceCensus);
   router.get('/checklist/profileSummary', checklistProfileSummary);
   router.get('/checklist/personParentAges', checklistPersonParentAges);
@@ -37,6 +38,17 @@ function createRenderChecklist(req, res, next) {
     });
   }
   next();
+}
+
+async function renderChecklistVitals(req, res) {
+  const checklistData = await getPersonVitalsChecklistData();
+  res.renderChecklist('vitals', checklistData);
+}
+
+async function apiChecklistVitals(req, res) {
+  const checklistData = await getPersonVitalsChecklistData();
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send({data: checklistData});
 }
 
 async function checklistIndex(req, res) {

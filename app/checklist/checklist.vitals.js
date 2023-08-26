@@ -4,9 +4,11 @@ const {
   sortBy,
 } = require('../import');
 
-module.exports = checklistVitals;
+module.exports = getPersonVitalsChecklistData;
 
-async function checklistVitals(req, res) {
+const connectionTitle = [null, 'start', 'ancestor', 'cousin', 'marriage'];
+
+async function getPersonVitalsChecklistData() {
   const rawPeople = await Person.find().populate('tags');
   await Person.populateBirthAndDeath(rawPeople);
 
@@ -26,19 +28,19 @@ async function checklistVitals(req, res) {
     if (!person.deathComplete && !person.living) {
       countDeathMissing += 1;
     }
+    person.connectionTitle = connectionTitle[person.connection];
   });
 
-  res.renderChecklist('vitals', {
+  return {
     people: people.map(person => pick(person, [
       'id', 'living', 'name', 'shareLevel',
       'birthComplete', 'deathComplete',
       'showChildrenDone', 'showChildrenNotDone', 'childrenNote',
-      'connection', 'degree',
+      'connectionTitle', 'degree',
     ])),
-    connectionTitle: [null, 'start', 'ancestor', 'cousin', 'marriage'],
     countBirthMissing,
     countDeathMissing,
-  });
+  };
 }
 
 /////////////////////

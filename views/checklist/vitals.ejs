@@ -1,5 +1,10 @@
 <h1>Checklist - vitals</h1>
 
+<p style="margin: 20px 0;">
+  converted -
+  <a href="http://localhost:1899/checklist/person-vitals" target="_blank">open client</a>
+</p>
+
 <div>
   Total people: <b><%= people.length %></b>
   <br>
@@ -40,7 +45,7 @@
         <% } %>
       </td>
       <td class="center">
-        <%= connectionTitle[person.connection] %>
+        <%= person.connectionTitle %>
       </td>
       <td class="center">
         <%= person.degree %>
