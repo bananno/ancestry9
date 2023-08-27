@@ -127,14 +127,15 @@ async function sourceIndex(req, res) {
 async function sourceProfile(req, res) {
   const source = await Source.findById(req.params.id)
     .populate('people')
-    .populate('story');
+    .populate('story')
+    .populate('tags');
 
   await source.populateAndSortCitations();
 
   const data = {
     id: source._id,
     citations: mapCitationsIncludePerson(source.citationsByPerson),
-    content: source.content,
+    content: source.content?.split('\n') || [],
     date: source.date,
     links: mapLinks(source.links),
     location: source.location,
@@ -192,7 +193,7 @@ async function storyProfile(req, res) {
 
   const data = {
     id: story._id,
-    content: story.content,
+    content: story.content?.split('\n') || [],
     date: story.date,
     links: mapLinks(story.links),
     location: story.location,

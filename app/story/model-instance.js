@@ -1,6 +1,9 @@
+const {pick} = require('lodash');
 const mongoose = require('mongoose');
+
 const tools = require('../tools/modelTools');
 const constants = require('./constants');
+
 const methods = {};
 module.exports = methods;
 
@@ -40,22 +43,21 @@ methods.hasChecklist = function() {
 };
 
 methods.toSharedObject = function({imageMap}) {
-  const {exportFieldNames} = this.constants();
-  const story = tools.reduceToExportData(this, exportFieldNames);
-
-  // Remove non-shared people and then un-populate people.
-  story.people = story.people
-    .filter(person => person.isPublic())
-    .map(person => person._id);
-
-  story.tags = tools.convertTags(this);
-
-  // Populate images manually; otherwise image tags would not be populated.
-  // No need to un-populate images because they only exist as attributes
-  // of their parent story or source.
-  story.images = story.images.map(imageId => imageMap[imageId].toSharedObject());
-
-  return story;
+  return {
+    id: String(this._id),
+    ...pick(this, ['title', 'type', 'date', 'location', 'summary']),
+    personIds: this.people.filter(person => person.isPublic()).map(person => person._id),
+    // Populate images manually; otherwise image tags would not be populated.
+    // Images because they only exist as attributes of their parent story or source.
+    images: this.images.map(imageId => imageMap[imageId].toSharedObject()),
+    tags: this.convertTags(),
+    links: this.links.map(link => {
+      const arr = link.split(' ');
+      return {url: arr.shift(), text: arr.join(' ')};
+    }),
+    notes: this.notes?.split('\n') || [],
+    content: this.content?.split('\n') || [],
+  };
 }
 
 

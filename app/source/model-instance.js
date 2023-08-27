@@ -40,18 +40,11 @@ methods.canHaveLocation = function() {
       || this.location.notes));
 };
 
-// Populate before calling: people, story, tags
+// Populate these before calling: people, story, tags
 methods.toSharedObject = function({imageMap}) {
   return {
     id: this._id,
-    ...pick(this, [
-      'title',
-      'date',
-      'location',
-      'notes',
-      'content',
-      'summary',
-    ]),
+    ...pick(this, ['title', 'date', 'location', 'summary']),
     fullTitle: mongoose.model('Source').getFullTitle(this),
     personIds: this.people.filter(person => person.isPublic()).map(person => person._id),
     sourceIds: this.sources,
@@ -66,6 +59,8 @@ methods.toSharedObject = function({imageMap}) {
       const arr = link.split(' ');
       return {url: arr.shift(), text: arr.join(' ')};
     }),
+    notes: this.notes?.split('\n') || [],
+    content: this.content?.split('\n') || [],
   };
 }
 
