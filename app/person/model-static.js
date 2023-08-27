@@ -1,77 +1,14 @@
 const mongoose = require('mongoose');
+
 const tools = require('../tools/modelTools');
-const constants = require('./constants');
+const getAllSharedData = require('./person.getAllSharedData');
 const methods = {};
 module.exports = methods;
 
 methods.populateAncestors = populateAncestors;
 methods.findInList = findInList;
 methods.isSame = isSame;
-
-methods.getAllSharedData = async () => {
-  const rawPeople = await mongoose.model('Person').find({}).populate('tags');
-  const ancestors = {};
-
-  const anna = rawPeople.find(person => person.isRoot());
-
-  anna.parents.forEach((person, i) => findAncestors(person, i + 1, 1));
-
-  function findAncestors(personId, treeSide, degree) {
-    personId += '';
-    ancestors[personId] = [treeSide, degree];
-    const person = rawPeople.find(person => person._id + '' == personId);
-    person.parents.forEach(parent => findAncestors(parent, treeSide, degree + 1));
-  }
-
-  const people = rawPeople.map(personInfo => {
-    if (personInfo.shareLevel == 0) {
-      return null;
-    }
-
-    let person = {};
-
-    constants.fieldNamesEveryone.forEach(key => {
-      person[key] = personInfo[key];
-    });
-
-    person._id += '';
-
-    if (ancestors[person._id]) {
-      person.leaf = ancestors[person._id][0];
-      person.degree = ancestors[person._id][1];
-    }
-
-    if (personInfo.shareLevel == 1) {
-      person.private = true;
-      person.name = personInfo.shareName || 'Person';
-      person.customId = personInfo._id;
-      person.tags = {};
-      return person;
-    }
-
-    person.private = false;
-
-    constants.fieldNamesShared.forEach(key => {
-      person[key] = personInfo[key];
-    });
-
-    person.tags = tools.convertTags(personInfo);
-
-    return person;
-  }).filter(Boolean);
-
-  people.forEach(person => {
-    if (person.tags['number of children'] == 'done') {
-      // some children might not be shared and will be removed from list later
-      person.tags['number of children'] = person.children.length;
-    } else if (person.tags['number of children'] == 'too distant'
-        || person.tags['number of children'] == 'unknown') {
-      person.tags['number of children'] = null;
-    }
-  });
-
-  return people;
-};
+methods.getAllSharedData = getAllSharedData;
 
 methods.getFormDataNew = req => {
   const personName = req.body.name.trim();

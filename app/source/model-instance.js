@@ -1,5 +1,8 @@
+const {pick} = require('lodash');
 const mongoose = require('mongoose');
+
 const tools = require('../tools/modelTools');
+
 const methods = {};
 module.exports = methods;
 
@@ -37,29 +40,33 @@ methods.canHaveLocation = function() {
       || this.location.notes));
 };
 
+// Populate before calling: people, story, tags
 methods.toSharedObject = function({imageMap}) {
-  const {exportFieldNames} = this.constants();
-
-  // sourceData is not a Source instance
-  const sourceData = tools.reduceToExportData(this, exportFieldNames);
-
-  // Remove non-shared people and then un-populate people.
-  sourceData.people = sourceData.people
-    .filter(person => person.isPublic())
-    .map(person => person._id);
-
-  // Use story to create full title and then un-populate story.
-  sourceData.fullTitle = mongoose.model('Source').getFullTitle(this);
-  sourceData.story = sourceData.story._id;
-
-  sourceData.tags = tools.convertTags(this);
-
-  // Populate images manually; otherwise image tags would not be populated.
-  // No need to un-populate images because they only exist as attributes
-  // of their parent story or source.
-  sourceData.images = sourceData.images.map(imageId => imageMap[imageId].toSharedObject());
-
-  return sourceData;
+  return {
+    id: this._id,
+    ...pick(this, [
+      'title',
+      'date',
+      'location',
+      'notes',
+      'content',
+      'summary',
+    ]),
+    fullTitle: mongoose.model('Source').getFullTitle(this),
+    personIds: this.people.filter(person => person.isPublic()).map(person => person._id),
+    sourceIds: this.sources,
+    storyId: this.story._id, // source belongs to this story (populated)
+    storyIds: this.stories, // source relates to these stories (not populated)
+    tags: tools.convertTags(this),
+    // Populate images manually; otherwise image tags would not be populated.
+    // No need to un-populate images because they only exist as attributes
+    // of their parent story or source.
+    images: this.images.map(imageId => imageMap[imageId].toSharedObject()),
+    links: this.links.map(link => {
+      const arr = link.split(' ');
+      return {url: arr.shift(), text: arr.join(' ')};
+    }),
+  };
 }
 
 // Must populate story first

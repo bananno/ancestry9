@@ -14,11 +14,13 @@ methods.populateStory = async function() {
 };
 
 methods.toSharedObject = function() {
+  const itemArr = this.item.split(' - ');
   return {
-    _id: this._id,
-    source: this.source._id,
-    person: this.person._id,
-    item: this.item,
+    id: this._id,
+    itemPart1: itemArr.shift(),
+    itemPart2: itemArr.join(' '),
     information: this.information,
+    personId: this.person._id,
+    sourceId: this.source._id,
   };
 };
