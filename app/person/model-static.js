@@ -259,7 +259,7 @@ function calculateNationality(person, people, nationality = {}, percentage = 100
     const parentPercentage = percentage / 2;
     for (let i = 0; i < 2; i++) {
       if (i < person.parents.length) {
-        const thisPerson = person.parents[i];
+        const thisPerson = findInList(people, person.parents[i]);
         nationality = calculateNationality(thisPerson, people, nationality,
           parentPercentage, safety + 1);
       } else {
